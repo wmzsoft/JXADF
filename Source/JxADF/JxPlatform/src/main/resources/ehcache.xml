@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<ehcache xsi:noNamespaceSchemaLocation="../xsd/ehcache.xsd"
+         updateCheck="true" monitoring="autodetect"
+         dynamicConfig="true">
+ <diskStore path="java.io.tmpdir"/>
+ <defaultCache
+        maxElementsInMemory="1000"
+        eternal="false"
+        timeToIdleSeconds="120"
+        timeToLiveSeconds="120"
+        overflowToDisk="false"
+        /> 
+ <!-- 缓存Jbo对象 -->
+ <cache name="jboCache"
+  		maxElementsInMemory="10000"
+  		eternal="false"
+  		timeToIdleSeconds="10000"
+  		timeToLiveSeconds="10000"
+  		overflowToDisk="true"
+  		diskPersistent="false"  />
+
+ <!-- 缓存基本的数据，如：maxapps,maxobject,maxattribute等 -->
+ <cache name="baseCache"
+  		maxElementsInMemory="10000"
+  		eternal="false"
+  		timeToIdleSeconds="10000"
+  		timeToLiveSeconds="10000"
+  		overflowToDisk="true"
+  		diskPersistent="false"  />
+
+ <!-- 缓存基本的数据，如：domain 数据字典 等 -->
+ <cache name="domainCache"
+  		maxElementsInMemory="10000"
+  		eternal="false"
+  		timeToIdleSeconds="10000"
+  		timeToLiveSeconds="10000"
+  		overflowToDisk="true"
+  		diskPersistent="false"  />
+
+ <!-- 缓存基本的数据，如：domain 数据字典 等 -->
+ <cache name="permissionCache"
+  		maxElementsInMemory="10000"
+  		eternal="false"
+  		timeToIdleSeconds="120"
+  		timeToLiveSeconds="120"
+  		overflowToDisk="true"
+  		diskPersistent="false"  />
+
+</ehcache>

@@ -1,0 +1,190 @@
+﻿/*******************************************
+* 应用工具栏样式表
+*******************************************/
+.appbar {
+    width: 100%;
+    height: 39px;
+    position: relative;
+    z-index: 1;
+}
+
+.appbar tr td {
+    background: #fff;
+    height: 39px;
+
+}
+
+/** 快速查询 **/
+.table_quick_search {
+    height: 24px;
+    line-height: 24px;
+    vertical-align: middle;
+    width: 180px;
+    margin: 0 0 0 10px;
+    background: none repeat scroll 0 0 transparent;
+    border: 0 none;
+    font-size: 14px;
+    outline: 0 none;
+}
+
+/** 更多操作 **/
+.appbar-menu {
+    color: blue;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 400px;
+    -webkit-transform: translateZ(0);
+
+}
+
+.choose-option {
+    position: relative;
+    display: inline-block;
+}
+
+div.appbar-menu-option {
+    border: 1px solid #ccc;
+    background: url(../images/appbar/operation.png) no-repeat;
+    display: inline-block;
+    width: 90px;
+    height: 28px;
+    line-height: 28px;
+    color: #000;
+    font-size: 12px;
+    padding-left: 20px;
+    cursor: pointer;
+    z-index: 10;
+    top: 0;
+    margin-top: 5px;
+    margin-left: 20px;
+    border-radius: 2px;
+}
+
+div.appbar-menu-option:hover {
+    border: 1px #0E6FA6 solid;
+    background: url(../images/appbar/operation_hover.png) no-repeat;
+    color: #fff;
+}
+
+.appbar-menu-list {
+    position: absolute;
+    left: 20px;
+    background: #fff;
+    display: none;
+    z-index: 1000;
+    border: 1px #CCC solid;
+    padding: 25px 35px 25px 25px;
+    box-shadow: 1px 1px 4px #888;
+    height: 100px;
+    width: 360px;
+}
+
+.appbar-menu-list-icon {
+    width: 0;
+    height: 0;
+    float: right;
+    overflow: hidden;
+}
+
+.table_main td.appbar-menu-OPTION {
+    list-style: none;
+}
+
+.table_main td.appbar-menu-OPTION a {
+    color: #5d5a5a;
+}
+
+.table_main td.appbar-menu-OPTION a:hover {
+    color: #ff6000;
+}
+
+.appbar-menu-SEP {
+    color: #5d5a5a;
+    height: 30px;
+}
+
+.appbar-menu-sub {
+    white-space: nowrap;
+    background: #fff;
+}
+
+.appbar-menu-sub-OPTION {
+    display: inline;
+    color: #5d5a5a;
+}
+
+.appbar-menu-vsline {
+    color: #ccc;
+    margin-right: 5px;
+    width: 2px;
+}
+
+/** Toolbar **/
+/*appbar 表格快速搜索框*/
+
+.appbar-toolbar {
+    text-align: right;
+    position: fixed;
+    right: 0;
+    z-index: 11;
+    top: 0;
+    -webkit-transform: translateZ(0);
+
+}
+
+.appbar-menu-toolbar-icon {
+    vertical-align: middle;
+}
+
+.appbar-extends {
+    text-align: right;
+    padding-right: 10px !important;
+    position: fixed;
+    z-index: 10;
+    right: 0;
+    top: 0;
+    -webkit-transform: translateZ(0);
+}
+
+.appbar-extends span {
+    margin-top: 5px;
+}
+
+.td_bg {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 40px;
+    border-bottom: 1px solid #d7d7d7;
+}
+
+/**表格上面的搜索框*/
+.quickSearchDiv {
+    width: 200px;
+    margin: 6px 0 0 0;
+    background: none repeat scroll 0 0 #fff;
+    border: 1px solid #bbb;
+    border-radius: 2px;
+    box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
+    font-size: 12px;
+    height: 24px;
+    line-height: 1.666;
+    position: relative;
+    float: left;
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.placeholder {
+    color: #ccc;
+    cursor: text;
+    font-size: 12px;
+    height: 90%;
+    left: 9px;
+    line-height: 24px;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+}

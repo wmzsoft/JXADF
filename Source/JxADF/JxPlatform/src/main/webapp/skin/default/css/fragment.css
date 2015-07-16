@@ -1,0 +1,24 @@
+﻿.fragment-mode-wrap table,
+.fragment-mode-ellipsis table{
+    table-layout: fixed;
+}
+
+.fragment-mode-ellipsis th{
+    white-space: normal;
+}
+.fragment-mode-ellipsis td{
+    overflow: hidden;
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+
+.fragment-mode-wrap td{
+    white-space: normal !important;
+    word-wrap: break-word;
+}
+
+.fragment-mode-wrap td a,
+.fragment-mode-wrap td span{
+    word-wrap: break-word;
+}

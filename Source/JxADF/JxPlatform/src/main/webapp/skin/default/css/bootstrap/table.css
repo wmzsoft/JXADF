@@ -1,0 +1,15 @@
+.panel-list-table .pager{
+    margin: 0;
+}
+
+.m-table-list td{
+    vertical-align: top;
+}
+
+.m-table-list .key{
+    white-space: nowrap;
+    font-size: 15px;
+    font-weight: bold;
+    color:#333;
+    padding-right: 15px;
+}

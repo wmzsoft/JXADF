@@ -1,0 +1,18 @@
+@charset "UTF-8";
+/*
+ * 修复一些不合理的布局，调整按钮布局，字体大小等等
+ */
+ 
+ /*顶部四个按钮*/
+ .btn{
+ 	margin:1px;
+ 	padding:0px;
+ }
+ 
+ /*文件上传按钮文字居中显示*/
+  .fileinput-button{
+  	margin-right:5px;
+  }
+ .fileinput-button input{
+ 	vertical-align: middle;
+ }

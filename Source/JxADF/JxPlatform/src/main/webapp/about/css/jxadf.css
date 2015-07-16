@@ -1,0 +1,191 @@
+@charset "utf-8";
+/* CSS Document */
+:focus {outline:none;}
+.navbar-default { z-index:98; width:100%;  } 
+.header {
+	width:374px;
+	margin:0 auto;
+}
+.right-menu { float:right; overflow:visible; }
+
+ul.nav-tabs{
+    width: 200px;
+    margin-top: 0;
+	background:#F2f2f2;
+	border:1px #E2E2E2 solid;
+	padding-bottom: 12px;
+
+}
+ul.nav-tabs li{
+    margin: 0 ;
+}
+ul.nav-tabs li a{
+	width:100%;
+    margin: 0;
+	  padding:11px 16px;
+	  border-radius: 0;
+	  background: #0088cc;
+	  border-bottom:1px #F2F2F2 solid;
+	  color:#FFF;
+	  z-index:99;
+  }
+	
+ul.nav-tabs li span { float:left; padding:12px 16px 0;}
+ul.nav-tabs li.active a, ul.nav-tabs li.active a:hover{
+      color: #fff;
+      background: #FFA629;
+      width:100%;
+	  border:1px #FFA629 solid;
+	  border-bottom:1px #F2F2F2 solid;
+}
+ul.nav-tabs li a, ul.nav-tabs li a:hover { background:#0088cc; border:none;border-bottom:1px #F2F2F2 solid;}
+ul.nav-tabs.affix{
+    top: 145px; /* Set the top position of pinned element */
+	z-index:99;
+}
+	
+
+h4 { font-size:22px; font-family:Arial, Helvetica, sans-serif; font-weight:bold;}
+p { clear:both; color:#5C5C5D;line-height:25px; font-size:14px;}
+h3 {clear:both; font-weight:bold; line-height:35px;}
+h3 span { color:#99CC00;}
+.section {
+	clear:both;
+	float:left;
+	border-bottom:1px #E0DEDE dotted;
+	margin:0 0 25px; 
+	width:100%;
+}
+.t-index {
+	text-indent:30px;
+}
+/*产品简介*/
+.section1  { margin-top:0;}
+.product-list { margin-top:35px; }
+.product-list dl{
+	float:left;
+	width:220px;
+	height:300px;
+	margin-right:60px;
+}
+.en .product-list dl{
+	height: 350px;
+}
+.product-list dl dt {
+	text-align:center;
+	height:138px;
+}
+.product-list dl dd {
+	text-align:center;
+	color:#5C5C5D;
+	line-height:22px;
+}
+
+
+/*开发模式*/
+
+/*产品市场定位*/
+.earnings {
+	margin:30px 30px 60px;
+	background:#FBFFE0;
+    border:1px #EBE7E7 solid;
+    border-left:3px #A0CE4E solid; 
+	padding:10px 30px 15px;
+	box-shadow:6px 7px 13px #ccc;
+}
+.earnings h3 {
+   color:#67A002;
+   border-bottom:1px #E0DEDE dotted;
+   height:45px;
+   margin-right:50px;
+   font-size:30px;
+}
+
+/*4-23样式*/
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover{
+	background:#ffa629; color:#FFF;
+	}
+.navbar-nav > li {
+	float:none;
+}
+
+.navbar-default .navbar-nav > li > a {
+    color: #fff;
+}
+.navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > li > a:hover{
+     background:#0088cc;
+     border:1px #0088cc solid;
+     border-bottom:1px #F2F2F2 solid;
+     color:#FFF;
+}
+
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+    border-color: #fff;
+}
+.navbar-collapse { background:-#f00;}
+.contact { display:none;}
+@media (max-width: 768px) {
+ul.nav-tabs { border:none; }
+ul.nav-tabs.affix{
+	left:0;
+	top:0;
+
+	/*position:static ;*/
+}
+.container {
+     padding-left:0;
+
+	
+
+}
+.header {
+   display:none;
+}
+
+.col-cs {padding:0 15px 0 20px;}
+.section {
+	
+	padding-top:80px; 
+}
+ul.nav-tabs {
+	background:#0088cc;
+	margin-top: 0;
+	padding-bottom:0;
+	width: 200px;
+}
+ul.nav-tabs {
+	width:100%;
+}
+ul.nav-tabs li { float:left;}
+ul.nav-tabs li a, ul.nav-tabs li a:hover {
+	border:none;
+	}
+ul.nav-tabs li.active a, ul.nav-tabs li.active a:hover{
+	  border:none;
+}
+ul.nav-tabs li span {
+	display:none;
+}
+
+.product-list dl { margin-left:50px;}
+
+.earnings h3 {
+   height:35px;
+   font-size:25px;
+   margin-right:0;
+}
+
+.contact {
+  display:block;
+  background:#F2F2F2;
+  padding:8px 10px 0;
+  border-top:1px #DADADA solid;
+  height:40px;
+  width:100%;
+  position:fixed;
+  bottom:0;
+}
+.contact  p span { margin-left:30px;}	
+}
+	
+	

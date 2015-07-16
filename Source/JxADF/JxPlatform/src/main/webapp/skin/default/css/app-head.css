@@ -1,0 +1,13 @@
+﻿.path {
+    background: url(../images/home/pathbg.png) repeat-x;
+    font-size: 12px;
+    color: #403e3e;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
+    margin-bottom: 10px;
+}
+
+.ui-dialog-titlebar {
+    background: #f00;
+}

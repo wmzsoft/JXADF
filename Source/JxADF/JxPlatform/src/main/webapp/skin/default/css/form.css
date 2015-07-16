@@ -1,0 +1,199 @@
+﻿input.form_td_100,
+input.form_td_number,
+input.form_td_date,
+input.form_query,
+textarea.form_td_textarea,
+input.form_td_multipart,
+input.form_td_multipart_readonly{
+    font: 9pt/20px Verdana;
+    padding-left: 1px;
+    padding-right: 1px;
+    height: 20px;
+    background-color: #ffffff;
+    border: 1px solid #c0bebe;
+}
+
+input.form_td_100 {
+    width: 98%;
+    text-align: left;
+}
+
+input.form_td_number {
+    text-align: right;
+}
+
+input.form_td_date,
+input.form_td_multipart{
+    text-align: left;
+}
+
+input.form_query {
+    vertical-align: middle;
+    text-align: left;
+}
+
+input.form_td_multipart_readonly {
+    border: none;
+    vertical-align: middle;
+    text-align: left;
+    background-color: #F1F1FF;
+    width: 60%;
+}
+
+input[readonly].form_td_100,
+input[disabled].form_td_100,
+input[readonly].form_td_number,
+input[disabled].form_td_number,
+input[readonly].form_td_date,
+input[disabled].form_td_date,
+textarea[readonly].form_td_textarea,
+textarea[disabled].form_td_textarea_readonly,
+.form_td_content select[readonly]{
+    background-color: transparent;
+    border: 0;
+}
+
+input[readonly].form_td_number {
+    text-align: left;
+}
+
+input.form_label_tip {
+    width: 35px;
+    border: 0;
+    vertical-align: middle;
+    text-align: center;
+    background-color: transparent;
+    color: red;
+}
+
+textarea.form_td_textarea {
+    height: auto;
+    margin: 5px;
+    vertical-align: middle;
+    width: 97%;
+}
+
+select option {
+    vertical-align: middle;
+    font-family: Arial, Helvetica, sans-serif;
+    height: 20px;
+    line-height: 20px;
+}
+
+.form_select select {
+    margin-top: 1px;
+    border: 1px solid #c0bebe;
+}
+.form_td_select_simulate_hidden select {
+    position: absolute;
+    visibility: hidden;
+    display: inline-block !important;
+}
+
+.form_td_select select {
+    font-size: 9pt;
+    width: 206px;
+    height: 24px;
+    line-height: 24px;
+    border: 1px solid #c0bebe;
+}
+
+.form_td_content select[disabled] {
+    position: relative;
+    background-color: transparent;
+    vertical-align: middle;
+    color: black;
+}
+
+.form_td_label {
+    font: 9pt/1.6 Verdana;
+    border: 1px solid #d7d7d7;
+    border-collapse: separate;
+    background-color: #f3f3f3;
+    empty-cells: show;
+    vertical-align: middle;
+    text-align: right;
+    white-space: nowrap;
+}
+
+#DEALER .form_td_label {
+    width: 20%;
+}
+
+.table_form td.form_td_label {
+    min-width: 50px;
+    width: 200px;
+    color: #666;
+    padding-right: 5px;
+}
+
+.table_main td.form_td_content {
+    padding: 0 5px;
+}
+
+.form_td_content {
+    font:9pt/1.6 Verdana;
+    color: #000000;
+    word-break: break-all;
+    border-collapse: separate;
+    border: 1px solid #d7d7d7;
+    min-width: 180px;
+}
+
+.required:after {
+    content: "*";
+    color: #f00;
+    font-family: Arial,sans-serif;
+}
+
+input.readonly {
+    border: 0;
+}
+
+/**
+** 提示请填写
+**/
+.requiredTip {
+    border: 1px solid #f00 !important;
+    background-color: #F4FADA !important;
+}
+
+.lookupicon {
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+input.form_td_multipart_first,
+input.form_td_multipart_first[readonly] {
+    display: none;
+}
+
+
+
+/**附件**/
+.attach_button {
+    float: right;
+}
+
+.attach_head {
+    background-color: rgb(214, 231, 220);
+    vertical-align: middle !important;
+}
+
+.attach_required {
+    color: red;
+    font-weight: bolder;
+}
+
+.table_main td.form_td_content_select {
+    vertical-align: middle;
+}
+
+.dataTables_wrapper select {
+    height: 26px;
+    border: 1px #c0bebe solid;
+}
+
+.fileinput {
+    height: 25px;
+}

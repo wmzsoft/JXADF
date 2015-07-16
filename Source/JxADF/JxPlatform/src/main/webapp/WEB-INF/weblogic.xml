@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
+<!DOCTYPE weblogic-web-app PUBLIC "-//BEA Systems, Inc.//DTD Web Application 8.1//EN"
+                "http://www.oracle.com/technology/weblogic/servers/wls810/dtd/weblogic810-web-jar.dtd">
+ -->
+<weblogic-web-app>
+	<session-descriptor>
+		<cookie-name>JXWEB</cookie-name>
+	</session-descriptor>
+	<context-root>/jxweb</context-root>
+	<container-descriptor>
+		<prefer-web-inf-classes>true</prefer-web-inf-classes>
+	</container-descriptor>
+</weblogic-web-app>
+

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+    <head lang="en">
+        <meta charset="UTF-8">
+        <title></title>
+
+        <script type="text/javascript" src="jquery-ui-1.10.3/jquery-1.9.1.min.js"></script>
+        <script type="text/javascript" src="jquery-ui-1.10.3/ui/jquery-ui.js"></script>
+        <link rel="stylesheet" type="text/css" href="jquery-ui-1.10.3/themes/base/jquery.ui.all.css"/>
+
+        <script type="text/javascript" src="Flotr2/flotr2.min.js"></script>
+
+        <script type="text/javascript" src="jQuery-sDashboard/js/jquery-sDashboard.js"></script>
+        <link rel="stylesheet" type="text/css" href="jQuery-sDashboard/skin/default/sDashboard.css"/>
+
+
+        <script type="text/javascript">
+            var d1 = [
+                [0, 3],
+                [4, 8],
+                [8, 5],
+                [9, 13]
+            ];
+
+            for (var i = 0; i < 14; i += 0.5) {
+                //d2.push([i, Math.sin(i)]);
+            }
+
+            var widgetDefinitions = [{
+                widgetId: 'test_1008',
+                widgetTitle: '我访问top5应用',
+                widgetType: 'chart',
+                widgetContent: {
+                    data: [{data: [[0, 2494]], label: '插件控制台'}, {
+                        data: [[0, 868]],
+                        label: '主机厂信息维护'
+                    }, {data: [[0, 601]], label: '新增续作增额申请信息'}, {data: [[0, 74]], label: '任务调度'}, {
+                        data: [[0, 34]],
+                        label: '合同时间信息管理'
+                    }],
+                    options: {
+                        HtmlText: false,
+                        grid: {verticalLines: false, horizontalLines: false},
+                        xaxis: {showLabels: false},
+                        yaxis: {showLabels: false},
+                        pie: {show: true, explode: 6},
+                        mouse: {track: true},
+                        legend: {position: 'se', backgroundColor: '#D2E8FF'}
+                    }
+                },
+                enableRefresh: true,
+                type: 'pie'
+            }];
+            $(function () {
+                $("#myDashboard").sDashboard({
+                    dashboardData: widgetDefinitions
+                });
+            });
+        </script>
+
+    </head>
+    <body>
+        <div>
+            <ul id="myDashboard"></ul>
+        </div>
+    </body>
+</html>

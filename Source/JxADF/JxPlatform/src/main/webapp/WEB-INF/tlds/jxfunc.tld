@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+    <description>Jx functions library</description>
+    <display-name>Jx functions</display-name>
+    <tlib-version>1.0</tlib-version>
+    <short-name>jxfn</short-name>
+    <uri>/jxfunc</uri>
+    <function>
+        <name>userProperty</name>
+        <function-class>com.jxtech.common.JxFunctions</function-class>
+        <function-signature>
+            java.lang.String getUserProperty(java.lang.String)
+        </function-signature>
+    </function>
+    <function>
+        <name>userProjectCause</name>
+        <function-class>com.jxtech.common.JxFunctions</function-class>
+        <function-signature>
+            java.lang.String getUserProjectCause(java.lang.String)
+        </function-signature>
+    </function>
+    <function>
+        <name>property</name>
+        <function-class>com.jxtech.common.JxFunctions</function-class>
+        <function-signature>
+            java.lang.String getProperty(com.jxtech.jbo.base.JxUserInfo,java.lang.String)
+        </function-signature>
+    </function>
+    <function>
+        <name>projectCause</name>
+        <function-class>com.jxtech.common.JxFunctions</function-class>
+        <function-signature>
+            java.lang.String getProjectCause(com.jxtech.jbo.base.JxUserInfo,java.lang.String)
+        </function-signature>
+    </function>
+
+    <function>
+        <name>sqlCause</name>
+        <function-class>com.jxtech.common.JxFunctions</function-class>
+        <function-signature>
+            java.lang.String getSqlCause(java.lang.String, java.lang.Object)
+        </function-signature>
+    </function>
+    <function>
+        <name>projectSelectCtl</name>
+        <function-class>com.jxtech.common.JxFunctions</function-class>
+        <function-signature>
+            java.lang.String getProjectSelectCtl(com.jxtech.jbo.base.JxUserInfo,boolean)
+        </function-signature>
+    </function>
+</taglib>  
