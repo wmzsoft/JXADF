@@ -32,6 +32,7 @@ public class TablecolTag extends JxBaseUITag {
     protected String mxevent;
     protected String mxevent_icon;
     protected String mxevent_disabled;// 事件中的按钮是否可以点击
+    protected String mxevent_render;
     protected String dataattribute;// 字段名
     protected String dataDisplay;// 数据显示，一般用于根据不同的值，显示不同的图标
     protected String lookup;
@@ -88,6 +89,7 @@ public class TablecolTag extends JxBaseUITag {
         col.setLookupWrite(lookupWrite);
         col.setLinkedcontrolid(linkedcontrolid);
         col.setMxevent_icon(mxevent_icon);
+        col.setMxevent_render(mxevent_render);
         col.setFilterable(filterable);
         col.setFiltername(filtername);
         col.setSortable(sortable);
@@ -300,6 +302,10 @@ public class TablecolTag extends JxBaseUITag {
     public void setMxevent_icon(String mxevent_icon) {
         this.mxevent_icon = mxevent_icon;
     }
+
+    public String getMxevent_render(){return mxevent_render; }
+
+    public  void setMxevent_render(String mxevent_render){ this.mxevent_render = mxevent_render;}
 
     public String getFilterable() {
         return filterable;

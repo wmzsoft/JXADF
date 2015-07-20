@@ -10,6 +10,7 @@ $author:wmzsoft@gmail.com
      <#assign displayValue=col.parameters.dataDisplay?eval />
      <#list displayValue?keys as key>
          <#if key==colDataValue>
+            <#assign colDataKey=key>
              <#assign dv = (displayValue[key]?lower_case)>
              <#if (dv?ends_with('.gif')) || (dv?ends_with('.png')) || (dv?ends_with('.jpg')) >
                  <#assign dishtml=true> <#--这里会造成一个dishtml永远为true的bug-->

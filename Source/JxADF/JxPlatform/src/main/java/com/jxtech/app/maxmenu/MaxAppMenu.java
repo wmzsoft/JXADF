@@ -27,7 +27,7 @@ public class MaxAppMenu {
 
     /**
      * 获得应用程序菜单
-     * 
+     *
      * @param session
      * @return
      * @throws SQLException
@@ -44,7 +44,7 @@ public class MaxAppMenu {
         }
         StringBuilder sql = new StringBuilder();
         sql.append("select * from MAXAPPS ");
-        sql.append("where app in (select app ");
+        sql.append("where ORDERID > 0 and app in (select app ");
         sql.append("from maxmenu a, pub_role_operation b,pub_role_user c ");
         sql.append("where a.maxmenuid = b.menu_id and b.role_id=c.role_id and a.visible=1 ");
         sql.append("and c.user_id = ?) ");
@@ -134,14 +134,14 @@ public class MaxAppMenu {
 
     /**
      * 移出无效的菜单,只有模块，没有应用的需要移出
-     * 
+     *
      * @param list
      */
     private void removeInvaildMenu(List<Map<String, Object>> list) {
         if (list == null) {
             return;
         }
-        for (Iterator<Map<String, Object>> it = list.iterator(); it.hasNext();) {
+        for (Iterator<Map<String, Object>> it = list.iterator(); it.hasNext(); ) {
             Map<String, Object> menu = it.next();
             if ("MODULE".equalsIgnoreCase((String) menu.get("appType"))) {
                 if (!hasApp(list, (String) menu.get("app"))) {
@@ -153,7 +153,7 @@ public class MaxAppMenu {
 
     /**
      * 这个模块中，是否有应用
-     * 
+     *
      * @param list
      * @param module
      * @return

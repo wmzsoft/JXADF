@@ -3,7 +3,7 @@
 
 function beforeDataTableLoad(tableId) {
 }
-function afterLoadDataTable(tableId,dtTable) {
+function afterLoadDataTable(tableId, dtTable) {
     var $table = $("table", "#div_" + tableId);
     if ($table.length) {
         $table.addClass("table-layout-fixed");
@@ -99,7 +99,7 @@ function loadDataTable(tableId, options) {
 
     var uid = getUrlParam("uid");
 
-    if (uid && uid > 0) {
+    if (!forceScorll && uid && uid > 0) {
         scroll = false;
     }
 
@@ -137,7 +137,7 @@ function loadDataTable(tableId, options) {
 
     var dttable = table.dataTable(dataTableOption);
 
-    if(top.window.dataTableCollection){
+    if (top.window.dataTableCollection) {
         //用于帮助解决jquery.layout.js布局的情况下west open/close时列表头部因为datatable.js固定死了
         top.window.dataTableCollection[location.href + tableId] = [dttable, window];
     }
@@ -208,32 +208,32 @@ function expandRow(me, type) {
         }
     }
 
-    var expHtml = '<tr id="exp_tr_'+uid+'" class="table_expand_tr"><td colspan="'+tdlen+'" id="exp_t'+uid+'"><iframe scrolling="no" frameborder="0" src="index_'+type+'.action?uid='+uid+'" onload="expandFrameLoaded(this)" /></td></tr>';
+    var expHtml = '<tr id="exp_tr_' + uid + '" class="table_expand_tr"><td colspan="' + tdlen + '" id="exp_t' + uid + '"><iframe scrolling="no" frameborder="0" src="index_' + type + '.action?uid=' + uid + '" onload="expandFrameLoaded(this)" /></td></tr>';
     tr.after(expHtml).attr("expand", "1");
     $button.addClass("expanded");
 }
 
-function expandFrameLoaded(frame){
+function expandFrameLoaded(frame) {
     var $frame = $(frame);
-    var $body = $("body",frame.contentDocument);
+    var $body = $("body", frame.contentDocument);
     frame.height = $body.height();
     frame.contentWindow.JxUtil.isExpandContext = true;
     frame.contentWindow.JxUtil.expandSourceRow = $frame.closest("tr").prev();
     $body.addClass("expandContext");
 }
 
-function setExpandSourceRowText($source,text){
-    if(!JxUtil.expandSourceRow) return ;
+function setExpandSourceRowText($source, text) {
+    if (!JxUtil.expandSourceRow) return;
     var attr = $source.attr("dataattribute");
     var displayName = $source.attr("displayname");
-    var $target = JxUtil.expandSourceRow.find("[dataattribute*='"+(displayName?"."+displayName:attr)+"']");
-    if($target.length){
+    var $target = JxUtil.expandSourceRow.find("[dataattribute*='" + (displayName ? "." + displayName : attr) + "']");
+    if ($target.length) {
         var $children = $target.children();
-        if($children.length){
-            if($children.is("input")){
+        if ($children.length) {
+            if ($children.is("input")) {
                 $children.val(text)
-            }else if( $children.is("span")){
-                $children.attr("title",text).text(text);
+            } else if ($children.is("span")) {
+                $children.attr("title", text).text(text);
             }
         }
     }

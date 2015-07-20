@@ -159,7 +159,7 @@ public class TableTag extends JxBaseUITag {
                     DataQueryInfo qf = JxSession.getMainApp().getJboset().getQueryInfo();
 
                     if (null != qf) {
-                        //getCount() 返回-1，表示此表格还未查询过数据，需要使用配置的pagenum
+                        // getCount() 返回-1，表示此表格还未查询过数据，需要使用配置的pagenum
                         if (qf.getJboset().getCount() >= 0 && StrUtil.isNull(pagesize)) {
                             pagesize = String.valueOf(qf.getPageSize());
                         }
@@ -299,7 +299,9 @@ public class TableTag extends JxBaseUITag {
             if (!StrUtil.isNull(relationship)) {
                 jboset = getJboSetByRelationship();// 查询子记录集
             } else if (myapp != null) {
-                //jboset = myapp.findJboSet(null, null, loadType);//这个缓存不需要了，没多少意义，还有问题
+                if (!"MAINLIST".equalsIgnoreCase(myapp.getAppType())){
+                    jboset = myapp.findJboSet(null, null, loadType);
+                }
             }
             if (jboset == null) {
                 if (!StrUtil.isNull(jboClassName)) {
@@ -356,10 +358,10 @@ public class TableTag extends JxBaseUITag {
                         String[] rootcauses = rootparent.split(":");
                         if ("NULL".equalsIgnoreCase(rootcauses[1])) {
                             qi.setWhereCause(rootcauses[0] + " is null");
-                            qi.setWhereParams(new Object[]{});
+                            qi.setWhereParams(new Object[] {});
                         } else {
                             qi.setWhereCause(rootcauses[0] + "=?");
-                            qi.setWhereParams(new Object[]{rootcauses[1]});
+                            qi.setWhereParams(new Object[] { rootcauses[1] });
                         }
                     }
 

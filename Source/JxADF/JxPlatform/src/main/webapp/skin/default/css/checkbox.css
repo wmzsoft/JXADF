@@ -24,3 +24,55 @@
     vertical-align: middle;
     margin-right: 5px;
 }
+/*开关式checkbox*/
+.slide-switch{
+
+}
+.slide-switch input{
+    display: none;
+}
+.slide-switch label{
+    position: relative;
+    display: inline-block;
+    width: 64px;
+    height: 24px;
+    background: url("../images/sprite.png") -200px -250px no-repeat;
+    vertical-align: middle;
+    cursor: pointer;
+}
+.slide-switch .open{
+    background-position: -100px -250px;
+}
+.slide-switch .open:hover{
+    background-position: -100px -300px;
+}
+.slide-switch .disable{
+    background-position: 0 -250px;
+    cursor:not-allowed;
+}
+.slide-switch .disable:hover{
+    background-position: 0 -300px;
+}
+
+.slide-switch span{
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    top: 5px;
+    left: 7px;
+    background: url("../images/sprite.png")  -250px -300px no-repeat;
+    -webkit-transition: left 0.2s;
+    -moz-transition: left 0.2s;
+    -ms-transition: left 0.2s;
+    -o-transition: left 0.2s;
+    transition: left 0.2s;
+}
+.slide-switch .open span{
+    left: 43px;
+    background-position: -200px -300px;
+}
+
+.slide-switch .disable span{
+    background-position: -200px -300px;
+    left: 25px;
+}

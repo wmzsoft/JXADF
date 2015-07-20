@@ -13,11 +13,21 @@
     <head>
        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
        <link href="<%=path%>/skin/<%=skinName%>/css/default.css" rel="stylesheet" type="text/css"/>
+        <style>
+            .notpermission{
+                width: 100%;
+            }
+            .notpermission img{
+                display: block;
+                max-width: 100%;
+                margin: 0 auto;
+            }
+        </style>
     </head>
     
 	<body>
-          <div class="warm">
-              <img src="<%=path%>/skin/<%=skinName%>/images/home/404-file.png" width="520" height="311">
+          <div class="notpermission">
+              <img src="<%=path%>/skin/<%=skinName%>/images/home/403.jpg">
           </div>
 	</body>
 </html>

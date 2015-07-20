@@ -58,4 +58,5 @@ public class PubUser extends Jbo {
         }
         return super.save();
     }
+
 }

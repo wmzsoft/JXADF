@@ -1,19 +1,19 @@
 package com.jxtech.app.pubuser;
 
+import com.jxtech.db.DataQuery;
 import com.jxtech.i18n.JxLangResourcesUtil;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSet;
+import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.util.DataQueryInfo;
+import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.StrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 康拓普用户信息- 健新科技优化实现
@@ -160,6 +160,61 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
         }
 
         return usersList;
+
+    }
+
+    @Override
+    public List<JboIFace> query(String shipname) throws JxException {
+        List<JboIFace> jboList = new ArrayList<JboIFace>();
+        if (!StrUtil.isNull(shipname) && shipname.equalsIgnoreCase("PUB_ROLE_PUB_USER_ALL")) {
+            JboIFace parent = getParent();
+            if (null != parent) {
+                return parent.getRelationJboSet("PUB_ROLE_PUB_USER_ALL").getJbolist();
+            }
+        } else {
+            return super.query(shipname);
+        }
+
+        return jboList;
+    }
+
+    /**
+     * 切换用户是否为某个角色成员
+     *
+     * @param params 1 表示添加到角色，0表示从角色移除
+     * @return
+     * @throws JxException
+     */
+    public String toggleUserInRole(String params) throws JxException {
+        String result = "fail";
+        String[] param = params.split(",");
+        String action = param[0];
+        String userId = param[1];
+
+        JboIFace mainJbo = JxSession.getMainApp().getJbo();
+        JboSetIFace jboSet = mainJbo.getRelationJboSet("PUB_ROLE_USERROLE_IDP");
+
+        if ("1".equalsIgnoreCase(action)) {
+            JboIFace jbo = jboSet.add();
+            jbo.setObject("ROLE_ID", mainJbo.getObject("ROLE_ID"));
+            jbo.setObject("USER_ID", userId);
+
+        } else {
+            List<JboIFace> allRoleUserList = jboSet.queryAll();
+            for (JboIFace roleUser : allRoleUserList) {
+                String roleUserId = roleUser.getString("USER_ID");
+                String roleId = roleUser.getString("ROLE_ID");
+
+                if (roleUserId.equalsIgnoreCase(userId) && roleId.equalsIgnoreCase(mainJbo.getString("ROLE_ID"))) {
+                    roleUser.delete();
+                }
+            }
+        }
+
+        jboSet.commit();
+        result = "ok";
+
+        return result;
 
     }
 }

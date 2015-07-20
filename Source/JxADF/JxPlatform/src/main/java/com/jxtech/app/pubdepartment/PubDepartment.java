@@ -4,8 +4,11 @@ import com.jxtech.i18n.JxLangResourcesUtil;
 import com.jxtech.jbo.Jbo;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSetIFace;
+import com.jxtech.jbo.util.DataQueryInfo;
+import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -101,4 +104,36 @@ public class PubDepartment extends Jbo {
 
         return true;
     }
+
+    /**
+     * 获取某个部门极其下面的所有子级
+     *
+     * @param includeSelf 是否包含自己 true || false
+     * @return
+     */
+    public List<JboIFace> getCascadeDepartment(boolean includeSelf) throws JxException {
+        List<JboIFace> departmentList = new ArrayList<JboIFace>();
+
+        if (includeSelf) {
+            departmentList.add(this);
+        }
+
+
+        JboSetIFace jboset = JboUtil.getJboSet("PUB_DEPARTMENT");
+        if (null != jboset) {
+            DataQueryInfo dataQueryInfo = jboset.getQueryInfo();
+            dataQueryInfo.setWhereCause("SUPER_DEPARTMENT_ID = ? and STATE = 1");
+            dataQueryInfo.setWhereParams(new Object[]{getString("DEPARTMENT_ID")});
+            jboset.setQueryInfo(dataQueryInfo);
+
+            List<JboIFace> jboIFaceList = jboset.queryAll();
+            for (JboIFace jboIFace : jboIFaceList) {
+                PubDepartment pubDepartmentJbo = (PubDepartment) jboIFace;
+                departmentList.addAll(pubDepartmentJbo.getCascadeDepartment(true));
+            }
+        }
+
+        return departmentList;
+    }
+
 }

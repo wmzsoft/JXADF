@@ -7,12 +7,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 工作流引擎管理器
  * Created by chenxiaomin@jxtech.net on 2015/3/10.
  */
 public class WorkflowEngineManager {
     private static final Logger LOG = LoggerFactory.getLogger(WorkflowEngineManager.class);
     private static Map<String, IWorkflowEngine> engines = new HashMap<String, IWorkflowEngine>();
-    
+
     public static void regiestEngine(String engineType, IWorkflowEngine engine) {
         if (engines.containsKey(engineType)) {
             LOG.info("当前工作流引擎类型【" + engineType + "】已经存在，使用新的覆盖旧的");

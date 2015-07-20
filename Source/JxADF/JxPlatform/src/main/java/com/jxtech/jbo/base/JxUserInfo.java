@@ -17,6 +17,7 @@ import com.jxtech.jbo.util.JxException;
 public class JxUserInfo implements Serializable {
 
     private static final long serialVersionUID = -5878682879440234549L;
+    public static final String LANG_CODE = "LANGCODE";
 
     // 共有信息
     private String loginid;// 用户信息,康拓普中为user_id

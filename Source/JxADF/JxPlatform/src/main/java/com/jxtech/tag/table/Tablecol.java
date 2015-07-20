@@ -34,6 +34,7 @@ public class Tablecol extends JxBaseUIBean {
     protected String mxevent;
     protected String mxevent_icon;
     protected String mxevent_disabled;// 事件中的按钮是否可以点击
+    protected String mxevent_render;
     protected String dataattribute;
     protected String dataDisplay;// 数据显示，一般用于根据不同的值，显示不同的图标
 
@@ -112,6 +113,7 @@ public class Tablecol extends JxBaseUIBean {
                 addParameter("mxevent", findString(mxeventUp));
             } else {
                 addParameter("mxevent", findString(mxevent));
+                addParameter("mxevent_render",findString(mxevent_render));
             }
         }
         if (null != dataattribute) {
@@ -316,6 +318,8 @@ public class Tablecol extends JxBaseUIBean {
     public void setFilterable(String filterable) {
         this.filterable = filterable;
     }
+
+    public void setMxevent_render(String mxevent_render){ this.mxevent_render = mxevent_render;}
 
     public void setTable(Table table) {
         this.table = table;

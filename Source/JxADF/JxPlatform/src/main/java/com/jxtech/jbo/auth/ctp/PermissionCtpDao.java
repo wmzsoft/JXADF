@@ -31,14 +31,22 @@ public class PermissionCtpDao implements AuthenticateIFace {
 
     private static final Logger LOG = LoggerFactory.getLogger(PermissionCtpDao.class);
 
+    /**
+     * 获得用户的权限数据
+     * 
+     * @param userid
+     * @return
+     * @throws JxException
+     */
     public PermissionIFace getPermission(String userid) throws JxException {
         if (StrUtil.isNull(userid)) {
             return null;
         }
+        //采用懒加载，用到的时候，再加载吧
         PermissionIFace perm = new PermissionCTP();
-        perm.setFunctions(getFunctions());
-        perm.setUserFunctions(getUserFunctions(userid));
-        perm.setSecurityRestrict(getSecurityRestrict(userid));
+        //perm.setFunctions(getFunctions());
+        //perm.setUserFunctions(getUserFunctions(userid));
+        //perm.setSecurityRestrict(getSecurityRestrict(userid));
         return perm;
     }
 
@@ -180,6 +188,13 @@ public class PermissionCtpDao implements AuthenticateIFace {
         return toJxUserInfo(jbo);
     }
 
+    /**
+     * 将Jbo转换为JxUserInfo类，并加载权限信息
+     * 
+     * @param jbo
+     * @return
+     * @throws JxException
+     */
     public JxUserInfo toJxUserInfo(JboIFace jbo) throws JxException {
         if (jbo == null) {
             return null;
@@ -190,12 +205,18 @@ public class PermissionCtpDao implements AuthenticateIFace {
         user.setUserid(jbo.getString("user_id"));
         user.setSiteid(jbo.getString("SITEID"));
         user.setOrgid(jbo.getString("orgid"));
-        user.setDepartment(getDepartment(jbo.getString("department_id")));
         user.setUser(jbo);
-        JxSession.putSession(JxSession.USER_INFO, user);
+        // 加载部门信息
+        user.setDepartment(getDepartment(jbo.getString("department_id")));
+        // 加载权限信息
         user.setPermission(getPermission(jbo.getString("user_id")));
+        // 加载用户个性化数据
         UserMetadataSetIFace umsi = (UserMetadataSetIFace) JboUtil.getJboSet("USERMETADATA");
-        umsi.loadUserMetadata();
+        if (umsi != null) {
+            umsi.loadUserMetadata();
+        }
+        // 放入Session中。
+        JxSession.putSession(JxSession.USER_INFO, user);
         return user;
     }
 

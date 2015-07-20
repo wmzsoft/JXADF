@@ -1,5 +1,4 @@
 ﻿<%@ include file="/WEB-INF/content/common/header.jsp" %>
-
 <jxui:head title="角色管理">
     <script type="text/javascript">
         function saveRole(me, e) {

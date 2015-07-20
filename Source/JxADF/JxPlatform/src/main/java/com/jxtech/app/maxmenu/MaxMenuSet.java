@@ -1,5 +1,12 @@
 package com.jxtech.app.maxmenu;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jxtech.db.util.JxDataSourceUtil;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSet;
@@ -7,15 +14,10 @@ import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JboUtil;
+import com.jxtech.jbo.util.JxConstant;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.CacheUtil;
 import com.jxtech.util.StrUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author wmzsoft@gmail.com
@@ -34,11 +36,11 @@ public class MaxMenuSet extends JboSet implements MaxMenuSetIFace {
 
     /**
      * 获得应用程序菜单
-     * 
-     * @param appname 应用程序名
-     * @param appType 应用程序类型，列表、还是主程序
+     *
+     * @param appname    应用程序名
+     * @param appType    应用程序类型，列表、还是主程序
      * @param tabDisplay 显示到更多中，还是显示到Toolbar中。
-     * @param parent 父级菜单
+     * @param parent     父级菜单
      * @return
      * @throws JxException
      */
@@ -89,7 +91,7 @@ public class MaxMenuSet extends JboSet implements MaxMenuSetIFace {
 
     /**
      * 返回权限检查的SQL脚本。
-     * 
+     *
      * @return
      */
     public String getPermissionSql() {
@@ -99,4 +101,58 @@ public class MaxMenuSet extends JboSet implements MaxMenuSetIFace {
         return sb.toString();
     }
 
+    @Override
+    public List<JboIFace> query(String shipname) throws JxException {
+        List<JboIFace> superJboList = super.query(shipname);
+        if (!StrUtil.isNull(shipname) && shipname.equalsIgnoreCase("PUB_ROLE_MAXMENU_ALL")) {
+            JboIFace parent = getParent();
+            if (null != parent) {
+                JboSetIFace roleOperationSet = parent.getRelationJboSet("PUB_ROLE_OPERATIONROLE_IDP", JxConstant.READ_RELOAD);
+                List<JboIFace> roleOperationList = roleOperationSet.queryAll();
+                for (JboIFace jbo : superJboList) {
+                    for (JboIFace roleOperation : roleOperationList) {
+                        if (jbo.getUidValue().equalsIgnoreCase(roleOperation.getString("MENU_ID"))) {
+                            jbo.setObject("INROLE", "1");
+                            break;
+                        } else {
+                            jbo.setObject("INROLE", "0");
+                        }
+                    }
+                }
+            }
+        }
+
+        return superJboList;
+    }
+
+    public String toggleOperationInRole(String params) throws JxException {
+        String result = "fail";
+        String[] param = params.split(",");
+        String action = param[0];
+        String menuId = param[1];
+
+        JboIFace mainJbo = JxSession.getMainApp().getJbo();
+        JboSetIFace jboSet = mainJbo.getRelationJboSet("PUB_ROLE_OPERATIONROLE_IDP");
+
+        if ("1".equalsIgnoreCase(action)) {
+            JboIFace jbo = jboSet.add();
+            jbo.setObject("ROLE_ID", mainJbo.getObject("ROLE_ID"));
+            jbo.setObject("MENU_ID", menuId);
+
+        } else {
+            List<JboIFace> allRoleOperationList = jboSet.queryAll();
+            for (JboIFace roleOperation : allRoleOperationList) {
+                String roleOperationId = roleOperation.getString("MENU_ID");
+
+                if (roleOperationId.equalsIgnoreCase(menuId)) {
+                    roleOperation.delete();
+                }
+            }
+        }
+
+        jboSet.commit();
+        result = "ok";
+
+        return result;
+    }
 }

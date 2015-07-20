@@ -43,7 +43,19 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
         }
         StringBuilder msql = new StringBuilder();
         msql.append("Select * from ");
+
+
+        boolean ist = false;
+        if (tablename.trim().indexOf(' ') > 0) {
+            msql.append("(");
+            ist = true;
+        }
         msql.append(tablename);
+        if (ist) {
+            msql.append(") mysql_n");
+        }
+
+
         String cause = queryinfo.getWhereAllCause();
         if (!StrUtil.isNull(cause)) {
             msql.append(" where ");

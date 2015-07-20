@@ -1746,9 +1746,9 @@ function appDialog(app, appType, fromid, urlValue, w, h, beforeDialogClose, titl
 
     //内容层
     var $content = $("<iframe frameBorder='0' style='overflow:visible' width='100%' onload='appdialogIframeLoaded(this)' height='100%'></iframe>");
-    $content.attr("id", fromid + "frame").attr("src", page);
     $dialog.append($waitting).append($content);
-
+    $content.attr("id", fromid + "frame").attr("src", page);
+    fixIEProcessBar();
     if (w > 0) {
         width = w;
     }
@@ -1779,6 +1779,15 @@ function appDialog(app, appType, fromid, urlValue, w, h, beforeDialogClose, titl
 
     // 强制设置居中显示
     $dialog.dialog('option', 'position', {my: 'center', at: 'center', of: dialogCenterPoint});
+}
+
+function fixIEProcessBar(){
+    //when multi iframes ,the processbar show loading forever;
+    if(/msie/.test(navigator.userAgent.toLowerCase())){
+        var $fixIframe = $("<iframe style='display:none'/>").appendTo(top.document.body);
+        $fixIframe[0].contentDocument.write("");
+        $fixIframe[0].contentWindow.close();
+    }
 }
 
 function appdialogIframeLoaded(me, page) {
@@ -1844,7 +1853,6 @@ function appDialogClose(me, e) {
         if (divid && undefined != divid) {
             var ld = window.parent.$('#' + divid + 'div');
             ld.dialog('close');
-            ld.dialog("destroy");
             // ld.remove(); 这句会造成后面的js线程中断。
         } else {
             if (JxUtil.isTopWindow()) {
@@ -1854,7 +1862,6 @@ function appDialogClose(me, e) {
                 var $dialog = window.parent.$('.dialog');
                 if ($dialog.length) {
                     $dialog.dialog('close');
-                    $dialog.dialog("destroy");
                 }
             }
         }

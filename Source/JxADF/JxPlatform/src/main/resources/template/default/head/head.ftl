@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <#include "../common/ftl-head.ftl"/>
 <head>

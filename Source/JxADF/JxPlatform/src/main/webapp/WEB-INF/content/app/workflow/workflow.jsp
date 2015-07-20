@@ -1,6 +1,5 @@
 ﻿<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ include file="/WEB-INF/content/common/header.jsp" %>
-
 <jxui:head title="工作流发送">
     <script type="text/javascript">
         var jx_appType = "workflow";

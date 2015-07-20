@@ -47,7 +47,7 @@ public class MaxMenu extends Jbo {
 
     /**
      * 获得菜单对应角色的操作权限 即：pub_role_operation.operation
-     * 
+     *
      * @return 默认无权限
      * @throws JxException
      */
@@ -69,7 +69,7 @@ public class MaxMenu extends Jbo {
 
     /**
      * 查询pub_role_operation中的记录
-     * 
+     *
      * @param field
      * @param defaultvalue,查到记录之后，如果字段为空，返回的值。
      * @return
@@ -84,7 +84,7 @@ public class MaxMenu extends Jbo {
 
     /**
      * 初始化角色权限
-     * 
+     *
      * @throws JxException
      */
     private void initRolePermission() throws JxException {
@@ -99,7 +99,7 @@ public class MaxMenu extends Jbo {
             dqi.setWhereCause("role_id=? and menu_id=?");
             String roleid = parent.getString("role_id");
             String menuid = getString("maxmenuid");
-            dqi.setWhereParams(new Object[] { roleid, menuid });
+            dqi.setWhereParams(new Object[]{roleid, menuid});
             List<JboIFace> list = ro.query();
             // 登录用户的权限
             boolean ok = false;

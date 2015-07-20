@@ -57,41 +57,7 @@ public class PubRoleUserSet extends JboSet implements PubRoleUserSetIFace {
         return roleJboList;
     }
 
-    public String toggleUser(String params) throws JxException {
-        String result = "ok";
-        String[] strs = params.split(",");
 
-        boolean add = "1".equalsIgnoreCase(strs[0]) ? true : false;
-        JboIFace mainJbo = JxSession.getMainApp().getJbo();
-        if (null == mainJbo) {
-            throw new JxException("当前应用的主Jbo都找不到。");
-        }
-
-        JboIFace userJbo = JboUtil.getJbo("PUB_USER", "", strs[1]);
-        String userId = userJbo.getString("USER_ID");
-
-        JboSetIFace jboSet = mainJbo.getRelationJboSet("PUB_ROLE_USERROLE_IDP");
-        if (null != jboSet) {
-            if (add) {
-                JboIFace jbo = jboSet.add();
-                jbo.setObject("ROLE_ID", jbo.getParent().getObject("ROLE_ID"));
-                jbo.setObject("USER_ID", userId);
-            } else {
-                List<JboIFace> jboList = jboSet.getJbolist();
-                Iterator<JboIFace> ite = jboList.iterator();
-                while (ite.hasNext()) {
-                    JboIFace jbo = ite.next();
-                    if (jbo.getString("USER_ID").equalsIgnoreCase(userId)) {
-                        jbo.delete();
-                    }
-                }
-            }
-        } else {
-            result = "fail";
-        }
-        return result;
-
-    }
 
     @Override
     public Set<String> getRoles(String userid) throws JxException {

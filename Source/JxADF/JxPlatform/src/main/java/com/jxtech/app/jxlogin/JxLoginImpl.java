@@ -1,5 +1,7 @@
 package com.jxtech.app.jxlogin;
 
+import java.util.Map;
+
 import com.jxtech.jbo.auth.AuthenticateFactory;
 import com.jxtech.jbo.auth.AuthenticateIFace;
 import com.jxtech.jbo.auth.JxSession;
@@ -20,8 +22,26 @@ public class JxLoginImpl implements JxLogin {
 
     @Override
     public boolean login(String userid, String password, boolean relogin) throws JxException {
+        return login(userid, password, relogin, null);
 
+    }
+
+    @Override
+    public boolean beforeLogin(String userid, String password, boolean relogin, Map<String, Object> params) {
         if (StrUtil.isNull(userid)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean afterLogin(String userid, String password, boolean relogin, Map<String, Object> params) {
+        return true;
+    }
+
+    @Override
+    public boolean login(String userid, String password, boolean relogin, Map<String, Object> params) throws JxException {
+        if (!beforeLogin(userid, password, relogin, params)) {
             return false;
         }
         LOG.debug("login user:" + userid);
@@ -34,34 +54,19 @@ public class JxLoginImpl implements JxLogin {
                 }
             }
         }
+        // 登录
         AuthenticateIFace auth = AuthenticateFactory.getAuthenticateInstance();
         userinfo = auth.getUserInfo(userid, password);
-        if (userinfo != null) {
-            // putSession(USER_INFO, userinfo);
-            JxSession.putSession(JxSession.USER_INFO, userinfo);
-        } else {
+        if (userinfo == null) {
             return false;
+        } else if (params != null) {
+            Object lang = params.get(JxUserInfo.LANG_CODE);
+            if (lang != null) {
+                userinfo.setLangcode((String) lang);
+            }
         }
-        return true;
-
-    }
-
-    @Override
-    public void beforeLogin() {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void afterLogin(JxUserInfo userinfo) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void loginFailure(String userid) {
-        // TODO Auto-generated method stub
-
+        // 加载登录之后的操作
+        return afterLogin(userid, password, relogin, params);
     }
 
 }

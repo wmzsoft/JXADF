@@ -1,4 +1,5 @@
-﻿<%@ include file="/WEB-INF/content/common/header.jsp" %>
+﻿﻿
+<%@ include file="/WEB-INF/content/common/header.jsp" %>
 <jxui:head title="角色管理">
     <link rel='stylesheet' type='text/css' href='<%=path%>/javascript/zTree/css/zTreeStyle/zTreeStyle.css'/>
     <script type='text/javascript' src='<%=path%>/javascript/zTree/js/jquery.ztree.all-3.5.min.js'></script>
@@ -23,59 +24,27 @@
         .table_main {
             width: 100%;
         }
+
+        .btn_no_column {
+            color : white;
+            background: red;
+            border: none;
+            cursor: pointer;
+        }
     </style>
 
     <script type="text/javascript">
-
-        //表格加载完成后，勾选相关的数据
-        var afterLoadDataTable = JxUtil.extend(afterLoadDataTable, function (tableId) {
-            dwr.engine.setAsync(false);
-            if ("user_listtable" == tableId) {
-                WebClientBean.getJboListByCause("PUB_ROLE_USER", "role_id=?", "<%=request.getParameter("roleid")%>", function (datas) {
-                    $.each(datas, function (idx, data) {
-                        var td = $("td[dataattribute='USER_ID'][title='" + data.datas.USER_ID + "']", $("#user_listtable tbody"));
-                        $("input[type='checkbox']", td.closest("tr")).attr("checked", "checked");
-                    });
-                });
-            } else if ("operation_listtable" == tableId) {
-                var appTree = $.fn.zTree.getZTreeObj("app_tree");
-                var nodes = appTree.getSelectedNodes();
-                var appCause = "";
-                if(nodes.length > 0){
-                    appCause = " and menu_id in (select maxmenuid from maxmenu where app = '" + nodes[0].app + "')";
-                    debug(appCause);
-                }
-                WebClientBean.getJboListByCause("PUB_ROLE_OPERATION", "role_id=?" + appCause, "<%=request.getParameter("roleid")%>", function (datas) {
-                    $.each(datas, function (idx, data) {
-                        $("input[type='checkbox'][value=" + data.datas.PUB_ROLE_OPERATION_ID + "]", $("#operation_listtable tbody")).attr("checked", "checked");
-                    });
-                });
-            }
-            dwr.engine.setAsync(true);
-        }, true);
-
         //树点击
         function zTreeOnClick(event, treeId, treeNode, jbo) {
             if (treeId == "tree") {
                 var tuid = treeNode.department_id;
 
                 var userView = $("#userView").attr("checked");
-                var queryStr = "";
-                //选中表示显示所有用户
-                if ("checked" == userView) {
-                    queryStr = "active = 1 and department_id in (select department_id from pub_department start with department_id = '" + tuid +
-                    "' connect by prior department_id = super_department_id)";
-                } else {
-                    queryStr = "active = 1 and department_id in (select department_id from pub_department start with department_id = '" + tuid +
-                    "' connect by prior department_id = super_department_id) and upper(pub_user.user_id) in (select upper(user_id) from pub_role_user " +
-                    " where role_id = '<%=request.getParameter("roleid")%>')";
-                }
+                var showAll = "checked" == userView ? "1" : "0";
 
-                dwr.engine.setAsync(false);
-                WebClientBean.queryJboSetData(jx_appNameType, "PUB_ROLE_PUB_USER_ALL", queryStr, function () {
-                    getTableData("div_user_listtable");
-                });
-                dwr.engine.setAsync(true);
+                var params = showAll + "," + tuid;
+                getJboSetMethodReturnValue("PUB_ROLE", "showRoleUser", params);
+                getTableData("div_user_listtable");
             } else if ("app_tree" == treeId) {
                 //角色 - 操作
                 var app = treeNode.app;
@@ -109,7 +78,7 @@
                 if (tableId == "user_listtable" || tableId == "role_user_listtable") {
                     table.attr("sheight", tableHeight - 70);
                 } else if (tableId == "operation_listtable" || tableId == "role_operation_listtable") {
-                    table.attr("sheight", tableHeight - 70);
+                    table.attr("sheight", tableHeight - 80);
                 }
             }
         }
@@ -146,6 +115,7 @@
 </jxui:body>
 
 <script type="text/javascript">
+
     var afterTreeInit = JxUtil.extend(afterTreeInit, function (zTree) {
 
         var height = $(window).height();
@@ -171,109 +141,63 @@
 
     });
 
-    var ckOneSelectHandler = JxUtil.extend(ckOneSelectHandler, function (obj, idx) {
-        var objTable = $(obj).closest("table");
-        if (objTable && objTable.attr("id") == "user_listtable") {
-            var objStatus = $(obj).attr("checked");
-            var user_id = $(obj).val();
-            var params = "0";
-            if ("checked" == objStatus) {
-                params = "1";
-            }
-
-            params += "," + user_id;
-
-            dwr.engine.setAsync(false);
-            var result = getJboSetMethodReturnValue("PUB_ROLE_USER", "toggleUser", params);
-
-            if ("ok" == result) {
-                WebClientBean.save("pubrole.main", function () {
-                    debug("添加角色用户，保存数据成功!");
-                });
-            }
-            dwr.engine.setAsync(true);
-        } else if (objTable && objTable.attr("id") == "operation_listtable") {
-            var objStatus = $(obj).attr("checked");
-            var opId = $(obj).val();
-            var params = "0";
-            if ("checked" == objStatus) {
-                params = "1";
-            }
-
-            params += "," + opId;
-            dwr.engine.setAsync(false);
-            var result = getJboSetMethodReturnValue("PUB_ROLE_OPERATION", "toggleOperation", params);
-            if ("ok" == result) {
-                WebClientBean.save("pubrole.main", function () {
-                    debug("添加角色数据权限，保存数据成功!");
-                });
-            }
-            dwr.engine.setAsync(true);
-        }
-    }, true);
-
-    var ckPageSelectHandler = JxUtil.extend(ckPageSelectHandler, function (me, id) {
-        var tableid = id.substring(3, id.length);
-        var needchange = $(me).attr("checked") == undefined ? "checked" : undefined;
-
-        var checkboxs = $("input[type='checkbox'][name!='allbox']", $("#" + tableid));
-        for (var c = 0; c < checkboxs.length; c++) {
-            var tempBox = $(checkboxs[c]);
-            if (needchange == tempBox.attr("checked")) {
-                tempBox.click();
-            }
-        }
-    }, false);
-
-
     var beforeDataTableLoad = JxUtil.extend(beforeDataTableLoad, function (tableId) {
+        $("input[value='NO']").removeClass("btn_column").addClass("btn_no_column");
         setScroll(tableId);
     }, true);
 
 
-    var afterLoadDataTable = JxUtil.extend(afterLoadDataTable, function afterLoadDataTable(tableId) {
-        var uid = "<%=request.getParameter("uid")%>";
-        var roleId = "<%=request.getParameter("roleid")%>";
+    /**
+     * 切换用户是否在此角色下
+     * @param me
+     * @param e
+     */
+    function toggleuser(me, e) {
+        $(me).attr("disabled", "disabled");
+        var params = $(me).val() == "YES" ? "0" : "1";
+        params += ",";
+        params += $("td[dataattribute='USER_ID'] span", $(me).closest("tr")).text();
 
-        if (tableId == "user_listtable") {
-            dwr.engine.setAsync(false);
-            WebClientBean.getJboListByCause("PUB_ROLE_USER", "role_id = ?", roleId, function (datas) {
-                $.each(datas, function (idx, data) {
-                    var user_id = data.uidValue;
+        var result = getJboSetMethodReturnValue("PUB_USER", "toggleUserInRole", params);
 
-                    var radioBtn = $("input[type='checkbox'][value=" + uid + "]");
-                    if (undefined == radioBtn.attr("checked")) {
-                        radioBtn.attr("checked", "checked");
-                    }
-                });
-            });
-            dwr.engine.setAsync(true);
-
-            if ($("input[name!='allbox']:not(:checked)", $("#" + tableId)).length == 0) {
-                $("input[type='checkbox'][name='allbox']").attr("checked", "checked");
+        if ("ok" == result) {
+            $(me).val($(me).val() == "YES" ? "NO" : "YES");
+            if ("YES" == $(me).val()) {
+                $(me).removeClass("btn_no_column").addClass("btn_column");
+            } else {
+                $(me).removeClass("btn_column").addClass("btn_no_column");
             }
-        } else if (tableId == "operation_listtable") {
-            dwr.engine.setAsync(false);
-            WebClientBean.getJboListByCause("PUB_ROLE_OPERATION", "role_id = ?", roleId, function (datas) {
-                $.each(datas, function (idx, data) {
-                    var opid = data.datas.MENU_ID;
-                    var radioBtn = $("input[type='checkbox'][value=" + opid + "]", $("#operation_listtable"));
-                    if (undefined == radioBtn.attr("checked")) {
-                        radioBtn.attr("checked", "checked");
-                    } else {
-                        debug(radioBtn);
-                        debug(radioBtn.attr("checked"));
-                        debug(opid + "not checked");
-                    }
-                });
-            });
-            dwr.engine.setAsync(true);
-
-            if ($("input[name!='allbox']:not(:checked)", $("#" + tableId)).length == 0) {
-                $("input[type='checkbox'][name='allbox']").attr("checked", "checked");
-            }
+        } else {
+            alert(getLangString("pubrole.toggleUserInRoleFailed"));
         }
-    }, true);
+        $(me).removeAttr("disabled");
+    }
+
+    /**
+     * 切换角色授权操作
+     * @param me
+     * @param e
+     */
+    function toggleoperation(me, e, uid) {
+        $(me).attr("disabled", "disabled");
+        var params = $(me).val() == "YES" ? "0" : "1";
+        params += ",";
+        params += uid;
+
+        var result = getJboSetMethodReturnValue("MAXMENU", "toggleOperationInRole", params);
+
+        if ("ok" == result) {
+            $(me).val($(me).val() == "YES" ? "NO" : "YES");
+            if ("YES" == $(me).val()) {
+                $(me).removeClass("btn_no_column").addClass("btn_column");
+            } else {
+                $(me).removeClass("btn_column").addClass("btn_no_column");
+            }
+        } else {
+            alert(getLangString("pubrole.toggleUserInRoleFailed"));
+        }
+        $(me).removeAttr("disabled");
+    }
 
 
     // role-data.jsp

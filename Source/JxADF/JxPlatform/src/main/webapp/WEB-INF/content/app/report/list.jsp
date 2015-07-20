@@ -1,8 +1,5 @@
 ﻿<%@ include file="/WEB-INF/content/common/header.jsp"%>
 <jxui:head title="统计月报报送-列表" />
-<script type="text/javascript">
-	
-</script>
 <jxui:body appName="report" appType="list">
 	<jxui:form id="report">
 		<jxui:section type="head">

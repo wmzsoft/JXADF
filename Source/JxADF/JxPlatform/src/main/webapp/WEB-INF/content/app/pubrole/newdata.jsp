@@ -1,5 +1,4 @@
 ﻿<%@ include file="/WEB-INF/content/common/header.jsp" %>
-
 <jxui:head title="数据权限管理">
     <script type="text/javascript">
         $(function () {

@@ -143,14 +143,22 @@
                 },
                 onopen_end:function(){
                     $.each(window.dataTableCollection,function(index,item){
-                        item[0].fnDestroy();
-                        item[0].removeAttr("style").find("th").removeAttr("style");
-                        item[1].loadDataTable(item[0].attr("id"));
+                        if(item[0].is(":visible")){
+                            item[0].fnDestroy();
+                            item[0].removeAttr("style").find("th").removeAttr("style");
+                            item[1].loadDataTable(item[0].attr("id"));
+                        }else{
+                            delete window.dataTableCollection[index];
+                        }
                     });
                 },
                 onclose_end:function(){
                     $.each(window.dataTableCollection,function(index,item){
-                        item[0].fnDraw();
+                        if(item[0].is(":visible")){
+                            item[0].fnDraw();
+                        }else{
+                            delete window.dataTableCollection[index];
+                        }
                     });
                 }
             });

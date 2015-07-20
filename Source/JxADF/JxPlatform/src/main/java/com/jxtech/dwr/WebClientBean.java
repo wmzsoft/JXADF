@@ -463,17 +463,7 @@ public class WebClientBean {
      * @return
      */
     public boolean login(String userid, String password, String lang) throws JxException {
-        if (StrUtil.isNull(userid)) {
-            return false;
-        }
-        boolean b = JxLoginUtil.login(userid, password, false);// 登录系统
-        if (b) {
-            JxUserInfo userInfo = JxSession.getJxUserInfo();
-            if (null != userInfo) {
-                userInfo.setLangcode(lang.replace("-", "_"));
-            }
-        }
-        return b;
+        return JxLoginUtil.login(userid, password, false, lang);// 登录系统
     }
 
     /**

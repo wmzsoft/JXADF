@@ -244,6 +244,11 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <name>mxevent_render</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>dataattribute</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
