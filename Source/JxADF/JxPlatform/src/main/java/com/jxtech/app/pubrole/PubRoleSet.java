@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.jxtech.app.pubdepartment.PubDepartment;
 import com.jxtech.app.pubuser.PubUserSet;
-import com.jxtech.common.JxContextLoaderListener;
 import com.jxtech.jbo.App;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSet;
@@ -105,7 +104,7 @@ public class PubRoleSet extends JboSet {
             //查询当前部门的所有用户
             if (null != pubDepartmentList) {
                 for (JboIFace jbo : pubDepartmentList) {
-                    departmentUserList.addAll(jbo.getRelationJboSet("PUB_USERDEPARTMENT_IDP", JxConstant.READ_RELOAD).getJbolist());
+                    departmentUserList.addAll(jbo.getRelationJboSet("PUB_USERDEPARTMENT_IDP", JxConstant.READ_RELOAD, true).getJbolist());
                 }
                 //有缓存需要重置该属性
                 for (JboIFace tempJbo : departmentUserList) {
@@ -115,7 +114,7 @@ public class PubRoleSet extends JboSet {
 
             List<JboIFace> roleUserList = new ArrayList<JboIFace>();
             //再查询角色下的用户
-            PubRoleUserSet roleUserJboSet = (PubRoleUserSet) roleJbo.getRelationJboSet("PUB_ROLE_USERROLE_IDP", JxConstant.READ_RELOAD);
+            PubRoleUserSet roleUserJboSet = (PubRoleUserSet) roleJbo.getRelationJboSet("PUB_ROLE_USERROLE_IDP", JxConstant.READ_RELOAD, true);
             for (JboIFace roleUserJbo : roleUserJboSet.getJbolist()) {
                 if (null != roleUserJbo) {
                     String userId = roleUserJbo.getString("USER_ID");
@@ -133,9 +132,9 @@ public class PubRoleSet extends JboSet {
                         String userId = departmentUser.getString("USER_ID");
                         if (userId.equalsIgnoreCase(roleUserId)) {
                             departmentUser.setObject("INROLE", "1");
-                        } else {
+                        } /*else {
                             departmentUser.setObject("INORLE", "0");
-                        }
+                        }*/
                     }
                 }
                 roleUserJboSetAll.getJbolist().addAll(departmentUserList);

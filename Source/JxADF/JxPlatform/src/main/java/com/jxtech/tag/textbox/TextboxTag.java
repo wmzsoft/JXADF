@@ -75,6 +75,7 @@ public class TextboxTag extends JxBaseUITag {
         text.setInputmode(inputmode);
         text.setMystyle(mystyle);
         text.setFormat(format);
+        text.setRequired(required);
         columnAttribute = null;
         Map<String, JxAttribute> jxattributes = null;
         Map<String, Object> queryParam = null;

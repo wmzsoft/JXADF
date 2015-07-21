@@ -57,8 +57,14 @@ public interface JboSetIFace extends Serializable {
     public JboIFace add() throws JxException;
 
     public boolean delete(String[] ids) throws JxException;
-    
-    
+
+    /**
+     * 删除Jbo中所有的记录
+     * 
+     * @return
+     * @throws JxException
+     */
+    public boolean delete() throws JxException;
 
     public boolean delete(Connection conn, JboIFace jbi, boolean isSave) throws JxException;
 
@@ -78,6 +84,7 @@ public interface JboSetIFace extends Serializable {
     public void setJbolist(List<JboIFace> jbolist);
 
     public JboIFace queryJbo(String uid) throws JxException;
+
     public List<JboIFace> queryJbo(String[] ids) throws JxException;
 
     public JboIFace getJboOfUid(String uid) throws JxException;
@@ -230,7 +237,7 @@ public interface JboSetIFace extends Serializable {
 
     JboIFace queryJbo(String jboKey, String uid) throws JxException;
 
-    JboIFace queryJbo(String where,String jboKey, String uid) throws JxException;
+    JboIFace queryJbo(String where, String jboKey, String uid) throws JxException;
 
     public void lookup(List<JboIFace> lookupList) throws JxException;
 
@@ -253,46 +260,50 @@ public interface JboSetIFace extends Serializable {
     public String getDataSourceName();
 
     public void setDataSourceName(String dataSourceName);
-    
-    
-    /* 导出xls 或者pef接口  简单的实现，还在完善和修改中*/
+
+    /* 导出xls 或者pef接口 简单的实现，还在完善和修改中 */
     /**
      * 把jboset的数据导出成为Excel文件
+     * 
      * @param title 文件的名称，一般在前台取网页的title标签
      * @param uids 页面选择的数据
      * @return dwr专用下载类
      * @throws JxException
      */
-    public FileTransfer expExcel(String title,String uids) throws JxException;
+    public FileTransfer expExcel(String title, String uids) throws JxException;
 
     /**
      * 把jboset的数据导出成为Excel文件
+     * 
      * @param title 文件的名称，一般在前台取网页的title标签
      * @param uids 页面选择的数据
      * @param dataMap 需要导出的数据 不为空时，优先dataMap
      * @return dwr专用下载类
      * @throws JxException
      */
-    public FileTransfer expExcel(String title,String uids, List<Map<String, Object>> dataMap) throws JxException;
+    public FileTransfer expExcel(String title, String uids, List<Map<String, Object>> dataMap) throws JxException;
 
     /**
      * 修改导出的Excel的表头信息
+     * 
      * @param header 默认导出的表头
-     * @return 修改后的表头  key即所要导出的dataattribute value即为表头的标题
+     * @return 修改后的表头 key即所要导出的dataattribute value即为表头的标题
      */
-    public Map<String,String> modifyExcelColumn(Map<String,String> header);
-    
+    public Map<String, String> modifyExcelColumn(Map<String, String> header);
+
     /**
      * 应用于对导出的列的值需要定制特殊含义业务情况
+     * 
      * @return 返回map为键值对， key即所要导出的dataattribute value即为 JxWXPValueAdapter的具体实现类
      */
-    public Map<String,JxWXPValueAdapter> getExcelAdapter();
-    
+    public Map<String, JxWXPValueAdapter> getExcelAdapter();
+
     /**
      * 是否可以保存此集合
+     * 
      * @return
      * @throws JxException
      */
     public boolean canSave() throws JxException;
-    
+
 }

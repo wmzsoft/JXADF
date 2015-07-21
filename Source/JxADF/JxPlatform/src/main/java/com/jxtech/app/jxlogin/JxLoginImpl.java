@@ -62,7 +62,9 @@ public class JxLoginImpl implements JxLogin {
         } else if (params != null) {
             Object lang = params.get(JxUserInfo.LANG_CODE);
             if (lang != null) {
-                userinfo.setLangcode((String) lang);
+                String code = (String)lang;
+                code = code.replace('-', '_');
+                userinfo.setLangcode(code);
             }
         }
         // 加载登录之后的操作

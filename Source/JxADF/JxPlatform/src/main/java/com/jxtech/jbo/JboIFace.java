@@ -179,6 +179,8 @@ public interface JboIFace extends Serializable {
 
     public JboSetIFace getRelationJboSet(String name, long flag) throws JxException;
 
+    public JboSetIFace getRelationJboSet(String name, long flag, boolean queryAll) throws JxException;
+
     public boolean getBoolean(String attributeName) throws JxException;
 
     public boolean getBoolean(String attributeName, long flag) throws JxException;

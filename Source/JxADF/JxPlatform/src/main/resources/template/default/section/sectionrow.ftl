@@ -5,7 +5,10 @@ $author:wmzsoft@gmail.com
 #date:2013.08
 **/
 -->
-<tr<#t/>
+<tr <#t/>
+<#if ((parameters.cssClass!"")!="")>
+    class="${parameters.cssClass}"<#t>
+</#if>
 <#if parameters.id??>
 	id="${parameters.id}" <#rt/>
 </#if>

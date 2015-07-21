@@ -35,7 +35,7 @@ public class JxBaseUIBean extends ClosingUIBean {
             request.getSession().setAttribute("renderer", renderer);
         }
         if ("bootstrap".equalsIgnoreCase(renderer)) {
-            //JxLoadResource.loadBootstrap(request);
+            // JxLoadResource.loadBootstrap(request);
         }
     }
 
@@ -111,8 +111,8 @@ public class JxBaseUIBean extends ClosingUIBean {
     public String getI18NValue(String attr) {
         String value = attr;
         if (null != attr) {
-            int start = attr.indexOf("{");
-            int end = attr.indexOf("}");
+            int start = attr.indexOf('{');
+            int end = attr.indexOf('}');
             if (start == 0 && end > 0) {
                 String attrI18NKey = attr.substring(1, end);
                 if (attrI18NKey.indexOf("app.") == 0) {
@@ -120,7 +120,7 @@ public class JxBaseUIBean extends ClosingUIBean {
                     int keysLen = keys.length;
                     if (keysLen >= 3) {
                         String resPackage = keys[1];
-                        StringBuffer resKey = new StringBuffer();
+                        StringBuilder resKey = new StringBuilder();
                         for (int i = 2; i < keysLen; i++) {
                             resKey.append(keys[i]);
                             if (i < keysLen - 1) {
@@ -129,7 +129,9 @@ public class JxBaseUIBean extends ClosingUIBean {
                         }
 
                         ResourceBundle appBundle = JxLangResourcesUtil.getResourceBundle("res.app." + resPackage);
-                        value = appBundle.getString(resKey.toString());
+                        if (appBundle != null) {
+                            value = appBundle.getString(resKey.toString());
+                        }
                     }
 
                 } else {

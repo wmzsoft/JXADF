@@ -4329,3 +4329,18 @@ function setChildTableReadOnly($table) {
         }
     });
 })();
+
+/**
+ * 查询窗口中回车执行查询
+ */
+$(function(){
+	$("body").keydown(function(event) {
+        var searchBtn = $("span[mxevent='searchOk']");
+        if (searchBtn.length==0) return;
+        if (!searchBtn.is(':visible')) return;
+        if (event.keyCode == "13") {
+            $(':focus').blur();
+            searchBtn.click();
+        }
+    });
+});

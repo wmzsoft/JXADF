@@ -2,12 +2,12 @@ package com.jxtech.util;
 
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
-import groovy.util.Eval;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jxtech.jbo.JboIFace;
+import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.base.JxUserInfo;
 import com.jxtech.jbo.util.JxException;
@@ -29,41 +29,11 @@ public class ELUtil {
      * @return
      */
     public static String getElOfJxUser(JxUserInfo userinfo, String expression) {
-        if (expression == null || "".equals(expression)) {
-            return "";
-        }
-        try {
-            if (userinfo == null) {
-                Object obj = Eval.me(expression);
-                if (obj instanceof String) {
-                    return (String) obj;
-                } else {
-                    return expression;
-                }
-            }
-            Binding b = new Binding();
-            b.setVariable(JxSession.USER_INFO, userinfo);
-            GroovyShell sh = new GroovyShell(b);
-            String el = "\"" + expression + "\"";
-            Object value = sh.evaluate(el);
-            if (value instanceof String) {
-                return (String) value;
-            } else {
-                return String.valueOf(value);
-            }
-        } catch (Exception e) {
-            if (expression.trim().startsWith("${")) {
-                LOG.error(e.getMessage() + "\r\n" + expression, e);
-            }
-        }
-        return expression;
+        return getElValue(null, null, userinfo, expression);
     }
 
     public static String getElValue(String expression) {
-        if (StrUtil.isNull(expression)) {
-            return expression;
-        }
-        return getElOfJxUser(JxSession.getJxUserInfo(), expression);
+        return getElValue(null, null, JxSession.getJxUserInfo(), expression);
     }
 
     /**
@@ -74,17 +44,28 @@ public class ELUtil {
      * @return
      */
     public static String getJboElValue(JboIFace jbo, String expression) {
-        if (expression == null || "".equals(expression)) {
+        return getElValue(null, jbo, JxSession.getJxUserInfo(), expression);
+    }
+
+    public static String getJboSetElValue(JboSetIFace jboset, String expression) {
+        return getElValue(jboset, null, JxSession.getJxUserInfo(), expression);
+    }
+
+    /**
+     * 解析EL表达式
+     * 
+     * @param jboset
+     * @param jbo
+     * @param userinfo
+     * @param expression
+     * @return
+     */
+    public static String getElValue(JboSetIFace jboset, JboIFace jbo, JxUserInfo userinfo, String expression) {
+        if (StrUtil.isNull(expression)) {
             return "";
         }
         try {
-            if (jbo == null) {
-                return getElOfJxUser(JxSession.getJxUserInfo(), expression);
-            }
-            Binding b = new Binding();
-            b.setVariable("jbo", jbo);
-            b.setVariable(JxSession.USER_INFO, JxSession.getJxUserInfo());
-            GroovyShell sh = new GroovyShell(b);
+            GroovyShell sh = getGroovyShell(jboset, jbo, userinfo);
             String el = "\"" + expression + "\"";
             Object value = sh.evaluate(el);
             if (value instanceof String) {
@@ -96,6 +77,20 @@ public class ELUtil {
             LOG.error(e.getMessage() + "\r\n" + expression);
         }
         return expression;
+    }
+
+    public static GroovyShell getGroovyShell(JboSetIFace jboset, JboIFace jbo, JxUserInfo userinfo) {
+        Binding b = new Binding();
+        if (jboset != null) {
+            b.setVariable("jboset", jboset);
+        }
+        if (jbo != null) {
+            b.setVariable("jbo", jbo);
+        }
+        if (userinfo != null) {
+            b.setVariable(JxSession.USER_INFO, userinfo);
+        }
+        return new GroovyShell(b);
     }
 
     /**

@@ -22,6 +22,7 @@ import com.jxtech.db.DataQuery;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
+import com.jxtech.util.CacheUtil;
 import com.jxtech.util.StrUtil;
 
 /**
@@ -193,17 +194,25 @@ public abstract class Permission implements PermissionIFace {
      * @return
      */
     public boolean isPermission(String app, String url) throws JxException {
-        if (isIgnoreLoginSecurity(null, url)) {
-            return true;
+        String ckey = StrUtil.contact(JxSession.getUserId(), ".", app, ".", url);
+        Object obj = CacheUtil.getPermission(ckey);
+        if (obj instanceof Boolean) {
+            return ((Boolean) obj).booleanValue();
         }
-        if (isIgoreSecurity(url)) {
+        boolean flag = isIgnoreLoginSecurity(null, url);
+        if (!flag) {
             // 忽略路径
-            return true;
+            flag = isIgoreSecurity(url);
+            if (!flag) {
+                if (StrUtil.isNull(app)) {
+                    flag = hasFunctions(url);
+                } else {
+                    flag = (getCount(app) > 0);
+                }
+            }
         }
-        if (StrUtil.isNull(app)) {
-            return hasFunctions(url);
-        }
-        return getCount(app) > 0;
+        CacheUtil.putPermissionCache(ckey, new Boolean(flag));
+        return flag;
     }
 
     /**

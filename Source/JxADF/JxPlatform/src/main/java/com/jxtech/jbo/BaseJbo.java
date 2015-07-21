@@ -540,8 +540,17 @@ public abstract class BaseJbo implements JboIFace {
                     // 第一个字母为单引号，则直接返回引号中的内容。
                     return attributeName.substring(1, len - 1);
                 } else {
-                    String method = "get" + StrUtil.convertFirstUpperLower(attributeName);
+                    String method = StrUtil.contact("get", StrUtil.convertFirstUpperLower(attributeName));
                     Object val = invokeGetMethod(method);
+                    // 判断是否需要缓存,默认是需要的
+                    String cacheMethod = StrUtil.contact(method, "Cache");// Cache方法
+                    Object cacheStatus = invokeGetMethod(cacheMethod);// Cache状态
+                    if (cacheStatus instanceof Boolean) {
+                        if (!((Boolean) cacheStatus)) {
+                            // 不用缓存了
+                            return val;
+                        }
+                    }
                     // 把这个值加入到对象中，缓存起来
                     data.put(attributeName.toUpperCase(), val);
                     return val;
@@ -576,11 +585,12 @@ public abstract class BaseJbo implements JboIFace {
                 return m.invoke(this);
             }
         } catch (SecurityException e) {
-            LOG.debug(e.getMessage());
+            LOG.info(e.getMessage());
         } catch (NoSuchMethodException e) {
             // 不需处理
+            LOG.info(e.getMessage());
         } catch (Exception e) {
-            LOG.debug(e.getMessage());
+            LOG.info(e.getMessage());
         }
         return null;
     }
@@ -1028,12 +1038,24 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 通过联系名获得JboSet
-     * 
+     *
      * @param name 联系名
      * @param flag 参数 JxConstant.READ_CACHE 直接读取Cache，
      */
     @Override
     public JboSetIFace getRelationJboSet(String name, long flag) throws JxException {
+        return getRelationJboSet(name,  flag, false);
+    }
+
+    /**
+     * 通过联系名获得JboSet
+     * 
+     * @param name 联系名
+     * @param flag 参数 JxConstant.READ_CACHE 直接读取Cache，
+     * @param queryAll 是否查全部
+     */
+    @Override
+    public JboSetIFace getRelationJboSet(String name, long flag, boolean queryAll) throws JxException {
         if (StrUtil.isNull(name)) {
             return null;
         }
@@ -1084,7 +1106,11 @@ public abstract class BaseJbo implements JboIFace {
                 qi.setRelationshipCause(clause);
                 qi.setRelationshipParams(params.toArray());
             }
-            jbos.query(name);
+            if (queryAll) {
+                jbos.queryAll();
+            }else {
+                jbos.query(name);
+            }
             jbos.setParent(this);
             jbos.setAppname(getJboSet().getAppname());
             children.put(key, jbos);

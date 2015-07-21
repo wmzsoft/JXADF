@@ -9,15 +9,21 @@ $author:wmzsoft@gmail.com
 <#t/>
 <#if (parameters.ignorepermission!false==true) || (parameters.permission!false==true)>
     <#if (parameters.visible!false==true)>
+        <#assign cssClass="pushbutton">
+        <#if parameters.cssClass??>
+            <#if ((parameters.cssClass!"")!="")>
+                <#assign cssClass="pushbutton ${parameters.cssClass}">
+            </#if>
+        </#if>
         <#if ((parameters.menutype!'unknow')=='LIA') >
             <#lt>
         <li>
             <#lt><a <#rt/>
         <#elseif ((parameters.menutype!'unknow')=='INPUT') >
-            <#lt><input value="${parameters.label!'按钮'}" class="pushbutton" <#rt/>
+            <#lt><input value="${parameters.label!'按钮'}" class="${cssClass}" <#rt/>
             <#lt> type="${parameters.type!'button'}" <#rt>
         <#else>
-            <#lt> <span class="pushbutton" <#rt>
+            <#lt> <span class="${cssClass}" <#rt>
         </#if>
         <#lt> id="${parameters.id}" <#rt/>
         <#if (parameters.mxevent??)>

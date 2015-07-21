@@ -33,7 +33,7 @@ public class PermissionImpl extends Permission {
         Permission.putLoginSecurity("HOME", "app.action?app=home");
         Permission.putLoginSecurity("TREE", "tree.action");
         Permission.putLoginSecurity("ATTACHMENT", "app=attachment");
-        Permission.putLoginSecurity("ATTACHEMENT_JSP","/WEB-INF/content/app/attachment/*");
+        Permission.putLoginSecurity("ATTACHEMENT_JSP", "/WEB-INF/content/app/attachment/*");
         Permission.putLoginSecurity("WORKFLOW", "app=workflow");
     }
 
@@ -136,8 +136,6 @@ public class PermissionImpl extends Permission {
         return true;
     }
 
-
-
     /**
      * 是否具有某个页面的某个操作权限
      * 
@@ -150,6 +148,12 @@ public class PermissionImpl extends Permission {
         if (StrUtil.isNull(pageid) || StrUtil.isNull(methodName)) {
             return true;
         }
+        String userid = JxSession.getUserId();
+        String ckey = StrUtil.contact(userid, ".hasFunctions.", pageid, ".", methodName);
+        Object obj = CacheUtil.getPermission(ckey);
+        if (obj instanceof Boolean) {
+            return ((Boolean) obj).booleanValue();
+        }
         long maxmenuid = -1;
         try {
             maxmenuid = getMaxmenuids(pageid, methodName, null);
@@ -158,15 +162,17 @@ public class PermissionImpl extends Permission {
         }
         // 未注册按钮，即不进行权限检查，表示有权限
         if (maxmenuid < 0) {
+            CacheUtil.putPermissionCache(ckey, Boolean.TRUE);
             return true;
         }
         DataQuery dq = DBFactory.getDataQuery(null, null);
-        StringBuffer wc = new StringBuffer();
+        StringBuilder wc = new StringBuilder();
         wc.append("menu_id=? and role_id in (select role_id from PUB_ROLE_USER where upper(user_id)=upper(?))");
         try {
             int c = dq.count("PUB_ROLE_OPERATION", wc.toString(), new Object[] { maxmenuid, JxSession.getUserId() });
             LOG.debug("权限：" + pageid + "." + methodName + "=" + c);
-            return c > 0;
+            boolean b = c > 0;
+            CacheUtil.putPermissionCache(ckey, new Boolean(b));
         } catch (JxException e) {
             LOG.error(e.getMessage());
         }

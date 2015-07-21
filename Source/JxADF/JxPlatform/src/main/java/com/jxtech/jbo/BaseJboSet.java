@@ -117,6 +117,25 @@ public abstract class BaseJboSet implements JboSetIFace {
     }
 
     /**
+     * 删除Jbo中所有的记录
+     * 
+     * @return
+     * @throws JxException
+     */
+    public boolean delete() throws JxException {
+        List<JboIFace> list = getJbolist();
+        if (list != null) {
+            int size = list.size();
+            for (int i = 0; i < size; i++) {
+                if (!delete(null, list.get(i), false)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
      * 仅仅标记为删除，不执行真正地删除操作。
      * 
      * @param uid

@@ -31,6 +31,7 @@ import com.jxtech.tag.body.BodyTag;
 import com.jxtech.tag.comm.JxBaseUITag;
 import com.jxtech.tag.json.JsonFoot;
 import com.jxtech.tag.json.JsonHead;
+import com.jxtech.util.ELUtil;
 import com.jxtech.util.JsonUtil;
 import com.jxtech.util.NumUtil;
 import com.jxtech.util.StrUtil;
@@ -299,7 +300,7 @@ public class TableTag extends JxBaseUITag {
             if (!StrUtil.isNull(relationship)) {
                 jboset = getJboSetByRelationship();// 查询子记录集
             } else if (myapp != null) {
-                if (!"MAINLIST".equalsIgnoreCase(myapp.getAppType())){
+                if (!"MAINLIST".equalsIgnoreCase(myapp.getAppType())) {
                     jboset = myapp.findJboSet(null, null, loadType);
                 }
             }
@@ -330,7 +331,7 @@ public class TableTag extends JxBaseUITag {
                 DataQueryInfo dqi = jboset.getQueryInfo();
                 String wherecause = null;
                 if (null != apprestrictions) {
-                    wherecause = findString(apprestrictions);
+                    wherecause = ELUtil.getJboSetElValue(jboset, findString(apprestrictions));
                 }
                 if (!StrUtil.isNull(rootparent)) {
                     String[] rootcauses = rootparent.split(":");

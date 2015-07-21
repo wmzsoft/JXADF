@@ -23,7 +23,7 @@ public class PermissionFactory {
         if (!StrUtil.isNull(permclass)) {
             try {
                 Object obj = ClassUtil.getInstance(permclass);
-                if (obj != null && obj instanceof PermissionIFace) {
+                if (obj instanceof PermissionIFace) {
                     return (PermissionIFace) obj;
                 }
             } catch (Exception e) {

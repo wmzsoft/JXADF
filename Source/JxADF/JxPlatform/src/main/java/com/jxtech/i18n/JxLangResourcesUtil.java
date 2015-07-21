@@ -51,6 +51,9 @@ public class JxLangResourcesUtil {
         String userLangCode = "zh_CN"; // 默认为中文语言
         if (null != userInfo) {
             userLangCode = userInfo.getLangcode();
+            if (userLangCode.indexOf("-") > 0) {
+                userLangCode = userLangCode.replace("-", "_");
+            }
         }
         ResourceBundle rb = getResourceBundle(type, userLangCode);
         if (rb == null) {
