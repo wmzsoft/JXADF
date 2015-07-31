@@ -4,7 +4,7 @@
         <#list parameters.jboset.jbolist as jbo>
             <#if jbo.data??>
                 <li class="list-group-item" id="tr_${parameters.id}_${jbo_index}" uid='${jbo.uidValue!0}'
-                    onclick="selectTableTr(this)" <#rt>
+                    onclick="selectTableTr(this,event)" <#rt>
                     <#if jbo.toBeAdd?? && jbo.toBeAdd>
                     toBeAdd="true" <#t>
                     </#if>
@@ -26,7 +26,7 @@
                                        index="${jbo_index}"
                                        id="${jbo.uidName!jbo_index}_${jbo.uidValue!0}"
                                        value="${jbo.uidValue!0}"
-                                       onclick="ckOneSelectHandler(this,'${jbo_index}')"/><#t>
+                                       onclick="ckOneSelect(this,event,'${jbo_index}')"/><#t>
                             </div>
                             <#t>
                         </#if>

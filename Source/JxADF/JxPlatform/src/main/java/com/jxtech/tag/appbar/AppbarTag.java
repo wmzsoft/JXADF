@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.tagext.Tag;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -56,11 +57,10 @@ public class AppbarTag extends JxBaseUITag {
             if (jsi != null) {
                 try {
 
-                    List<JboIFace> menulist;// 下拉菜单选项
-                    List<JboIFace> menusToolbar;// 工具栏选项
-                    menulist = ((MaxMenuSetIFace) jsi).getMenus(appname, apptype, "LIST", null);
-                    menusToolbar = ((MaxMenuSetIFace) jsi).getMenus(appname, apptype, "TOOLBAR", null);
-
+                    List<JboIFace> menulist = new ArrayList<JboIFace>();// 下拉菜单选项
+                    List<JboIFace> menusToolbar = new ArrayList<JboIFace>();// 工具栏选项
+                    menulist.addAll(((MaxMenuSetIFace) jsi).getMenus(appname, apptype, "LIST", null));
+                    menusToolbar.addAll(((MaxMenuSetIFace) jsi).getMenus(appname, apptype, "TOOLBAR", null));
                     // 如果当前jbo是新增的，则不应显示新增按钮
                     App app = JxSession.getMainApp();
                     if (null != app) {

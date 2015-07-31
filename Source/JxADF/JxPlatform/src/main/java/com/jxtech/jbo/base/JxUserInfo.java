@@ -181,7 +181,7 @@ public class JxUserInfo implements Serializable {
     }
 
     public Set<String> getRoles() {
-        if (roles == null) {
+        if (roles == null && permission != null) {
             roles = permission.getRoles(userid);
         }
         return roles;

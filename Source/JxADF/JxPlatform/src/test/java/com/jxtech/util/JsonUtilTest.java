@@ -29,18 +29,25 @@ public class JsonUtilTest {
         Assert.assertEquals("1", list.get(0).get("MAP"));
         LOG.debug(list.toString());
         json = "";
-        Assert.assertNull(JsonUtil.fromJson(json));        
+        Assert.assertNull(JsonUtil.fromJson(json));
     }
-    
+
     @Test
-    public void testToJson(){
+    public void testToJson() {
         String json = "[{\"MAP\":\"1\",\"X\":\"2\"}]";
         List<Map<String, Object>> list = JsonUtil.fromJson(json);
         LOG.debug(JsonUtil.toJson(list));
-        Map<String, Object> map = new HashMap<String,Object>();
+        Map<String, Object> map = new HashMap<String, Object>();
         map.put("A", "\tabc");
         map.put("B", "\r\nx\fabc");
         list.add(map);
-        LOG.debug(JsonUtil.toJson(list));        
+        LOG.debug(JsonUtil.toJson(list));
+    }
+
+    @Test
+    public void testJson2Map() {
+        String json = "{'ab':'b'}";
+        Map<String, Object> map = JsonUtil.json2map(json);
+        Assert.assertEquals(map.get("ab"), "b");
     }
 }

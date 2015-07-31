@@ -269,13 +269,13 @@ function pageBlur(tableId) {
 }
 
 function pageKeypress(e) {
-    var event = e || window.event;
-    return (event.keyCode >= 48 && event.keyCode <= 57);
+    e = $.event.fix(e || window.event);
+    return (e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode == 8);
 }
 
 function pageKeydown(tableId, e) {
-    var event = e || window.event;
-    if (event.keyCode == 13) {
+    e = $.event.fix(e || window.event);
+    if (e.keyCode == 13) {
         pageGoto(tableId);
     }
 }
@@ -432,6 +432,12 @@ function ckPageSelectHandler(checkbox, name, oddBgColor, evenBgColor, highLightc
  * 奇数行的背景颜色 param evenBgColor 偶数行的背景颜色 param highLightcolor 高亮背景颜色 history
  * 2005-7-27 胡文杰 新建
  */
+function ckOneSelect(checkbox,e,index,oddBgColor, evenBgColor, highLightcolor, allboxName){
+    e = $.event.fix(e || window.event);
+    e.stopPropagation();
+    ckOneSelectHandler(checkbox, index, oddBgColor, evenBgColor, highLightcolor, allboxName);
+}
+
 function ckOneSelectHandler(checkbox, index, oddBgColor, evenBgColor, highLightcolor, allboxName) {
     // 改变相应checkbox状态（checked or unchecked）
     ckChangeCheckboxState(checkbox, allboxName);
@@ -447,16 +453,16 @@ function ckOneSelectHandler(checkbox, index, oddBgColor, evenBgColor, highLightc
 function ckChangeCheckboxState(checkbox, allboxName) {
     var form = checkbox.form;
     if (!checkbox.checked) {
-        if (allboxName == undefined) {
+        if (!allboxName&& !form.allbox) {
             return;
         }
-        if (form.allbox == undefined) {
+        if (!form.allbox) {
             document.getElementsByName(allboxName)[0].checked = false;
         } else {
             form.allbox.checked = false;
         }
 
-        if (form.selectall != null) {
+        if (form.selectall) {
             form.selectall.checked = false;
         }
     } else {

@@ -1,0 +1,52 @@
+@charset "utf-8";
+//application-global
+$background: $base;
+
+$css3-transition-delay:0.2s;
+
+$css3-start-angle: 0deg;
+$css3-semicircle-angle: $circle-angle/2;
+$css3-circle-angle:$circle-angle;
+
+$font-family:"Microsoft YaHei", Helvetica, Arial, sans-serif;
+
+//skinMobile
+$navigator-background: $blue-base;
+$navigator-font-color: $base;
+$navigator-height: $mobile-tap-height;
+$navigator-icon-width:$mobile-tap-height;
+$navigator-font-size:$font-size-base;
+$navigator-index:20;
+
+$loading-color: $blue-darker;
+$loading-size:$font-size-large;
+
+$menu-width:80%;
+
+$menu-item-height: $mobile-tap-height;
+$menu-item-font-size:$font-size-base;
+$menu-item-border-size:1px;
+$menu-background: $base-dark;
+$menu-item-background: $blue-base;
+$menu-item-background-active: $blue-darker;
+$menu-item-border-color: $base;
+$menu-item-font-color: $base;
+
+$submenu-title-background: $blue-base;
+$submenu-title-font-color: $base;
+$submenu-item-background: $base;
+$submenu-item-background-active: $blue-light;
+$submenu-item-border-color: $blue-lighter;
+$submenu-item-font-color: $blue-base;
+
+$message-height: $mobile-tap-height;
+$message-padding: 10%;
+
+
+$arrow-height:22px;
+$icon-zoom:0.5;
+
+%item-height{
+    height: $mobile-tap-height;
+    line-height: $mobile-tap-height;
+}

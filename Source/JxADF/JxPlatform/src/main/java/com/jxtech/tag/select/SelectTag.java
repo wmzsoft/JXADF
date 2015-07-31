@@ -134,7 +134,7 @@ public class SelectTag extends JxBaseUITag {
                 App app = JxSession.getApp();
                 jboset = app.findJboSet(null, relationship);
             }
-            //只有当不是ajax加载的情况下，才进行数据查询
+            // 只有当不是ajax加载的情况下，才进行数据查询
             if (jboset != null && StrUtil.isNull(ajax)) {
                 jboset.getQueryInfo().setWhereCause(mycause);
                 jboset.getQueryInfo().setOrderby(orderby);
@@ -210,8 +210,11 @@ public class SelectTag extends JxBaseUITag {
             LOG.error(e.getMessage());
         }
         select.setSelected(selected);
-        if (StrUtil.isNull(selectedDisplay)) {
+        if (StrUtil.isNull(selectedDisplay) && !StrUtil.isNull(selected)) {
             selectedDisplay = getSelectedDispaly(select.getOptionsList(), selected);
+        }
+        if (StrUtil.isNull(selectedDisplay)) {
+            selectedDisplay = selected;
         }
         select.setSelectedDisplay(selectedDisplay);
         select.setSql(sql);
@@ -237,7 +240,7 @@ public class SelectTag extends JxBaseUITag {
 
     /**
      * 根据value返回要显示的值
-     *
+     * 
      * @param list
      * @param value
      * @return
@@ -283,7 +286,7 @@ public class SelectTag extends JxBaseUITag {
 
     /**
      * 处理SQL脚本的数据加载
-     *
+     * 
      * @param select
      * @param list
      * @throws JxException

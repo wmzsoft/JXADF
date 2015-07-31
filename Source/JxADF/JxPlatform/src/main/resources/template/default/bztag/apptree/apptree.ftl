@@ -1,74 +1,83 @@
 <#--
 /**
 $id:apptree$
-$author:xueliang@jxtech.net
+$author:xueliang@jxtech.net wmzsoft@gmail.com
 #date:2015/4/23.
 **/
 -->
 <!-- apptree begin -->
 <#t/>
-<#include "../../common/ftl-head.ftl">
-<#assign jxui=JspTaglibs["/WEB-INF/tlds/jxui.tld"] />
-<#if (parameters.label??) >
-    <#if ((parameters.label!'')!='') >
-        <span class="label_title">${parameters.label}</span><#t>
-    </#if>
-</#if><#t>
-
-<div id="div_${parameters.id!'apptree'}"
-     fragmentid="${parameters.fragmentid!''}" >
-    <@jxui.tree id="${parameters.id!'apptree'}" jboname="maxapps" treeNodeKey="app" treeNodeParentKey="parent"
-        whereCause="${parameters.whereCause!''}" treeNodeName="description"
-        orderby="orderid" async="false" hasChildName="" /><#t>
-   <!-- <br><button id="btntest" onclick="testClick()">testClick</button> -->
-</div>
-
-<script type="text/javascript">
-
-    function apptreeClick(event, treeId, treeNode){
-        debug("[apptreeClick]app=" + treeNode.description);
-        if ("${parameters.fragmentid!''}"!="") {
-            dwr.engine.setAsync(false); // 设置成同步
-            WebClientBean.getJbo(jx_appNameType, "MAXAPPS", "app", treeNode.app, true, "", {
-                callback: function (jbo) {
-                    getTableData("div_${parameters.fragmentid!''}", null, null, null, 1);
-                },
-                errorHandler: errorHandler,
-                exceptionHandler: exceptionHandler
-            });
-            dwr.engine.setAsync(true); // 设置成同步
-        }
-    }
-
-    $(function(){
-        $(".ztree").css("margin-top", "-1px");
-        if("${parameters.height!''}"==""){
-            $("#div_${parameters.id!'apptree'}").css("height",$(window).height()-60);
-        }
-        appTree = $.fn.zTree.getZTreeObj("${parameters.id!'apptree'}");
-        nodes = appTree.getNodes();
-        node = null;
-        if (nodes.length>0) {
-            node = nodes[0];
-            appTree.selectNode(node,false);
-        }
-        if(null != node) apptreeClick(null,"#div_${parameters.id!'apptree'}",node);
-    });
-
-    window.onresize=function(){
-        if("${parameters.height!''}"==""){
-            $("#div_${parameters.id!'apptree'}").css("height",$(window).height()-60);
+<#assign treeid=parameters.id!'tree'>
+<SCRIPT type="text/javascript">
+    var z${treeid} = null;
+    var setting_${treeid} = {
+        data: {
+            key: {
+                name: "description"
+            },
+            simpleData: {
+                enable: true,
+                idKey: "app",
+                pIdKey: "parent",
+                rootPId: "null"
+            },
+            keep: {
+                parent: true
+            }
+        },
+        callback: {
+            beforeExpand: onBeforeExpand_${treeid},
+            onAsyncSuccess: onAsyncSuccess_${treeid},
+            onAsyncError: onAsyncError_${treeid},
+            onClick: function (event, treeId, treeNode) {
+                onClick_${treeid}(event, treeId, treeNode);           
+            }
         }
     };
 
-    setting_${parameters.id!'tree'}.callback.onClick = apptreeClick;
-
-</script>
-
-<style type="text/css">
-    #div_${parameters.id!'apptree'}{
-        width:${parameters.width!'300px'};
-        overflow:auto;
-        border:${parameters.border!'1px'} solid #bbbbbb;
+    var treeNodes_${treeid} = ${parameters.jsondata!'[]'};
+    //点击数展开
+    function onBeforeExpand_${treeid}(treeId, treeNode) {
+        z${treeid}.reAsyncChildNodes(treeNode, "refresh", false);
     }
-</style>
+
+    function onAsyncSuccess_${treeid}(event, treeId, treeNode, msg) {
+        if (treeNode) {
+            if (treeNode.children.length == 0) {
+                treeNode.isParent = false;
+                var zTreex = $.fn.zTree.getZTreeObj(treeId);
+                zTreex.updateNode(treeNode);
+            }
+        }
+    }
+
+    function onAsyncError_${treeid}(event, treeId, treeNode, XMLHttpRequest, textStatus, errorThrown) {
+    }
+    
+    function onClick_${treeid}(event, treeId, treeNode){
+        //请重载 please overrider
+        <#if (parameters.fragmentid??)>
+            dwr.engine.setAsync(false);
+            $("#div_${parameters.fragmentid}").html(treeNode.description + " Loading...");
+            WebClientBean.queryJboSetData(jx_appNameType, "${parameters.fragmentRName!}",
+                    "APP = '" + treeNode.app + "'", function(data) {
+                        getTableData("div_${parameters.fragmentid}", event, function(data) {
+                            $("#div_${parameters.fragmentid} span.table_list_thead_table_title").text(treeNode.description);
+                        });
+                        try{
+                            eval("onClick_${treeid}_callback(event, treeId, treeNode)");
+                        }catch(exception){}  
+                    });
+            dwr.engine.setAsync(true);   
+        </#if>
+    }
+
+    $(document).ready(function () {
+        z${treeid} = $.fn.zTree.init($("#${treeid}"), setting_${treeid}, treeNodes_${treeid});
+        var node_${treeid} = z${treeid}.getNodeByTId("${treeid}_1");
+        z${treeid}.expandNode(node_${treeid}, true, false);
+        afterTreeInit(z${treeid});
+    });
+</SCRIPT>
+
+<div id="${parameters.id!'tree'}" class="ztree"></div>

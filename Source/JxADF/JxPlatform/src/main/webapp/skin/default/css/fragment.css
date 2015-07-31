@@ -1,4 +1,7 @@
-﻿.fragment-mode-wrap table,
+﻿.fragment-mode{
+    height: 100%;
+}
+.fragment-mode-wrap table,
 .fragment-mode-ellipsis table{
     table-layout: fixed;
 }

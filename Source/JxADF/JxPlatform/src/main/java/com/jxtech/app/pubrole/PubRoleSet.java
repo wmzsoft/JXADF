@@ -119,8 +119,9 @@ public class PubRoleSet extends JboSet {
                 if (null != roleUserJbo) {
                     String userId = roleUserJbo.getString("USER_ID");
                     JboIFace userJbo = pubUserJboSet.getUser(userId);
-
-                    roleUserList.add(userJbo);
+                    if (null !=userJbo ) {
+                        roleUserList.add(userJbo);
+                    }
                 }
             }
 

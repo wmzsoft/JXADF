@@ -74,7 +74,7 @@ public class JsonJboSet extends VirtualJboSet implements JsonJboSetIFace {
         if (StrUtil.isNull(jsonUrl)) {
             return null;
         }
-        StringBuffer url = new StringBuffer();
+        StringBuilder url = new StringBuilder();
         url.append(jsonUrl);
         if (jsonUrl.indexOf('?') < 0) {
             url.append('?');
@@ -96,7 +96,7 @@ public class JsonJboSet extends VirtualJboSet implements JsonJboSetIFace {
         } catch (Exception e) {
             LOG.warn(e.getMessage(), e);
         }
-        Object obj = UrlUtil.getUrlContent(url.toString());
+        Object obj = UrlUtil.getUrlContent(url.toString(), true);
         if (obj != null) {
             listMap = JsonUtil.fromJson((String) obj);
         }

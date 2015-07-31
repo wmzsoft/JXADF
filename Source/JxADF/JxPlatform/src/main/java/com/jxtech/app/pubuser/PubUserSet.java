@@ -1,23 +1,25 @@
 package com.jxtech.app.pubuser;
 
-import com.jxtech.db.DataQuery;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jxtech.i18n.JxLangResourcesUtil;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSet;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.util.DataQueryInfo;
-import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.StrUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.*;
 
 /**
  * 康拓普用户信息- 健新科技优化实现
- *
+ * 
  * @author wmzsoft@gmail.com
  * @date 2013.09
  */
@@ -43,7 +45,7 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
         }
         DataQueryInfo dq = getQueryInfo();
         dq.setWhereCause(" upper(user_id)=upper(?) or upper(login_id)=upper(?) or upper(email)=upper(?) or upper(mobile_number)=upper(?)");
-        dq.setWhereParams(new Object[]{userid, userid, userid, userid});
+        dq.setWhereParams(new Object[] { userid, userid, userid, userid });
         return super.getJboOfIndex(0, true);
     }
 
@@ -72,7 +74,7 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
 
     /**
      * 获得同部门用户列表
-     *
+     * 
      * @param deptid
      * @return
      */
@@ -83,13 +85,13 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
         }
         DataQueryInfo dq = getQueryInfo();
         dq.setWhereCause(" department_id=? ");
-        dq.setWhereParams(new Object[]{deptid});
+        dq.setWhereParams(new Object[] { deptid });
         return queryAll();
     }
 
     /**
      * 获得同部门用户列表
-     *
+     * 
      * @param deptid
      * @return Map<User_id,name>
      */
@@ -110,7 +112,7 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
 
     /**
      * 页面上面的重置密码功能
-     *
+     * 
      * @param param
      * @return
      * @throws JxException
@@ -136,7 +138,7 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
 
     /**
      * 查询所有用户
-     *
+     * 
      * @param active 是否激活
      * @return
      */
@@ -150,7 +152,7 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
         }
         dataQueryInfo.setWhereCause(querySb.toString());
 
-        dataQueryInfo.setWhereParams(new Object[]{});
+        dataQueryInfo.setWhereParams(new Object[] {});
 
         setQueryInfo(dataQueryInfo);
 
@@ -180,7 +182,7 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
 
     /**
      * 切换用户是否为某个角色成员
-     *
+     * 
      * @param params 1 表示添加到角色，0表示从角色移除
      * @return
      * @throws JxException
@@ -216,5 +218,22 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
 
         return result;
 
+    }
+
+    /**
+     * 获得角色应用程序限制条件
+     * 
+     * @return
+     * @throws JxException
+     */
+    public String getRolerestrictions() throws JxException {
+        if (!JxSession.isSuperManager()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(" active=1 AND department_id in (");
+            sb.append(" select departmentid from PubRoleUserScope a ,pub_role_user b");
+            sb.append(" where a.roleid=b.role_id and b.user_id='").append(JxSession.getUserId()).append("')");
+            return sb.toString();
+        }
+        return "active=1";
     }
 }

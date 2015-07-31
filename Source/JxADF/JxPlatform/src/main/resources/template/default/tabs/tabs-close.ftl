@@ -10,7 +10,8 @@ $author:wmzsoft@gmail.com
     $(function () {
         var ${parameters.id}_tabs = $("#${parameters.id}").tabs({
             create: tabCreate,
-            beforeActivate: beforeActivate
+            beforeActivate: beforeActivate,
+            activate:tabActivate
         });
     });
 </script>

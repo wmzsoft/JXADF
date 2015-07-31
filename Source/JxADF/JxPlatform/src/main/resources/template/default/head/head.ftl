@@ -52,7 +52,9 @@
     <#--加载jQuery.i18n.properties插件-->
     <script type='text/javascript' src='${base}/javascript/jquery.i18n.properties/jquery.i18n.properties.js'></script>
     <script type='text/javascript' src='${base}/javascript/jxkj/jx.i18n.js'></script>
-
+    <#--加载jquery.layout-->
+    <link rel="stylesheet" href="${base}/javascript/layout/layout-default.css"/>
+    <script type='text/javascript' src='${base}/javascript/layout/jquery.layout.js'></script>
     <#--加载自定义js相关的资源-->
     <script type='text/javascript' src='${base}/javascript/jxkj/jxcommon.js'></script>
     <script type='text/javascript' src='${base}/javascript/jxkj/jx.inputtexthelper.js'></script>

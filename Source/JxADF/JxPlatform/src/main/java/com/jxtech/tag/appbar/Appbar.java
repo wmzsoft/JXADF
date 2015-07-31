@@ -1,14 +1,16 @@
 package com.jxtech.tag.appbar;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.views.annotations.StrutsTag;
+
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.tag.comm.JxBaseUIBean;
 import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
-import org.apache.struts2.views.annotations.StrutsTag;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * @author wmzsoft@gmail.com

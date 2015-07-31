@@ -2,7 +2,7 @@
     <#if (params.ajax??)>
     <script type="text/javascript">
         $(function () {
-            select2AjaxSelectTag('${selectid}', '${params.displayvalue!""}','${params.dataattribute!""}', '${params.displayname!""}', '${params.ajax!""}', '${params.selectedDisplay!""}')
+            select2AjaxSelectTag('${selectid}', '${params.displayvalue!""}','${params.dataattribute!""}', '${params.displayname!""}', '${params.ajax!""}', '${params.selectedDisplay!""}','Input to Choose Option');
         });
     </script>
     <#elseif ((params.optionsCount!0) &gt; 10) >

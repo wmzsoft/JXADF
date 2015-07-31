@@ -91,7 +91,7 @@ public class Textbox extends JxBaseUIBean {
         if (cause != null)
             addParameter("cause", findString(cause));
         if (lookup != null) {
-            addParameter("lookup", findString(lookup).toUpperCase());
+            addParameter("lookup", findString(lookup));
         }
         if (null != lookupWidth) {
             addParameter("lookupWidth", findString(lookupWidth));

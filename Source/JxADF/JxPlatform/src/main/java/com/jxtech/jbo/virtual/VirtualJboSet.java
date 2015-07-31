@@ -41,7 +41,7 @@ public class VirtualJboSet extends BaseJboSet {
     }
 
     @Override
-    public void setFlag(){
+    public void setFlag() {
     }
 
     @Override
@@ -66,7 +66,7 @@ public class VirtualJboSet extends BaseJboSet {
 
     @Override
     public JboIFace queryJbo(String uid) throws JxException {
-         return null;
+        return null;
     }
 
     @Override
@@ -90,7 +90,7 @@ public class VirtualJboSet extends BaseJboSet {
 
     @Override
     public void setWorkflowId(String wfId) {
-        
+
     }
 
     @Override
@@ -102,19 +102,19 @@ public class VirtualJboSet extends BaseJboSet {
     @Override
     public void afterLoad() throws JxException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void addMpp(List<Task> tasks, Map<String, String> paramMap, Map<String, String> initMap) throws JxException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public void expMpp(ProjectFile project, Map<String, String> paramMap, Map<String, String> initMap) throws JxException {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
@@ -130,7 +130,7 @@ public class VirtualJboSet extends BaseJboSet {
     }
 
     @Override
-    public JboIFace queryJbo(String where, String jboKey, String uid)throws JxException {
+    public JboIFace queryJbo(String where, String jboKey, String uid) throws JxException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -138,13 +138,25 @@ public class VirtualJboSet extends BaseJboSet {
     @Override
     public void lookup(List<JboIFace> lookupList) throws JxException {
         // TODO Auto-generated method stub
-        
+
     }
 
-	@Override
-	public List<JboIFace> queryJbo(String[] ids) throws JxException {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    @Override
+    public List<JboIFace> queryJbo(String[] ids) throws JxException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getSecurityrestrict(boolean elValue) throws JxException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean commit(long flag) throws JxException {
+        // TODO Auto-generated method stub
+        return false;
+    }
 
 }

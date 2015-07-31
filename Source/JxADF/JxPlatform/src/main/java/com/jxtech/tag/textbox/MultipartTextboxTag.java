@@ -18,6 +18,7 @@ import java.util.Map;
 
 public class MultipartTextboxTag extends TextboxTag {
 
+    private static final long serialVersionUID = 1L;
     protected String inputmode;
     protected String descdataattribute;
     protected String descinputmode;

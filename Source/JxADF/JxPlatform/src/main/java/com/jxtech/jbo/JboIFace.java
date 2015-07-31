@@ -21,6 +21,15 @@ import java.util.Set;
  */
 public interface JboIFace extends Serializable {
 
+    // 保存时不做任何校验
+    public static final long SAVE_NO_CHECK_ALL = 0;
+    // 保存时，不做只读校验
+    public static final long SAVE_NO_CHECK_READONLY = 1;
+    // 保存时，不做必填校验
+    public static final long SAVE_NO_CHECK_REQUIRED = 2;
+    // 保存时,不检查权限
+    public static final long SAVE_NO_CHECK_PERMISSION = 4;
+
     public void add() throws JxException;
 
     public void addMpp(Task tasks, Map<String, String> paramMap, Map<String, String> initMap) throws JxException;
@@ -408,4 +417,9 @@ public interface JboIFace extends Serializable {
     public void prepareMaxmenu(List<JboIFace> menusToolbar, List<JboIFace> menulist) throws JxException;
 
     public void removeSomeMaxMenu(List<JboIFace> menusToolbar, List<String> options) throws JxException;
+
+    public long getSaveFlag();
+
+    public void setSaveFlag(long saveFlag);
+
 }

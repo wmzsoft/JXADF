@@ -120,7 +120,7 @@ $author:wmzsoft@gmail.com
             </a><#t>
             <#else>
                 <#if ((col.parameters.mxevent_render!'button') == "SWITCH")>
-                <#assign switchId='slideSwitch_${jbo_index}_${col_index}'>
+                <#assign switchId='${parameters.id}_slideSwitch_${jbo_index}_${col_index}'>
                 <#assign switchCssClass="">
                 <div class="slide-switch">
                     <input type="checkbox" id="${switchId}" value="<#t>
@@ -139,9 +139,9 @@ $author:wmzsoft@gmail.com
                            <#assign disabled=action.getJboElValue(jbo,'${col.parameters.mxevent_disabled}')>
                         <#if (disabled=='disabled' || disabled=='true')>
                             <#lt> disabled="disabled" <#rt>
-                           <#assign switchCssClass="disable">
+                           <#assign switchCssClass="${switchCssClass} disabled">
                         </#if>
-                    </#if>  onchange="${col.parameters.mxevent}(this, event ,'${jbo.uidValue!0}')"/><#t>
+                    </#if>  onclick="${col.parameters.mxevent}(this, event ,'${jbo.uidValue!0}')"/><#t>
                     <label class="${switchCssClass}" for="${switchId}">
                         <span class="btn-switch"></span>
                     </label>

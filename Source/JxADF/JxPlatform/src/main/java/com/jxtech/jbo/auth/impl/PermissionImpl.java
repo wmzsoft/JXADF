@@ -39,7 +39,8 @@ public class PermissionImpl extends Permission {
 
     @Override
     public boolean hasFunctions(String url) {
-        if (StrUtil.isNull(url)) {
+        if (StrUtil.isNull(url) || JxSession.isSuperManager()) {
+            // 超级管理员,默认有最大的权限,不用做任何判断
             return true;
         }
         String cachekey = StrUtil.contact(CACHE_PREX, JxSession.getUserId(), ".", url);
@@ -145,7 +146,7 @@ public class PermissionImpl extends Permission {
      */
     @Override
     public boolean hasFunctions(String pageid, String methodName) {
-        if (StrUtil.isNull(pageid) || StrUtil.isNull(methodName)) {
+        if (StrUtil.isNull(pageid) || StrUtil.isNull(methodName) || JxSession.isSuperManager()) {
             return true;
         }
         String userid = JxSession.getUserId();

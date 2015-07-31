@@ -8,6 +8,7 @@ package com.jxtech.app.jxvars;
  * 
  */
 public interface JxVars {
+    public static final String CACHE_PREX = "JXVARS.";
 
     public String getValue(String key);
 

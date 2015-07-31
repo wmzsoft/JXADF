@@ -320,7 +320,7 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
             // 没有需要更新的字段
             return 0;
         }
-        StringBuffer msql = new StringBuffer();
+        StringBuilder msql = new StringBuilder();
         msql.append("Update ");
         msql.append(jbo.getJboSet().getEntityname());
         msql.append(" set ");

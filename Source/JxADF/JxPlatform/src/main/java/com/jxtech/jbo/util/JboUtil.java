@@ -275,7 +275,7 @@ public class JboUtil {
      * @param param 获取工作流的某个信息
      * @return
      */
-    private static String getAppWorkflowInfo(String appname, String param) throws JxException {
+    public static String getAppWorkflowInfo(String appname, String param) throws JxException {
         String engine = "";
         JboIFace appWfJbo = JboUtil.getJbo("MAXAPPSWFINFO", "APP", appname.toUpperCase());
         if (null != appWfJbo) {

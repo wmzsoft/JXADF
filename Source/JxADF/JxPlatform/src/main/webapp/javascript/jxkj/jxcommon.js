@@ -10,7 +10,6 @@ var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
 var bIsIE = sUserAgent.match(/msie/i) == "msie";
 var bIsChrome = sUserAgent.match(/chrome/i) == "chrome";
 var bIsFireFox = sUserAgent.match(/firefox/i) == "firefox";
-var event = event || window.event;
 
 function debug(obj) {
     if (window.console && window.console.log) {
@@ -1040,13 +1039,9 @@ function inputOnChange(me, e) {
 
     var im = $input.attr("inputmode");
     if (im == "QUERYIMMEDIATELY" || im == "QUERY") {
-        e = e ? e : window.event;
-        if (undefined != e) {
-            var keyCode = e.which ? e.which : e.keyCode;     // 获取按键值
-
-            if (keyCode == 13) {
-                inputQueryOnBlur(me, e);
-            }
+        e = $.event.fix(e || window.event);
+        if(e.keyCode == 13){
+            inputQueryOnBlur(me , e);
         }
     }
 }
@@ -1717,7 +1712,7 @@ function appDialog(app, appType, fromid, urlValue, w, h, beforeDialogClose, titl
     if (page.indexOf("?") > 0 && page.indexOf("=") > 0 && page.indexOf("&") > 0) {
         var temppara = "";
         var urlarr = page.split("?");
-        var dialogurl = urlarr[0].toLowerCase();
+        var dialogurl = urlarr[0];
         var parastr = urlarr[1].split("&");
         for (var x = 0; x < parastr.length; x++) {
             var paraarr = parastr[x].split("=");
@@ -2766,7 +2761,17 @@ function delrow(me, e) {
 /**
  * * 新增记录行
  */
-function addrow(me, e) {
+function addrow(me, e){
+	addRowAndSetValue(me,e,null);
+}
+
+/**
+ * 添加行，并设定默认值。
+ * @param me
+ * @param e
+ * @param data JSON格式的默认值
+ */
+function addRowAndSetValue(me, e,data) {
     var tableid = me.id.substring(0, me.id.length - $('#' + me.id).attr('mxevent').length - 1);
     var table = $("#" + tableid);
     if ($(me).attr('enabled') == '0') {
@@ -2780,7 +2785,7 @@ function addrow(me, e) {
         var exTr = $("tr[expand='1']", table);
         $("td:first span", exTr).click(); // 将expandtype收起来
     }
-    WebClientBean.addRow(jx_appNameType, table.attr('jboname'), table.attr('relationship'),
+    WebClientBean.addRow(jx_appNameType, table.attr('jboname'), table.attr('relationship'),data,
         {
             callback: function (jbo) {
                 if (jbo == null) {
@@ -3199,28 +3204,21 @@ function closeTreeTable(tr) {
  *
  * @param tr
  */
-function selectTableTr(tr) {
+function selectTableTr(tr,e) {
     // 判断是单选还是多选
-    var singleSection = true;
-    var table = $(tr).closest("table");
-    var allbox = $("input[type='checkbox'][name='allbox']", table);
-    if (allbox && allbox.length > 0) {
-        // 多选
-        singleSection = false;
+    var $tr = $(tr);
+    var fragment = $tr.closest(".fragment-mode");
+    var $checkbox = $tr.find("input:checkbox");
+    if($checkbox.length){
+        var $allbox = $("input[type='checkbox'][name='allbox']", fragment);
+        if ($allbox && $allbox.length > 0) {
+            $("tr[class='trSelected']", table).removeClass("trSelected");
+        }
+        var checked = $checkbox[0].checked;
+        $checkbox.prop("checked",!checked);
+        ckOneSelectHandler($checkbox[0],$checkbox.attr("index"));
     }
-
-    if (singleSection) {
-        // 单选操作
-        $("tr[class='trSelected']", table).removeClass("trSelected");
-        $(tr).addClass("trSelected");
-    } else {
-        // 多选操作 // 这里暂定第一列为选择列(应该不会改变吧)
-        // 调用comtop操作
-        /*
-         * var checkbox = $("td:first input[type='checkbox']", tr);
-         * $(checkbox).click().toggleClass("trSelected");
-         */
-    }
+    $tr.toggleClass("trSelected");
 
 }
 
@@ -3378,6 +3376,10 @@ function tabCreate(event, ui) {
  */
 function beforeActivate(event, ui) {
     debug(ui);
+}
+
+function tabActivate(event,ui){
+
 }
 
 /**
@@ -3904,11 +3906,13 @@ function DateAdd(interval, number, date) {
     }
 }
 
-function select2AjaxSelectTag(id, displayvalue, dataattribute, displayname, ajaxurl, selectedDisplay) {
+function select2AjaxSelectTag(id, displayvalue, dataattribute, displayname, ajaxurl, selectedDisplay,placeholder) {
+    var $select = $("#"+id);
     var valueOrAttr = (displayvalue || dataattribute || "").toLowerCase();
     displayname = (displayname || "description").toLowerCase();
     ajaxurl = ajaxurl.replace(/['"]/g, "");
     var formatRepo = function (repo) {
+        console.log(repo);
         if (repo.loading) return repo.text;
         var mark = repo[valueOrAttr] + "-" + repo[displayname];
         return mark;
@@ -3916,7 +3920,7 @@ function select2AjaxSelectTag(id, displayvalue, dataattribute, displayname, ajax
     var formatRepoSelection = function (repo) {
         return repo[displayname];
     };
-    $("#" + id).select2({
+    $select.select2({
         placeholder: "input a key,please",
         allowClear: true,
         ajax: {
@@ -3952,6 +3956,14 @@ function select2AjaxSelectTag(id, displayvalue, dataattribute, displayname, ajax
             },
             cache: true
         },
+        initSelection:function(element,callback){
+            var data ={};
+            var $selection = element.find("option:selected");
+            data[valueOrAttr] = $selection.val();
+            data[id]=$selection.val();
+            data[displayname]=$selection.text();
+            callback(data);
+        },
         escapeMarkup: function (markup) {
             return markup;
         }, // let our custom formatter work
@@ -3959,7 +3971,6 @@ function select2AjaxSelectTag(id, displayvalue, dataattribute, displayname, ajax
         templateResult: formatRepo, // omitted for brevity, see the source of this page
         templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
     });
-    $("#select2-" + id + "-container").html(selectedDisplay || "");
 }
 
 function select2CustomSelectTag(id, placeholder, allowclear) {
@@ -4083,6 +4094,7 @@ function setRequiredOrNot(me, isrequired, type) {
             }
             $(me).removeAttr("readonly");
             $(me).removeAttr("style");
+            $(me).parent().parent().find(".form_td_label").addClass("required");
         } else {
             a(me);
             var oldclass = $(me).attr("oldclass");
@@ -4344,3 +4356,50 @@ $(function(){
         }
     });
 });
+
+//layout tag
+function createLayout(layoutId){
+    var $layoutContainer = $("#"+layoutId);
+    var options = getLayoutOptions($layoutContainer);
+    options.applyDemoStyles = false;
+    $layoutContainer.layout(options);
+}
+
+function getLayoutOptions($container){
+    var options = {};
+    $container.find(">.ui-layout-pane").each(function(){
+        var $this = $(this);
+        var region = $this.attr("region");
+        options[region] = {};
+        if(region != "center"){
+            if($this.attr("size")){
+                options[region].size = $this.attr("size");
+            }
+            if($this.attr("minSize")){
+                options[region].minSize = $this.attr("minSize");
+            }
+            if($this.attr("maxSize")){
+                options[region].maxSize = $this.attr("maxSize");
+            }
+            options[region].resizable = !($this.attr("resizable") == "false");
+            options[region].closable = !($this.attr("closable") == "false");
+            options[region].spacing_open = parseInt($this.attr("space"));
+            if($this.attr("status") == "close"){
+                options[region].initClosed = true;
+            }else if($this.attr("status") == "hidden"){
+                options[region].initHidden = true;
+            }
+        }
+    });
+    return options;
+}
+//当ui.layout一开始是隐藏的时候，在显示的时候需要进行resizeAll
+function resizeLayout($parent,beforeResize){
+    var layout = $parent.find(".ui-layout-container.panel").data("layout");
+    if(layout){
+        if($.isFunction(beforeResize)){
+            beforeResize();
+        }
+        layout.resizeAll();
+    }
+}

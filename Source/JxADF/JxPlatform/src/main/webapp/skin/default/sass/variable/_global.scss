@@ -1,0 +1,18 @@
+@charset "utf-8";
+//圆的角度
+$circle-angle:360deg;
+//字体大小
+$font-size-base: 14px;
+$font-size-small: ceil($font-size-base * 0.85);//12px
+$font-size-medium: ceil($font-size-base * 1.28);//18px
+$font-size-large:ceil($font-size-base*1.56);//22px
+//颜色
+$base:#ffffff;
+$base-dark:#e7e4e4;
+$blue-light:#def2fe;
+$blue-lighter:#7acafd;
+$blue-base:#3ca2e2;
+$blue-darker:#196ea4;
+
+//高度
+$mobile-tap-height:44px;//移动端可点击区域的高度

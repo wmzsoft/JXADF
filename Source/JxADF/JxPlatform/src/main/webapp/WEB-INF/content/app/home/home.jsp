@@ -57,7 +57,7 @@
 
     <!-- 加载首页样式表 -->
     <link rel="stylesheet" id="skin-css" type="text/css"
-          href="<%=path%>/skin/<s:property value='skinName'/>/css/default.css" title="skin"/>
+          href="<%=path%>/skin/<s:property value='skinName'/>/css/skinClassic.css" title="skin"/>
 
     <script type="text/javascript">
         var contextPath = '<%=path%>';
@@ -193,7 +193,6 @@
 </head>
 
 <body id="homebody">
-<!-- 部署的时候需要修改此处的src -->
 <div class="ui-layout-center" id="contentPanel">
     <div class="middle-north" id="appName"></div>
     <iframe class="middle-center" id="centerIframe" name="centerIframe"

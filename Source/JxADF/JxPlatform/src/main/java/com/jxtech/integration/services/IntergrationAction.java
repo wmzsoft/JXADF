@@ -6,6 +6,7 @@ import com.jxtech.integration.jsonvo.JboVo;
 import com.jxtech.jbo.App;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSetIFace;
+import com.jxtech.jbo.JboValue;
 import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.base.JxAttribute;
 import com.jxtech.jbo.util.JboUtil;
@@ -97,6 +98,7 @@ public class IntergrationAction extends JxActionSupport {
                     } else if (!StrUtil.isNull(jboVo.get_uid())) {
                         jbo = jboSet.getJboOfUid(jboVo.get_uid());
                         if ("U".equalsIgnoreCase(action)) {
+                            modifyJboValue(jbo, jboVo);
                             jbo.setModify(true);
                         } else if ("D".equalsIgnoreCase(action)) {
                             jbo.delete();
@@ -192,7 +194,7 @@ public class IntergrationAction extends JxActionSupport {
             if (null != attr) {
                 String attrValue = jbo.getString(key);
                 if (null != attrValue) {
-                    if (!attrValue.equals(voDatas.get(key))) {
+                    if (StrUtil.isNull(attrValue) || !attrValue.equals(voDatas.get(key))) {
                         jbo.setObject(key, voDatas.get(key));
                     }
                 } else {

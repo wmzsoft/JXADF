@@ -1,0 +1,55 @@
+@charset "utf-8";
+@import "compass";
+@import "mixins/icons";
+/**
+ *Jx Icons
+ *<span class="jx-circle-icon jx-icon-home"-></span>
+ *jx-circle-icon-small jx-circle-icon(default) jx-circle-icon-large(large)
+**/
+.jx-icon{
+    background-image: image-url("icons-sprite.png", false, false);
+    display: inline-block;
+    vertical-align: middle;
+    width:$icon-size;
+    height: $icon-size;
+    line-height: $icon-size;
+    visibility: hidden;
+}
+.jx-arrow{
+    background-image: image-url("icons-sprite.png", false, false);
+    display: inline-block;
+    vertical-align: middle;
+    width:$arrow-size;
+    height: $arrow-size;
+    line-height: $arrow-size;
+    visibility: hidden;
+}
+@include generate-icons(system,50px);
+@include generate-icons(basinf,100px);
+@include generate-icons(sys,150px);
+@include generate-icons(pubdepartment,200px);
+@include generate-icons(pubrole,250px);
+@include generate-icons(jxonline,300px);
+@include generate-icons(jxonlinelog,350px);
+@include generate-icons(osgi,400px);
+@include generate-icons(osgiconsole,450px);
+@include generate-icons(th-large,500px);
+@include generate-icons(home,550px);
+@include generate-icons(off,600px);
+//arrow
+@include generate-arrows(up,650px);
+@include generate-arrows(down,675px);
+@include generate-arrows(left,650px,25px);
+@include generate-arrows(right,675px,25px);
+
+//appearance
+//蓝底圆形icon，搭配jx-icon-#{name}-white使用
+@include generate-icon-appearance(circle-blue) {
+    background-color: #3ca2e2;
+    border-radius: 50px;
+}
+//白底圆形icon，搭配jx-icon-#{name}-blue使用
+@include generate-icon-appearance(circle-white){
+    background-color: #ffffff;
+    border-radius: 30px;
+}

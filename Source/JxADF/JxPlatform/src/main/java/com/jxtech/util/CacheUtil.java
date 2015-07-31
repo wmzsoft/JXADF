@@ -82,8 +82,9 @@ public class CacheUtil {
         }
     }
 
-    public static Object getJbo(String uid) {
-        return getObject(JBO_CACHE, uid);
+    public static Object getJbo(String key) {
+        // return getObject(JBO_CACHE, key);
+        return null;
     }
 
     public static Object getBase(String key) {
@@ -116,7 +117,7 @@ public class CacheUtil {
     }
 
     public static void putJboCache(Object key, Object value) {
-        putCache(JBO_CACHE, key, value);
+        // putCache(JBO_CACHE, key, value);
     }
 
     public static void putBaseCache(Object key, Object value) {

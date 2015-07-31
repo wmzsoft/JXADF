@@ -45,7 +45,7 @@ public class JTableTag extends JxBaseUITag {
         table.setJsonUrl(jsonUrl);
         if (!StrUtil.isNull(jsonUrl)) {
             // 读取JSON数据
-            Object str = UrlUtil.getUrlContent(jsonUrl);
+            Object str = UrlUtil.getUrlContent(jsonUrl,true);
             if (str != null) {
                 jsonData = (String) str;
                 mapData = JsonUtil.fromJson(jsonData);

@@ -73,6 +73,8 @@ public abstract class BaseJbo implements JboIFace {
     private boolean toBeDel = false;
     // 当前记录是否为只读
     private boolean readonly = false;
+    // 当前记录的保存标识
+    private long saveFlag = 0xFFFFFF;
 
     // 发生改变的子表
     private Set<String> changedChildren = new HashSet<String>();
@@ -223,7 +225,8 @@ public abstract class BaseJbo implements JboIFace {
      * @throws JxException
      */
     public boolean canSave() throws JxException {
-        if (readonly) {
+        // 如果做只读校验,并且只读,则返回false，保存失败
+        if (readonly && (saveFlag & JboIFace.SAVE_NO_CHECK_READONLY) == JboIFace.SAVE_NO_CHECK_READONLY) {
             return false;
         }
         return getJboSet().canSave();
@@ -1038,13 +1041,13 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 通过联系名获得JboSet
-     *
+     * 
      * @param name 联系名
      * @param flag 参数 JxConstant.READ_CACHE 直接读取Cache，
      */
     @Override
     public JboSetIFace getRelationJboSet(String name, long flag) throws JxException {
-        return getRelationJboSet(name,  flag, false);
+        return getRelationJboSet(name, flag, false);
     }
 
     /**
@@ -1108,7 +1111,7 @@ public abstract class BaseJbo implements JboIFace {
             }
             if (queryAll) {
                 jbos.queryAll();
-            }else {
+            } else {
                 jbos.query(name);
             }
             jbos.setParent(this);
@@ -1559,5 +1562,13 @@ public abstract class BaseJbo implements JboIFace {
         } catch (Exception e) {
             LOG.error(e.getMessage());
         }
+    }
+
+    public long getSaveFlag() {
+        return saveFlag;
+    }
+
+    public void setSaveFlag(long saveFlag) {
+        this.saveFlag = saveFlag;
     }
 }

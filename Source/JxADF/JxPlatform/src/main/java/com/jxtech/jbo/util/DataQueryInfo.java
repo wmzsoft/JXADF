@@ -1,14 +1,5 @@
 package com.jxtech.jbo.util;
 
-import com.jxtech.jbo.JboSetIFace;
-import com.jxtech.jbo.auth.JxSession;
-import com.jxtech.jbo.auth.PermissionIFace;
-import com.jxtech.jbo.base.JxRelationship;
-import com.jxtech.jbo.base.JxRelationshipDao;
-import com.jxtech.jbo.base.JxUserInfo;
-import com.jxtech.util.ELUtil;
-import com.jxtech.util.StrUtil;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +7,13 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.jxtech.jbo.JboSetIFace;
+import com.jxtech.jbo.auth.JxSession;
+import com.jxtech.jbo.base.JxRelationship;
+import com.jxtech.jbo.base.JxRelationshipDao;
+import com.jxtech.util.ELUtil;
+import com.jxtech.util.StrUtil;
 
 /**
  * JboSet的查询条件信息
@@ -49,6 +47,7 @@ public class DataQueryInfo implements java.io.Serializable {
     private String[] orgsiteParams;// 组织地点参数值。
 
     private JboSetIFace jboset;
+    private boolean ignoreSecurityrestrict;// 是否忽略安全限制条件。
 
     private static final Logger LOG = LoggerFactory.getLogger(DataQueryInfo.class);
 
@@ -88,22 +87,20 @@ public class DataQueryInfo implements java.io.Serializable {
 
     // 获得组装之后的所有查询条件
     public String getWhereAllCause() {
-        allCause = whereCause;
+        StringBuilder cause = new StringBuilder();
+        if (!StrUtil.isNull(whereCause)) {
+            cause.append(whereCause);
+        }
         List<Object> list = new ArrayList<Object>();
         putParamsValueAll(whereParams, list);
-        if (allCause == null) {
-            allCause = "";
-        }
-        JxUserInfo userinfo = JxSession.getJxUserInfo();
-        if (allCause.indexOf("?") < 0) {
-            allCause = ELUtil.getElOfJxUser(userinfo, allCause);
-        }
+
         // 组织地点的问题
         if (!StrUtil.isNullOfIgnoreCaseBlank(orgsiteClause)) {
-            if (allCause.length() > 3) {
-                allCause = "(" + allCause + ") AND (" + orgsiteClause + ")";
+            if (cause.length() > 3) {
+                cause.insert(0, '(').append(") AND (").append(orgsiteClause).append(')');
             } else {
-                allCause = orgsiteClause;
+                cause.setLength(0);
+                cause.append(orgsiteClause);
             }
             if (orgsiteParams != null) {
                 putParamsValueAll(orgsiteParams, list);
@@ -113,10 +110,11 @@ public class DataQueryInfo implements java.io.Serializable {
         // 快速查询
         String quickSearchCause = getQuickSearchCause();
         if (!StrUtil.isNullOfIgnoreCaseBlank(quickSearchCause)) {
-            if (allCause.length() > 2) {
-                allCause = "(" + allCause + ") AND (" + quickSearchCause + ")";
+            if (cause.length() > 2) {
+                cause.insert(0, '(').append(") AND (").append(quickSearchCause).append(')');
             } else {
-                allCause = quickSearchCause;
+                cause.setLength(0);
+                cause.append(quickSearchCause);
             }
             // 如果有快速查询，将查询对话框中设置的查询条件清空
             params = null;
@@ -142,13 +140,12 @@ public class DataQueryInfo implements java.io.Serializable {
                     } else {
                         list.add(value);
                     }
-                } else {
-                    key = ELUtil.getElOfJxUser(userinfo, key);
                 }
-                if (allCause.length() > 2) {
-                    allCause = allCause + " And " + key;
+                if (cause.length() > 2) {
+                    cause.append(" And ").append(key);
                 } else {
-                    allCause = key;
+                    cause.setLength(0);
+                    cause.append(key);
                 }
             }
         }
@@ -156,26 +153,29 @@ public class DataQueryInfo implements java.io.Serializable {
         // 安全限制条件
         String secr = getSecurityrestrict();
         if (!StrUtil.isNullOfIgnoreCaseBlank(secr)) {
-            if (allCause.length() > 2) {
-                allCause = "(" + allCause + ") AND (" + secr + ")";
+            if (cause.length() > 2) {
+                cause.insert(0, '(').append(") AND (").append(secr).append(')');
             } else {
-                allCause = secr;
+                cause.setLength(0);
+                cause.append(secr);
             }
         }
-        if (allCause.length() < 3) {
-            allCause = " 1=1 ";
+        if (cause.length() < 3) {
+            cause.setLength(0);
+            cause.append(" 1=1 ");
         }
 
         // 联系条件
         if (!StrUtil.isNullOfIgnoreCaseBlank(relationshipCause)) {
-            allCause = "(" + allCause + ") AND (" + relationshipCause + ")";
+            cause.insert(0, '(').append(") AND (").append(relationshipCause).append(')');
             putParamsValueAll(relationshipParams, list);
         }
         // 应用程序条件限制
         if (!StrUtil.isNullOfIgnoreCaseBlank(restrictions)) {
-            allCause = "(" + allCause + ") AND (" + restrictions + ")";
+            cause.insert(0, '(').append(") AND (").append(restrictions).append(')');
         }
         whereAllParams = list.toArray();
+        allCause = ELUtil.getElValue(jboset, null, JxSession.getJxUserInfo(), cause.toString());
         return allCause;
     }
 
@@ -185,23 +185,13 @@ public class DataQueryInfo implements java.io.Serializable {
      * @return
      */
     public String getSecurityrestrict() {
-        if (jboset == null) {
+        if (jboset == null || !ignoreSecurityrestrict) {
             return null;
         }
-        String appname = jboset.getAppname();
-        if (StrUtil.isNull(appname)) {
-            return null;
-        }
-        JxUserInfo userinfo = JxSession.getJxUserInfo();
-        if (userinfo != null) {
-            PermissionIFace permission = userinfo.getPermission();
-            if (permission != null) {
-                Map<String, String> secr = permission.getSecurityRestrict();
-                if (secr != null) {
-                    String key = appname + "." + jboset.getJboname();
-                    return secr.get(key.toUpperCase());
-                }
-            }
+        try {
+            return jboset.getSecurityrestrict(false);
+        } catch (JxException e) {
+            LOG.error(e.getMessage(), e);
         }
         return null;
     }
@@ -446,6 +436,14 @@ public class DataQueryInfo implements java.io.Serializable {
 
     public void setJboset(JboSetIFace jboset) {
         this.jboset = jboset;
+    }
+
+    public boolean isIgnoreSecurityrestrict() {
+        return ignoreSecurityrestrict;
+    }
+
+    public void setIgnoreSecurityrestrict(boolean ignoreSecurityrestrict) {
+        this.ignoreSecurityrestrict = ignoreSecurityrestrict;
     }
 
 }

@@ -12,7 +12,7 @@ $author:wmzsoft@gmail.com
             <#if jbo.data??>
             <#-- 在IE兼容模式下，如果有这个label，DataTables插件无法使用 label for="${jbo.uidName!jbo_index}_${jbo.uidValue!0}" -->
             <#-- 标记 <tr> begin .14 -->
-            <tr id="tr_${parameters.id}_${jbo_index}" uid='${jbo.uidValue!0}' onclick="selectTableTr(this)" <#rt>
+            <tr id="tr_${parameters.id}_${jbo_index}" uid='${jbo.uidValue!0}' onclick="selectTableTr(this,event)" <#rt>
                 <#if jbo.toBeAdd?? && jbo.toBeAdd>
                     <#lt>  toBeAdd="true" <#rt>
                 </#if>
@@ -55,12 +55,12 @@ $author:wmzsoft@gmail.com
                                 <input type="checkbox" name="ck_${parameters.id}" index="${jbo_index}" <#rt>
                                     <#lt> id="${jbo.uidName!jbo_index}_${jbo.uidValue!0}"
                                        value="${jbo.uidValue!0}" <#rt>
-                                    <#lt> onclick="ckOneSelectHandler(this,'${jbo_index}')"/><#rt>
+                                    <#lt> onclick="ckOneSelect(this,event,'${jbo_index}')"/><#rt>
                             <#elseif (parameters.selectmode == "SINGLE")>
                                 <input type="radio" name="ck_${parameters.id}" index="${jbo_index}"  <#rt>
                                     <#lt> id="${jbo.uidName!jbo_index}_${jbo.uidValue!0}"
                                        value="${jbo.uidValue!0}"  <#rt>
-                                    <#lt> onclick="ckOneSelectHandler(this,'${jbo_index}')"/> <#rt>
+                                    <#lt> onclick="ckOneSelect(this,event,'${jbo_index}')"/> <#rt>
                             </#if>
                         </td><#t>
                     </#if>

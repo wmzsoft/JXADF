@@ -19,9 +19,10 @@ import java.net.URLConnection;
  */
 public class UrlUtil {
     private static final Logger LOG = LoggerFactory.getLogger(UrlUtil.class);
+    public static final String CACHE_PREX = "URL.UTIL.";
 
-    public static Object getUrlContent(String url) {
-        return getUrlContent(url, "UTF-8");
+    public static Object getUrlContent(String url,boolean cache) {
+        return getUrlContent(url, "UTF-8",cache);
     }
 
     /**
@@ -32,12 +33,24 @@ public class UrlUtil {
      * @return
      */
     public static Object getUrlContent(String url, String urlCode) {
+        return getUrlContent(url, urlCode, false);
+    }
+
+    public static Object getUrlContent(String url, String urlCode, boolean cache) {
         if (StrUtil.isNull(url)) {
             return url;
         }
+        String ckey = null;
+        if (cache) {
+            ckey = StrUtil.contact(CACHE_PREX, String.valueOf(url.hashCode()), ".", urlCode);
+            Object obj = CacheUtil.getJbo(ckey);
+            if (obj != null) {
+                return obj;
+            }
+        }
         BufferedInputStream bis = null;
         Reader reader = null;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         try {
             URL u = new URL(url);
             bis = new BufferedInputStream(u.openStream());
@@ -51,6 +64,9 @@ public class UrlUtil {
             }
             while ((reader.read(buf)) != -1) {
                 sb.append(buf);
+            }
+            if (cache) {
+                CacheUtil.putJboCache(ckey, sb.toString());
             }
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);

@@ -61,6 +61,8 @@ public abstract class BaseJboSet implements JboSetIFace {
     private String relationshipname;
 
     private String sql;// 通过SQL语句查询数据结果集,当Jboname为空或以SQL_开头时此值有效
+    // 当前记录的保存标识
+    private long saveFlag = 0xFFFFFF;
 
     /**
      * 命名规则：appname,appnameSet 子类必须覆盖此方法
@@ -944,13 +946,26 @@ public abstract class BaseJboSet implements JboSetIFace {
      * @throws JxException
      */
     public boolean canSave() throws JxException {
-        if (readonly) {
+        // 如果做只读校验,并且只读,则返回false，保存失败
+        if (readonly && (saveFlag & JboIFace.SAVE_NO_CHECK_READONLY) == JboIFace.SAVE_NO_CHECK_READONLY) {
             return false;
         }
-        boolean flag = PermissionFactory.getPermissionInstance().hasFunctions(getAppname(), "SAVE");
-        if (!flag) {
-            readonly = !flag;
+        // 如果要做权限检查
+        if ((saveFlag & JboIFace.SAVE_NO_CHECK_PERMISSION) == JboIFace.SAVE_NO_CHECK_PERMISSION) {
+            boolean flag = PermissionFactory.getPermissionInstance().hasFunctions(getAppname(), "SAVE");
+            if (!flag) {
+                readonly = !flag;
+            }
+            return flag;
         }
-        return flag;
+        return true;
+    }
+
+    public long getSaveFlag() {
+        return saveFlag;
+    }
+
+    public void setSaveFlag(long saveFlag) {
+        this.saveFlag = saveFlag;
     }
 }

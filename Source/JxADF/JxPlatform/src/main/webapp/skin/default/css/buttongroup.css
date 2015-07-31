@@ -21,6 +21,19 @@
     border: 1px #0e6fa6 solid;
 }
 
+.toolbar_btn[disabled="disabled"] {
+    border: 1px #ccc dashed;
+    color: #ccc;
+}
+
+.toolbar_btn[disabled="disabled"]:hover {
+    background: url(../images/pushbutton/toolbar_btn.png) repeat-x;
+    border: 1px #ccc dashed;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+
 /* 新增样式，用于列表底部的GO按钮样式 */
 .btn_href_GO {
     border: 1px solid #c5c5c5;

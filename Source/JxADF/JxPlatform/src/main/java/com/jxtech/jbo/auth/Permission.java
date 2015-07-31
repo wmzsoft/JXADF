@@ -91,7 +91,7 @@ public abstract class Permission implements PermissionIFace {
 
     @Override
     public boolean isIgoreSecurity(String url) {
-        if (StrUtil.isNull(url)) {
+        if (StrUtil.isNull(url) || JxSession.isSuperManager()) {
             return true;
         }
         Map<String, String> map = getIgnoreSecurity();
@@ -194,6 +194,9 @@ public abstract class Permission implements PermissionIFace {
      * @return
      */
     public boolean isPermission(String app, String url) throws JxException {
+        if (JxSession.isSuperManager()){
+            return true;
+        }
         String ckey = StrUtil.contact(JxSession.getUserId(), ".", app, ".", url);
         Object obj = CacheUtil.getPermission(ckey);
         if (obj instanceof Boolean) {

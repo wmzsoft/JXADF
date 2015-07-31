@@ -1,26 +1,31 @@
 package com.jxtech.jbo;
 
-import com.jxtech.db.DBFactory;
-import com.jxtech.db.DataQuery;
-import com.jxtech.db.util.JxDataSourceUtil;
-import com.jxtech.i18n.JxLangResourcesUtil;
-import com.jxtech.jbo.base.JxUserInfo;
-import com.jxtech.jbo.util.DataQueryInfo;
-import com.jxtech.jbo.util.JboUtil;
-import com.jxtech.jbo.util.JxConstant;
-import com.jxtech.jbo.util.JxException;
-import com.jxtech.util.StrUtil;
-import net.sf.mpxj.ProjectFile;
-import net.sf.mpxj.Task;
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.mpxj.ProjectFile;
+import net.sf.mpxj.Task;
+
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jxtech.db.DBFactory;
+import com.jxtech.db.DataQuery;
+import com.jxtech.db.util.JxDataSourceUtil;
+import com.jxtech.i18n.JxLangResourcesUtil;
+import com.jxtech.jbo.auth.JxSession;
+import com.jxtech.jbo.base.JxUserInfo;
+import com.jxtech.jbo.util.DataQueryInfo;
+import com.jxtech.jbo.util.JboUtil;
+import com.jxtech.jbo.util.JxConstant;
+import com.jxtech.jbo.util.JxException;
+import com.jxtech.util.CacheUtil;
+import com.jxtech.util.ELUtil;
+import com.jxtech.util.StrUtil;
 
 /**
  * 每个表的记录信息
@@ -73,7 +78,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         String uidName = getUidName();
         String where = uidName + " = ?";
         DataQuery dq = DBFactory.getDataQuery(this.getDbtype(), getDataSourceName());
-        DataQueryInfo qbe = this.getQueryInfo();
+        DataQueryInfo qbe = new DataQueryInfo();
         qbe.setWhereCause(where);
         qbe.setWhereParams(new Object[] { uid });
         List<Map<String, Object>> list = dq.queryAllPage(getJboname(), qbe);
@@ -222,11 +227,13 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         getJbolist().clear();
         // 转换类型
         int size = list.size();
+        setCount(size);
         for (int i = 0; i < size; i++) {
             currentJbo = getJboInstance();
             currentJbo.setData(list.get(i));
             currentJbo.afterLoad();
             getJbolist().add(currentJbo);
+
         }
         return getJbolist();
     }
@@ -341,28 +348,37 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
 
     @Override
     public boolean commit() throws JxException {
+        return commit(getSaveFlag());
+    }
+
+    @Override
+    public boolean commit(long flag) throws JxException {
+        setSaveFlag(flag);//设定保存标识
         Connection conn = JxDataSourceUtil.getConnection(this.getDataSourceName());
-        boolean flag = true;
+        boolean bflag = true;
         try {
             if (currentJbo != null) {
-                flag = currentJbo.save(conn);
+                bflag = currentJbo.save(conn);
             }
 
-            if (flag) {
+            if (bflag) {
                 // currentjbo在上面已经保存过来，就要将其移除掉不需要再次保存了。
                 getJbolist().remove(currentJbo);
-                flag = save(conn);
+                bflag = save(conn);
             }
+            //移出缓存
+            String key = StrUtil.contact(DBFactory.CACHE_PREX,getJboname(),".");
+            CacheUtil.removeJboOfStartWith(key);
         } catch (Exception e) {
             LOG.error(e.getMessage());
-            flag = false;
+            bflag = false;
             throw new JxException(e.getMessage());
         } finally {
             // 当全部保存完成后，在将currentJbo放到jbolist中
             getJbolist().add(currentJbo);
             setCurrentJbo(currentJbo);
 
-            if (flag) {
+            if (bflag) {
                 LOG.debug("数据保存成功。");
                 JxDataSourceUtil.commit(conn);
                 setFlag();
@@ -372,7 +388,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             }
             JxDataSourceUtil.close(conn);
         }
-        return flag;
+        return bflag;
     }
 
     @Override
@@ -418,6 +434,77 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             }
         }
         return workflowId;
+    }
+
+    /**
+     * 获得安全限制条件，加载maxapp表中配置的条件和角色数据配置中的条件
+     * 
+     * @param elValue true时，计算EL表达式的值，否则不用计算
+     * @return
+     * @throws JxException
+     */
+    public String getSecurityrestrict(boolean elValue) throws JxException {
+        String aname = getAppname();
+        if (!StrUtil.isNull(aname)) {
+            StringBuilder cause = new StringBuilder();
+            aname = aname.toUpperCase().trim();
+            String ckey = StrUtil.contact(JxSession.getUserId(), ".Security.", aname, ".", getJboname(), ".", String.valueOf(elValue));
+            Object obj = CacheUtil.getPermission(ckey);
+            if (obj instanceof String) {
+                return (String) obj;
+            }
+            // 获得应用程序的限制条件
+            JboSetIFace apps = JboUtil.getJboSet("Maxapps");
+            DataQueryInfo dqi = apps.getQueryInfo();
+            dqi.setIgnoreSecurityrestrict(true);
+            dqi.setWhereCause("app=?");
+            dqi.setWhereParams(new Object[] { aname });
+            List<JboIFace> app = apps.query();
+            if (app.size() > 0) {
+                cause.append(app.get(0).getString("RESTRICTIONS"));
+            }
+            // 获得角色限制条件
+            JboSetIFace secus = JboUtil.getJboSet("securityrestrict");
+            DataQueryInfo sdqi = secus.getQueryInfo();
+            sdqi.setIgnoreSecurityrestrict(true);
+            StringBuilder sb = new StringBuilder();
+            sb.append("groupname in (select role_id from pub_role_user where user_id=?)");
+            sb.append(" and app=? and objectname=? ");
+            sdqi.setWhereCause(sb.toString());
+            sdqi.setWhereParams(new Object[] { JxSession.getUserId(), aname, getJboname() });
+            List<JboIFace> secs = secus.queryAll();
+            if (secs != null) {
+                int size = secs.size();
+                sb.setLength(0);
+                boolean start = false;
+                for (int i = 0; i < size; i++) {
+                    JboIFace sec = secs.get(i);
+                    String rec = sec.getString("restriction");
+                    if (rec != null && rec.length() > 1) {
+                        if (start) {
+                            sb.append(" or ");
+                        }
+                        sb.append('(').append(rec).append(')');
+                        start = true;
+                    }
+                }
+                if (sb.length() > 2) {
+                    if (cause.length() > 3) {
+                        cause.insert(0, '(').append(" and (").append(sb).append(')');
+                    } else {
+                        cause.append(sb);
+                    }
+                }
+            }
+            String rst;
+            if (cause.length() > 2 && elValue) {
+                rst = ELUtil.getElValue(this, null, JxSession.getJxUserInfo(), cause.toString());
+            }
+            rst = cause.toString();
+            CacheUtil.putPermissionCache(ckey, rst);
+            return rst;
+        }
+        return null;
     }
 
     @Override

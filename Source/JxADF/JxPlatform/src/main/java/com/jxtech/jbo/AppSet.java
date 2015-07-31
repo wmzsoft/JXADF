@@ -157,7 +157,7 @@ public class AppSet {
      * @return
      */
     public String getAllAppName() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (list != null) {
             sb.append("\r\nlist=");
             int size = list.size();

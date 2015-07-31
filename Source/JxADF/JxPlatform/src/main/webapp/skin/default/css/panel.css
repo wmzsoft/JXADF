@@ -45,7 +45,3 @@
     padding: 10px;
     line-height: 1.5;
 }
-
-.ui-layout-pane-west{
-    z-index:10 !important;
-}

@@ -77,7 +77,7 @@ public class ClassUtil {
                         return getService(bundleAcessor, className, isNew);
                     }
                 } catch (Exception e) {
-                    LOG.info(e.getMessage() + "\r\n" + className);
+                    LOG.debug(e.getMessage() + "\r\n" + className);
                     return getService(bundleAcessor, className, isNew);
                 }
             }
@@ -115,7 +115,7 @@ public class ClassUtil {
                     try {
                         return obj.getClass().newInstance();
                     } catch (Exception e) {
-                        LOG.debug(className + "不能直接newInstance");
+                        LOG.info(className + "不能直接newInstance");
                         return obj;
                     }
                 }

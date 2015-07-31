@@ -1,35 +1,34 @@
 package com.jxtech.tag.bztag.apptree;
 
-import com.jxtech.app.maxapps.MaxappsSetIFace;
-import com.jxtech.jbo.auth.JxSession;
-import com.jxtech.jbo.base.JxUserInfo;
-import com.jxtech.jbo.util.JboUtil;
-import com.jxtech.jbo.util.JxException;
-import com.jxtech.tag.comm.JxBaseUITag;
-import com.opensymphony.xwork2.util.ValueStack;
+import java.sql.SQLException;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.struts2.components.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Set;
+import com.jxtech.app.maxmenu.MaxAppMenu;
+import com.jxtech.tag.comm.JxBaseUITag;
+import com.opensymphony.xwork2.util.ValueStack;
 
 /**
- * @author xueliang@jxtech.net
+ * @author xueliang@jxtech.net wmzsoft@gmail.com
  * @date 2015/4/23.
  */
 public class AppTreeTag extends JxBaseUITag {
     private static final long serialVersionUID = -2309342153273689145L;
     private static final Logger LOG = LoggerFactory.getLogger(AppTreeTag.class);
 
-    protected String width;             //宽
-    protected String height;            //高，如果未设置，自适应窗口高度
-    protected String border;            //边宽
-    protected String needauth;          //是否筛选用户授权的应用，true/false
-    protected String whereCause;        //用户自定义条件
-    protected String workflow;          //是否筛选工作流的应用，true/false
-    protected String fragmentid;        //要关联刷新的对象，要有url属性
+    protected String width; // 宽
+    protected String height; // 高，如果未设置，自适应窗口高度
+    protected String border; // 边宽
+    protected String needauth; // 是否筛选用户授权的应用，true/false
+    protected String whereCause; // 用户自定义条件
+    protected String workflow; // 是否筛选工作流的应用，true/false
+    protected String fragmentid; // 要关联刷新的对象，要有url属性
+    protected String fragmentRName;//要关联刷新对象的联系名
 
     @Override
     public Component getBean(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
@@ -43,10 +42,27 @@ public class AppTreeTag extends JxBaseUITag {
         appTree.setWidth(width);
         appTree.setHeight(height);
         appTree.setBorder(border);
-        appTree.setNeedauth(needauth);
-        appTree.setWorkflow(workflow);
+        Boolean auth = false;
+        if (needauth != null) {
+            auth = (Boolean) findValue(needauth, Boolean.class);
+        }
+        appTree.setNeedauth(auth);
+        Boolean wf = false;
+        if (workflow != null) {
+            wf = (Boolean) findValue(workflow, Boolean.class);
+        }
+        appTree.setWorkflow(wf);
         appTree.setWhereCause(whereCause);
         appTree.setFragmentid(fragmentid);
+        appTree.setFragmentRName(fragmentRName);
+        MaxAppMenu mam = new MaxAppMenu();
+        try {
+            String jsondata = mam.getMaxAppMenuJson(-1, whereCause, auth, wf);
+            appTree.setJsondata(jsondata);
+        } catch (SQLException e) {
+            LOG.error(e.getMessage(), e);
+        }
+
     }
 
     public String getWidth() {
@@ -79,29 +95,6 @@ public class AppTreeTag extends JxBaseUITag {
 
     public void setNeedauth(String needauth) {
         this.needauth = needauth;
-        if (needauth != null && ("true".equalsIgnoreCase(needauth))) {
-            String awc = authWhereCause();
-            extWhereCause(awc);
-        }
-    }
-
-    protected String authWhereCause() {
-        StringBuffer s = new StringBuffer();
-        s.append(" app in (null");
-        try {
-            MaxappsSetIFace jsi = (MaxappsSetIFace) JboUtil.getJboSet("MAXAPPS");
-            JxUserInfo userInfo = JxSession.getJxUserInfo();
-            if (userInfo != null) {
-                Set<String> apps = jsi.getAuthApps((userInfo.getUserid()));
-                for(String appName:apps){
-                    s.append(",'"+appName+"'");
-                }
-            }
-            s.append(")");
-        } catch (JxException e1) {
-            LOG.error(e1.getMessage(), e1);
-        }
-       return s.toString();
     }
 
     public String getWorkflow() {
@@ -110,10 +103,6 @@ public class AppTreeTag extends JxBaseUITag {
 
     public void setWorkflow(String workflow) {
         this.workflow = workflow;
-        if (workflow != null && ("true".equalsIgnoreCase(workflow))) {
-            String wwc = " length(trim(custapptype))>0 ";
-            extWhereCause(wwc);
-        }
     }
 
     public String getWhereCause() {
@@ -121,18 +110,7 @@ public class AppTreeTag extends JxBaseUITag {
     }
 
     public void setWhereCause(String whereCause) {
-        extWhereCause(whereCause);
-    }
-
-    public void extWhereCause(String mywhereCause) {
-        if (mywhereCause!=null && !("".equals(mywhereCause))) {
-            if (this.whereCause==null){
-                this.whereCause = mywhereCause;
-            }else {
-                this.whereCause += " and " + mywhereCause;
-            }
-        }
-        //LOG.debug("[AppTreeTag.extWhereCause]whereCause=" + whereCause);
+        this.whereCause = whereCause;
     }
 
     public String getFragmentid() {
@@ -141,6 +119,14 @@ public class AppTreeTag extends JxBaseUITag {
 
     public void setFragmentid(String fragmentid) {
         this.fragmentid = fragmentid;
+    }
+
+    public String getFragmentRName() {
+        return fragmentRName;
+    }
+
+    public void setFragmentRName(String fragmentRName) {
+        this.fragmentRName = fragmentRName;
     }
 
 }

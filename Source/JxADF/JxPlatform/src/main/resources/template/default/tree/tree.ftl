@@ -118,8 +118,8 @@ $author:wmzsoft@gmail.com
     }
 
     $(document).ready(function () {
-        zTree = $.fn.zTree.init($("#" + "${parameters.id!'tree'}"), setting_${parameters.id!'tree'}, treeNodes_${parameters.id!'tree'});
-        var node = zTree.getNodeByTId("tree_1");
+        zTree = $.fn.zTree.init($("#${parameters.id!'tree'}"), setting_${parameters.id!'tree'}, treeNodes_${parameters.id!'tree'});
+        var node = zTree.getNodeByTId("${parameters.id!'tree'}_1");
         zTree.expandNode(node, true, false);
     <#-- 如果是自定义root节点，需要做一些清理工作（1，不能有收起图标；2，不能有双击功能）-->
     <#if (parameters.root??)>

@@ -1,7 +1,9 @@
 ﻿/*******************************************
 * 页面头部样式表
 *******************************************/
-
+.ui-layout-pane-west{
+    z-index:10 !important;
+}
 .ui-layout-resizer {
     background: url(../images/home/bg-resizer.png) no-repeat;
 }

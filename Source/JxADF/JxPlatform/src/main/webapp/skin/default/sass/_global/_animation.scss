@@ -1,0 +1,13 @@
+@charset "utf-8";
+//无限旋转
+@include keyframes(rotating){
+    0%{
+        @include transform(rotate(0deg));
+    }
+    100%{
+        @include transform(rotate(360deg));
+    }
+}
+%rotating{
+    @include animation(rotating 1s linear infinite)
+}

@@ -1,0 +1,243 @@
+@import "compass/css3";
+@import "../variable/global";
+@import "../variable/skinMobile";
+@import "../_global/icons";
+@import "../_global/mixins/helper";
+@import "../_global/placeholder/helper";
+@import "../_global/animation";
+
+
+
+html,body{
+    font-family: $font-family;
+    @extend %full;
+}
+ul{
+    list-style: none;
+    @extend %box-sizing-reset;
+}
+
+#header {
+    background-color: $navigator-background;
+    bottom: 0;
+    left: 0;
+    padding: 0 10px;
+    position: fixed;
+    width: 100%;
+    z-index: $navigator-index;
+    @include transition(transform $css3-transition-delay linear);
+    @extend %item-height;
+    #iframeMsg{
+        color:$navigator-font-color;
+        font-size:$navigator-font-size;
+        @extend %item-height;
+        vertical-align: middle;
+    }
+    .jx-icon{
+        zoom:$icon-zoom
+    }
+}
+
+.locked {
+    #header {
+        @include transform(translate3D(0, 44px, 0));
+    }
+}
+
+.lock-container {
+    background-color: $navigator-background;
+    bottom: 0;
+    position: fixed;
+    right: 0;
+    z-index: $navigator-index+1;
+    @extend %item-height;
+
+    .glyphicon-resize-vertical {
+        color: $navigator-font-color;
+        display: block;
+        font-size: $navigator-font-size;
+        width: $mobile-tap-height;
+        text-align: center;
+        @include transition(transform $css3-transition-delay linear);
+        @extend %item-height;
+    }
+}
+
+.locked .lock-container .glyphicon-resize-vertical {
+    @include transform(rotate($css3-semicircle-angle));
+}
+
+#iframeContainer {
+    background-color: $background;
+    position: relative;
+    z-index: $navigator-index - 2;
+    @extend %full;
+    iframe {
+        border: 0 none;
+        position: absolute;
+        @extend %full;
+    }
+    .glyphicon{
+        color: $loading-color;
+        font-size: $loading-size;
+        left: -9999px;
+        position: fixed;
+        top: -9999px;
+    }
+    &.loading .glyphicon {
+        left: 50%;
+        top: 40%;
+        z-index: $navigator-index + 3;
+        @extend %rotating;
+    }
+}
+
+#container {
+    bottom: $menu-item-height;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: $navigator-index - 1;
+    .content {
+        @extend %full;
+        @include transition(transform $css3-transition-delay linear);
+    }
+
+    &.open-menu {
+        .content {
+            @include transform(translate3D($menu-width, 0, 0));
+        }
+        #menu {
+            z-index: $navigator-index - 2;
+        }
+        #iframeContainer {
+            z-index: $navigator-index - 3;
+        }
+    }
+}
+
+.locked #container {
+    bottom: 0;
+}
+
+#menu {
+    background-color: rgba($background, 0.5);
+    position: absolute;
+    top: 0;
+    z-index: 0;
+    @include transform(translate3D(-$menu-width, 0, 0));
+    @extend %full;
+
+    .menu-content,
+    .submenu-content {
+        background-color: $menu-background;
+        height: 100%;
+        position: absolute;
+        width: $menu-width;
+    }
+
+    .list-content {
+        bottom: 0;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100%;
+        overflow: hidden;
+        -webkit-touch-callout: none;
+        @include transform(translateZ(0));
+        @include user-select(none);
+        @include text-size-adjust(none);
+    }
+    .submenu-content .list-content {
+        bottom: $menu-item-height;
+    }
+    .menu-content,
+    &.submenu-open .submenu-content {
+        visibility: visible;
+        z-index: $navigator-index - 3;
+    }
+    .submenu-content,
+    &.submenu-open .menu-content {
+        visibility: hidden;
+        z-index: $navigator-index - 4;
+    }
+
+    .jx-icon {
+        margin: 0 4% 0 5%;
+        zoom: $icon-zoom;
+    }
+
+    .menu-content {
+        li {
+            background-color: $menu-item-background;
+            border-bottom: $menu-item-border-size solid $menu-item-border-color;
+            color: $menu-item-font-color;
+            font-size: $menu-item-font-size;
+            position: relative;
+            @extend %item-height;
+            &.active {
+                background: $menu-item-background-active;
+            }
+        }
+        .jx-arrow {
+            position: absolute;
+            right: 5%;
+            top: (($menu-item-height - $arrow-height*$icon-zoom)/2)/$icon-zoom;
+            zoom: $icon-zoom;
+        }
+    }
+    .submenu-content {
+        li, dl {
+            height: auto;
+            margin: 0;
+            padding: 0;
+        }
+        dt {
+            background-color: $submenu-title-background;
+            color: $submenu-title-font-color;
+            font-size: $menu-item-font-size;
+            font-weight: normal;
+            @extend %item-height;
+        }
+        dd {
+            background-color: $submenu-item-background;
+            border: $menu-item-border-size solid $submenu-item-border-color;
+            color: $submenu-item-font-color;
+            font-size: $menu-item-font-size;
+            @extend %item-height;
+            + dd {
+                border-top-width: 0;
+            }
+            &.active {
+                background-color: $submenu-item-background-active;
+            }
+        }
+    }
+
+    .back-to-menu {
+        background-color: $submenu-title-background;
+        border-bottom: $menu-item-border-size solid $menu-item-border-color;
+        bottom: 0;
+        left: 0;
+        position: absolute;
+        text-align: center;
+        width: 100%;
+        @extend %item-height;
+        .jx-arrow {
+            zoom:$icon-zoom;
+        }
+    }
+}
+
+#appMsg {
+    display: none;
+    left: 0;
+    line-height: $message-height;
+    margin: 0;
+    padding: 0 $message-padding;
+    position: fixed;
+    text-align: center;
+    top: 0;
+    width: 100%;
+    z-index: $navigator-index + 2;
+}

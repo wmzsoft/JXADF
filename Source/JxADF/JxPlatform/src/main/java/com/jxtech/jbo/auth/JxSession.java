@@ -122,13 +122,9 @@ public class JxSession {
     }
 
     public static void putApp(String appName, String appType) throws JxException {
-        LOG.debug("before put App " + appName + "." + appType);
         AppSet apps = getApps();
-        apps.getAllAppName();
         apps.putApp(appName, appType);
         putSession(APPS, apps);
-        LOG.debug("after put App " + appName + "." + appType);
-        apps.getAllAppName();
     }
 
     public static void removeApp(String appName, String appType) {

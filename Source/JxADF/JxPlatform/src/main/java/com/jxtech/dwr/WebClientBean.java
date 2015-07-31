@@ -36,6 +36,7 @@ import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxConstant;
 import com.jxtech.jbo.util.JxException;
+import com.jxtech.util.JsonUtil;
 import com.jxtech.util.StrUtil;
 import com.jxtech.workflow.base.IWorkflowEngine;
 import com.jxtech.workflow.base.WorkflowEngineFactory;
@@ -270,6 +271,20 @@ public class WebClientBean {
     }
 
     public JboIFace addRow(String appNameType, String jboname, String relationship) throws JxException {
+        return addRow(appNameType, jboname, relationship, null);
+    }
+
+    /**
+     * 添加一行记录
+     * 
+     * @param appNameType
+     * @param jboname
+     * @param relationship
+     * @param defaultValue 默认值，传JSON格式，非JSON格式，一律不处理
+     * @return
+     * @throws JxException
+     */
+    public JboIFace addRow(String appNameType, String jboname, String relationship, String defaultValue) throws JxException {
         App app = JxSession.getApp(appNameType);
         if (app == null) {
             throw new JxException("你的应用已失效，请重新登录。\r\n" + appNameType);
@@ -283,6 +298,13 @@ public class WebClientBean {
         }
         if (js.canAdd()) {
             JboIFace row = js.add();
+            // 设置默认值
+            if (defaultValue != null) {
+                Map<String, Object> dto = JsonUtil.json2map(defaultValue);
+                for (Map.Entry<String, Object> entry : dto.entrySet()) {
+                    row.setObject(entry.getKey(), entry.getValue());
+                }
+            }
             return row;
         } else {
             return null;
@@ -946,7 +968,7 @@ public class WebClientBean {
 
     public List<Map<String, Object>> getMaxAppMenu(HttpSession session) throws SQLException {
         MaxAppMenu maxAppMenu = new MaxAppMenu();
-        return maxAppMenu.getMaxAppMenu(session);
+        return maxAppMenu.getMaxAppMenu();
     }
 
     /**

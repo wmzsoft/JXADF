@@ -94,7 +94,7 @@ public class JxResource {
      * @param value
      */
     public static void putHomeContent(String key, String value) {
-        if (value == null) {
+        if (value != null) {
             homeContent.put(key, value);
         } else {
             homeContent.remove(key);

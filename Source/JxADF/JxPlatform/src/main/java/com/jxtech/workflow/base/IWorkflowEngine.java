@@ -54,7 +54,7 @@ public interface IWorkflowEngine {
     
     public InputStream readImage(String uid, String instanceId) throws JxException;
 
-
+    public InputStream readImage(String uid, String instanceId, String appName) throws JxException;
     /**
      * 获取工作流角色
      *

@@ -133,7 +133,7 @@ public class JxWXPExportImpl implements JxWXPExport {
             workbook.write(dos);
             //String fileName = URLEncoder.encode(title, "UTF-8");
             String fileName = new String(title.getBytes("GB2312"),"ISO-8859-1");
-            return new FileTransfer(fileName+".xls", "application/msexcel", bos.toByteArray());
+            return new FileTransfer("\"" + fileName+".xls\"", "application/msexcel", bos.toByteArray());
         } catch (IOException e) {
             throw new JxException(e.getMessage());
         } finally {

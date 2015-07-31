@@ -50,6 +50,15 @@ public interface JboSetIFace extends Serializable {
 
     public boolean commit() throws JxException;
 
+    /**
+     * 提交数据
+     * 
+     * @param flag，标识是否检查校验一些东东，详细参见常数JboSetIFace.SAVE_NO_CHECK_xxx
+     * @return
+     * @throws JxException
+     */
+    public boolean commit(long flag) throws JxException;
+
     public boolean beforeAdd() throws JxException;
 
     public boolean canAdd() throws JxException;
@@ -305,5 +314,18 @@ public interface JboSetIFace extends Serializable {
      * @throws JxException
      */
     public boolean canSave() throws JxException;
+
+    /**
+     * 获得安全限制条件，加载maxapp表中配置的条件和角色数据配置中的条件
+     * 
+     * @param elValue true时，计算EL表达式的值，否则不用计算
+     * @return
+     * @throws JxException
+     */
+    public String getSecurityrestrict(boolean elValue) throws JxException;
+
+    public long getSaveFlag();
+
+    public void setSaveFlag(long saveFlag);
 
 }

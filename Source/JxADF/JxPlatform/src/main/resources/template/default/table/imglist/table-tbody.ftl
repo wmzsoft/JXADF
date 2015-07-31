@@ -86,7 +86,7 @@ $author:wmzsoft@gmail.com
                     </#if>
                     <#if ((col_index == 0) && !(parameters.readonly!false))>
                         <#if (parameters.selectmode == "MULTIPLE")>
-                            <input type="checkbox" name="ck_${parameters.id}" index="${jbo_index}" id="${jbo.uidName!jbo_index}_${jbo.uidValue!0}"  value="${jbo.uidValue!0}"  onclick="ckOneSelectHandler(this,'${jbo_index}')" class="imglistcheck"/><#t>
+                            <input type="checkbox" name="ck_${parameters.id}" index="${jbo_index}" id="${jbo.uidName!jbo_index}_${jbo.uidValue!0}"  value="${jbo.uidValue!0}"  onclick="ckOneSelect(this,event,'${jbo_index}')" class="imglistcheck"/><#t>
                         </#if>
                     </#if>
                 </#list>

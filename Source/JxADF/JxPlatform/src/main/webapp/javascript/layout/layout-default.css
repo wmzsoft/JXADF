@@ -69,7 +69,7 @@ body {
  *	RESIZER-BARS
  */
 .ui-layout-resizer	{ /* all 'resizer-bars' */
-	background:		#fff;
+	background:		#DDD;
 	border:			1px solid #BBB;
 	border-width:	0;
 	}
@@ -81,7 +81,7 @@ body {
 		otherwise color shifts while dragging when bar can't keep up with mouse */
 	.ui-layout-resizer-open-hover ,	/* hover-color to 'resize' */
 	.ui-layout-resizer-dragging {	/* resizer beging 'dragging' */
-		background:none;
+		background: #C4E1A4;
 	}
 	.ui-layout-resizer-dragging {	/* CLONED resizer being dragged */
 		border: 	 1px solid #BBB;
@@ -124,7 +124,10 @@ body {
 	border: 1px solid #BBB; /* match pane-border */
 	background-color: #BBB;
 	}
-	
+	.ui-layout-resizer-hover .ui-layout-toggler {
+		opacity: .60;
+		filter:  alpha(opacity=60);
+	}
 	.ui-layout-toggler-hover , /* need when NOT resizable */
 	.ui-layout-resizer-hover .ui-layout-toggler-hover { /* need specificity when IS resizable */
 		background-color: #FC6;

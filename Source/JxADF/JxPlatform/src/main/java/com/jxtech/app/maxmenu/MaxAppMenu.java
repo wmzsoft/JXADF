@@ -1,5 +1,18 @@
 package com.jxtech.app.maxmenu;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jxtech.common.JxResource;
 import com.jxtech.db.util.JxDataSourceUtil;
 import com.jxtech.i18n.LanguageFactory;
@@ -7,49 +20,69 @@ import com.jxtech.i18n.LanguageIface;
 import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.base.JxUserInfo;
 import com.jxtech.util.CacheUtil;
+import com.jxtech.util.JsonUtil;
 import com.jxtech.util.StrUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpSession;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
 
 /**
- * Created by zhouyu on 2014-10-09.
+ * Created by zhouyu on 2014-10-09. modify by wmzsoft@gmail.com on 2015.07
  */
 public class MaxAppMenu {
     private static final Logger LOG = LoggerFactory.getLogger(MaxAppMenu.class);
     public static final String CACHE_PREX = "MENU.";
+    public static final int APP_VISIBLE_ENABLED = 1;
+    public static final int APP_VISIBLE_DISABLE = 0;
+    public static final int APP_VISIBLE_ALL = -1;
 
     /**
-     * 获得应用程序菜单
-     *
-     * @param session
+     * 获得应用程序菜单,用于作菜单使用
+     * 
+     * @return
+     * @throws SQLException
+     */
+    public List<Map<String, Object>> getMaxAppMenu() throws SQLException {
+        return getMaxAppMenu(APP_VISIBLE_ENABLED, null, true, false);
+    }
+
+    /**
+     * 返回菜单。
+     * 
+     * @param visible 1:可视,0:不可视,-1：全部
+     * @param where 自定义的Where条件
+     * @param permission true：当前用户的权限
+     * @param workflow true:只显示工作流的应用程序
      * @return
      * @throws SQLException
      */
     @SuppressWarnings("unchecked")
-    public List<Map<String, Object>> getMaxAppMenu(HttpSession session) throws SQLException {
-        StringBuilder ck = new StringBuilder(CACHE_PREX);
-        ck.append(JxSession.getUserId()).append(".");
-        ck.append(JxSession.getUserLang());
-        String cachekey = ck.toString();
+    public List<Map<String, Object>> getMaxAppMenu(int visible, String where, boolean permission, boolean workflow) throws SQLException {
+        String cachekey = StrUtil.contact(CACHE_PREX, JxSession.getUserId(), ".", JxSession.getUserLang(), String.valueOf(visible), where, String.valueOf(permission), String.valueOf(workflow));
         Object objv = CacheUtil.getPermission(cachekey);
         if (objv instanceof List) {
             return (List<Map<String, Object>>) objv;
         }
         StringBuilder sql = new StringBuilder();
-        sql.append("select * from MAXAPPS ");
-        sql.append("where ORDERID > 0 and app in (select app ");
-        sql.append("from maxmenu a, pub_role_operation b,pub_role_user c ");
-        sql.append("where a.maxmenuid = b.menu_id and b.role_id=c.role_id and a.visible=1 ");
-        sql.append("and c.user_id = ?) ");
-        sql.append("or apptype = 'MODULE'");
-        sql.append("order by orderid asc, apptype desc");
+        sql.append(" select * from MAXAPPS ");
+        sql.append(" where ORDERID > 0 ");
+        if (permission && !JxSession.isSuperManager()) {
+            permission = false;
+        }
+        if (permission) {
+            sql.append(" and app in (select app from maxmenu a, pub_role_operation b,pub_role_user c ");
+            sql.append(" where a.maxmenuid = b.menu_id and b.role_id=c.role_id ");
+            if (visible > 0) {
+                sql.append(" and a.visible=").append(visible);
+            }
+            sql.append(" and c.user_id = ?) ");
+        }
+        if (workflow) {
+            // 只显示工作流的应用
+            sql.append(" and length(custapptype)>1 ");
+        }
+        if (!StrUtil.isNull(where)) {
+            sql.append(" and (").append(where).append(')');
+        }
+        sql.append(" or apptype = 'MODULE'");
+        sql.append(" order by orderid asc, apptype desc");
 
         Connection conn = null;
         List<Map<String, Object>> result = null;
@@ -58,17 +91,13 @@ public class MaxAppMenu {
         try {
             conn = JxDataSourceUtil.getConnection(null);
             ps = conn.prepareStatement(sql.toString());
-            JxUserInfo userInfo = null;
-            if (session != null) {
-                Object obj = session.getAttribute(JxSession.USER_INFO);
-                if (obj != null) {
-                    userInfo = (JxUserInfo) obj;
-                }
-            }
+            JxUserInfo userInfo = JxSession.getJxUserInfo();
 
             if (userInfo != null) {
                 result = new ArrayList<Map<String, Object>>();
-                ps.setString((int) 1, userInfo.getUserid());
+                if (permission) {
+                    ps.setString((int) 1, userInfo.getUserid());
+                }
                 rs = ps.executeQuery();
                 // ResourceBundle zTreeBundle = JxLangResourcesUtil.getResourceBundle("res.tree.menu");
                 LanguageIface language = LanguageFactory.getLanguage(null);
@@ -134,14 +163,14 @@ public class MaxAppMenu {
 
     /**
      * 移出无效的菜单,只有模块，没有应用的需要移出
-     *
+     * 
      * @param list
      */
     private void removeInvaildMenu(List<Map<String, Object>> list) {
         if (list == null) {
             return;
         }
-        for (Iterator<Map<String, Object>> it = list.iterator(); it.hasNext(); ) {
+        for (Iterator<Map<String, Object>> it = list.iterator(); it.hasNext();) {
             Map<String, Object> menu = it.next();
             if ("MODULE".equalsIgnoreCase((String) menu.get("appType"))) {
                 if (!hasApp(list, (String) menu.get("app"))) {
@@ -153,7 +182,7 @@ public class MaxAppMenu {
 
     /**
      * 这个模块中，是否有应用
-     *
+     * 
      * @param list
      * @param module
      * @return
@@ -177,5 +206,10 @@ public class MaxAppMenu {
             }
         }
         return false;
+    }
+
+    public String getMaxAppMenuJson(int visible, String where, boolean permission, boolean workflow) throws SQLException {
+        List<Map<String, Object>> list = getMaxAppMenu(visible, where, permission, workflow);
+        return JsonUtil.toJson(list);
     }
 }

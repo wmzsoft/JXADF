@@ -5,12 +5,8 @@ $author:wmzsoft@gmail.com
 #date:2013.08
 **/
 -->
-</tbody>
-</table>
-</td>
-</tr>
-</tbody>
-</table>
+</div>
+</div>
 </form>
 <#if (parameters.jboname??) && ((parameters.type!'x')!="VIEW")>
   <script type="text/javascript"><#t>
