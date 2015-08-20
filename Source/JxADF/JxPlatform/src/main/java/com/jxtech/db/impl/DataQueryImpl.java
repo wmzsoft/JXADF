@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.jxtech.jbo.auth.JxSession;
+import com.jxtech.jbo.base.JxUserInfo;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
@@ -26,7 +28,6 @@ import com.jxtech.util.JsonUtil;
 import com.jxtech.util.StrUtil;
 
 /**
- * 
  * @author wmzsoft@gmail.com
  * @date 2015.03
  */
@@ -57,7 +58,6 @@ public abstract class DataQueryImpl implements DataQuery {
     }
 
     /**
-     * 
      * @param conn
      * @param tablename
      * @param queryInfo
@@ -85,7 +85,7 @@ public abstract class DataQueryImpl implements DataQuery {
 
     /**
      * 执行数据库的sql函数
-     * 
+     *
      * @param conn
      * @param tablename
      * @param columnName
@@ -114,11 +114,26 @@ public abstract class DataQueryImpl implements DataQuery {
         if (!StrUtil.isNull(whereCause)) {
             msql.append(" where ").append(whereCause);
         }
+
+        JxUserInfo userInfo = JxSession.getJxUserInfo();
+        
+        if (null != userInfo) {
+            String siteId = userInfo.getSiteid();
+            String orgId = userInfo.getOrgid();
+            if (!StrUtil.isNull(siteId)) {
+                msql.append(" and siteid = '").append(siteId).append("'");
+            }
+
+            if (!StrUtil.isNull(orgId)) {
+                msql.append(" and orgid = '").append(orgId).append("'");
+            }
+        }
+
         String ps = StrUtil.toString(params);
         if (ps != null) {
             ps = String.valueOf(ps.hashCode());
         }
-        String ckey = StrUtil.contact(DBFactory.CACHE_PREX,".", String.valueOf(msql.hashCode()), ".", ps);
+        String ckey = StrUtil.contact(DBFactory.CACHE_PREX, ".", String.valueOf(msql.hashCode()), ".", ps);
         Object val = CacheUtil.getJbo(ckey);// 读取缓存
         if (val != null) {
             return val;
@@ -141,9 +156,9 @@ public abstract class DataQueryImpl implements DataQuery {
 
     /**
      * 通过SQL脚本、参数得到结果集
-     * 
-     * @param conn 数据库连接
-     * @param msql SQL脚本
+     *
+     * @param conn   数据库连接
+     * @param msql   SQL脚本
      * @param params 参数值
      * @return
      */
@@ -162,7 +177,7 @@ public abstract class DataQueryImpl implements DataQuery {
 
     /**
      * 通过SQL脚本、参数得到结果集
-     * 
+     *
      * @param msql
      * @param params
      * @return
@@ -182,8 +197,8 @@ public abstract class DataQueryImpl implements DataQuery {
 
     /**
      * 统计记录数
-     * 
-     * @param conn 数据库连接
+     *
+     * @param conn       数据库连接
      * @param tablename
      * @param whereCause
      * @param params
@@ -224,7 +239,7 @@ public abstract class DataQueryImpl implements DataQuery {
 
     /**
      * 计算count
-     * 
+     *
      * @param tablename
      * @param qbe
      * @return
@@ -240,7 +255,7 @@ public abstract class DataQueryImpl implements DataQuery {
 
     /**
      * 检查是否存在某条记录信息
-     * 
+     *
      * @param conn
      * @param tableName
      * @param columnName
@@ -253,7 +268,7 @@ public abstract class DataQueryImpl implements DataQuery {
             return false;
         }
         String where = columnName + "=?";
-        int c = count(conn, tableName, where, new Object[] { columnValue });
+        int c = count(conn, tableName, where, new Object[]{columnValue});
         return (c > 0);
     }
 
@@ -265,7 +280,7 @@ public abstract class DataQueryImpl implements DataQuery {
         Connection conn = JxDataSourceUtil.getConnection(dataSourceName);
         int c = 0;
         try {
-            c = count(conn, tableName, where, new Object[] { columnValue });
+            c = count(conn, tableName, where, new Object[]{columnValue});
         } finally {
             JxDataSourceUtil.close(conn);
         }
@@ -274,7 +289,7 @@ public abstract class DataQueryImpl implements DataQuery {
 
     /**
      * 返回最大值
-     * 
+     *
      * @param conn
      * @param tablename
      * @param columnName
@@ -298,7 +313,7 @@ public abstract class DataQueryImpl implements DataQuery {
 
     /**
      * 返回最小值
-     * 
+     *
      * @param conn
      * @param tablename
      * @param columnName
@@ -322,7 +337,7 @@ public abstract class DataQueryImpl implements DataQuery {
 
     /**
      * 执行SQL语句中的SUM函数
-     * 
+     *
      * @param conn
      * @param tablename
      * @param columnName
@@ -393,8 +408,8 @@ public abstract class DataQueryImpl implements DataQuery {
 
     /**
      * 将SQL语句直接转换为JSON格式。
-     * 
-     * @param conn 数据库连接
+     *
+     * @param conn    数据库连接
      * @param msql
      * @param params
      * @param columns
@@ -417,8 +432,8 @@ public abstract class DataQueryImpl implements DataQuery {
 
     /**
      * 将SQL语句直接转换为JSON格式。
-     * 
-     * @param conn 数据库连接
+     *
+     * @param conn     数据库连接
      * @param msql
      * @param params
      * @param columns

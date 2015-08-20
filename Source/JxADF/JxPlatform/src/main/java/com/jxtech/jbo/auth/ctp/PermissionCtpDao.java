@@ -42,11 +42,11 @@ public class PermissionCtpDao implements AuthenticateIFace {
         if (StrUtil.isNull(userid)) {
             return null;
         }
-        //采用懒加载，用到的时候，再加载吧
+        // 采用懒加载，用到的时候，再加载吧
         PermissionIFace perm = new PermissionCTP();
-        //perm.setFunctions(getFunctions());
-        //perm.setUserFunctions(getUserFunctions(userid));
-        //perm.setSecurityRestrict(getSecurityRestrict(userid));
+        // perm.setFunctions(getFunctions());
+        // perm.setUserFunctions(getUserFunctions(userid));
+        // perm.setSecurityRestrict(getSecurityRestrict(userid));
         return perm;
     }
 
@@ -86,7 +86,7 @@ public class PermissionCtpDao implements AuthenticateIFace {
         JboSetIFace jboset = JboUtil.getJboSet("PUB_ROLE_OPERATION");
         if (jboset != null) {
             DataQueryInfo qi = jboset.getQueryInfo();
-            qi.setWhereCause("ROLE_ID in (select ROLE_ID from PUB_ROLE_USER where upper(USER_ID)=upper(?))");
+            qi.setWhereCause(" OPERATION=1 and ROLE_ID in (select ROLE_ID from PUB_ROLE_USER where upper(USER_ID)=upper(?))");
             qi.setWhereParams(new Object[] { userid.toUpperCase() });
             List<JboIFace> list = jboset.queryAll();// 查询结果集
             if (list != null) {
@@ -159,8 +159,13 @@ public class PermissionCtpDao implements AuthenticateIFace {
             LOG.warn("不知查询哪个用户，loginid is null.");
             return null;
         }
-        PubUserSetIFace jboset = (PubUserSetIFace) JboUtil.getJboSet("PUB_USER");
-        return jboset.getUser(userid);
+        JboSetIFace obj = JboUtil.getJboSet("PUB_USER");
+        if (obj instanceof PubUserSetIFace) {
+            PubUserSetIFace jboset = (PubUserSetIFace) obj;
+            return jboset.getUser(userid);
+        } else {
+            return obj.queryJbo("user_id", userid);
+        }
     }
 
     public JboIFace getDepartment(String department) throws JxException {

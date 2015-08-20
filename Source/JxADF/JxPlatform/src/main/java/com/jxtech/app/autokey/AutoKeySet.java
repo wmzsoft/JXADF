@@ -9,8 +9,6 @@ import com.jxtech.util.StrUtil;
 import java.util.List;
 
 /**
- * 
- * 
  * @author wmzsoft@gmail.com
  * @date 2014.05
  */
@@ -18,7 +16,7 @@ import java.util.List;
 public class AutoKeySet extends JboSet implements AutoKeySetIFace {
 
     /**
-     * 
+     *
      */
     private static final long serialVersionUID = 3311405484526268655L;
 
@@ -30,7 +28,7 @@ public class AutoKeySet extends JboSet implements AutoKeySetIFace {
 
     /**
      * 生成自动增长编号
-     * 
+     *
      * @param keyname
      * @param orgid
      * @param siteid
@@ -42,10 +40,10 @@ public class AutoKeySet extends JboSet implements AutoKeySetIFace {
         if (StrUtil.isNull(keyname)) {
             throw new JxException("没有指定 AutoKey Name,keyname=" + keyname + ",siteid=" + siteid + ",orgid=" + orgid);
         }
+
         DataQueryInfo dqi = getQueryInfo();
         dqi.putParams("autokeyname=upper(?)", keyname);
-        dqi.putParams("orgid=upper(?)", orgid);
-        dqi.putParams("siteid=upper(?)", siteid);
+
         List<JboIFace> list = query();
         if (list != null) {
             if (list.size() > 0) {

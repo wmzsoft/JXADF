@@ -3,7 +3,10 @@ package com.jxtech.common;
 import com.jxtech.app.usermetadata.MetaData;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.auth.JxSession;
+import com.jxtech.jbo.auth.PermissionFactory;
+import com.jxtech.jbo.auth.PermissionIFace;
 import com.jxtech.jbo.base.JxUserInfo;
+import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.ClassUtil;
 import com.jxtech.util.ELUtil;
 import com.opensymphony.xwork2.ActionContext;
@@ -12,6 +15,7 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.StrutsStatics;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -65,6 +69,36 @@ public class JxActionSupport extends ActionSupport {
 
     public Object getJxSessionkey(String key) {
         return JxSession.getSession(key);
+    }
+
+    /**
+     * 检查某个应用对应的按钮是否有权限
+     * 
+     * @param app
+     * @param menu
+     * @return
+     */
+    public boolean isPermission(String app, String menu) {
+        PermissionIFace pi = PermissionFactory.getPermissionInstance();
+        return pi.hasFunctions(app, menu);
+    }
+
+    /**
+     * 检查当前URL是否有权限
+     * 
+     * @return
+     */
+    public boolean isPermission() {
+        ActionContext context = ActionContext.getContext();
+        HttpServletRequest request = (HttpServletRequest) context.get(StrutsStatics.HTTP_REQUEST);
+        HttpServletResponse response = (HttpServletResponse) context.get(StrutsStatics.HTTP_RESPONSE);
+        PermissionIFace pi = PermissionFactory.getPermissionInstance();
+        try {
+            return pi.isPermission(null, request, response);
+        } catch (JxException e) {
+            LOG.error(e.getMessage(), e);
+            return false;
+        }
     }
 
     /**

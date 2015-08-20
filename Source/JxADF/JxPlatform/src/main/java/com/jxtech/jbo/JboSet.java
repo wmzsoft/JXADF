@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jxtech.db.DBFactory;
+import com.jxtech.db.DataEdit;
 import com.jxtech.db.DataQuery;
 import com.jxtech.db.util.JxDataSourceUtil;
 import com.jxtech.i18n.JxLangResourcesUtil;
@@ -353,7 +354,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
 
     @Override
     public boolean commit(long flag) throws JxException {
-        setSaveFlag(flag);//设定保存标识
+        setSaveFlag(flag);// 设定保存标识
         Connection conn = JxDataSourceUtil.getConnection(this.getDataSourceName());
         boolean bflag = true;
         try {
@@ -363,11 +364,14 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
 
             if (bflag) {
                 // currentjbo在上面已经保存过来，就要将其移除掉不需要再次保存了。
-                getJbolist().remove(currentJbo);
+                List<JboIFace> lists = getJbolist();
+                if (lists != null) {
+                    lists.remove(currentJbo);
+                }
                 bflag = save(conn);
             }
-            //移出缓存
-            String key = StrUtil.contact(DBFactory.CACHE_PREX,getJboname(),".");
+            // 移出缓存
+            String key = StrUtil.contact(DBFactory.CACHE_PREX, getJboname(), ".");
             CacheUtil.removeJboOfStartWith(key);
         } catch (Exception e) {
             LOG.error(e.getMessage());
@@ -588,6 +592,89 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
                 JboIFace tempJbo = add();
                 tempJbo.getData().putAll(lookupJbo.getData());
             }
+        }
+    }
+
+    /**
+     * 获得树节点及其所有的子节点
+     * 
+     * @param parentName 父节点的字段名
+     * @param parentValue 父节点的值
+     * @param idName 标识字段名称
+     * @return
+     * @throws JxException
+     */
+    public List<JboIFace> getTree(String parentName, String parentValue, String idName, boolean includeSelf) throws JxException {
+        List<JboIFace> lists = new ArrayList<JboIFace>();
+        JboSetIFace js = JboUtil.getJboSet(getJboname());
+        DataQueryInfo dqi = js.getQueryInfo();
+        if (includeSelf) {
+            // 添加自己这条记录
+            if (StrUtil.isNull(parentValue)) {
+                dqi.setWhereCause(StrUtil.contact(idName, " is NUll"));
+            } else {
+                dqi.setWhereCause(StrUtil.contact(idName, "=?"));
+                dqi.setWhereParams(new Object[] { parentValue });
+            }
+            List<JboIFace> self = js.queryAll();
+            lists.addAll(self);
+        }
+        if (StrUtil.isNull(parentValue)) {
+            dqi.setWhereCause(StrUtil.contact(parentName, " is Null "));
+        } else {
+            dqi.setWhereCause(StrUtil.contact(parentName, "=?"));
+            dqi.setWhereParams(new Object[] { parentValue });
+        }
+        List<JboIFace> children = js.queryAll();
+        if (children != null) {
+            int size = children.size();
+            for (int i = 0; i < size; i++) {
+                JboIFace ji = children.get(i);
+                lists.add(ji);
+                lists.addAll(getTree(parentName, ji.getString(idName), idName, false));
+            }
+        }
+        return lists;
+    }
+
+    /**
+     * 直接根据条件删除数据
+     * 
+     * @param conn
+     * @param whereCause
+     * @param params
+     * @return
+     * @throws JxException
+     */
+    public boolean delete(Connection conn, String whereCause, Object[] params) throws JxException {
+        DataEdit de = DBFactory.getDataEdit(this.getDbtype(), this.getDataSourceName());
+        try {
+            String msql = StrUtil.contact("delete from ", this.getEntityname()," where ", whereCause);
+            return de.execute(conn, msql, params);
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+            return false;
+        }
+    }
+
+    /**
+     * 直接删除数据，并提交
+     * 
+     * @param whereCause
+     * @param params
+     * @return
+     * @throws JxException
+     */
+    public boolean delete(String whereCause, Object[] params) throws JxException {
+        Connection conn = JxDataSourceUtil.getConnection(this.getDataSourceName());
+        try {
+            delete(conn, whereCause, params);
+            conn.commit();
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            JxDataSourceUtil.close(conn);
         }
     }
 

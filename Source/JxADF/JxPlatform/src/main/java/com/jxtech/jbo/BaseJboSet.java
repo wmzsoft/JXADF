@@ -10,6 +10,7 @@ import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.auth.PermissionFactory;
 import com.jxtech.jbo.base.*;
 import com.jxtech.jbo.util.DataQueryInfo;
+import com.jxtech.jbo.util.JxConstant;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.tag.table.Table;
 import com.jxtech.tag.table.Tablecol;
@@ -26,7 +27,7 @@ import java.util.Map.Entry;
 
 /**
  * 基类JboSet,此类不操作数据库
- * 
+ *
  * @author wmzsoft@gmail.com
  * @date 2014.11
  */
@@ -66,7 +67,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 命名规则：appname,appnameSet 子类必须覆盖此方法
-     * 
+     *
      * @return
      * @throws JxException
      */
@@ -120,7 +121,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 删除Jbo中所有的记录
-     * 
+     *
      * @return
      * @throws JxException
      */
@@ -139,7 +140,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 仅仅标记为删除，不执行真正地删除操作。
-     * 
+     *
      * @param uid
      * @return
      * @throws JxException
@@ -247,7 +248,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 获得查询条件
-     * 
+     *
      * @param flag ClearParams 清除之前记忆的查询条件。
      * @return
      */
@@ -331,7 +332,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 返回Autokey的字段信息
-     * 
+     *
      * @return
      * @throws JxException
      */
@@ -405,7 +406,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 返回JSON格式的字符串
-     * 
+     *
      * @param attributes 字段名,为空则显示所有字段信息
      */
     @Override
@@ -423,33 +424,51 @@ public abstract class BaseJboSet implements JboSetIFace {
             if (jui != null) {
                 try {
                     Map<String, JxAttribute> attrs = getJxAttributes();
-                    if (attrs != null) {
-                        String usid = jui.getSiteid();
+                    JxObject jxObject = getJxobject();
+
+                    String siteOrgType = "";
+                    if (null != jxobject) {
+                        siteOrgType = jxObject.getSiteorgtype();
+                    }
+
+                    if (!StrUtil.isNull(siteOrgType) && attrs != null) {
                         String uoid = jui.getOrgid();
-                        if (StrUtil.isNull(uoid)) {
-                            if (!StrUtil.isNull(usid)) {
-                                // 组织为空，地点不为空
-                                if (attrs.containsKey("SITEID")) {
-                                    queryInfo.setOrgsiteClause(" SITEID = ? ");
-                                    queryInfo.setOrgsiteParams(new String[] { usid });
-                                }
+                        String usid = jui.getSiteid();
+
+                        if (siteOrgType.equalsIgnoreCase(JxConstant.ORG) || siteOrgType.equalsIgnoreCase(JxConstant.ORG_ZH)) {
+                            //组织级别
+                            if (!StrUtil.isNull(uoid) && attrs.containsKey("ORGID")) {
+                                queryInfo.setOrgsiteClause(" ORGID = ? ");
+                                queryInfo.setOrgsiteParams(new String[]{uoid});
                             }
-                        } else {
-                            // 组织不为空
-                            if (StrUtil.isNull(usid)) {
-                                // 地点为空
-                                if (attrs.containsKey("ORGID")) {
-                                    queryInfo.setOrgsiteClause(" ORGID = ? ");
-                                    queryInfo.setOrgsiteParams(new String[] { uoid });
+                        } else if (siteOrgType.equalsIgnoreCase(JxConstant.SITE) || siteOrgType.equalsIgnoreCase(JxConstant.SITE_ZH)) {
+                            //地点级别
+                            if (StrUtil.isNull(uoid)) {
+                                if (!StrUtil.isNull(usid)) {
+                                    // 组织为空，地点不为空
+                                    if (attrs.containsKey("SITEID")) {
+                                        queryInfo.setOrgsiteClause(" SITEID = ? ");
+                                        queryInfo.setOrgsiteParams(new String[]{usid});
+                                    }
                                 }
                             } else {
-                                // 地点不为空
-                                if (attrs.containsKey("SITEID") && attrs.containsKey("ORGID")) {
-                                    queryInfo.setOrgsiteClause(" SITEID = ? AND ORGID = ? ");
-                                    queryInfo.setOrgsiteParams(new String[] { usid, uoid });
+                                // 组织不为空
+                                if (StrUtil.isNull(usid)) {
+                                    // 地点为空
+                                    if (attrs.containsKey("ORGID")) {
+                                        queryInfo.setOrgsiteClause(" ORGID = ? ");
+                                        queryInfo.setOrgsiteParams(new String[]{uoid});
+                                    }
+                                } else {
+                                    // 地点不为空
+                                    if (attrs.containsKey("SITEID") && attrs.containsKey("ORGID")) {
+                                        queryInfo.setOrgsiteClause(" SITEID = ? AND ORGID = ? ");
+                                        queryInfo.setOrgsiteParams(new String[]{usid, uoid});
+                                    }
                                 }
                             }
                         }
+
                     }
                 } catch (JxException e) {
                     LOG.error(e.getMessage());
@@ -461,15 +480,12 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     @Override
     public void setQueryInfo(DataQueryInfo queryInfo) {
-        /*
-         * try { String orderby1 = queryInfo.getOrderby(); String orderby2 = jxTable.getTableModle().getOrderby(); if(StrUtil.isNull(orderby1)){ queryInfo.setOrderby(orderby2); }else{ if(!StrUtil.isNull(orderby2)) queryInfo.setOrderby(orderby1+","+orderby2); } } catch (Exception e) { e.printStackTrace(); }
-         */
         this.queryInfo = queryInfo;
     }
 
     /**
      * 返回JSON数据格式
-     * 
+     *
      * @param attributes 属性名
      * @head 是否返回头部
      */
@@ -531,19 +547,19 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 返回zTree的JSON格式的字符串
-     * 
-     * @param attributes 需要返回的字段名
-     * @param idName 唯一关键字（与父节点关联）的字段名
+     *
+     * @param attributes   需要返回的字段名
+     * @param idName       唯一关键字（与父节点关联）的字段名
      * @param parentIdName 父节点字段名
-     * @param name 显示
+     * @param name         显示
      * @param hasChildName 是否有孩子节点字段名
-     * @param leafDisplay 是否显示叶子节点,true显示，false不显示
+     * @param leafDisplay  是否显示叶子节点,true显示，false不显示
      * @return
      */
     @Override
     public String toZTreeJson(String[] attributes, String idName, String parentIdName, String name, String hasChildName, boolean leafDisplay, String root, String i18n) throws JxException {
         ResourceBundle zTreeBundle = null;
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         boolean isCustomRoot = !StrUtil.isNull(root);
         boolean isI18n = !StrUtil.isNull(i18n);
         if (isI18n) {
@@ -609,7 +625,7 @@ public abstract class BaseJboSet implements JboSetIFace {
                 isLeaf = !dto.getBoolean(hasChildName);
             } else if (!StrUtil.isNull(parentIdName)) {
                 DataQuery dq = DBFactory.getDataQuery(dbtype, dataSourceName);
-                isLeaf = !dq.exist(getJboname(), parentIdName, dto.getString(idName));
+                isLeaf = !dq.exist(getEntityname(), parentIdName, dto.getString(idName));
             }
             if (isLeaf && !leafDisplay) {
                 continue;
@@ -721,7 +737,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 返回某个属性的最大值
-     * 
+     *
      * @param attributename
      * @return
      * @throws JxException
@@ -734,7 +750,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 返回最小值
-     * 
+     *
      * @param attributename
      * @return
      * @throws JxException
@@ -747,7 +763,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 统计合
-     * 
+     *
      * @param attributename
      * @return
      * @throws JxException
@@ -941,7 +957,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 是否可以保存此集合
-     * 
+     *
      * @return
      * @throws JxException
      */

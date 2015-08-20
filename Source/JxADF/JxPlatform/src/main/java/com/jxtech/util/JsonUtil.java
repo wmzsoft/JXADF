@@ -60,7 +60,6 @@ public class JsonUtil {
         return null;
     }
 
-
     /**
      * 返回值的数组
      * 
@@ -222,25 +221,26 @@ public class JsonUtil {
         sb.append("]");
         return sb.toString();
     }
-    
 
-	public static JsonConfig config = new JsonConfig(); 
-	
-	static{  
-	        config.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);//忽略循环，避免死循环  
-	        config.registerJsonValueProcessor(Date.class, new JsonValueProcessor() {//处理Date日期转换  
-	            @Override  
-	            public Object processObjectValue(String arg0, Object arg1, JsonConfig arg2) {  
-	                 SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");  
-	                    Date d=(Date) arg1;  
-	                    return sdf.format(d);  
-	            }  
-	            @Override  
-	            public Object processArrayValue(Object arg0, JsonConfig arg1) {  
-	                return null;  
-	            }  
-	        });  
-	    }  
+    public static JsonConfig config = new JsonConfig();
+
+    static {
+        config.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);// 忽略循环，避免死循环
+        config.registerJsonValueProcessor(Date.class, new JsonValueProcessor() {// 处理Date日期转换
+                    @Override
+                    public Object processObjectValue(String arg0, Object arg1, JsonConfig arg2) {
+                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        Date d = (Date) arg1;
+                        return sdf.format(d);
+                    }
+
+                    @Override
+                    public Object processArrayValue(Object arg0, JsonConfig arg1) {
+                        return null;
+                    }
+                });
+    }
+
     /**
      * 直接转换为标准的JSON格式
      * 
@@ -263,8 +263,10 @@ public class JsonUtil {
             return null;
         }
     }
+
     /**
      * 是否是json字符串
+     * 
      * @param str
      * @return
      */
@@ -281,60 +283,63 @@ public class JsonUtil {
         }
     }
 
-      
-    /**  
-     * java object convert to json string 
-     */    
-    public static String pojo2json(Object obj){  
-        return JSONObject.fromObject(obj,config).toString();//可以用toString(1)来实现格式化，便于阅读    
-    }    
-        
-    /**  
-     * array、map、Javabean convert to json string 
-     */    
-    public static String object2json(Object obj){    
-        return JSONSerializer.toJSON(obj).toString();    
-    }            
-        
-    /**  
-     * json string convert to javaBean 
-     * @param <T> 
-     */    
-    @SuppressWarnings("unchecked")  
-    public static <T> T json2pojo(String jsonStr,Class<T> clazz){    
-        JSONObject jsonObj = JSONObject.fromObject(jsonStr);    
-        T obj = (T) JSONObject.toBean(jsonObj, clazz);    
-        return obj;    
-    }  
-      
-    /** 
-     * json string convert to map 
-     */  
-    public static Map<String,Object> json2map(String jsonStr){  
-        JSONObject jsonObj = JSONObject.fromObject(jsonStr);  
-        Map<String,Object> result = (Map<String, Object>) JSONObject.toBean(jsonObj, Map.class);  
-        return result;  
-    }  
-   
-        
-    /**  
-     * json string convert to array 
-     */    
-    public static Object[] json2arrays(String jsonString) {    
-        JSONArray jsonArray = (JSONArray) JSONSerializer.toJSON(jsonString);     
-        JsonConfig jsonConfig = new JsonConfig();  
-        jsonConfig.setArrayMode(JsonConfig.MODE_OBJECT_ARRAY);  
-        Object[] objArray = (Object[]) JSONSerializer.toJava(jsonArray,jsonConfig);  
-        return objArray;  
-    }    
-        
-    /**  
-     * json string convert to list 
-     * @param <T> 
-     */    
-    @SuppressWarnings({ "unchecked", "deprecation" })  
-    public static <T> List<T> json2list(String jsonString, Class<T> pojoClass){    
-        JSONArray jsonArray = JSONArray.fromObject(jsonString);    
-        return JSONArray.toList(jsonArray, pojoClass);  
-    }    
+    /**
+     * java object convert to json string
+     */
+    public static String pojo2json(Object obj) {
+        return JSONObject.fromObject(obj, config).toString();// 可以用toString(1)来实现格式化，便于阅读
+    }
+
+    /**
+     * array、map、Javabean convert to json string
+     */
+    public static String object2json(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        return JSONSerializer.toJSON(obj).toString();
+    }
+
+    /**
+     * json string convert to javaBean
+     * 
+     * @param <T>
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T json2pojo(String jsonStr, Class<T> clazz) {
+        JSONObject jsonObj = JSONObject.fromObject(jsonStr);
+        T obj = (T) JSONObject.toBean(jsonObj, clazz);
+        return obj;
+    }
+
+    /**
+     * json string convert to map
+     */
+    public static Map<String, Object> json2map(String jsonStr) {
+        JSONObject jsonObj = JSONObject.fromObject(jsonStr);
+        Map<String, Object> result = (Map<String, Object>) JSONObject.toBean(jsonObj, Map.class);
+        return result;
+    }
+
+    /**
+     * json string convert to array
+     */
+    public static Object[] json2arrays(String jsonString) {
+        JSONArray jsonArray = (JSONArray) JSONSerializer.toJSON(jsonString);
+        JsonConfig jsonConfig = new JsonConfig();
+        jsonConfig.setArrayMode(JsonConfig.MODE_OBJECT_ARRAY);
+        Object[] objArray = (Object[]) JSONSerializer.toJava(jsonArray, jsonConfig);
+        return objArray;
+    }
+
+    /**
+     * json string convert to list
+     * 
+     * @param <T>
+     */
+    @SuppressWarnings({ "unchecked", "deprecation" })
+    public static <T> List<T> json2list(String jsonString, Class<T> pojoClass) {
+        JSONArray jsonArray = JSONArray.fromObject(jsonString);
+        return JSONArray.toList(jsonArray, pojoClass);
+    }
 }

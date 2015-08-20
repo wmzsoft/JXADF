@@ -17,21 +17,28 @@ public class JxVarsFactory {
 
     // 实现变量管理的类
     private static String implClass = null;
+    // 实际类
+    private static JxVars jxvarsInstance;
 
     public static JxVars getInstance() {
+        if (jxvarsInstance != null) {
+            return jxvarsInstance;
+        }
         if (StrUtil.isNull(implClass)) {
-            return new JxVarsImpl();
+            jxvarsInstance = new JxVarsImpl();
+            return jxvarsInstance;
         }
         Object obj = ClassUtil.getInstance(implClass);
         if (obj != null && obj instanceof JxVars) {
-            return (JxVars) obj;
+            jxvarsInstance = (JxVars) obj;
         } else {
             LOG.warn("配置的变量管理类" + implClass + "不能初始化。");
         }
-        return null;
+        return jxvarsInstance;
     }
 
     public static void setImplClass(String implClass) {
         JxVarsFactory.implClass = implClass;
+        jxvarsInstance = null;
     }
 }

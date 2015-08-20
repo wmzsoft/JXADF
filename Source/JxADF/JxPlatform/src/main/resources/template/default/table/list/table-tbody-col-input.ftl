@@ -19,8 +19,7 @@ ${seq + (pagesize?number) * (pagenum?number - 1)}
     <#if (maxtype=='YORN')>
     <input type="checkbox" id="${dateid}" <#rt>
         <#if (jbo.getString(col.dataattribute)??)>
-            <#assign checkedValue=(jbo.getString(col.dataattribute))?number==1!0>
-            <#if (checkedValue)>
+            <#if ((jbo.getString(col.dataattribute)!'0')=='1')>
                 <#lt> checked="checked" <#rt>
             </#if>
         </#if>

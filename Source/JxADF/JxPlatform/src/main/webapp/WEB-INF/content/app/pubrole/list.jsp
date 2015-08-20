@@ -14,6 +14,7 @@
 
 <jxui:body appName="pubrole" appType="list">
     <jxui:form id="pubrole">
+        <table>
         <tr class="container">
             <td style="width:350px">
                 <div class="title">
@@ -34,7 +35,7 @@
                 <iframe id="mainForm" src="" frameBorder=0 onload="mainFormLoad()" class="fullover"></iframe>
             </td>
         </tr>
-
+        </table>
     </jxui:form>
 
     <script type="text/javascript">

@@ -6,14 +6,16 @@ $author:wmzsoft@gmail.com
 **/
 -->
 <!--table-thead.ftl begin-->
+<#assign isVisibleHeadDefined=false>
 <#-- 整个表格的标题以及按钮 -->
 <#if parameters.title??>
 <#--放在表头，只有第一行才能确定宽度-->
-<#if ((parameters.ignoreLayoutFixed!'false') != 'true')>
+    <#if ((parameters.ignoreLayoutFixed!'false') != 'true')>
     <tr class="fix-width-row" style="height: 0;visibility:hidden;"><#t>
         <#if (parameters.selectmode??)>
             <#if (parameters.selectmode != "NONE")>
-                <td style="height: 0;border-top-width: 0;border-bottom-width: 0;" class="table_head_${parameters.selectmode?lower_case}"></td>
+                <td style="height: 0;border-top-width: 0;border-bottom-width: 0;"
+                    class="table_head_${parameters.selectmode?lower_case}"></td>
             </#if>
         </#if>
         <#list parameters.columns as col>
@@ -26,18 +28,19 @@ $author:wmzsoft@gmail.com
             </#if>
         </#list>
     </tr><#t>
-</#if>
-<#assign colscount=0>
-<#list parameters.columns as col>
-    <#if ((col.parameters.visibleHead!true) == true)>
-        <#assign colscount = colscount+1>
     </#if>
-</#list>
-<#if (parameters.selectmode??)>
-    <#if (parameters.selectmode?upper_case != "NONE")>
-        <#assign colscount=colscount+1>
+    <#assign colscount=0>
+    <#list parameters.columns as col>
+        <#if ((col.parameters.visibleHead!true) == true)>
+            <#assign isVisibleHeadDefined=true>
+            <#assign colscount = colscount+1>
+        </#if>
+    </#list>
+    <#if (parameters.selectmode??)>
+        <#if (parameters.selectmode?upper_case != "NONE")>
+            <#assign colscount=colscount+1>
+        </#if>
     </#if>
-</#if>
 <tr>
     <td colspan="${colscount}" align="left"><#t>
   		<#include "table-thead-title.ftl"><#t>
@@ -45,12 +48,6 @@ $author:wmzsoft@gmail.com
 </tr>
 </#if>
 
-<#--快速过滤-->
-<#if (parameters.jboset?? && parameters.filterable??)>
-    <#if parameters.filterable == "true">
-        <#include "table-thead-filter.ftl"><#t>
-    </#if>
-</#if>
 
 <#-- 整个表格的列头信息 -->
 <#if ((parameters.visibleHead!true)==true)>
@@ -64,13 +61,14 @@ $author:wmzsoft@gmail.com
 <#-- 选择列 -->
     <#if (parameters.selectmode??)>
         <#if (parameters.selectmode != "NONE")>
-        <th class="table_head_${parameters.selectmode?lower_case}">
-            <#if (parameters.selectmode == "MULTIPLE")>
-                <input type="checkbox" name="allbox" onClick="ckPageSelectHandler(this,'ck_${parameters.id}');"/> <#t>
-            <#elseif (parameters.selectmode == "SINGLE")>
-            ${parameters.tagbundle['table-thead.choose']} <#t>
-            </#if>
-        </th>
+            <th class="table_head_${parameters.selectmode?lower_case}">
+                <#if (parameters.selectmode == "MULTIPLE")>
+                    <input type="checkbox" name="allbox"
+                           onClick="ckPageSelectHandler(this,'ck_${parameters.id}');"/> <#t>
+                <#elseif (parameters.selectmode == "SINGLE")>
+                ${parameters.tagbundle['table-thead.choose']} <#t>
+                </#if>
+            </th>
         </#if>
     </#if>
 
@@ -138,5 +136,12 @@ $author:wmzsoft@gmail.com
         </#if>
     </#list>
 </tr>
+
+</#if>
+<#--快速过滤-->
+<#if (parameters.jboset?? && parameters.filterable?? && !isVisibleHeadDefined)>
+    <#if parameters.filterable == "true">
+        <#include "table-thead-filter.ftl"><#t>
+    </#if>
 </#if>
 <!--table-thead.ftl end-->

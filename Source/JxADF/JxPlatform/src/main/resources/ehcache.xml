@@ -4,7 +4,7 @@
          dynamicConfig="true">
  <diskStore path="java.io.tmpdir"/>
  <defaultCache
-        maxElementsInMemory="1000"
+        maxElementsInMemory="100000"
         eternal="false"
         timeToIdleSeconds="120"
         timeToLiveSeconds="120"
@@ -12,7 +12,7 @@
         /> 
  <!-- 缓存Jbo对象 -->
  <cache name="jboCache"
-  		maxElementsInMemory="10000"
+  		maxElementsInMemory="1"
   		eternal="false"
   		timeToIdleSeconds="10000"
   		timeToLiveSeconds="10000"

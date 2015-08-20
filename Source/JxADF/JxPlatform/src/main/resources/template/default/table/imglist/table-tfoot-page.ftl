@@ -11,9 +11,13 @@ $author:wmzsoft@gmail.com
     <div class="dataTables_info" id="${parameters.id!'test'}_info" role="status" aria-live="polite">
     	共有${parameters.count!0}记录&nbsp;每页显示&nbsp;
     	  <input type='text' class='pageSelected' id='${parameters.id}_pagesize' name='pagesize'
-                 value='${parameters.pagesize!20}' SIZE='3' maxlength='3'
-                 onpaste="return pagePaste()" onblur="pageBlur('${parameters.id}')" onkeypress='return pageKeypress()'
-                 onkeydown="pageKeydown('${parameters.id}')">
+                 value='${parameters.pagesize!20}'
+                 SIZE='3'
+                 maxlength='3'
+                 originValue='${parameters.pagesize!20}'
+                 onpaste="return pagePaste()"
+                 onblur="pageBlur(this,'${parameters.id}')"
+                 onkeypress="return pageKeypress(this, event)">
     	  &nbsp;&nbsp;(
     	  <span <#if (parameters.pagesize=='20')>class="pagesize-select" </#if><#rt>
                 onclick="spanSetPageSize('${parameters.id}',20);">20</span>,&nbsp;

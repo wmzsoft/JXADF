@@ -47,7 +47,7 @@ public class MaxappsSet extends JboSet implements MaxappsSetIFace {
         Set<String> apps = new HashSet<String>();
         DataQueryInfo dqi = getQueryInfo();
         // 1、获取已明确授权的应用
-        dqi.setWhereCause(" app in ( " + "select m.app " + "from PUB_ROLE_OPERATION o, MAXMENU m,PUB_ROLE_USER r  " + "where o.menu_id=m.maxmenuid " + "and o.role_id=r.role_id " + "and r.user_id='" + userid + "') ");
+        dqi.setWhereCause(" app in ( " + "select m.app " + "from PUB_ROLE_OPERATION o, MAXMENU m,PUB_ROLE_USER r  " + "where  o.OPERATION=1 and o.menu_id=m.maxmenuid " + "and o.role_id=r.role_id " + "and r.user_id='" + userid + "') ");
         List<JboIFace> list = queryAll();
         for (JboIFace app : list) {
             apps.add(app.getString("app"));

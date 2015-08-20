@@ -77,6 +77,7 @@ public class Table extends JxBaseUIBean {
 
     private String ignoreLayoutFixed;
     private String ignoreDataTable;
+    private String rowSelectable;
 
     public Table(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
         super(stack, request, response);
@@ -217,6 +218,12 @@ public class Table extends JxBaseUIBean {
         if (null != fixedWidth) {
             addParameter("fixedWidth", findString(fixedWidth));
         }
+
+        rowSelectable = findString(rowSelectable);
+        if("".equals(rowSelectable)){
+            rowSelectable = "false";
+        }
+        addParameter("rowSelectable",rowSelectable);
 
         if (null != title) {
             addParameter("title", getI18NValue(title));
@@ -466,4 +473,6 @@ public class Table extends JxBaseUIBean {
     public String getIgnoreDataTable(){ return ignoreDataTable; }
 
     public void setIgnoreDataTable(String ignoreDataTable){ this.ignoreDataTable = ignoreDataTable; }
+
+    public void setRowSelectable(String rowSelectable){ this.rowSelectable = rowSelectable; }
 }

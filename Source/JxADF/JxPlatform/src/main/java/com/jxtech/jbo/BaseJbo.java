@@ -7,16 +7,10 @@ import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.sql.Clob;
 import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
+import com.jxtech.util.*;
 import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,14 +33,10 @@ import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxConstant;
 import com.jxtech.jbo.util.JxException;
-import com.jxtech.util.DateUtil;
-import com.jxtech.util.ELUtil;
-import com.jxtech.util.NumUtil;
-import com.jxtech.util.StrUtil;
 
 /**
  * 基类Jbo,此类不操作数据库
- * 
+ *
  * @author wmzsoft@gmail.com
  * @date 2014.11
  */
@@ -103,7 +93,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 数据加载成功之后执行的操作
-     * 
+     *
      * @throws JxException
      */
     @Override
@@ -113,7 +103,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 创建Jbo之后就执行，如果要在加载数据之后执行请重载afterLoad方法。
-     * 
+     *
      * @throws JxException
      */
     @Override
@@ -191,7 +181,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 设定系统默认值，即Maxattribute表中配置的默认值
-     * 
+     *
      * @return
      * @throws JxException
      */
@@ -220,7 +210,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 能否保存
-     * 
+     *
      * @return true 可以保存,false不能保存
      * @throws JxException
      */
@@ -234,7 +224,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 保存事件，子类可以继承，做自己的事。
-     * 
+     *
      * @return
      * @throws JxException
      */
@@ -250,7 +240,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 保存之前需要处理的工作
-     * 
+     *
      * @return
      * @throws JxException
      */
@@ -304,7 +294,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 回滚数据
-     * 
+     *
      * @return 返回需要移除新增jbo
      */
     @Override
@@ -334,7 +324,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 删除前要做的事情
-     * 
+     *
      * @return 可以继续删除，返回true，否则返回false
      * @throws JxException
      */
@@ -370,7 +360,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 将标记置为未删除。
-     * 
+     *
      * @return
      * @throws JxException
      */
@@ -407,7 +397,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 如果需要删除子对象，需要覆盖此方法 。
-     * 
+     *
      * @return 返回需要删除的联系名
      * @throws JxException
      */
@@ -418,7 +408,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 判断能否删除
-     * 
+     *
      * @return true能，false不能
      */
     public boolean canDelete() throws JxException {
@@ -449,7 +439,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 复制记录
-     * 
+     *
      * @return 复制之后的对象
      */
     @Override
@@ -498,7 +488,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 需要略过的复制字段
-     * 
+     *
      * @return
      */
     protected String[] getIgnoreAttributesOfDuplicate() throws JxException {
@@ -507,7 +497,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 请覆盖
-     * 
+     *
      * @return 返回需要复制的子对象的联系名。
      * @throws JxException
      */
@@ -600,7 +590,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 只能处理简单的 || 、 +、-、*、/ ，不能按运算符的优先级计算，更复杂的内容，请使用自定义列的方式处理。 http://svn.jxtech.net:8081/pages/viewpage.action?pageId=15728819
-     * 
+     *
      * @param attributeName
      * @param flag
      */
@@ -666,7 +656,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 获得 联系名.字段名 的值。
-     * 
+     *
      * @param attributeName
      * @param flag
      * @return
@@ -820,7 +810,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 直接返回java.util.date
-     * 
+     *
      * @param attributeName
      * @return
      * @throws JxException
@@ -831,7 +821,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 直接返回java.util.date
-     * 
+     *
      * @param attributeName
      * @param flag
      * @return
@@ -926,7 +916,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 将值转换为URL的格式
-     * 
+     *
      * @param attributeName
      * @return
      * @throws JxException
@@ -947,7 +937,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 将值转换为适合JSON格式的字符串
-     * 
+     *
      * @param attributeName
      * @return
      * @throws JxException
@@ -1029,7 +1019,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 读取联系JboSet
-     * 
+     *
      * @param name 联系名
      */
     @Override
@@ -1041,7 +1031,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 通过联系名获得JboSet
-     * 
+     *
      * @param name 联系名
      * @param flag 参数 JxConstant.READ_CACHE 直接读取Cache，
      */
@@ -1052,9 +1042,9 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 通过联系名获得JboSet
-     * 
-     * @param name 联系名
-     * @param flag 参数 JxConstant.READ_CACHE 直接读取Cache，
+     *
+     * @param name     联系名
+     * @param flag     参数 JxConstant.READ_CACHE 直接读取Cache，
      * @param queryAll 是否查全部
      */
     @Override
@@ -1074,11 +1064,22 @@ public abstract class BaseJbo implements JboIFace {
         }
         JxRelationship ship = JxRelationshipDao.getJxRelationship(jboName, name);
         if (ship != null) {
-            JboSetIFace jbos = JboUtil.getJboSet(ship.getChild());
+            JboSetIFace jbos;
+
+            String cacheKey = StrUtil.contact(JxRelationshipDao.CACHE_PREX, name);
+            Object cacheJbos = CacheUtil.getBase(cacheKey);
+            if (JxConstant.READ_RELOAD != flag && !isToBeAdd() && null != cacheJbos && cacheJbos instanceof JboSetIFace) {
+                jbos = (JboSetIFace) cacheJbos;
+            } else {
+                jbos = JboUtil.getJboSet(ship.getChild());
+                CacheUtil.putBaseCache(cacheKey, jbos);
+            }
+
             String where = ship.getWhereclause();
             String clause = where;
             String pname;
             List<Object> params = new ArrayList<Object>();
+            boolean needQuery = true;
             if (!StrUtil.isNull(where)) {
                 int pos = where.indexOf(":");
                 int end = -1;
@@ -1106,14 +1107,28 @@ public abstract class BaseJbo implements JboIFace {
                     pos = clause.indexOf(":");
                 }
                 DataQueryInfo qi = jbos.getQueryInfo();
-                qi.setRelationshipCause(clause);
-                qi.setRelationshipParams(params.toArray());
+
+                String oldClause = qi.getRelationshipCause();
+                Object[] oldParams = qi.getRelationshipParams();
+
+
+                if (null != oldClause && oldClause.equalsIgnoreCase(clause) && Arrays.equals(params.toArray(), oldParams)) {
+                    needQuery = false;
+                } else {
+                    qi.setRelationshipCause(clause);
+                    qi.setRelationshipParams(params.toArray());
+                }
+
             }
-            if (queryAll) {
-                jbos.queryAll();
-            } else {
-                jbos.query(name);
+
+            if (needQuery) {
+                if (queryAll) {
+                    jbos.queryAll();
+                } else {
+                    jbos.query(name);
+                }
             }
+
             jbos.setParent(this);
             jbos.setAppname(getJboSet().getAppname());
             children.put(key, jbos);
@@ -1145,7 +1160,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 获得唯一关键字名
-     * 
+     *
      * @throws JxException
      */
     @Override
@@ -1163,9 +1178,9 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 返回字段的动态信息
-     * 
+     *
      * @param attributeName 字段名
-     * @param isCreate 不存在是否创建
+     * @param isCreate      不存在是否创建
      * @return
      * @throws JxException
      */
@@ -1198,7 +1213,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 返回某个字段是否只读 默认为False
-     * 
+     *
      * @param attributeName
      * @return
      * @throws JxException
@@ -1220,9 +1235,9 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 设定某个字段的只读属性
-     * 
+     *
      * @param attributeName 字段名
-     * @param flag 是否只读
+     * @param flag          是否只读
      * @throws JxException
      */
     @Override
@@ -1233,9 +1248,9 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 设定某个数组字段的只读属性
-     * 
+     *
      * @param attributeNames 字段名的数组
-     * @param flag 是否只读
+     * @param flag           是否只读
      * @throws JxException
      */
     @Override
@@ -1249,7 +1264,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 获得某个字段的必填属性
-     * 
+     *
      * @param attributeName
      * @return
      * @throws JxException
@@ -1270,7 +1285,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 设定某个字段的必填属性
-     * 
+     *
      * @param attributeName
      * @param flag
      * @throws JxException
@@ -1364,7 +1379,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 返回Data数据类型中的简单对象，专门用于JavaScript处理
-     * 
+     *
      * @return
      */
     @Override
@@ -1387,7 +1402,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 将Data数据作为字符串返回。
-     * 
+     *
      * @return
      * @throws JxException
      */
@@ -1440,7 +1455,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 添加需要保存
-     * 
+     *
      * @param jbo
      * @throws JxException
      */
@@ -1468,7 +1483,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 添加一个附件
-     * 
+     *
      * @param name
      * @param attachementSet
      */
@@ -1486,7 +1501,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 移除一个附件
-     * 
+     *
      * @param name
      * @return Attachment
      */
@@ -1497,7 +1512,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 获取附件
-     * 
+     *
      * @return Map<String, Attachment>
      */
     @Override
@@ -1507,7 +1522,7 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 设置附件列表
-     * 
+     *
      * @param attachments
      */
     @Override

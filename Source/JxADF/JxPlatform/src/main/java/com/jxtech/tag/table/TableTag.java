@@ -103,6 +103,7 @@ public class TableTag extends JxBaseUITag {
 
     private String ignoreLayoutFixed;
     private String ignoreDataTable;
+    private String rowSelectable;
     private HttpServletResponse resp;
 
     @Override
@@ -157,8 +158,14 @@ public class TableTag extends JxBaseUITag {
                     pagesize = StrUtil.parseIntToString(request.getParameter("pagesize"), 20);
                     loadType = JxConstant.READ_RELOAD;
                 } else {
-                    DataQueryInfo qf = JxSession.getMainApp().getJboset().getQueryInfo();
-
+                    App mainApp = JxSession.getApp(getAppName(), getAppType());
+                    JboSetIFace mainJboSet;
+                    if (null != mainApp) {
+                        mainJboSet = mainApp.getJboset();
+                    } else {
+                        mainJboSet = JxSession.getMainApp().getJboset();
+                    }
+                    DataQueryInfo qf = mainJboSet.getQueryInfo();
                     if (null != qf) {
                         // getCount() 返回-1，表示此表格还未查询过数据，需要使用配置的pagenum
                         if (qf.getJboset().getCount() >= 0 && StrUtil.isNull(pagesize)) {
@@ -279,6 +286,7 @@ public class TableTag extends JxBaseUITag {
         table.setFixedWidth(fixedWidth);
         table.setIgnoreLayoutFixed(ignoreLayoutFixed);
         table.setIgnoreDataTable(ignoreDataTable);
+        table.setRowSelectable(rowSelectable);
 
         Tag tag = findAncestorWithClass(this, BodyTag.class);
         App myapp;
@@ -349,7 +357,7 @@ public class TableTag extends JxBaseUITag {
                 dqi.putParams(initWhereCause, initWhereParam, "true".equalsIgnoreCase(initOverlay));
                 int count = 0;
                 if (loadType == JxConstant.READ_CACHE) {
-                    count = jboset.getJbolist().size();
+                    count = jboset.getCount();
                 } else {
                     DataQueryInfo qi = jboset.getQueryInfo();
                     qi.setOrderby(orderby);
@@ -359,10 +367,10 @@ public class TableTag extends JxBaseUITag {
                         String[] rootcauses = rootparent.split(":");
                         if ("NULL".equalsIgnoreCase(rootcauses[1])) {
                             qi.setWhereCause(rootcauses[0] + " is null");
-                            qi.setWhereParams(new Object[] {});
+                            qi.setWhereParams(new Object[]{});
                         } else {
                             qi.setWhereCause(rootcauses[0] + "=?");
-                            qi.setWhereParams(new Object[] { rootcauses[1] });
+                            qi.setWhereParams(new Object[]{rootcauses[1]});
                         }
                     }
 
@@ -846,4 +854,5 @@ public class TableTag extends JxBaseUITag {
         this.ignoreDataTable = ignoreDataTable;
     }
 
+    public void setRowSelectable(String rowSelectable){ this.rowSelectable = rowSelectable; }
 }

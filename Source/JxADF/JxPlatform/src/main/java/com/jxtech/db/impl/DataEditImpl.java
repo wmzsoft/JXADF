@@ -74,7 +74,7 @@ public abstract class DataEditImpl implements DataEdit {
      * true if the first result is a ResultSet object; false if the first result is an update count or there is no result
      */
     public boolean execute(Connection conn, String msql, Object[] params) throws JxException {
-        if (conn == null || msql == null) {
+        if (conn == null || StrUtil.isNull(msql)) {
             throw new JxException("conn or msql is null.");
         }
         if (params == null) {

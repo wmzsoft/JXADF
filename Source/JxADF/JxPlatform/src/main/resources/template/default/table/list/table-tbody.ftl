@@ -12,11 +12,14 @@ $author:wmzsoft@gmail.com
             <#if jbo.data??>
             <#-- 在IE兼容模式下，如果有这个label，DataTables插件无法使用 label for="${jbo.uidName!jbo_index}_${jbo.uidValue!0}" -->
             <#-- 标记 <tr> begin .14 -->
-            <tr id="tr_${parameters.id}_${jbo_index}" uid='${jbo.uidValue!0}' onclick="selectTableTr(this,event)" <#rt>
-                <#if jbo.toBeAdd?? && jbo.toBeAdd>
+            <tr id="tr_${parameters.id}_${jbo_index}" uid='${jbo.uidValue!0}' <#t>
+                <#if ((parameters.rowSelectable!'f') == "true")>
+                    <#lt> onclick="selectTableTr(this,event)" <#rt>
+                </#if>
+                <#if (jbo.toBeAdd?? && jbo.toBeAdd)>
                     <#lt>  toBeAdd="true" <#rt>
                 </#if>
-                <#if jbo.toBeDel?? && jbo.toBeDel>
+                <#if (jbo.toBeDel?? && jbo.toBeDel)>
                     <#lt>  toBeDel="true" <#rt>
                 </#if>
             <#-- 根据条件设置字体颜色及背景颜色 -->
@@ -105,25 +108,25 @@ $author:wmzsoft@gmail.com
                                 <#if (col.parameters.height??) >
                                     <#lt> height="${col.parameters.height}" <#rt>
                                 </#if>
-                                <#--
-                                <#if (col.dataattribute?? && col.dataattribute != 'ROWNUM') && ((col.dataattribute??) && ( (parameters.inputmode!'')=='EDIT') && (!jbo.readonly) && (!jbo.isReadonly(col.dataattribute!'')) && ((col.dataattribute!'')?index_of('.')<0) && ((col.dataattribute!'') != jbo.getUidName()))>
+                            <#--
+                            <#if (col.dataattribute?? && col.dataattribute != 'ROWNUM') && ((col.dataattribute??) && ( (parameters.inputmode!'')=='EDIT') && (!jbo.readonly) && (!jbo.isReadonly(col.dataattribute!'')) && ((col.dataattribute!'')?index_of('.')<0) && ((col.dataattribute!'') != jbo.getUidName()))>
+                            <#else>
+                                <#lt> readonly="true" <#rt>
+                            </#if>
+                            -->
+                                <#if (col.parameters.align??) >
+                                    <#lt> align="${col.parameters.align}" <#rt>
                                 <#else>
-                                    <#lt> readonly="true" <#rt>
+                                    <#if ((jbo.isNumeric(col.dataattribute)!false)==true) >
+                                        <#lt> align="${col.parameters.align!'right'}" <#rt>
+                                    <#else>
+                                    <#-- <#lt> align="${col.parameters.align!'left'}" <#rt> -->
+                                    </#if>
                                 </#if>
-                                -->
-                                  <#if (col.parameters.align??) >
-                                    	<#lt> align="${col.parameters.align}" <#rt>
-                          		  <#else>
-                              		 	 <#if ((jbo.isNumeric(col.dataattribute)!false)==true) >
-	                                    	<#lt> align="${col.parameters.align!'right'}" <#rt>
-		                                <#else>
-		                                    <#-- <#lt> align="${col.parameters.align!'left'}" <#rt> -->
-		                                </#if>
-                          		  </#if>
                                 <#if (col.parameters.lookup??)>
                                     <#lt> lookup="${col.parameters.lookup!''}" <#rt>
                                 </#if>
-                                <#-- <#lt> title="${col.parameters.title!(colDataValue!'')}" <#rt> -->
+                            <#-- <#lt> title="${col.parameters.title!(colDataValue!'')}" <#rt> -->
                                 <#lt> dataattribute="${col.parameters.dataattribute!''}" <#rt>
                                     ><#t>
                             </#if>
@@ -144,7 +147,7 @@ $author:wmzsoft@gmail.com
 
                         <#-- 显示值 Begin 108 -->
                         ${col.parameters.startHtml!''}<#t>
-                        <#include "table-tbody-col-secondAttributes.ftl"><#t>
+                            <#include "table-tbody-col-secondAttributes.ftl"><#t>
                             <#if (col.parameters.mxevent??) >
                                 <#include "table-tbody-col-mxevent.ftl"><#t>
                             <#elseif ((col.parameters.render!'TEXT')=='LABELS')>

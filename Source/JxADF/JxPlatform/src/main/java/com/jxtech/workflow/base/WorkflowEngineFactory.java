@@ -3,6 +3,7 @@ package com.jxtech.workflow.base;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
+import com.jxtech.util.ClassUtil;
 import com.jxtech.util.StrUtil;
 
 /**
@@ -17,7 +18,16 @@ public class WorkflowEngineFactory {
                 //engine = new OBPMWorkflowEngine();
                 engine = WorkflowEngineManager.getEngine(workflowType);
                 if (null == engine) {
-                    throw new JxException("工作流引擎【" + workflowType + "】插件尚未安装！");
+                    try {
+                        Class clazz = ClassUtil.loadClass("com.jxtech.obpm.common.OBPMWorkflowEngine");
+                        IWorkflowEngine obpmEngine = (IWorkflowEngine) clazz.newInstance();
+                        WorkflowEngineManager.regiestEngine("OBPM", obpmEngine);
+                        engine = obpmEngine;
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                        throw new JxException("工作流引擎【" + workflowType + "】插件尚未安装！");
+                    }
+
                 }
             } else if ("JXBPM".equalsIgnoreCase(workflowType)) {
                 // jx bpm

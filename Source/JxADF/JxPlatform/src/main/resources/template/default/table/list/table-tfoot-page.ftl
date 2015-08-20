@@ -11,27 +11,35 @@ $author:wmzsoft@gmail.com
 ${parameters.tagbundle['table-tfoot.totalpre']}&nbsp;${parameters.count!0}
     &nbsp;${parameters.tagbundle['table-tfoot.totaltail']}
     <input type='text' class='pageSelected' id='${parameters.id}_pagesize' name='pagesize'
-           value='${parameters.pagesize!20}' SIZE='3' maxlength='3'
-           onpaste="return pagePaste()" onblur="pageBlur('${parameters.id}')"
-           onkeypress='return pageKeypress(event)'
-           onkeydown="pageKeydown('${parameters.id}', event)">
+           value='${parameters.pagesize!20}'
+           SIZE='3'
+           maxlength='3'
+           onpaste="return pagePaste()"
+           onblur="pageBlur(this,'${parameters.id}')"
+           originValue='${parameters.pagesize!20}'
+           onkeypress="return pageKeypress(this, event)">
     &nbsp;(
-    <span <#if (parameters.pagesize=='20')>class="pagesize-select"</#if><#rt>
-          onclick="spanSetPageSize('${parameters.id}',20);">20
-    </span>
-    ,
-    <span <#if (parameters.pagesize=='50')>class="pagesize-select"</#if><#rt>
-          onclick="spanSetPageSize('${parameters.id}',50);">50
-    </span>
-    ,
-    <span <#if (parameters.pagesize=='80')>class="pagesize-select"</#if><#rt>
-          onclick="spanSetPageSize('${parameters.id}',80);">80
-    </span>
-    ,
-    <span <#if (parameters.pagesize=='100')>class="pagesize-select"</#if><#rt>
-          onclick="spanSetPageSize('${parameters.id}',100);">100
-    </span>
-    )&nbsp;${parameters.tagbundle['table-tfoot.items']}
+    <#lt><span <#rt>
+    <#if ((parameters.pagesize!'')=='20')>
+        <#lt> class="pagesize-select" <#rt>
+    </#if>
+    <#lt> onclick="spanSetPageSize('${parameters.id}',20);">20  </span>,<#rt>   
+    <#lt><span <#rt>
+    <#if ((parameters.pagesize!'')=='50')>
+        <#lt> class="pagesize-select" <#rt>
+    </#if>
+    <#lt> onclick="spanSetPageSize('${parameters.id}',50);">50</span>,<#rt> 
+    <#lt><span <#rt>
+    <#if ((parameters.pagesize!'')=='80')>
+        <#lt> class="pagesize-select" <#rt>
+    </#if>
+    <#lt> onclick="spanSetPageSize('${parameters.id}',80);">80</span>,<#rt> 
+    <#lt><span <#rt>
+    <#if ((parameters.pagesize!'')=='100')>
+        <#lt> class="pagesize-select" <#rt>
+    </#if>
+    <#lt> onclick="spanSetPageSize('${parameters.id}',100);">100</span><#rt>
+    )&nbsp;${parameters.tagbundle['table-tfoot.items']}<#t>
 </div>
 
 <div id="${parameters.id!'test'}_paginate" style="float:right">

@@ -328,4 +328,36 @@ public interface JboSetIFace extends Serializable {
 
     public void setSaveFlag(long saveFlag);
 
+    /**
+     * 获得树节点及其所有的子节点
+     * 
+     * @param parentName 父节点的字段名
+     * @param parentValue 父节点的值
+     * @param idName 标识字段名称
+     * @param includeSelf 是否包含自己
+     * @return
+     * @throws JxException
+     */
+    public List<JboIFace> getTree(String parentName, String parentValue, String idName,boolean includeSelf) throws JxException;
+
+    /**
+     * 直接根据条件删除数据
+     * 
+     * @param conn
+     * @param whereCause
+     * @param params
+     * @return
+     * @throws JxException
+     */
+    public boolean delete(Connection conn, String whereCause, Object[] params) throws JxException;
+
+    /**
+     * 直接删除数据，并提交
+     * 
+     * @param whereCause
+     * @param params
+     * @return
+     * @throws JxException
+     */
+    public boolean delete(String whereCause, Object[] params) throws JxException;
 }

@@ -39,3 +39,10 @@
 </#if>
      class="${cssClass}" <#t>
         ><#t>
+<#if (parameters.displayMode == "panel")>
+    <script>
+        $(function(){
+            createLayout("${parameters.id}");
+        });
+    </script>
+</#if>

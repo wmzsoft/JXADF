@@ -73,7 +73,7 @@ public class MaxMenuSet extends JboSet implements MaxMenuSetIFace {
         if (!StrUtil.isNull(parent)) {
             params.put("PARENT=?", parent.toUpperCase());
         } else {
-            if (JxDataSourceUtil.isDbOfSystemMySql()) {
+            if (JxDataSourceUtil.isDbOfSystemMySql() || JxDataSourceUtil.isDbOfSystemMsSqlServer()) {
                 params.put("(PARENT is null or PARENT='')", null);
             } else {
                 params.put("PARENT is null", null);
@@ -96,7 +96,7 @@ public class MaxMenuSet extends JboSet implements MaxMenuSetIFace {
      */
     public String getPermissionSql() {
         StringBuffer sb = new StringBuffer();
-        sb.append("MAXMENUID in (select menu_id from PUB_ROLE_OPERATION where role_id in (");
+        sb.append("MAXMENUID in (select menu_id from PUB_ROLE_OPERATION where  OPERATION=1 and role_id in (");
         sb.append("select role_id from PUB_ROLE_USER where upper(user_id)=upper('${jxuserinfo.userid}')))");
         return sb.toString();
     }

@@ -124,8 +124,6 @@ public class PubDepartment extends Jbo {
             DataQueryInfo dataQueryInfo = jboset.getQueryInfo();
             dataQueryInfo.setWhereCause("SUPER_DEPARTMENT_ID = ? and STATE = 1");
             dataQueryInfo.setWhereParams(new Object[]{getString("DEPARTMENT_ID")});
-            jboset.setQueryInfo(dataQueryInfo);
-
             List<JboIFace> jboIFaceList = jboset.queryAll();
             for (JboIFace jboIFace : jboIFaceList) {
                 PubDepartment pubDepartmentJbo = (PubDepartment) jboIFace;

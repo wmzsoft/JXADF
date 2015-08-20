@@ -20,8 +20,15 @@ $author:smellok
             $("#actionContent").append(tempChoice).append(tempLabel).append("&nbsp;&nbsp;&nbsp;&nbsp;");
             tempChoice.bind("click",function(){
                 var action = $(this).attr("value");
-                $("div[useraction!='"+action+"']").hide();
-                $("div[useraction='"+action+"']").show();
+
+                $("div[useraction]").each(function(){
+                    if($(this).attr("useraction")!=action){
+                        $(this).hide();
+                    }else{
+                        $(this).show();
+                    }
+                });
+
                 resizeDialogWhenFrame();
             });
         </#list>

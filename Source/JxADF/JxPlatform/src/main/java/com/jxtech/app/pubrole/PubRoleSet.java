@@ -62,6 +62,8 @@ public class PubRoleSet extends JboSet {
                             sb.append(")");
 
                             queryInfo.setWhereCause(sb.toString());
+                            queryInfo.setPageNum(0);
+                            queryInfo.setPageSize(40);
                         }
 
                     }
@@ -69,8 +71,6 @@ public class PubRoleSet extends JboSet {
             }
         }
 
-        getQueryInfo().setPageNum(0);
-        getQueryInfo().setPageSize(40);
         return super.query();
     }
 

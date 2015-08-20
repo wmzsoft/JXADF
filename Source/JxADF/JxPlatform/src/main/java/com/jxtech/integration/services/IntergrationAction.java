@@ -3,13 +3,12 @@ package com.jxtech.integration.services;
 import com.jxtech.common.JxActionSupport;
 import com.jxtech.integration.jsonvo.IntergrationVo;
 import com.jxtech.integration.jsonvo.JboVo;
-import com.jxtech.jbo.App;
-import com.jxtech.jbo.JboIFace;
-import com.jxtech.jbo.JboSetIFace;
-import com.jxtech.jbo.JboValue;
+import com.jxtech.jbo.*;
 import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.base.JxAttribute;
+import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JboUtil;
+import com.jxtech.jbo.util.JxConstant;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.StrUtil;
 import net.sf.json.JSONObject;
@@ -18,6 +17,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -61,7 +61,6 @@ public class IntergrationAction extends JxActionSupport {
 
                     if (!StrUtil.isNull(jboName)) {
                         JboSetIFace jboSet = JboUtil.getJboSet(jboName);
-                        jboSet.queryAll();
 
                         for (JboVo jboVo : ivo.get_jbos()) {
                             JboIFace jbo = convertJboFromVo(jboVo, jboSet);
@@ -96,7 +95,7 @@ public class IntergrationAction extends JxActionSupport {
                         jboVo.set_uid(jbo.getUidValue());
                         jbo.getData().putAll(jboVo.get_datas());
                     } else if (!StrUtil.isNull(jboVo.get_uid())) {
-                        jbo = jboSet.getJboOfUid(jboVo.get_uid());
+                        jbo = jboSet.queryJbo(jboVo.get_uid());
                         if ("U".equalsIgnoreCase(action)) {
                             modifyJboValue(jbo, jboVo);
                             jbo.setModify(true);
@@ -112,18 +111,18 @@ public class IntergrationAction extends JxActionSupport {
         return jbo;
     }
 
-    private JboIFace convertChildJboFormVo(JboIFace pJbo, JboVo childJboVo) throws JxException {
+    private JboIFace convertChildJboFromVo(JboIFace pJbo, JboVo childJboVo) throws JxException {
         JboIFace childJbo = null;
 
         if (null != pJbo && null != childJboVo) {
             String relationshipname = childJboVo.get_relationshipname();
             String childJboAction = childJboVo.get_action();
 
-            if (!StrUtil.isNull(relationshipname) && !StrUtil.isNull(childJboAction)) {
+            if (!StrUtil.isNull(relationshipname)) {
 
                 JboSetIFace jboSet = pJbo.getChildrenJboSet(relationshipname);
                 if (null == jboSet) {
-                    jboSet = pJbo.getRelationJboSet(relationshipname);
+                    jboSet = pJbo.getRelationJboSet(relationshipname, JxConstant.READ_RELOAD);
                     pJbo.getChildrenJboSet(relationshipname).setJbolist(jboSet.queryAll());
                 }
 
@@ -137,8 +136,11 @@ public class IntergrationAction extends JxActionSupport {
                         //nothing here...
                     }
                 } else if (pJbo.isToBeDel()) {
-                    childJbo = null;
-                } else if (pJbo.isModify()) {
+                    childJbo = jboSet.getJboOfUid(childJboVo.get_uid());
+                    if (null != childJbo) {
+                        childJbo.delete();
+                    }
+                } else {
                     if ("C".equalsIgnoreCase(childJboAction)) {
                         childJbo = jboSet.add();
                         childJbo.getData().putAll(childJboVo.get_datas());
@@ -146,20 +148,18 @@ public class IntergrationAction extends JxActionSupport {
                     } else if ("R".equalsIgnoreCase(childJboAction)) {
 
                     } else if ("U".equalsIgnoreCase(childJboAction)) {
-                        childJbo = getJboInSet(jboSet, childJboVo.get_uid());
+                        childJbo = jboSet.getJboOfUid(childJboVo.get_uid());
                         if (null != childJbo) {
                             //childJbo.getData().putAll(childJboVo.getDatas());
                             modifyJboValue(childJbo, childJboVo);
                             childJbo.setModify(true);
                         }
                     } else if ("D".equalsIgnoreCase(childJboAction)) {
-                        childJbo = getJboInSet(jboSet, childJboVo.get_uid());
+                        childJbo = jboSet.getJboOfUid(childJboVo.get_uid());
                         if (null != childJbo) {
                             childJbo.delete();
                         }
                     }
-                } else {
-                    //读取数据了
                 }
             }
         }
@@ -174,9 +174,10 @@ public class IntergrationAction extends JxActionSupport {
      * @throws JxException
      */
     private void handleChildJboVo(JboIFace pJbo, JboVo childJboVo) throws JxException {
-        JboIFace childJbo = convertChildJboFormVo(pJbo, childJboVo);
-        if (null != childJbo && null != childJboVo.get_childrens()) {
-            for (JboVo ccJbovo : childJboVo.get_childrens()) {
+        JboIFace childJbo = convertChildJboFromVo(pJbo, childJboVo);
+        List<JboVo> childrens = childJboVo.get_childrens();
+        if (null != childJbo && null != childrens) {
+            for (JboVo ccJbovo : childrens) {
                 handleChildJboVo(childJbo, ccJbovo);
             }
         }
@@ -195,10 +196,10 @@ public class IntergrationAction extends JxActionSupport {
                 String attrValue = jbo.getString(key);
                 if (null != attrValue) {
                     if (StrUtil.isNull(attrValue) || !attrValue.equals(voDatas.get(key))) {
-                        jbo.setObject(key, voDatas.get(key));
+                        jbo.setObject(key, voDatas.get(key), JxConstant.SET_VALUE_NONE);
                     }
                 } else {
-                    jbo.setObject(key, voDatas.get(key));
+                    jbo.setObject(key, voDatas.get(key), JxConstant.SET_VALUE_NONE);
                 }
             }
         }
@@ -207,14 +208,13 @@ public class IntergrationAction extends JxActionSupport {
     private JboIFace getJboInSet(JboSetIFace jboSet, String uid) throws JxException {
         JboIFace jbo = null;
         if (null != jboSet && !StrUtil.isNull(uid)) {
-            if (jboSet.getJbolist().isEmpty()) {
-                jboSet.queryAll();
-            }
 
-            for (JboIFace qJbo : jboSet.getJbolist()) {
-                if (null != qJbo) {
-                    if (qJbo.getUidValue().equals(uid)) {
-                        jbo = qJbo;
+
+            List<JboIFace> qryJboList = jboSet.queryAll();
+            for (JboIFace qryJbo : qryJboList) {
+                if (null != qryJbo) {
+                    if (qryJbo.getUidValue().equalsIgnoreCase(uid)) {
+                        jbo = qryJbo;
                         break;
                     }
                 }

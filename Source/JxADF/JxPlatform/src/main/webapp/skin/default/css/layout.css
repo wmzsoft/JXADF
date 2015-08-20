@@ -14,9 +14,11 @@ div.table_form{
     height: 100%;
 }
 .ui-layout-container.panel{
+    box-sizing: border-box;
     height: 100% !important;
 }
 .ui-layout-container.row{
+    box-sizing: border-box;
     height: 100% !important;
 }
 .ui-layout-pane{

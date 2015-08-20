@@ -108,7 +108,7 @@
             }
 
             $.each(treeNodes_tree, function (idx, data) {
-                if (data.name.indexOf(searchStr) >= 0) {
+                if (data.name.toLowerCase().indexOf(searchStr.toLowerCase()) >= 0) {
                     var li = $("<li></li>").text(data.name);
                     li.attr("data-prop-tuid", data.department_id);
                     li.attr("data-prop-name", data.name);
@@ -116,7 +116,7 @@
                     li.bind({
                         "click": function () {
                             $("#searchExt").addClass("hidefocus");
-
+                            $("#searchinput").val($(this).text())
                             var searchNode = zTreeObj.getNodeByParam("department_id", data.department_id);
                             zTreeObj.selectNode(searchNode, false);
                             $("#" + searchNode.tId + "_a").click();
@@ -402,6 +402,122 @@
 
 
     </script>
+
+    <style type="text/css">
+        .fillTop {
+            vertical-align: top !important;
+        }
+
+        .fillWidth {
+            width: 100%;
+        }
+
+        .ztree li span.button.add {
+            background-position: -144px 0;
+            margin-left: 2px;
+            margin-right: -1px;
+            vertical-align: top;
+        }
+
+        .ztree {
+            width: 280px;
+            height: 0;
+            margin: 0px 2px 0 0;
+
+            overflow: auto;
+        }
+
+        .leftTd {
+            /*background: rgb(189, 214, 237);
+            border-right: 1px solid rgb(189, 214, 237);*/
+        }
+
+        .rightTd {
+            vertical-align: top;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+
+        .searchDiv {
+            width: 200px;
+            margin: 2px 0 0 8px;
+            background: none repeat scroll 0 0 #fff;
+            border: 1px solid #bbb;
+            border-radius: 2px;
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
+            font-size: 12px;
+            height: 24px;
+            line-height: 1.666;
+            position: relative;
+            float: left;
+
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .placeholder {
+            color: #ccc;
+            cursor: text;
+            font-size: 12px;
+            height: 90%;
+            left: 9px;
+            line-height: 24px;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+        }
+
+        .searchinput {
+            width: 100%;
+            height: 26px;
+            line-height: 26px;
+            padding: 0 10px;
+            box-sizing: border-box;
+            background: none repeat scroll 0 0 transparent;
+            border: 0 none;
+            font-size: 14px;
+            outline: 0 none;
+        }
+
+        .searchExt {
+            background: none repeat scroll 0 0 #fff;
+            box-shadow: 1px 1px 3px #ededed;
+            position: absolute;
+            left: 8px;
+            top: 34px;
+            z-index: 9999;
+            min-width: 202px;
+        }
+
+        .searchExt ul {
+            margin: 0;
+            padding: 0;
+            list-style: none outside none;
+        }
+
+        .searchExt ul li {
+            margin: 0;
+            color: #000;
+            cursor: pointer;
+            padding: 3px 8px;
+            position: relative;
+            white-space: nowrap;
+            border-bottom: 1px solid #efefef;
+        }
+
+        .searchExt ul li:hover, .searchFocus {
+            background: #ccc;
+            color: #0000ff;
+        }
+
+        .hidefocus {
+            display: none;
+        }
+
+        td .pushbutton {
+            margin: 0;
+        }
+    </style>
 </jxui:head>
 <jxui:body appName="pubdepartment" appType="list">
     <%--<jxui:appbar/>--%>
@@ -414,7 +530,7 @@
                         <jxui:label value="{app.pubdepartment.SEARCH_PLACEHOLDER}"/>
                     </label>
                     <!--搜索框-->
-                    <input type="text" id="searchinput" class="searchinput"/>
+                    <input type="text" id="searchinput" class="searchinput" input-helper="disabled"/>
                 </div>
                 <!--搜索列表-->
                 <div class="searchExt hidefocus" id="searchExt">
@@ -449,113 +565,3 @@
     </jxui:section>
 
 </jxui:body>
-<style type="text/css">
-    .fillTop {
-        vertical-align: top !important;
-    }
-
-    .fillWidth {
-        width: 100%;
-    }
-
-    .ztree li span.button.add {
-        background-position: -144px 0;
-        margin-left: 2px;
-        margin-right: -1px;
-        vertical-align: top;
-    }
-
-    .ztree {
-        width: 280px;
-        height: 0;
-        margin: 0px 2px 0 0;
-
-        overflow: auto;
-    }
-
-    .leftTd {
-        /*background: rgb(189, 214, 237);
-        border-right: 1px solid rgb(189, 214, 237);*/
-    }
-
-    .rightTd {
-        vertical-align: top;
-        padding: 0 !important;
-        margin: 0 !important;
-    }
-
-    .searchDiv {
-        width: 200px;
-        margin: 2px 0 0 8px;
-        background: none repeat scroll 0 0 #fff;
-        border: 1px solid #bbb;
-        border-radius: 2px;
-        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
-        font-size: 12px;
-        height: 24px;
-        line-height: 1.666;
-        position: relative;
-        float: left;
-
-        display: inline-block;
-        vertical-align: middle;
-    }
-
-    .placeholder {
-        color: #ccc;
-        cursor: text;
-        font-size: 12px;
-        height: 90%;
-        left: 9px;
-        line-height: 24px;
-        overflow: hidden;
-        position: absolute;
-        top: 0;
-    }
-
-    .searchinput {
-        width: 180px;
-        margin: 2px 0 0 10px;
-        background: none repeat scroll 0 0 transparent;
-        border: 0 none;
-        font-size: 14px;
-        outline: 0 none;
-    }
-
-    .searchExt {
-        width: 239px;
-        background: none repeat scroll 0 0 #fff;
-        box-shadow: 1px 1px 3px #ededed;
-        position: absolute;
-        left: 17px;
-        top: 32px;
-        z-index: 9999;
-    }
-
-    .searchExt ul {
-        margin: 0;
-        padding: 0;
-        list-style: none outside none;
-    }
-
-    .searchExt ul li {
-        margin: 0;
-        color: #000;
-        cursor: pointer;
-        padding: 0 8px;
-        position: relative;
-    }
-
-    .searchExt ul li:hover, .searchFocus {
-        background: #ccc;
-        color: #0000ff;
-    }
-
-    .hidefocus {
-        display: none;
-    }
-
-    td .pushbutton {
-        margin: 0;
-    }
-</style>

@@ -52,7 +52,7 @@ public class PermissionImpl extends Permission {
         String context = System.getProperty(SysPropertyUtil.WEB_CONTEXT);
         int pos = url.indexOf(context);
         String appurl = null;
-        if (pos > 0) {
+        if (pos >= 0) {
             appurl = url.substring(pos + context.length() + 1);
             try {
                 if (Permission.isIgnoreLoginSecurity(null, appurl)) {
@@ -168,12 +168,13 @@ public class PermissionImpl extends Permission {
         }
         DataQuery dq = DBFactory.getDataQuery(null, null);
         StringBuilder wc = new StringBuilder();
-        wc.append("menu_id=? and role_id in (select role_id from PUB_ROLE_USER where upper(user_id)=upper(?))");
+        wc.append("menu_id=? and OPERATION=1 and role_id in (select role_id from PUB_ROLE_USER where upper(user_id)=upper(?))");
         try {
             int c = dq.count("PUB_ROLE_OPERATION", wc.toString(), new Object[] { maxmenuid, JxSession.getUserId() });
             LOG.debug("权限：" + pageid + "." + methodName + "=" + c);
             boolean b = c > 0;
             CacheUtil.putPermissionCache(ckey, new Boolean(b));
+            return b;
         } catch (JxException e) {
             LOG.error(e.getMessage());
         }

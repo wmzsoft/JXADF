@@ -129,7 +129,7 @@ function loadDataTable(tableId, options) {
     }
 
     var fixedWidth = table.attr("fixedWidth");
-    if (fixedWidth > JxUtil.getClientWidth()) {
+    if (fixedWidth && fixedWidth > JxUtil.getClientWidth()) {
         table.css({
             "width": fixedWidth
         });
@@ -144,7 +144,8 @@ function loadDataTable(tableId, options) {
     afterLoadDataTable(tableId, dttable);
 }
 function tableFilterQuickSearch(me, e) {
-    if (e && e.keyCode == "13") {
+    e = $.event.fix(e || window.event);
+    if (e.keyCode == "13") {
         $(me).blur();
     }
 }
@@ -155,8 +156,9 @@ function tableFilterQuickSearch(me, e) {
  * @param e
  */
 function tableQuickSearch(me, e) {
+    e = $.event.fix(e || window.event);
     var value = $(me).val();
-    if (e && e.keyCode == "13") {
+    if (e.keyCode == "13") {
         dwr.engine.setAsync(false);
         WebClientBean.tableQuickSearch(jx_appNameType, value, {
             callback: function () {
@@ -259,17 +261,20 @@ function pagePaste() {
 /**
  * *处理分页 触发 onblur 事件。
  */
-function pageBlur(tableId) {
-    var psid = document.getElementById(tableId + "_pagesize");// 页大小
-    if (typeof (psid) != 'undefined') {
-        if (psid.value != 20) {
-            pageGoto(tableId);
-        }
+function pageBlur(dom,tableId) {
+    var $dom = $(dom);
+    var value = $dom.val();
+    var origin = $dom.attr("originvalue");
+    if(value != origin){
+        pageGoto(tableId);
     }
 }
 
-function pageKeypress(e) {
+function pageKeypress(dom,e) {
     e = $.event.fix(e || window.event);
+    if(e.keyCode == 13){
+        dom.blur();
+    }
     return (e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode == 8);
 }
 

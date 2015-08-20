@@ -30,7 +30,7 @@ public class JxLangResourcesUtil {
 
     /**
      * 重新加载语言
-     *
+     * 
      * @lang
      */
     public static void reloadBundle(String lang) {
@@ -42,7 +42,7 @@ public class JxLangResourcesUtil {
 
     /**
      * 加载特定的资源
-     *
+     * 
      * @param type
      * @return
      */
@@ -51,7 +51,7 @@ public class JxLangResourcesUtil {
         String userLangCode = "zh_CN"; // 默认为中文语言
         if (null != userInfo) {
             userLangCode = userInfo.getLangcode();
-            if (userLangCode.indexOf("-") > 0) {
+            if (userLangCode != null && userLangCode.indexOf("-") > 0) {
                 userLangCode = userLangCode.replace("-", "_");
             }
         }
@@ -67,7 +67,7 @@ public class JxLangResourcesUtil {
 
     /**
      * 加载语言包
-     *
+     * 
      * @param type
      * @param langCode
      * @return
@@ -94,14 +94,14 @@ public class JxLangResourcesUtil {
             }
             return ResourceBundle.getBundle(type, local);
         } else {
-            //LOG.debug("加载语言包失败：" + sb.toString());
+            // LOG.debug("加载语言包失败：" + sb.toString());
             return null;
         }
     }
 
     /**
      * 获取值
-     *
+     * 
      * @param key key有2中模式，一种app.appname开头，一种其他任意字符串。
      * @return
      */
@@ -149,7 +149,7 @@ public class JxLangResourcesUtil {
 
     /**
      * 针对“您好，{0},{1}”通配的国际化信息处理
-     *
+     * 
      * @param key
      * @param params
      * @return

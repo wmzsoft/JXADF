@@ -1,7 +1,7 @@
 (function ($) {
     function TextHelper(target) {
         this.$target = $(target);
-        this.selector = "input[type=text]";
+        this.selector = "input[type=text]:not([input-helper='disabled'])";
         this.init();
     }
 

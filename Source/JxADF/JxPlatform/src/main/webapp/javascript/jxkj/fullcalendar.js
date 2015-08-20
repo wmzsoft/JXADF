@@ -29,13 +29,13 @@ function myFullCalendar(myid){
       }
     });		
 	
-	$('.fc-prev-button').click(function() {
+	$('.fc-prev-button').click(function(event) {
 		loadCalendarData($('#'+myid),event);
 	});
-	$('.fc-next-button').click(function() {
+	$('.fc-next-button').click(function(event) {
 		loadCalendarData($('#'+myid),event);
 	});
-	loadCalendarData($('#'+myid),event);
+	loadCalendarData($('#'+myid));
 }
 
 /**

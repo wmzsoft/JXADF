@@ -159,4 +159,23 @@ public class VirtualJboSet extends BaseJboSet {
         return false;
     }
 
+
+    @Override
+    public boolean delete(Connection conn, String whereCause, Object[] params) throws JxException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean delete(String whereCause, Object[] params) throws JxException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public List<JboIFace> getTree(String parentName, String parentValue, String idName, boolean includeSelf) throws JxException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

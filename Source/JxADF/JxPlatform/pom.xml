@@ -173,13 +173,6 @@
 		</dependency>
 		
 		<dependency>
-			<groupId>org.mybatis</groupId>
-			<artifactId>mybatis</artifactId>
-			<version>3.2.6</version>
-			<scope>provided</scope>
-		</dependency>
-		
-		<dependency>
 			<groupId>org.jasig.cas.client</groupId>
 			<artifactId>cas-client-core</artifactId>
 			<version>3.2.1</version>

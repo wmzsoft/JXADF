@@ -52,4 +52,11 @@ public class JxConstant {
     public final static int SLIBING_PREVIOUS = -1;
     public final static int SLIBING_NEXT = 1;
 
+    public final static String ORG = "ORG";
+    public final static String ORG_ZH = "组织";
+
+    public final static String SITE = "SITE";
+    public final static String SITE_ZH = "地点";
+
+
 }

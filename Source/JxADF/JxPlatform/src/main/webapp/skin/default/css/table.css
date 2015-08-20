@@ -672,3 +672,12 @@ tr.table_expand_tr iframe{
 .expandContext select ~ .select2{
     display: none;
 }
+
+.table-filter-th input{
+    height: 24px;
+    line-height: 20px;
+    width: 70%;
+    vertical-align: middle;
+    box-sizing: border-box;
+    padding: 0 2px;
+}

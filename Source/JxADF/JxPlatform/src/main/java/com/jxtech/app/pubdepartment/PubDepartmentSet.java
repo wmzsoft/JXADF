@@ -16,10 +16,4 @@ public class PubDepartmentSet extends JboSet {
         return currentJbo;
     }
 
-    @Override
-    public JboIFace add() throws JxException {
-
-        return super.add();
-    }
-
 }

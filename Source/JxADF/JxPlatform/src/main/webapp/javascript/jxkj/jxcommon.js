@@ -164,8 +164,8 @@ var JxUtil = {
         var isXScroll = false;
         var isYScroll = false;
         if ($el.is("html") || $el.is("body")) {
-            isXScroll = $("body").width() > $(window).width();
-            isYScroll = $("body").height() > $(window).height();
+            isXScroll = $("body")[0].scrollWidth > $(window).width();
+            isYScroll = $("body")[0].scrollHeight > $(window).height();
         } else {
             isXScroll = el.scrollWidth > el.clientWidth;
             isYScroll = el.scrollHeight > el.clientHeight;
@@ -1040,8 +1040,8 @@ function inputOnChange(me, e) {
     var im = $input.attr("inputmode");
     if (im == "QUERYIMMEDIATELY" || im == "QUERY") {
         e = $.event.fix(e || window.event);
-        if(e.keyCode == 13){
-            inputQueryOnBlur(me , e);
+        if (e.keyCode == 13 || $input.is(".hasDatepicker")) {
+            inputQueryOnBlur(me, e);
         }
     }
 }
@@ -1294,7 +1294,7 @@ function selectChange(me, e) {
         return false;
     }
 
-    setExpandSourceRowText($select,$select.find("option:selected").text());
+    setExpandSourceRowText($select, $select.find("option:selected").text());
 
     var im = $select.attr("inputmode");
     if (im == 'DISPLAY') {
@@ -1333,7 +1333,7 @@ function selectChange(me, e) {
                 errorHandler: errorHandler,
                 exceptionHandler: exceptionHandler
             });
-        doPartialTriggers(me,e);
+        doPartialTriggers(me, e);
         dwr.engine.setAsync(true);
     }
 }
@@ -1505,7 +1505,9 @@ function getTableData(divid, e, callback, cColumns, loadType) {
 
     if (mydiv) {
         if ((mydiv.attr("id")) == undefined) {
-            callback();
+            if(null != callback){
+                callback();
+            }
             return;
         }
         var tableId = (mydiv.attr("id")).substring(4);// 表格的ID为DIVID去掉前4个字符
@@ -1582,6 +1584,7 @@ function getTableData(divid, e, callback, cColumns, loadType) {
             cColumns = '';
         }
         // 使用load方法加载html内容
+        loadingMask(mydiv, mydiv.find("tr").length);
         mydiv.load(urlValue, {
             app: appname,
             type: typeValue,
@@ -1595,26 +1598,35 @@ function getTableData(divid, e, callback, cColumns, loadType) {
             url: urlValue,
             loadType: loadType
         }, function (response, status, xhr) {
-            $("tr[toBeDel='true']", mydiv).each(function () {
-                delrow($(this).find("[mxevent='delrow']"));
-            });
-            bindTableEvent(tableId);
+            loadingUnmask(mydiv);
+            if(status == "error"){
+                mydiv.html("<div class='text-center' style='color:#f30;padding:20px 0;'>loading error</div>")
+            }else{
+                var $tbody = $("tbody", mydiv);
+                $("tr[tobeadd='true']", mydiv).each(function () {
+                    $tbody.prepend(this);
+                });
 
-            if (callback != null) {
-                callback();
-            }
-            // 当应用为附件,设置内容在iframe框架中自动增长
-            if (appname == "attachment") {
-                resetIframeHeight(divid);
-            }
+                $("tr[toBeDel='true']", mydiv).each(function () {
+                    delrow($(this).find("[mxevent='delrow']"));
+                });
+                bindTableEvent(tableId);
 
+                if (callback != null) {
+                    callback();
+                }
+                // 当应用为附件,设置内容在iframe框架中自动增长
+                if (appname == "attachment") {
+                    resetIframeHeight(divid);
+                }
+            }
         });
     }
 }
 
 function afterFragmentLoad(tableId) {
 }
-function afterFragementLoad(tableId){
+function afterFragementLoad(tableId) {
 
 }
 /**
@@ -1774,11 +1786,12 @@ function appDialog(app, appType, fromid, urlValue, w, h, beforeDialogClose, titl
 
     // 强制设置居中显示
     $dialog.dialog('option', 'position', {my: 'center', at: 'center', of: dialogCenterPoint});
+    $dialog.prev().find("button").blur();
 }
 
-function fixIEProcessBar(){
+function fixIEProcessBar() {
     //when multi iframes ,the processbar show loading forever;
-    if(/msie/.test(navigator.userAgent.toLowerCase())){
+    if (/msie/.test(navigator.userAgent.toLowerCase())) {
         var $fixIframe = $("<iframe style='display:none'/>").appendTo(top.document.body);
         $fixIframe[0].contentDocument.write("");
         $fixIframe[0].contentWindow.close();
@@ -1890,8 +1903,13 @@ function lookupAction(lookupapp, fromid, w, h) {
 function lookup(me, e) {
     var tag = $(me).attr("tag");
     if (tag && tag == "tablebutton") {
-        var table = $(me).closest("tbody");
+        var table = $(me).closest("table");
+        var dtTableHeadWrap = table.closest(".dataTables_scrollHead");
         var allbox = $("input[type='checkbox'][name='allbox']", table);
+        if(dtTableHeadWrap.length){
+            //没有id说明是经过了datatable的处理
+            table = dtTableHeadWrap.next().find("table");
+        }
         if (allbox && allbox.length > 0) {
             var checkedJbos = $("input[type='checkbox'][name!='allbox']:checked", table);
             if (checkedJbos && checkedJbos.length > 0) {
@@ -2270,8 +2288,8 @@ function routeCommon(me, e) {
             WebClientBean.reloadCurrentJboData({
                 callback: function () {
                     var href = parent.location.href;
-                    if(href.indexOf("flag=add") > -1){
-                        href = href.replace(/flag=add/,"uid="+uid);
+                    if (href.indexOf("flag=add") > -1) {
+                        href = href.replace(/flag=add/, "uid=" + uid);
                     }
                     window.parent.location.href = href;
                 },
@@ -2761,8 +2779,8 @@ function delrow(me, e) {
 /**
  * * 新增记录行
  */
-function addrow(me, e){
-	addRowAndSetValue(me,e,null);
+function addrow(me, e) {
+    addRowAndSetValue(me, e, null);
 }
 
 /**
@@ -2771,7 +2789,7 @@ function addrow(me, e){
  * @param e
  * @param data JSON格式的默认值
  */
-function addRowAndSetValue(me, e,data) {
+function addRowAndSetValue(me, e, data) {
     var tableid = me.id.substring(0, me.id.length - $('#' + me.id).attr('mxevent').length - 1);
     var table = $("#" + tableid);
     if ($(me).attr('enabled') == '0') {
@@ -2785,7 +2803,7 @@ function addRowAndSetValue(me, e,data) {
         var exTr = $("tr[expand='1']", table);
         $("td:first span", exTr).click(); // 将expandtype收起来
     }
-    WebClientBean.addRow(jx_appNameType, table.attr('jboname'), table.attr('relationship'),data,
+    WebClientBean.addRow(jx_appNameType, table.attr('jboname'), table.attr('relationship'), data,
         {
             callback: function (jbo) {
                 if (jbo == null) {
@@ -3006,13 +3024,16 @@ function setFormData(parent, jbo, type) {
                     $(this).val(tempValue);
                 } else if (tagName == "SELECT") {
                     var nulloption = $("option[value='']", $(this));
-                    if (nulloption && nulloption.length > 0) {
+                    if (nulloption && nulloption.is(":selected")) {
                     } else {
                         //如果没有请选择，加上请选择
                         var op = getLangString("jxcommon.selectoption");
                         $(this).append("<option selected value=''>" + op + "</option>");
                     }
                     $(this).val(tempValue);
+                    if($(this).next(".select2").length){
+                        $(this).select2();
+                    }
                 } else {
                     $(this).val(tempValue);
                 }
@@ -3204,22 +3225,24 @@ function closeTreeTable(tr) {
  *
  * @param tr
  */
-function selectTableTr(tr,e) {
-    // 判断是单选还是多选
-    var $tr = $(tr);
-    var fragment = $tr.closest(".fragment-mode");
-    var $checkbox = $tr.find("input:checkbox");
-    if($checkbox.length){
-        var $allbox = $("input[type='checkbox'][name='allbox']", fragment);
-        if ($allbox && $allbox.length > 0) {
-            $("tr[class='trSelected']", table).removeClass("trSelected");
+function selectTableTr(tr, e) {
+    e = $.event.fix(e || window.event);
+    if (!e.target.nodeName.toUpperCase().match(/^(a|input)$/i)) {
+        // 判断是单选还是多选
+        var $tr = $(tr);
+        var fragment = $tr.closest(".fragment-mode");
+        var $checkbox = $tr.find("input:checkbox");
+        if ($checkbox.length) {
+            var $allbox = $("input[type='checkbox'][name='allbox']", fragment);
+            if ($allbox && $allbox.length > 0) {
+                $("tr[class='trSelected']", table).removeClass("trSelected");
+            }
+            var checked = $checkbox[0].checked;
+            $checkbox.prop("checked", !checked);
+            ckOneSelectHandler($checkbox[0], $checkbox.attr("index"));
         }
-        var checked = $checkbox[0].checked;
-        $checkbox.prop("checked",!checked);
-        ckOneSelectHandler($checkbox[0],$checkbox.attr("index"));
+        $tr.toggleClass("trSelected");
     }
-    $tr.toggleClass("trSelected");
-
 }
 
 /**
@@ -3378,7 +3401,7 @@ function beforeActivate(event, ui) {
     debug(ui);
 }
 
-function tabActivate(event,ui){
+function tabActivate(event, ui) {
 
 }
 
@@ -3906,8 +3929,8 @@ function DateAdd(interval, number, date) {
     }
 }
 
-function select2AjaxSelectTag(id, displayvalue, dataattribute, displayname, ajaxurl, selectedDisplay,placeholder) {
-    var $select = $("#"+id);
+function select2AjaxSelectTag(id, displayvalue, dataattribute, displayname, ajaxurl, selectedDisplay, placeholder) {
+    var $select = $("#" + id);
     var valueOrAttr = (displayvalue || dataattribute || "").toLowerCase();
     displayname = (displayname || "description").toLowerCase();
     ajaxurl = ajaxurl.replace(/['"]/g, "");
@@ -3956,12 +3979,12 @@ function select2AjaxSelectTag(id, displayvalue, dataattribute, displayname, ajax
             },
             cache: true
         },
-        initSelection:function(element,callback){
-            var data ={};
+        initSelection: function (element, callback) {
+            var data = {};
             var $selection = element.find("option:selected");
             data[valueOrAttr] = $selection.val();
-            data[id]=$selection.val();
-            data[displayname]=$selection.text();
+            data[id] = $selection.val();
+            data[displayname] = $selection.text();
             callback(data);
         },
         escapeMarkup: function (markup) {
@@ -4228,7 +4251,6 @@ function setChildTableReadOnly($table) {
             }
             // 创建一个 Mask 层，追加到对象中
             var maskDiv = $('<div id="maskdivgen" class="maskdivgen">&nbsp;</div>');
-            maskDiv.appendTo(original);
 
             var maskWidth = original.outerWidth();
             if (!maskWidth) {
@@ -4248,17 +4270,17 @@ function setChildTableReadOnly($table) {
                 'background-color': op.bgcolor,
                 opacity: 0
             });
+            maskDiv.appendTo(original);
             //重新设置大小
             $(window).resize(function () {
                 var maskDiv = $("#maskdivgen");
-                var dbody = $(document.body);
-                var maskWidth = dbody.outerWidth();
+                var maskWidth = original.outerWidth();
                 if (!maskWidth) {
-                    maskWidth = dbody.width();
+                    maskWidth = original.width();
                 }
-                var maskHeight = dbody.outerHeight();
+                var maskHeight = original.outerHeight();
                 if (!maskHeight) {
-                    maskHeight = dbody.height();
+                    maskHeight = original.height();
                 }
                 maskDiv.css({height: maskHeight + 'px', width: maskWidth + 'px'});
                 var msgDiv = $("#msgDiv");
@@ -4300,6 +4322,9 @@ function setChildTableReadOnly($table) {
                         top: (usefulHeight / 2 + scrolltop - 150),
                         left: (widthspace / 2)
                     });
+                } else if (msgobj.element) {
+                    var msgDiv = $(msgobj.element);
+                    maskDiv.html(msgDiv);
                 } else {
                     var msgDiv = $('<div id="msgDiv"></div>');
                     msgDiv.css({
@@ -4338,6 +4363,30 @@ function setChildTableReadOnly($table) {
             original.find("> div.maskdivgen").fadeOut('slow', 0, function () {
                 $(this).remove();
             });
+        },
+        queueMask: function (strArr,delay) {
+            $(this).mask(strArr[0]);
+            var p = $("#msgDiv").find("div").width(140);
+            var arr = [];
+            for(var i=0;i<strArr.length;i++){
+                (function(index){
+                    arr.push(function(){
+                        p.html(strArr[index]);
+                        setTimeout(function(){
+                            if(index == strArr.length-1){
+                                p.queue("mx",arr);
+                            }
+                            p.dequeue("mx");
+                        },delay)
+                    })
+                })(i);
+            }
+            p.queue("mx",arr);
+            p.dequeue("mx");
+        },
+        dequeueMask:function(){
+            $("#msgDiv").find("div").queue("mx",[]);
+            $(this).unmask();
         }
     });
 })();
@@ -4345,10 +4394,10 @@ function setChildTableReadOnly($table) {
 /**
  * 查询窗口中回车执行查询
  */
-$(function(){
-	$("body").keydown(function(event) {
+$(function () {
+    $("body").keydown(function (event) {
         var searchBtn = $("span[mxevent='searchOk']");
-        if (searchBtn.length==0) return;
+        if (searchBtn.length == 0) return;
         if (!searchBtn.is(':visible')) return;
         if (event.keyCode == "13") {
             $(':focus').blur();
@@ -4358,35 +4407,35 @@ $(function(){
 });
 
 //layout tag
-function createLayout(layoutId){
-    var $layoutContainer = $("#"+layoutId);
+function createLayout(layoutId) {
+    var $layoutContainer = $("#" + layoutId);
     var options = getLayoutOptions($layoutContainer);
     options.applyDemoStyles = false;
     $layoutContainer.layout(options);
 }
 
-function getLayoutOptions($container){
+function getLayoutOptions($container) {
     var options = {};
-    $container.find(">.ui-layout-pane").each(function(){
+    $container.find(">.ui-layout-pane").each(function () {
         var $this = $(this);
         var region = $this.attr("region");
         options[region] = {};
-        if(region != "center"){
-            if($this.attr("size")){
+        if (region != "center") {
+            if ($this.attr("size")) {
                 options[region].size = $this.attr("size");
             }
-            if($this.attr("minSize")){
+            if ($this.attr("minSize")) {
                 options[region].minSize = $this.attr("minSize");
             }
-            if($this.attr("maxSize")){
+            if ($this.attr("maxSize")) {
                 options[region].maxSize = $this.attr("maxSize");
             }
             options[region].resizable = !($this.attr("resizable") == "false");
             options[region].closable = !($this.attr("closable") == "false");
             options[region].spacing_open = parseInt($this.attr("space"));
-            if($this.attr("status") == "close"){
+            if ($this.attr("status") == "close") {
                 options[region].initClosed = true;
-            }else if($this.attr("status") == "hidden"){
+            } else if ($this.attr("status") == "hidden") {
                 options[region].initHidden = true;
             }
         }
@@ -4394,12 +4443,33 @@ function getLayoutOptions($container){
     return options;
 }
 //当ui.layout一开始是隐藏的时候，在显示的时候需要进行resizeAll
-function resizeLayout($parent,beforeResize){
+function resizeLayout($parent, beforeResize) {
     var layout = $parent.find(".ui-layout-container.panel").data("layout");
-    if(layout){
-        if($.isFunction(beforeResize)){
+    if (layout) {
+        if ($.isFunction(beforeResize)) {
             beforeResize();
         }
         layout.resizeAll();
+    }
+}
+
+function loadingMask(element, isFloat) {
+    if (isFloat) {
+        //适合有一定高度的
+        element.mask({
+            element: '<div class="loading-mask float-loading-mask"><span class="loading"></span></div>'
+        })
+    } else {
+        //适合高度为0的
+        element.html('<div class="loading-mask empty-loading-mask"><span class="loading"></span></div>')
+    }
+}
+
+function loadingUnmask(element) {
+    var loading = element.find(".loading-mask");
+    if (loading.is(".empty-loading-mask")) {
+        loading.remove();
+    } else {
+        element.unmask();
     }
 }

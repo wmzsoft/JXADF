@@ -144,10 +144,13 @@
                                         <td class="form_td_content">
                                             <jxui:pushbutton label="{app.pubdepartment.PUB_USER.SETPASSWORD}"/>
                                         </td>--%>
+                                        <jxui:textbox dataattribute="Password" colspan="4" label="{app.pubdepartment.PUB_USER.SETPASSWORD}" required="true"/>
 
-                                        <jxui:textbox dataattribute="DISPLAYNAME" colspan="4"
+
+                                    </jxui:sectionrow>
+                                    <jxui:sectionrow>
+                                        <jxui:textbox dataattribute="DISPLAYNAME" colspan="5"
                                                       label="{app.pubdepartment.PUB_USER.DISPLAYNAME}" required="true"/>
-
                                     </jxui:sectionrow>
                                     <jxui:sectionrow>
                                         <jxui:multipartTextbox dataattribute="DEPARTMENT_ID" id="deptId"

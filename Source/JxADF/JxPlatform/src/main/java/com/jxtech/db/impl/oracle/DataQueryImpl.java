@@ -26,18 +26,17 @@ import com.jxtech.util.StrUtil;
 
 /**
  * 数据查询
- * 
+ *
  * @author wmzsoft@gmail.com
  * @date 2015.03
- * 
  */
 public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
     private static final Logger LOG = LoggerFactory.getLogger(DataQueryImpl.class);
 
     /**
      * 查询数据
-     * 
-     * @param conn 数据库连接
+     *
+     * @param conn      数据库连接
      * @param tablename 表名
      * @param queryinfo 查询对象
      * @return
@@ -83,11 +82,14 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
         }
         QueryRunner qr = new QueryRunner();
         try {
+
             List<Map<String, Object>> list = qr.query(conn, msql.toString(), new MapListHandler(), params);
             JxLog jxlog = JxLogFactory.getJxLog(queryinfo.getAppname(), tablename);
             if (jxlog != null) {
                 jxlog.debug(msql + "\r\n" + StrUtil.objectToString(params), "QUERY");
             }
+
+
             vals = toDataMapList(list);
             String ckey = StrUtil.contact(DBFactory.CACHE_PREX, tablename, ".", String.valueOf(queryinfo.getQueryId(true)));
             CacheUtil.putJboCache(ckey, vals);
@@ -100,7 +102,7 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
 
     /**
      * 检查是否存在某条记录信息
-     * 
+     *
      * @param conn
      * @param tableName
      * @param columnName
@@ -118,13 +120,13 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
             }
         }
         String where = columnName + "=?";
-        int c = count(conn, tableName, where, new Object[] { columnValue });
+        int c = count(conn, tableName, where, new Object[]{columnValue});
         return (c > 0);
     }
 
     /**
      * 获得序列值
-     * 
+     *
      * @param sequenceName
      * @param isNext
      * @return

@@ -143,10 +143,6 @@ public class JxLogImpl implements JxLog {
         }
     }
 
-    public static JxLog getInstance(String app, String jboname) throws JxException {
-        return new JxLogImpl(app, jboname);
-    }
-
     public void setApp(String app) {
         this.app = app;
     }

@@ -16,21 +16,32 @@ import org.slf4j.LoggerFactory;
  */
 public class PermissionFactory {
     private static Logger LOG = LoggerFactory.getLogger(PermissionFactory.class);
+    private static PermissionIFace permissionInstance;
 
+    /**
+     * 获得权限类的单例
+     * 
+     * @return
+     */
     public static PermissionIFace getPermissionInstance() {
+        if (permissionInstance != null) {
+            return permissionInstance;
+        }
         JxVars vars = JxVarsFactory.getInstance();
         String permclass = vars.getValue("jx.permission.class", "com.jxtech.jbo.auth.impl.PermissionImpl");
         if (!StrUtil.isNull(permclass)) {
             try {
                 Object obj = ClassUtil.getInstance(permclass);
                 if (obj instanceof PermissionIFace) {
-                    return (PermissionIFace) obj;
+                    permissionInstance = (PermissionIFace) obj;
+                    return permissionInstance;
                 }
             } catch (Exception e) {
                 LOG.error(e.getMessage());
             }
         }
-        return new PermissionImpl();
+        permissionInstance = new PermissionImpl();
+        return permissionInstance;
     }
 
 }

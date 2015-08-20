@@ -63,12 +63,12 @@ public class MaxAppMenu {
         StringBuilder sql = new StringBuilder();
         sql.append(" select * from MAXAPPS ");
         sql.append(" where ORDERID > 0 ");
-        if (permission && !JxSession.isSuperManager()) {
+        if (permission && JxSession.isSuperManager()) {
             permission = false;
         }
         if (permission) {
             sql.append(" and app in (select app from maxmenu a, pub_role_operation b,pub_role_user c ");
-            sql.append(" where a.maxmenuid = b.menu_id and b.role_id=c.role_id ");
+            sql.append(" where a.maxmenuid = b.menu_id and b.role_id=c.role_id and b.OPERATION=1 ");
             if (visible > 0) {
                 sql.append(" and a.visible=").append(visible);
             }

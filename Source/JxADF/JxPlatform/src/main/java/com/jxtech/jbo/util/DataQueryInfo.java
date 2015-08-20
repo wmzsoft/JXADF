@@ -221,7 +221,7 @@ public class DataQueryInfo implements java.io.Serializable {
     /**
      * 将条件put 到 params对象中。
      * 
-     * @param key
+     * @param key column = ?
      * @param value
      * @param overlay 是否覆盖
      */

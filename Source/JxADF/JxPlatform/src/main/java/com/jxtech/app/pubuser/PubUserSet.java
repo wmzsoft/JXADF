@@ -165,21 +165,6 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
 
     }
 
-    @Override
-    public List<JboIFace> query(String shipname) throws JxException {
-        List<JboIFace> jboList = new ArrayList<JboIFace>();
-        if (!StrUtil.isNull(shipname) && shipname.equalsIgnoreCase("PUB_ROLE_PUB_USER_ALL")) {
-            JboIFace parent = getParent();
-            if (null != parent) {
-                return parent.getRelationJboSet("PUB_ROLE_PUB_USER_ALL").getJbolist();
-            }
-        } else {
-            return super.query(shipname);
-        }
-
-        return jboList;
-    }
-
     /**
      * 切换用户是否为某个角色成员
      * 
