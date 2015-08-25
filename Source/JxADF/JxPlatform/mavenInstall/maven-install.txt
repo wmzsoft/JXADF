@@ -13,3 +13,9 @@ mvn install:install-file -DgroupId=com.oracle -DartifactId=ojdbc6 -Dversion=11g 
 mvn install:install-file -DgroupId= org.apache.struts -DartifactId=struts2-osgi-plugin.jx -Dversion=2.3.16.3 -Dpackaging=jar -Dfile=/Users/Downloads/struts2-osgi-plugin.jx-2.3.16.3.jar
 
 mvn install:install-file -DgroupId=org.springframework -DartifactId=web.servlet -Dversion=3.0.5 -Dpackaging=jar -Dfile=/Users/Downloads/web.servlet-3.0.5.jar
+
+--插件工程需要的jar
+ mvn install:install-file -DgroupId=org.apache.felix -DartifactId=org.apache.felix.main.jx -Dversion=1.0.0 -Dpackaging=jar -Dfile=/Users/Downloads/org.apache.felix.main.jx-1.0.0.jar
+
+ mvn install:install-file -DgroupId=org.apache.felix -DartifactId=org.apache.felix.shell.jx -Dversion=1.4.3 -Dpackaging=jar -Dfile=/Users/Downloads/org.apache.felix.shell.jx-1.4.3.jar
+ 
