@@ -305,9 +305,11 @@ public class WordUtils {
         Dispatch view = Dispatch.get(ActivePane, "View").toDispatch();
         Dispatch.put(view, "SeekView", new Variant(0));//普通视图
     }
-    private void logError(int a,int max,String newText){
+    private void logError(int a,int max,String newText) throws JxException{
         if(a>max){
-            LOG.info("替换["+newText+"]失败");
+            String msg = "协议模版文件内容格式错误，替换["+newText+"]失败,";
+            LOG.error(msg);
+            throw new JxException("协议模版文件内容格式错误");
         }
     }
     /**
@@ -315,11 +317,11 @@ public class WordUtils {
      * @param findText
      * @param newText
      */
-    public void replaceAllText(String findText, String newText){
+    public void replaceAllText(String findText, String newText) throws JxException{
         int count = getPageCount();
         for(int i = 0; i < count; i++){
             /*2015-6-8 20:15:41用于控制内循环次数,防止无法替换后出现的死循环*/
-            int max=10000,a=0;
+            int max=30,a=0;
             headerView();
             while (find(findText) && a<=max){
                 Dispatch.put(getSelection(), "Text", newText);
@@ -573,6 +575,7 @@ public class WordUtils {
     public boolean wordToPDF(String soruceFile,String outputFile,Map<String,String> replaceMap)throws JxException {
         boolean flag =true;
         Long startTime = System.currentTimeMillis();
+        File oldFile = new File(soruceFile);
         LOG.info("准备读取文："+soruceFile);
         //为防止出现占用情况，每次生成word或pdf前，先将模版复制一份出来，
         // 使用复制的模版进行操作，用完后，删除复制的模版文件
@@ -598,7 +601,7 @@ public class WordUtils {
         }catch (Exception e){
             flag = false;
             LOG.error("文档转换失败："+tmpFile.getAbsolutePath(),e);
-            throw new JxException("PDF文档生成失败："+e.getMessage());
+            throw new JxException("PDF文档生成失败["+oldFile.getName()+"]："+e.getMessage());
         }finally{
             setSaveOnExit(false);
             closeDocument();;
@@ -622,6 +625,7 @@ public class WordUtils {
         boolean flag =true;
         Long startTime = System.currentTimeMillis();
         LOG.info("准备读取文："+soruceFile);
+        File oldFile = new File(soruceFile);
         //为防止出现占用情况，每次生成word或pdf前，先将模版复制一份出来，
         // 使用复制的模版进行操作，用完后，删除复制的模版文件
         File tmpFile = FileUtil.fileCopy(soruceFile, outputFile);
@@ -645,7 +649,7 @@ public class WordUtils {
         }catch (Exception e){
             flag = false;
             LOG.error("文档转换失败：" + tmpFile.getAbsolutePath(),e);
-            throw new JxException("文档生成失败："+e.getMessage());
+            throw new JxException("文档生成失败["+oldFile.getName()+"]："+e.getMessage());
         }finally{
             setSaveOnExit(false);
             closeDocument();

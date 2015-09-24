@@ -1,0 +1,26 @@
+/*@import url("jxmenu.css");该样式仅用于skin home.jsp 不应该放在这里*/
+@import url("appbar.css");
+@import url("basic.css");
+@import url("body.css");
+@import url("buttongroup.css");
+@import url("checkbox.css");
+@import url("dashboard.css");
+@import url("datepicker.css");
+@import url("form.css");
+/*@import url("head.css"); 该样式仅用于skin home.jsp 不应该放在这里*/
+@import url("img.css");
+@import url("label.css");
+@import url("pushbutton.css");
+@import url("panel.css");
+@import url("select.css");
+@import url("tab.css");
+@import url("table.css");
+@import url("textbox.css");
+@import url("app-head.css");
+@import url("javascript.css");
+/*@import url("home.css");该样式仅用于skin home.jsp 不应该放在这里*/
+@import url("workflow.css");
+@import url("dialog.css");
+@import url("fragment.css");
+@import url("layout.css");
+@import url("tree.css");

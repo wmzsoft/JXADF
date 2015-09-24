@@ -1,5 +1,5 @@
-ï»¿/*******************************************
-* é¡µé¢å¤´éƒ¨æ ·å¼è¡¨
+/*******************************************
+* Ò³ÃæÍ·²¿ÑùÊ½±í
 *******************************************/
 .ui-layout-pane-west{
     z-index:10 !important;
@@ -27,7 +27,7 @@
     background: url(../images/home/north-nav-close.png) no-repeat;
 }
 
-/*æ¶ˆæ¯æç¤º*/
+/*ÏûÏ¢ÌáÊ¾*/
 .appMsg,
 .userName{
     color: yellow;
@@ -124,6 +124,20 @@
     display: inline-block;
 }
 
+.action_password {
+    padding-left: 25px;
+    background: url(../images/head/password.png) no-repeat;
+    line-height:20px;
+    display:inline-block;
+}
+
+.action_language{
+    padding-left: 25px;
+    background: url(../images/head/language.png) no-repeat;
+    line-height:20px;
+    display:inline-block;
+}
+
 .skins {
     width: 140px;
     top: 20px;
@@ -190,7 +204,7 @@
     height: 22px;
     padding: 0 10px;
     border-radius: 10px;
-    font:12px/22px "å®‹ä½“";
+    font:12px/22px "ËÎÌå";
 }
 
 .skins-list .active span{

@@ -7,7 +7,7 @@
 function loadLanguage(lang) {
     var browserLang;
     if (lang && lang.length > 0) {
-        browserLang = lang;
+        browserLang = lang.slice(0,2);
     } else {
         browserLang = $.i18n.browserLang();
     }

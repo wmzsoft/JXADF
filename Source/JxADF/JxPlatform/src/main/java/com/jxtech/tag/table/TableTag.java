@@ -168,7 +168,7 @@ public class TableTag extends JxBaseUITag {
                     DataQueryInfo qf = mainJboSet.getQueryInfo();
                     if (null != qf) {
                         // getCount() 返回-1，表示此表格还未查询过数据，需要使用配置的pagenum
-                        if (qf.getJboset().getCount() >= 0 && StrUtil.isNull(pagesize)) {
+                        if (mainJboSet.getCount() >= 0 && StrUtil.isNull(pagesize)) {
                             pagesize = String.valueOf(qf.getPageSize());
                         }
                         pagenum = qf.getPageNum();

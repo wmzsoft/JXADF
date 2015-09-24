@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
@@ -39,6 +40,8 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     private static final long serialVersionUID = -847638493380867280L;
     // 工作流ID
     private String workflowId;
+    // 工作流引擎,JXBPM、OBPM、ACTIVITI
+    private String workflowEngine;
 
     /**
      * 命名规则：appname,appnameSet 子类必须覆盖此方法
@@ -421,23 +424,56 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         return flag;
     }
 
+    /**
+     * 获得工作流标识，优先在MaxappsWFInfo表中查询，如果没有，则直接在WFProcess表中查询。
+     */
     @Override
-    public String getWorkflowId() {
+    public String getWorkflowId() throws JxException {
         if (workflowId != null) {
             return workflowId;
         }
+        initWorkflowInfo();
+        return workflowId;
+    }
+
+    public String getWorkflowEngine() throws JxException {
+        if (workflowEngine != null) {
+            return workflowEngine;
+        }
+        initWorkflowInfo();
+        return workflowEngine;
+    }
+
+    /**
+     * 初始化工作流相关参数
+     * 
+     * @throws JxException
+     */
+    protected void initWorkflowInfo() throws JxException {
         String appName = getAppname();
         if (!StrUtil.isNull(appName)) {
-            try {
-                JboIFace maxappswfinfoJbo = JboUtil.getJbo("MAXAPPSWFINFO", "APP", appName.toUpperCase());
-                if (null != maxappswfinfoJbo) {
-                    workflowId = maxappswfinfoJbo.getString("PROCESS");
+            // 1.优先查看MaxappsWFInfo表中的配置
+            JboIFace mwf = JboUtil.findJbo("MAXAPPSWFINFO", "app=? and active=1", new Object[] { appName.toUpperCase() });
+            if (mwf != null) {
+                workflowId = mwf.getString("PROCESS");
+                workflowEngine = mwf.getString("engine");
+            } else {
+                // 2. 直接在WFPRocess表中查询
+                mwf = JboUtil.findJbo("WFPROCESS", "Appname=? and active=1", new Object[] { appName.toUpperCase() });
+                if (mwf != null) {
+                    workflowId = mwf.getString("processNUM");
+                    workflowEngine = JboSetIFace.BPM_JX;
+                } else {
+                    LOG.warn("没有找到对应的工作流。");
                 }
-            } catch (JxException jxex) {
-                jxex.printStackTrace();
             }
+        } else {
+            LOG.warn("没有找到对应的应用程序名。");
         }
-        return workflowId;
+    }
+
+    public void setWorkflowEngine(String workflowEngine) {
+        this.workflowEngine = workflowEngine;
     }
 
     /**
@@ -467,6 +503,12 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             if (app.size() > 0) {
                 cause.append(app.get(0).getString("RESTRICTIONS"));
             }
+            // 获得当前登录用户的角色数量，以便确定是否每个角色都配置了限制条件，只要有一个没有配置，则无需条件
+            int rolescount = 0;
+            Set<String> roles = JxSession.getJxUserInfo().getRoles();
+            if (roles != null) {
+                rolescount = roles.size();
+            }
             // 获得角色限制条件
             JboSetIFace secus = JboUtil.getJboSet("securityrestrict");
             DataQueryInfo sdqi = secus.getQueryInfo();
@@ -480,23 +522,27 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             if (secs != null) {
                 int size = secs.size();
                 sb.setLength(0);
-                boolean start = false;
-                for (int i = 0; i < size; i++) {
-                    JboIFace sec = secs.get(i);
-                    String rec = sec.getString("restriction");
-                    if (rec != null && rec.length() > 1) {
-                        if (start) {
-                            sb.append(" or ");
+                if (size < rolescount) {
+                    LOG.debug("角色中有没配置限制条件的内容，无需限制。");
+                } else {
+                    boolean start = false;
+                    for (int i = 0; i < size; i++) {
+                        JboIFace sec = secs.get(i);
+                        String rec = sec.getString("restriction");
+                        if (rec != null && rec.length() > 1) {
+                            if (start) {
+                                sb.append(" or ");
+                            }
+                            sb.append('(').append(rec).append(')');
+                            start = true;
                         }
-                        sb.append('(').append(rec).append(')');
-                        start = true;
                     }
-                }
-                if (sb.length() > 2) {
-                    if (cause.length() > 3) {
-                        cause.insert(0, '(').append(" and (").append(sb).append(')');
-                    } else {
-                        cause.append(sb);
+                    if (sb.length() > 2) {
+                        if (cause.length() > 3) {
+                            cause.insert(0, '(').append(" and (").append(sb).append(')');
+                        } else {
+                            cause.append(sb);
+                        }
                     }
                 }
             }
@@ -649,7 +695,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     public boolean delete(Connection conn, String whereCause, Object[] params) throws JxException {
         DataEdit de = DBFactory.getDataEdit(this.getDbtype(), this.getDataSourceName());
         try {
-            String msql = StrUtil.contact("delete from ", this.getEntityname()," where ", whereCause);
+            String msql = StrUtil.contact("delete from ", this.getEntityname(), " where ", whereCause);
             return de.execute(conn, msql, params);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);

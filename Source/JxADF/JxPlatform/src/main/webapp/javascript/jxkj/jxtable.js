@@ -5,7 +5,7 @@ function beforeDataTableLoad(tableId) {
 }
 function afterLoadDataTable(tableId, dtTable) {
     var $table = $("table", "#div_" + tableId);
-    if ($table.length) {
+    if ($table.length > 1) {
         $table.addClass("table-layout-fixed");
     }
 }
@@ -106,8 +106,18 @@ function loadDataTable(tableId, options) {
     // 只有在列表页面下，才需要Y轴滚动
     if ((table.attr("inputmode") != "EDIT" || forceScorll) && table.attr("jboname") != 'TOP_ATTACHMENT' && scroll) {
         dataTableOption["sScrollY"] = height;
+        if(table.closest(".fragment-mode").is(".fragment-mode-inline")){
+            dataTableOption["sScrollX"] = "100%";
+        }
         dataTableOption["sDom"] = "tS";
         dataTableOption["fnInitComplete"] = function (obj) {
+            var timer;
+            $(window).on("resize.resizeDatatable", function () {
+                clearTimeout(timer);
+                timer = setTimeout(function(){
+                    resizeDataTable(table);
+                },200);
+            });
             var rowIdx = 0;
             if (jx_appType && jx_appType == "list") {
                 var fromUid = getUrlParam("fromUid");
@@ -139,10 +149,17 @@ function loadDataTable(tableId, options) {
 
     if (top.window.dataTableCollection) {
         //用于帮助解决jquery.layout.js布局的情况下west open/close时列表头部因为datatable.js固定死了
-        top.window.dataTableCollection[location.href + tableId] = [dttable, window];
+        top.window.dataTableCollection[location.href + tableId] = table;
     }
     afterLoadDataTable(tableId, dttable);
 }
+
+function resizeDataTable(table){
+    if(!table.closest(".fragment-mode").is(".fragment-mode-inline")){
+        table.fnAdjustColumnSizing();
+    }
+}
+
 function tableFilterQuickSearch(me, e) {
     e = $.event.fix(e || window.event);
     if (e.keyCode == "13") {
@@ -261,18 +278,18 @@ function pagePaste() {
 /**
  * *处理分页 触发 onblur 事件。
  */
-function pageBlur(dom,tableId) {
+function pageBlur(dom, tableId) {
     var $dom = $(dom);
     var value = $dom.val();
     var origin = $dom.attr("originvalue");
-    if(value != origin){
+    if (value != origin) {
         pageGoto(tableId);
     }
 }
 
-function pageKeypress(dom,e) {
+function pageKeypress(dom, e) {
     e = $.event.fix(e || window.event);
-    if(e.keyCode == 13){
+    if (e.keyCode == 13) {
         dom.blur();
     }
     return (e.keyCode >= 48 && e.keyCode <= 57) || (e.keyCode == 8);
@@ -437,7 +454,7 @@ function ckPageSelectHandler(checkbox, name, oddBgColor, evenBgColor, highLightc
  * 奇数行的背景颜色 param evenBgColor 偶数行的背景颜色 param highLightcolor 高亮背景颜色 history
  * 2005-7-27 胡文杰 新建
  */
-function ckOneSelect(checkbox,e,index,oddBgColor, evenBgColor, highLightcolor, allboxName){
+function ckOneSelect(checkbox, e, index, oddBgColor, evenBgColor, highLightcolor, allboxName) {
     e = $.event.fix(e || window.event);
     e.stopPropagation();
     ckOneSelectHandler(checkbox, index, oddBgColor, evenBgColor, highLightcolor, allboxName);
@@ -458,7 +475,7 @@ function ckOneSelectHandler(checkbox, index, oddBgColor, evenBgColor, highLightc
 function ckChangeCheckboxState(checkbox, allboxName) {
     var form = checkbox.form;
     if (!checkbox.checked) {
-        if (!allboxName&& !form.allbox) {
+        if (!allboxName && !form.allbox) {
             return;
         }
         if (!form.allbox) {

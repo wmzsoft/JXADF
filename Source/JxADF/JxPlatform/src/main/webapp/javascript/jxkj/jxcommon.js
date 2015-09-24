@@ -571,6 +571,36 @@ function addMe(me, e) {
     });
     dwr.engine.setAsync(true); // 重新设置成异步
 }
+
+function checkFieldValid(field) {
+    var $field = $(field);
+    if ($field.is("select:hidden")) {
+        var $parent = $field.parent();
+        if ($parent.css("position") != "position" || $parent.css("position") != "fixed") {
+            $parent.css("position", "relative").addClass("form_td_select_simulate_hidden");
+        }
+    }
+    var format = $(this).attr("format");
+
+    if (format && format.length > 0 && $field.val() != "") {
+        $field.val(accounting.unformat($field.val()));
+    }
+
+    var passValidation = !$field.validationEngine("validate", {
+        focusFirstField: true,//TODO 没有效果
+        maxErrorsPerField: 1,
+        showOneMessage: true
+    });
+    $parent && $parent.removeClass("form_td_select_simulate_hidden");
+
+    if (!passValidation) {
+        $("html,body").animate({
+            scrollTop: $(".formError").offset().top - 55
+        }, 100);
+    }
+    return passValidation;
+}
+
 function checkPassValidation(me, e) {
     // 获取最近的表单
     var mainForm = $(me).closest("form");
@@ -1505,7 +1535,7 @@ function getTableData(divid, e, callback, cColumns, loadType) {
 
     if (mydiv) {
         if ((mydiv.attr("id")) == undefined) {
-            if(null != callback){
+            if (null != callback) {
                 callback();
             }
             return;
@@ -1599,11 +1629,12 @@ function getTableData(divid, e, callback, cColumns, loadType) {
             loadType: loadType
         }, function (response, status, xhr) {
             loadingUnmask(mydiv);
-            if(status == "error"){
+            if (status == "error") {
                 mydiv.html("<div class='text-center' style='color:#f30;padding:20px 0;'>loading error</div>")
-            }else{
+            } else {
                 var $tbody = $("tbody", mydiv);
                 $("tr[tobeadd='true']", mydiv).each(function () {
+                    $(this).find("select").removeAttr("disabled");
                     $tbody.prepend(this);
                 });
 
@@ -1906,7 +1937,7 @@ function lookup(me, e) {
         var table = $(me).closest("table");
         var dtTableHeadWrap = table.closest(".dataTables_scrollHead");
         var allbox = $("input[type='checkbox'][name='allbox']", table);
-        if(dtTableHeadWrap.length){
+        if (dtTableHeadWrap.length) {
             //没有id说明是经过了datatable的处理
             table = dtTableHeadWrap.next().find("table");
         }
@@ -2270,6 +2301,7 @@ function routeCommon(me, e) {
 
     dwr.engine.setAsync(false); // 设置成同步
     var appName = $('#fromApp').val();// 应用程序名
+    var appType = $("#fromAppType").val();//应用程序类型
     var jboname = $('#fromJboname').val();
     var uid = $('#fromUid').val();
     var tousers = "";
@@ -2280,10 +2312,10 @@ function routeCommon(me, e) {
 
     tousers += actUsers;
 
-    WebClientBean.routeCommon(appName, jboname, uid, action, note, tousers, option, {
+    WebClientBean.routeCommon(appName+"."+appType, jboname, uid, action, note, tousers, option, {
         callback: function (data) {
             //msgTip(data, getLangString("jxcommon.workflow.nexter.title"));
-            alert("下一步执行人 : " + data);
+            alert(data);
             // 发送完工作流后，先在后台将当前的jbo数据刷新一下，然后在刷新当前页面
             WebClientBean.reloadCurrentJboData({
                 callback: function () {
@@ -2735,7 +2767,7 @@ function delrow(me, e) {
                                 + ot
                                 + "<div style='width:"
                                 + mywidth
-                                + "px;position:absolute;margin-top:-14px;border-bottom:solid 1px #000'></div></div>");
+                                + "px;position:absolute;top:50%;border-bottom:solid 1px #000'></div></div>");
                             //$("td:first", delTr).attr('oldtext', ot);
 
                             // 修改删除标识
@@ -2904,7 +2936,12 @@ function submitData() {
 function href(me, e) {
     var ps = $(me).attr("params");
     if (ps != null && ps != '') {
-        location.href = ps;
+    	var target = $(me).attr("target");
+    	if (target!=null && target!=''){
+    		windowopen(ps,target);
+    	}else{
+    		location.href = ps;
+    	}
     }
 }
 
@@ -3023,17 +3060,20 @@ function setFormData(parent, jbo, type) {
                     }
                     $(this).val(tempValue);
                 } else if (tagName == "SELECT") {
-                    var nulloption = $("option[value='']", $(this));
-                    if (nulloption && nulloption.is(":selected")) {
-                    } else {
-                        //如果没有请选择，加上请选择
-                        var op = getLangString("jxcommon.selectoption");
-                        $(this).append("<option selected value=''>" + op + "</option>");
-                    }
-                    $(this).val(tempValue);
-                    if($(this).next(".select2").length){
-                        $(this).select2();
-                    }
+                    //var nulloption = $("option[value='']", $(this));
+                    //if (!nulloption.length) {
+                    //    //如果没有请选择，加上请选择
+                    //    var op = getLangString("jxcommon.selectoption");
+                    //    $(this).append("<option selected value=''>" + op + "</option>");
+                    //}
+                    //tempValue = '';
+                    //if($(this).val() != tempValue){
+                    //    $(this).val(tempValue);
+                    //    if ($(this).next(".select2").length) {
+                    //        //$(this).select2();
+                    //        checkFieldValid(this);
+                    //    }
+                    //}
                 } else {
                     $(this).val(tempValue);
                 }
@@ -3398,7 +3438,6 @@ function tabCreate(event, ui) {
  * @param ui
  */
 function beforeActivate(event, ui) {
-    debug(ui);
 }
 
 function tabActivate(event, ui) {
@@ -3719,17 +3758,15 @@ $(function () {
         $(".appbar-menu").html('');
     }
     //toolbar按钮的图标变化
-    $('.toolbar_btn').hover(function () {
-        var imgs = $(this).find('img');
-        if (imgs.length != 0) {
-            var url = imgs.attr('src').replace('.png', '') + '_hover' + '.png';
-            imgs.attr('src', url);
+    $('.toolbar_btn').on("mouseenter",function () {
+        var img = $(this).find('img')[0];
+        if (img) {
+            img.src = img.src.replace(".png","_hover.png");
         }
-    }, function () {
-        var imgs = $(this).find('img');
-        if (imgs.length != 0) {
-            var url = imgs.attr('src').replace('_hover.png', '') + '.png';
-            imgs.attr('src', url);
+    }).on("mouseleave",function () {
+        var img = $(this).find('img')[0];
+        if (img) {
+            img.src = img.src.replace("_hover.png",".png");
         }
     });
 });
@@ -3932,19 +3969,22 @@ function DateAdd(interval, number, date) {
 function select2AjaxSelectTag(id, displayvalue, dataattribute, displayname, ajaxurl, selectedDisplay, placeholder) {
     var $select = $("#" + id);
     var valueOrAttr = (displayvalue || dataattribute || "").toLowerCase();
+    var place = {};
     displayname = (displayname || "description").toLowerCase();
     ajaxurl = ajaxurl.replace(/['"]/g, "");
     var formatRepo = function (repo) {
-        console.log(repo);
         if (repo.loading) return repo.text;
-        var mark = repo[valueOrAttr] + "-" + repo[displayname];
+        var mark = repo[valueOrAttr]+'-'+repo[displayname];
         return mark;
     };
     var formatRepoSelection = function (repo) {
         return repo[displayname];
     };
+    place[valueOrAttr] = -1;
+    place.id = -1;
+    place[displayname] = placeholder;
     $select.select2({
-        placeholder: "input a key,please",
+        placeholder: place,
         allowClear: true,
         ajax: {
             url: ajaxurl,
@@ -3981,9 +4021,9 @@ function select2AjaxSelectTag(id, displayvalue, dataattribute, displayname, ajax
         },
         initSelection: function (element, callback) {
             var data = {};
-            var $selection = element.find("option:selected");
+            var $selection = $select.find("option:selected");
             data[valueOrAttr] = $selection.val();
-            data[id] = $selection.val();
+            data.id = $selection.val();
             data[displayname] = $selection.text();
             callback(data);
         },
@@ -4072,106 +4112,107 @@ function executActionMethod(me, e) {
 
 //动态设置必填或只读
 function setRequiredOrNot(me, isrequired, type) {
+    var $me = $(me);
     var a = function (ee) {
-        $(ee).parent().prev().attr("class", "form_td_label required");
-        $(ee).parent().children().each(function (i, e) {
+        $me.parent().prev().attr("class", "form_td_label required");
+        $me.parent().children().each(function (i, e) {
             $(e).show();
         });
     };
     var setRequied = function (ee) {
-        $(ee).removeAttr("readonly");
-        $(ee).attr("required", "required");
+        $me.removeAttr("readonly");
+        $me.attr("required", "required");
     };
     var setReadOnly = function (ee) {
-        $(ee).attr("readonly", "readonly");
-        $(ee).removeAttr("required");
+        $me.attr("readonly", "readonly");
+        $me.removeAttr("required");
     };
     if (isrequired) {
         if ('select' == type) {
-            $(me).parent().parent().prev().attr("class", "form_td_label required");
-            $(me).removeAttr("disabled");
-            var selectclass = $(lookup).attr("selectclass");
+            $me.parent().parent().prev().attr("class", "form_td_label required");
+            $me.removeAttr("disabled");
+            var selectclass = $me.attr("selectclass");
             if (typeof(selectclass) != "undefined") {
-                $(me).attr("class", selectclass);
+                $me.attr("class", selectclass);
             }
             setRequied(me);
         } else if ('date' == type) {
             a(me);
-            var dateclass = $(me).attr("dateclass");
+            var dateclass = $me.attr("dateclass");
             if (typeof(dateclass) != "undefined") {
-                $(me).attr("class", dateclass);
+                $me.attr("class", dateclass);
             }
             setRequied(me);
         } else if ('lookup' == type) {
-            var lookup = $("#" + ($(me).attr("id") + "_DESC"));
+            var $lookup = $("#" + ($me.attr("id") + "_DESC"));
             //$(me).parent().prev().attr("class","form_td_label required");
-            $(me).parent().children().each(function (i, e) {
-                if ($(e).attr("id") != $(lookup).attr("id")) {
+            $me.parent().children().each(function (i, e) {
+                if ($(e).attr("id") != $lookup.attr("id")) {
                     $(e).show();
                 }
             });
-            var lookupclass = $(lookup).attr("lookupclass");
+            var lookupclass = $lookup.attr("lookupclass");
             if (typeof(lookupclass) != "undefined") {
-                $(lookup).attr("lookupclass", lookupclass);
-                $(lookup).attr("class", lookupclass);
+                $lookup.attr("lookupclass", lookupclass);
+                $lookup.attr("class", lookupclass);
             }
-            $(me).removeAttr("readonly");
-            $(me).removeAttr("style");
-            $(me).parent().parent().find(".form_td_label").addClass("required");
+            $me.removeAttr("readonly");
+            $me.removeAttr("style");
+            $me.parent().parent().find(".form_td_label").addClass("required");
         } else {
             a(me);
-            var oldclass = $(me).attr("oldclass");
+            var oldclass = $me.attr("oldclass");
             if (typeof(oldclass) != "undefined") {
-                $(me).attr("class", oldclass);
+                $me.attr("class", oldclass);
             }
             setRequied(me);
         }
     } else {
         if ('select' == type) {
-            $(me).parent().parent().prev().attr("class", "form_td_label");
-            $(me).attr("selectclass", $(me).attr("class"));
-            $(me).attr("disabled", "disabled");
+            $me.parent().parent().prev().attr("class", "form_td_label");
+            $me.attr("selectclass", $me.attr("class"));
+            $me.attr("disabled", "disabled");
             setReadOnly(me);
-            $(me).removeAttr("class");
+            $me.removeAttr("class");
         } else if ('date' == type) {
-            $(me).parent().prev().attr("class", "form_td_label");
-            $(me).parent().children().each(function (i, e) {
-                if ($(e).attr("id") != $(me).attr("id")) {
+            $me.parent().prev().attr("class", "form_td_label");
+            $me.parent().children().each(function (i, e) {
+                if ($(e).attr("id") != $me.attr("id")) {
                     $(e).hide();
                 }
             });
-            var dateclass = $(me).attr("dateclass");
+            var dateclass = $me.attr("dateclass");
             if (typeof(dateclass) == "undefined") {
-                $(me).attr("dateclass", $(me).attr("class"));
+                $me.attr("dateclass", $me.attr("class"));
             }
             setReadOnly(me);
-            $(me).attr("class", "form_td_100");
+            $me.attr("class", "form_td_100");
         } else if ('lookup' == type) {
-            var lookup = $("#" + ($(me).attr("id") + "_DESC"));
-            $(me).parent().prev().attr("class", "form_td_label");
-            $(me).parent().children().each(function (i, e) {
-                if ($(e).attr("id") != $(lookup).attr("id")) {
+            var $lookup = $("#" + ($me.attr("id") + "_DESC"));
+            $me.parent().prev().attr("class", "form_td_label");
+            $me.parent().children().each(function (i, e) {
+                if ($(e).attr("id") != $lookup.attr("id")) {
                     $(e).hide();
                 }
             });
-            var lookupclass = $(lookup).attr("lookupclass");
+            var lookupclass = $lookup.attr("lookupclass");
             if (typeof(lookupclass) == "undefined") {
-                $(lookup).attr("lookupclass", $(lookup).attr("class"));
+                $lookup.attr("lookupclass", $lookup.attr("class"));
             }
-            setReadOnly(lookup);
-            $(lookup).attr("class", "form_td_multipart_readonly");
+            setReadOnly($lookup);
+            $lookup.attr("class", "form_td_multipart_readonly");
         } else {
-            $(me).parent().prev().attr("class", "form_td_label");
-            $(me).parent().children().each(function (i, e) {
-                if ($(e).attr("id") != $(me).attr("id")) {
+            $me.parent().prev().attr("class", "form_td_label");
+            $me.parent().children().each(function (i, e) {
+                if ($(e).attr("id") != $me.attr("id")) {
                     $(e).hide();
                 }
             });
-            var oldclass = $(me).attr("oldclass");
+            var oldclass = $me.attr("oldclass");
             if (typeof(oldclass) == "undefined") {
-                $(me).attr("oldclass", $(me).attr("class"));
+                $me.attr("oldclass", $me.attr("class"));
             }
-            $(me).attr("class", "form_td_100");
+            $me.attr("class", "form_td_100");
             setReadOnly(me);
         }
     }
@@ -4364,28 +4405,28 @@ function setChildTableReadOnly($table) {
                 $(this).remove();
             });
         },
-        queueMask: function (strArr,delay) {
+        queueMask: function (strArr, delay) {
             $(this).mask(strArr[0]);
             var p = $("#msgDiv").find("div").width(140);
             var arr = [];
-            for(var i=0;i<strArr.length;i++){
-                (function(index){
-                    arr.push(function(){
+            for (var i = 0; i < strArr.length; i++) {
+                (function (index) {
+                    arr.push(function () {
                         p.html(strArr[index]);
-                        setTimeout(function(){
-                            if(index == strArr.length-1){
-                                p.queue("mx",arr);
+                        setTimeout(function () {
+                            if (index == strArr.length - 1) {
+                                p.queue("mx", arr);
                             }
                             p.dequeue("mx");
-                        },delay)
+                        }, delay)
                     })
                 })(i);
             }
-            p.queue("mx",arr);
+            p.queue("mx", arr);
             p.dequeue("mx");
         },
-        dequeueMask:function(){
-            $("#msgDiv").find("div").queue("mx",[]);
+        dequeueMask: function () {
+            $("#msgDiv").find("div").queue("mx", []);
             $(this).unmask();
         }
     });
@@ -4472,4 +4513,9 @@ function loadingUnmask(element) {
     } else {
         element.unmask();
     }
+}
+
+//tree标签加载数据前进行预处理
+function processTreeNode(treeNode) {
+    return treeNode;
 }

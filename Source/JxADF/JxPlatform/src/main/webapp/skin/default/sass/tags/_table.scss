@@ -1,0 +1,541 @@
+@charset "utf-8";
+//table分为2种,table-list和table-edit
+$field-height:22px;
+$field-line-height:$field-height - 2;//减去border的上下高度，用于hack ie
+%table_td_base {
+    border: 1px solid #d7d7d7;
+    font-size: 12px;
+    height: 30px;
+    empty-cells: show;
+    vertical-align: middle;
+    color: #666;
+    font-family: Verdana, "微软雅黑", Helvetica, Arial, sans-serif;
+    vertical-align: middle;
+}
+%table_field_base{
+    font-size: 12px;
+    font-family: Verdana, "微软雅黑", Helvetica, Arial, sans-serif;
+    padding-left: 1px;
+    padding-right: 1px;
+    height: $field-height;
+    line-height: $field-line-height;
+    background-color: #ffffff;
+    border: 1px solid #c0bebe;
+    box-sizing: border-box;
+}
+%table_field_disabled{
+    &[disabled],
+    &[readonly]{
+        background-color: transparent;
+        border: 0;
+        outline: none;
+        resize: none;
+    }
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
+}
+
+div.table_main{
+    height: 100%;
+}
+div.table_form{
+    height: 100%;
+}
+
+//table-list
+.table_list {
+    border-color: #7c9cc3;
+    vertical-align: top;
+    width: 100%;
+    position: relative;
+    th {
+        background: #fff getAbsoluteBackgroundImage("th-bg.gif") repeat-x;
+        font-size: 12px;
+        height: 35px;
+        line-height: 35px;
+        color: #303030;
+        empty-cells: show;
+        vertical-align: middle;
+        cursor: pointer;
+        border: 1px solid #d7d7d7;
+        padding: 0 5px;
+        text-align: center;
+        &.table_head_expand,
+        &.table_head_multiple,
+        &.table_head_single {
+            width: 24px;
+        }
+    }
+    td {
+        @extend %table_td_base;
+        line-height: 30px;
+        &.table_td_expand,
+        &.table_td_multiple,
+        &.table_td_single{
+            text-align: center;
+        }
+    }
+    &.dataTable td{
+        vertical-align: middle;
+        padding: 0 5px;
+    }
+    .table_list{
+        td{
+            padding: 0 5px;
+        }
+    }
+    //可编辑的table_list
+    .table_list_thead_table_title{
+        color: #4360B4;
+        font-size: 13px;
+        font-weight: bold;
+        display: inline-block;
+        padding: 5px 10px;
+    }
+    .table_list_thead_table_button1{
+        float: right;
+    }
+    .table_list_thead_clear{
+        clear: both;
+    }
+    //列表中的field
+    input.tdinput,
+    input.tdinputnum{
+        width: 100%;
+        height: $field-height;
+        line-height: $field-line-height;
+        border: 1px solid #c0bebe;
+        box-sizing: border-box;
+        @extend %table_field_disabled;
+    }
+    input.tdinputdate{
+        width: 75%;
+        height: $field-height;
+        line-height: $field-line-height;
+        border: 1px solid #c0bebe;
+        box-sizing: border-box;
+        //&[required='required']{
+        //    background: #fff url(../images/required.png) no-repeat right center;
+        //    padding-right: 16px;
+        //}
+    }
+    select{
+        width: 100%;
+        height: $field-height;
+        line-height: $field-line-height;
+        border: 1px solid #c0bebe;
+        box-sizing: border-box;
+        @extend %table_field_disabled;
+    }
+
+    //过滤列表
+    .table-filter-th{
+        input{
+            height: $field-height;
+            line-height: $field-line-height;
+            width: 100%;
+            vertical-align: middle;
+            box-sizing: border-box;
+            padding: 0 2px;
+            &[datatype="date"]{
+                width:75%;
+            }
+        }
+    }
+    //扩展子表
+    .btn_expand{
+        @include renderSpriteImage;
+        width: 24px;
+        height: 24px;
+        display: block;
+        margin: 0 auto;
+        @extend %tag_table_list_expand_button;
+        &.expanded{
+            @extend %tag_table_list_expand_expanded_button;
+        }
+    }
+    .table_expand_tr{
+        td{
+            padding: 0;
+            line-height: 0;//去除多余空格
+        }
+        iframe{
+            width: 100%;
+            border: 0 none;
+            background: #fff;
+        }
+    }
+    td.dataTables_empty{
+        height: 40px;
+    }
+
+    &[inputmode="EDIT"] {
+        tbody {
+            td {
+                background: #f1f1ff;
+            }
+        }
+    }
+}
+//当table的存在expand时，指向的页面body会通过js添加.expandContext
+
+.expandContext{
+    select{
+        display: inline-block !important;
+        & ~ .select2{
+            display: none;
+        }
+    }
+}
+//用于解决table.table_main中的table list的多重边框问题
+table.table_main{
+    .table_list{
+        >tbody>tr>td{
+            border: 0 none;
+        }
+        &[inputmode="EDIT"]{
+            tbody{
+                td{
+                    border: 1px solid #d7d7d7;
+                }
+            }
+        }
+        .table_list td{
+            border: 1px solid #d7d7d7;
+        }
+    }
+    .table_edit .table_list td{
+        border: 1px solid #d7d7d7;
+    }
+}
+//table-list底部 分页栏
+.bottom {
+    font-size: 12px;
+    height: 34px;
+    line-height: 34px;
+    padding: 0 15px;
+    background: #f7f7f7;
+    border: 1px solid #D7D7D7;
+    border-top: none;
+    .pagesize-select {
+        background: #868686;
+        border: 1px solid #787878;
+        color: #fff;
+        padding: 0 2px;
+        border-radius: 2px;
+    }
+    .pageSelected {
+        text-align: center;
+        ime-mode: disabled;
+        border: 1px solid #ddd;
+        width: 30px;
+    }
+    .gotoPage {
+        border: 1px solid #ddd;
+        text-align: center;
+        width: 30px;
+    }
+    .btn_href_GO {
+        border: 1px solid #c5c5c5;
+        background: url(../images/table/page-go-bg.png) repeat-x;
+        font-size: 12px;
+        color: #000;
+        height: 20px;
+        line-height: 12px;
+        text-align: center;
+        cursor: pointer;
+        width: 30px;
+        border-radius: 3px;
+    }
+    .table-tfoot-page-first {
+        width: 22px;
+        height: 20px;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0 2px;
+        @extend %tag_table_list_paginate_icon_first;
+    }
+    .table-tfoot-page-pre {
+        width: 22px;
+        height: 20px;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0 2px;
+        @extend %tag_table_list_paginate_icon_pre;
+    }
+    .table-tfoot-page-next {
+        width: 22px;
+        height: 20px;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0 2px;
+        @extend %tag_table_list_paginate_icon_next;
+    }
+    .table-tfoot-page-last {
+        width: 22px;
+        height: 20px;
+        display: inline-block;
+        vertical-align: middle;
+        margin: 0 2px;
+        @extend %tag_table_list_paginate_icon_last;
+    }
+    .expexcel, .expword, .custcolumn, .detach {
+        display: none;
+    }
+    .table_list_foot_tip{
+        clear: both;
+    }
+}
+//table edit 用来编辑的表单
+.table_main {
+    width: 100%;
+    border: 0 none;
+}
+
+table.table_edit {
+    width: 100%;
+    vertical-align: top;
+    border: 1px solid #d7d7d7;
+    border-top: none;
+    .td_tittle_bg {
+        background: url(../images/table/td_tittle_bg.png) repeat-x;
+        height: 30px;
+        line-height: 30px;
+        border: 1px solid #d7d7d7;
+        .label_title {
+            color: #2755F0;
+            display: block;
+        }
+    }
+    .form_td_label{
+        font{
+            color: #666;
+        }
+    }
+    .form_td_label,
+    .checkbox_td_label{
+        min-width: 50px;
+        width: 200px;
+        padding-right: 5px;
+        text-align: right;
+        white-space: nowrap;
+        background-color: #f3f3f3;
+        @extend %table_td_base;
+    }
+    .required:after {
+        content: "*";
+        color: #f00;
+        font-family: Arial, sans-serif;
+    }
+    .form_td_content,
+    .checkbox_td_content{
+        color: #000000;
+        word-break: break-all;
+        background-color: #fff;
+        padding: 0 5px;
+        min-width: 180px;
+        @extend %table_td_base;
+    }
+    input.form_td_100{
+        width: 100%;
+        @extend %table_field_base;
+        @extend %table_field_disabled;
+    }
+    input.form_td_date{
+        @extend %table_field_base;
+        @extend %table_field_disabled;
+    }
+    input.form_td_multipart_first{
+        display: none;
+    }
+    textarea.form_td_textarea{
+        margin: 5px 0;
+        width: 100%;
+        height: auto;
+        @extend %table_field_base;
+        @extend %table_field_disabled;
+    }
+    input.form_td_multipart{
+        @extend %table_field_base;
+    }
+    input.form_td_multipart_readonly{
+        @extend %table_field_base;
+        border: none;
+        vertical-align: middle;
+        text-align: left;
+        background-color: #F1F1FF;
+        width: 60%;
+    }
+    input.form_td_number{
+        text-align: right;
+        &[disabled],
+        &[readonly]{
+            text-align: left;
+        }
+        @extend %table_field_base;
+        @extend %table_field_disabled;
+    }
+    .form_td_select{
+        select{
+            font-size: 12px;
+            width: 206px;
+            max-width: 206px;
+            height: 24px;
+            line-height: 24px;
+            border: 1px solid #c0bebe;
+        }
+    }
+    input.form_label_tip{
+        width: 35px;
+        border: 0;
+        vertical-align: middle;
+        text-align: center;
+        background-color: transparent;
+        color: red;
+    }
+    input.form_query{
+        @extend %table_field_base;
+    }
+}
+
+
+
+.head_left {
+    float: left;
+    color: #4360b4;
+    font-size: 14px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.head_left .font_Arial {
+    display: none
+}
+
+.head_right {
+    float: right;
+    color: #4360b4;
+    vertical-align: middle;
+    text-align: right;
+    padding: 5px;
+}
+
+.head_center {
+    color: #4360b4;
+    vertical-align: middle;
+    text-align: center;
+    margin-right: 5px
+}
+
+.table_form{
+    width: 100%;
+    border: 0 none;
+    background: #ffffff;
+}
+
+.noresultset {
+    color: blue;
+    text-align: center;
+}
+
+.JColResizer {
+    table-layout: fixed;
+}
+
+.JColResizer td, .JColResizer th {
+    overflow: hidden;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
+.JCLRgrips {
+    height: 0;
+    position: relative;
+}
+
+.JCLRgrip {
+    margin-left: -5px;
+    position: absolute;
+    z-index: 5;
+}
+
+.JCLRgrip .JColResizer {
+    position: absolute;
+    background-color: red;
+    filter: alpha(opacity=1);
+    opacity: 0;
+    width: 10px;
+    height: 100%;
+    top: 0;
+}
+
+.JCLRLastGrip {
+    position: absolute;
+    width: 1px;
+}
+
+.JCLRgripDrag {
+    border-left: 1px dotted black;
+}
+
+.imglistdesc {
+    text-align: left;
+}
+
+.imglistcheck {
+    margin-left: 15px;
+}
+
+.imglisttitle {
+    margin-left: 10px;
+    font-weight: bold;
+}
+
+.imglistcontent {
+    font-weight: normal;
+}
+
+.treeclose {
+    background: url("../images/treeplus.gif") no-repeat;
+    width: 10px;
+    height: 10px;
+    margin-left: 10px;
+    display: inline-table;
+    cursor: pointer;
+}
+
+.treeopen {
+    background: url("../images/treeminus.gif") no-repeat;
+    width: 10px;
+    height: 10px;
+    margin-left: 10px;
+    display: inline-table;
+    cursor: pointer;
+}
+
+.treechild {
+    background: url("../images/treechild.gif") no-repeat;
+    width: 10px;
+    height: 10px;
+    margin-left: 10px;
+    display: inline-table;
+}
+
+.trSelected {
+    background-color: lightblue;
+}
+.btn_column {
+    border: 1px solid #4d84e0;
+    background: #6085FF;
+    vertical-align: middle;
+    font-size: 12px;
+    color: #fff;
+    height: 20px;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 2px;
+}

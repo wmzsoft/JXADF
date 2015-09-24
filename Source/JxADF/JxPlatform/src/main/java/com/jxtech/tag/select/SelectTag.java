@@ -163,6 +163,9 @@ public class SelectTag extends JxBaseUITag {
                             Object o = map.get(dataattribute.toUpperCase() + "=?");
                             if (o != null) {
                                 selected = String.valueOf(o);
+                            }else{
+                                o = map.get(dataattribute.toUpperCase() + cause);
+                                selected = String.valueOf(o);
                             }
                         }
                     }
@@ -240,7 +243,7 @@ public class SelectTag extends JxBaseUITag {
 
     /**
      * 根据value返回要显示的值
-     * 
+     *
      * @param list
      * @param value
      * @return
@@ -286,7 +289,7 @@ public class SelectTag extends JxBaseUITag {
 
     /**
      * 处理SQL脚本的数据加载
-     * 
+     *
      * @param select
      * @param list
      * @throws JxException

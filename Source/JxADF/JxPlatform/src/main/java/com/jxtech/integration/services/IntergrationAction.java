@@ -6,7 +6,6 @@ import com.jxtech.integration.jsonvo.JboVo;
 import com.jxtech.jbo.*;
 import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.base.JxAttribute;
-import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxConstant;
 import com.jxtech.jbo.util.JxException;
@@ -42,7 +41,7 @@ public class IntergrationAction extends JxActionSupport {
     public String execute() throws Exception {
         if (!StrUtil.isNull(intergrationData)) {
             JSONObject jsonObject = JSONObject.fromObject(intergrationData);
-
+            LOG.debug("json:\r\n"+intergrationData);
             try {
                 IntergrationVo ivo = (IntergrationVo) JSONObject.toBean(jsonObject, IntergrationVo.class, CLASS_MAP);
                 if (null != ivo) {
@@ -142,12 +141,14 @@ public class IntergrationAction extends JxActionSupport {
                     }
                 } else {
                     if ("C".equalsIgnoreCase(childJboAction)) {
+                        //创建记录Create
                         childJbo = jboSet.add();
                         childJbo.getData().putAll(childJboVo.get_datas());
                         childJboVo.set_uid(childJbo.getUidValue());
                     } else if ("R".equalsIgnoreCase(childJboAction)) {
 
                     } else if ("U".equalsIgnoreCase(childJboAction)) {
+                        //更新记录Update
                         childJbo = jboSet.getJboOfUid(childJboVo.get_uid());
                         if (null != childJbo) {
                             //childJbo.getData().putAll(childJboVo.getDatas());
@@ -155,6 +156,7 @@ public class IntergrationAction extends JxActionSupport {
                             childJbo.setModify(true);
                         }
                     } else if ("D".equalsIgnoreCase(childJboAction)) {
+                        //删除记录 Delete
                         childJbo = jboSet.getJboOfUid(childJboVo.get_uid());
                         if (null != childJbo) {
                             childJbo.delete();

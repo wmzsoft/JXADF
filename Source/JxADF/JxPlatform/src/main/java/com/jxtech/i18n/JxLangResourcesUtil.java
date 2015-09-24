@@ -151,7 +151,7 @@ public class JxLangResourcesUtil {
      * 针对“您好，{0},{1}”通配的国际化信息处理
      * 
      * @param key
-     * @param params
+     * @param params，从0开始的
      * @return
      */
     public static String getString(String key, Object[] params) {

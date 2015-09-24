@@ -376,7 +376,7 @@ public class App {
      * @throws JxException
      */
     public WorkflowBaseInfo getWorkflowinfo() throws JxException {
-        IWorkflowEngine wfEngine = WorkflowEngineFactory.getAppWorkflowEngine(getAppName());
+        IWorkflowEngine wfEngine = WorkflowEngineFactory.getWorkflowEngine(getJboset().getWorkflowEngine());
         WorkflowBaseInfo workFlowInfo = wfEngine.pretreatment(getAppName(), getJbo().getJboName(), getJbo().getUidValue());
         return workFlowInfo;
     }
@@ -389,7 +389,7 @@ public class App {
      * @throws JxException
      */
     public WorkflowBaseInfo getWorkflowinfo(JboIFace jbo) throws JxException {
-        IWorkflowEngine wfEngine = WorkflowEngineFactory.getAppWorkflowEngine(getAppName());
+        IWorkflowEngine wfEngine = WorkflowEngineFactory.getWorkflowEngine(this.getJboset().getWorkflowEngine());
         WorkflowBaseInfo workFlowInfo = wfEngine.pretreatment(getAppName(), jbo.getJboName(), jbo.getUidValue());
         return workFlowInfo;
     }

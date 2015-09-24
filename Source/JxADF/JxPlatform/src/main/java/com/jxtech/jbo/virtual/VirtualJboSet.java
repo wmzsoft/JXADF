@@ -178,4 +178,16 @@ public class VirtualJboSet extends BaseJboSet {
         return null;
     }
 
+    @Override
+    public String getWorkflowEngine() throws JxException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void setWorkflowEngine(String workflowEngine) {
+        // TODO Auto-generated method stub
+        
+    }
+
 }

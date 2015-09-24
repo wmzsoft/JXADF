@@ -1,5 +1,21 @@
 package com.jxtech.jbo;
 
+import java.lang.reflect.Method;
+import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.ResourceBundle;
+
+import org.apache.commons.lang3.StringUtils;
+import org.directwebremoting.io.FileTransfer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jxtech.app.jxwxp.JxWXPExport;
 import com.jxtech.app.jxwxp.JxWXPFactory;
 import com.jxtech.app.jxwxp.JxWXPValueAdapter;
@@ -8,26 +24,24 @@ import com.jxtech.db.DataQuery;
 import com.jxtech.i18n.JxLangResourcesUtil;
 import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.auth.PermissionFactory;
-import com.jxtech.jbo.base.*;
+import com.jxtech.jbo.base.DataMap;
+import com.jxtech.jbo.base.JxAttribute;
+import com.jxtech.jbo.base.JxAttributeDao;
+import com.jxtech.jbo.base.JxObject;
+import com.jxtech.jbo.base.JxObjectDao;
+import com.jxtech.jbo.base.JxRelationship;
+import com.jxtech.jbo.base.JxTable;
+import com.jxtech.jbo.base.JxTableDao;
+import com.jxtech.jbo.base.JxUserInfo;
 import com.jxtech.jbo.util.DataQueryInfo;
-import com.jxtech.jbo.util.JxConstant;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.tag.table.Table;
 import com.jxtech.tag.table.Tablecol;
 import com.jxtech.util.StrUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.directwebremoting.io.FileTransfer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.lang.reflect.Method;
-import java.sql.Connection;
-import java.util.*;
-import java.util.Map.Entry;
 
 /**
  * 基类JboSet,此类不操作数据库
- *
+ * 
  * @author wmzsoft@gmail.com
  * @date 2014.11
  */
@@ -67,7 +81,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 命名规则：appname,appnameSet 子类必须覆盖此方法
-     *
+     * 
      * @return
      * @throws JxException
      */
@@ -121,7 +135,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 删除Jbo中所有的记录
-     *
+     * 
      * @return
      * @throws JxException
      */
@@ -140,7 +154,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 仅仅标记为删除，不执行真正地删除操作。
-     *
+     * 
      * @param uid
      * @return
      * @throws JxException
@@ -248,7 +262,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 获得查询条件
-     *
+     * 
      * @param flag ClearParams 清除之前记忆的查询条件。
      * @return
      */
@@ -332,7 +346,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 返回Autokey的字段信息
-     *
+     * 
      * @return
      * @throws JxException
      */
@@ -406,7 +420,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 返回JSON格式的字符串
-     *
+     * 
      * @param attributes 字段名,为空则显示所有字段信息
      */
     @Override
@@ -420,62 +434,67 @@ public abstract class BaseJboSet implements JboSetIFace {
             queryInfo = new DataQueryInfo();
             queryInfo.setJboset(this);
             // 添加多组织、多地点的限制条件
-            JxUserInfo jui = JxSession.getJxUserInfo();
-            if (jui != null) {
-                try {
-                    Map<String, JxAttribute> attrs = getJxAttributes();
-                    JxObject jxObject = getJxobject();
-
-                    String siteOrgType = "";
-                    if (null != jxobject) {
-                        siteOrgType = jxObject.getSiteorgtype();
-                    }
-
-                    if (!StrUtil.isNull(siteOrgType) && attrs != null) {
-                        String uoid = jui.getOrgid();
-                        String usid = jui.getSiteid();
-
-                        if (siteOrgType.equalsIgnoreCase(JxConstant.ORG) || siteOrgType.equalsIgnoreCase(JxConstant.ORG_ZH)) {
-                            //组织级别
-                            if (!StrUtil.isNull(uoid) && attrs.containsKey("ORGID")) {
-                                queryInfo.setOrgsiteClause(" ORGID = ? ");
-                                queryInfo.setOrgsiteParams(new String[]{uoid});
-                            }
-                        } else if (siteOrgType.equalsIgnoreCase(JxConstant.SITE) || siteOrgType.equalsIgnoreCase(JxConstant.SITE_ZH)) {
-                            //地点级别
-                            if (StrUtil.isNull(uoid)) {
-                                if (!StrUtil.isNull(usid)) {
-                                    // 组织为空，地点不为空
-                                    if (attrs.containsKey("SITEID")) {
-                                        queryInfo.setOrgsiteClause(" SITEID = ? ");
-                                        queryInfo.setOrgsiteParams(new String[]{usid});
-                                    }
-                                }
-                            } else {
-                                // 组织不为空
-                                if (StrUtil.isNull(usid)) {
-                                    // 地点为空
-                                    if (attrs.containsKey("ORGID")) {
-                                        queryInfo.setOrgsiteClause(" ORGID = ? ");
-                                        queryInfo.setOrgsiteParams(new String[]{uoid});
-                                    }
-                                } else {
-                                    // 地点不为空
-                                    if (attrs.containsKey("SITEID") && attrs.containsKey("ORGID")) {
-                                        queryInfo.setOrgsiteClause(" SITEID = ? AND ORGID = ? ");
-                                        queryInfo.setOrgsiteParams(new String[]{usid, uoid});
-                                    }
-                                }
-                            }
-                        }
-
-                    }
-                } catch (JxException e) {
-                    LOG.error(e.getMessage());
-                }
+            try {
+                fillOrgSiteCause();
+            } catch (JxException e) {
+                LOG.error(e.getMessage(), e);
             }
         }
         return queryInfo;
+    }
+
+    /**
+     * 填充组织地点的限制条件
+     */
+    protected void fillOrgSiteCause() throws JxException {
+        JxUserInfo jui = JxSession.getJxUserInfo();
+        if (jui == null) {
+            // 未登录，不需要添加了
+            return;
+        }
+        String orgid = jui.getOrgid();
+        String siteid = jui.getSiteid();
+        if (StrUtil.isNull(orgid) && StrUtil.isNull(siteid)) {
+            // 未使用组织地点，不需要添加了
+            return;
+        }
+        getJxobject();
+        if (jxobject == null || !jxobject.isOrgSiteType()) {
+            // 不是组织或地点表
+            return;
+        }
+        Map<String, JxAttribute> attrs = getJxAttributes();
+        if (jxobject.isSiteType()) {
+            // 地点级别处理
+            if (StrUtil.isNull(siteid)) {
+                // 登录用户，地点为空，则不处理
+                return;
+            }
+            if (!attrs.containsKey("SITEID")) {
+                // 不存在这个字段，不处理
+                return;
+            }
+            // 获得角色能管理的所有地点。
+            StringBuilder sb = new StringBuilder();
+            sb.append("siteid = ? or siteid in (select siteid from pubrolesite ");
+            sb.append(" where roleid in ( select role_id from pub_role_user where user_id=?) )");
+            queryInfo.setOrgsiteClause(sb.toString());
+            queryInfo.setOrgsiteParams(new String[] { siteid, jui.getUserid() });
+        } else if (jxobject.isOrgType()) {
+            // 组织级别处理
+            if (StrUtil.isNull(orgid)) {
+                return;
+            }
+            if (!attrs.containsKey("ORGID")) {
+                return;
+            }
+            StringBuilder sb = new StringBuilder();
+            sb.append("orgid = ? or orgid in (select orgid from pubroleorg ");
+            sb.append(" where roleid in ( select role_id from pub_role_user where user_id=?) )");
+            queryInfo.setOrgsiteClause(sb.toString());
+            queryInfo.setOrgsiteParams(new String[] { orgid, jui.getUserid() });
+        }
+
     }
 
     @Override
@@ -485,7 +504,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 返回JSON数据格式
-     *
+     * 
      * @param attributes 属性名
      * @head 是否返回头部
      */
@@ -547,13 +566,13 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 返回zTree的JSON格式的字符串
-     *
-     * @param attributes   需要返回的字段名
-     * @param idName       唯一关键字（与父节点关联）的字段名
+     * 
+     * @param attributes 需要返回的字段名
+     * @param idName 唯一关键字（与父节点关联）的字段名
      * @param parentIdName 父节点字段名
-     * @param name         显示
+     * @param name 显示
      * @param hasChildName 是否有孩子节点字段名
-     * @param leafDisplay  是否显示叶子节点,true显示，false不显示
+     * @param leafDisplay 是否显示叶子节点,true显示，false不显示
      * @return
      */
     @Override
@@ -737,7 +756,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 返回某个属性的最大值
-     *
+     * 
      * @param attributename
      * @return
      * @throws JxException
@@ -750,7 +769,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 返回最小值
-     *
+     * 
      * @param attributename
      * @return
      * @throws JxException
@@ -763,7 +782,7 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 统计合
-     *
+     * 
      * @param attributename
      * @return
      * @throws JxException
@@ -957,20 +976,23 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     /**
      * 是否可以保存此集合
-     *
+     * 
      * @return
      * @throws JxException
      */
     public boolean canSave() throws JxException {
         // 如果做只读校验,并且只读,则返回false，保存失败
-        if (readonly && (saveFlag & JboIFace.SAVE_NO_CHECK_READONLY) == JboIFace.SAVE_NO_CHECK_READONLY) {
-            return false;
+        if (readonly && !((saveFlag | JboIFace.SAVE_NO_CHECK_READONLY) == JboIFace.SAVE_NO_CHECK_READONLY)) {
+            LOG.warn("不能保存此记录集" + this.getJboname() + ",saveFlag=" + saveFlag);
+            // 此功能问题太多，暂是屏蔽
+            // throw new JxException(JxLangResourcesUtil.getString("baseJboSet.canSave.failed.readonly", new Object[] { getJboname() }));
         }
         // 如果要做权限检查
-        if ((saveFlag & JboIFace.SAVE_NO_CHECK_PERMISSION) == JboIFace.SAVE_NO_CHECK_PERMISSION) {
+        if (!((saveFlag | JboIFace.SAVE_NO_CHECK_PERMISSION) == JboIFace.SAVE_NO_CHECK_PERMISSION)) {
             boolean flag = PermissionFactory.getPermissionInstance().hasFunctions(getAppname(), "SAVE");
             if (!flag) {
                 readonly = !flag;
+                throw new JxException(JxLangResourcesUtil.getString("baseJboSet.canSave.failed.nopermission", new Object[] { appname }));
             }
             return flag;
         }

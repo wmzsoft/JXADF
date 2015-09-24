@@ -77,7 +77,7 @@ public class ClassUtil {
                         return getService(bundleAcessor, className, isNew);
                     }
                 } catch (Exception e) {
-                    LOG.debug(e.getMessage() + "\r\n" + className);
+                    //LOG.debug(e.getMessage() + "\r\n" + className);
                     return getService(bundleAcessor, className, isNew);
                 }
             }
@@ -140,7 +140,7 @@ public class ClassUtil {
      * @param params
      * @return
      */
-    public static Object getStaticMethod(String className, String method, Class<?> parameterTypes, Object[] params) {
+    public static Object getStaticMethod(String className, String method, Class<?>[] parameterTypes, Object[] params) {
         if (StrUtil.isNull(className) || StrUtil.isNull(method)) {
             return null;
         }
@@ -174,7 +174,7 @@ public class ClassUtil {
                 return m.invoke(cs);
             }
         } catch (Exception e) {
-            LOG.info(e.getMessage());
+            LOG.error(e.getMessage(),e);
         }
         return null;
     }

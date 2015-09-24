@@ -326,7 +326,7 @@ function parseData(data, mode) {
            } // END: if(pair.length > 0)
        } // END: skip comments
    }
-   eval(parsed);
+   //eval(parsed);
 }
 
 /** Make sure namespace exists (for keys with dots in name) */

@@ -22,13 +22,28 @@ import java.util.Set;
 public interface JboIFace extends Serializable {
 
     // 保存时不做任何校验
-    public static final long SAVE_NO_CHECK_ALL = 0;
+    public static final long SAVE_NO_CHECK_ALL = ~0x0;
     // 保存时，不做只读校验
-    public static final long SAVE_NO_CHECK_READONLY = 1;
+    public static final long SAVE_NO_CHECK_READONLY = ~0x1;
     // 保存时，不做必填校验
-    public static final long SAVE_NO_CHECK_REQUIRED = 2;
+    public static final long SAVE_NO_CHECK_REQUIRED = ~0x2;
     // 保存时,不检查权限
-    public static final long SAVE_NO_CHECK_PERMISSION = 4;
+    public static final long SAVE_NO_CHECK_PERMISSION = ~0x4;
+    // 工作流状态字段
+    public static final String WF_STATUS_COLUMN = "WFT_STATUS";
+    // 工作流实例字段
+    public static final String WF_INSTANCEID_COLUMN = "WFT_INSTANCEID";
+    // 工作流当前分配人员字段
+    public static final String WF_HOLD_NAME_COLUMN = "WFT_TRANSACTOR";
+    // 工作流当前分配人员姓名字段
+    public static final String WF_HOLD_ID_COLUMN = "WFT_TRANSACTOR_ID";
+
+    // 工作流发送成功
+    public static final long ROUTE_SUCCESS = 1;
+    // 工作流发送完毕，关闭结点
+    public static final long ROUTE_CLOSE = 2;
+    // 工作流发送，启动成功
+    public static final long ROUTE_START = 4;
 
     public void add() throws JxException;
 
@@ -201,6 +216,8 @@ public interface JboIFace extends Serializable {
     public long getNewSequence() throws JxException;
 
     public String getWorkflowId();
+
+    public String getWorkflowInstanceId() throws JxException;
 
     public boolean isReadonly() throws JxException;
 
@@ -421,5 +438,13 @@ public interface JboIFace extends Serializable {
     public long getSaveFlag();
 
     public void setSaveFlag(long saveFlag);
+
+    public long getRouteStatus();
+
+    public void setRouteStatus(long routeStatus);
+
+    public boolean isRouteClose();
+
+    public boolean isRouteStart();
 
 }

@@ -24,7 +24,7 @@ public interface IWorkflowEngine {
     public boolean route(JboIFace jbi, Map<String, Object> params) throws JxException;
 
     /**
-     * 预览当前节点的信息
+     * 预览当前节点的信息，准备发送工作流
      * 
      * @param appname 应用程序名
      * @param jboname 表单名

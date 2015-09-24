@@ -1,0 +1,26 @@
+@charset "utf-8";
+//暂时不知用在何处的样式，统一放置
+.path {
+    background: url(../images/home/pathbg.png) repeat-x;
+    font-size: 12px;
+    color: #403e3e;
+    height: 30px;
+    line-height: 30px;
+    padding-left: 10px;
+    margin-bottom: 10px;
+}
+
+.title {
+    display: block;
+    background: url(../images/home/tittle.png) repeat-x;
+    color: #fff;
+    height: 28px;
+    line-height: 28px;
+    text-align: left;
+    padding-left: 15px;
+    border-top: 1px #4379d5 solid;
+    border-left: 1px #4379d5 solid;
+    @include border-top-radius(3px);
+    margin-top: 5px;
+
+}

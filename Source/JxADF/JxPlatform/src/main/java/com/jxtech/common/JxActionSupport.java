@@ -113,7 +113,10 @@ public class JxActionSupport extends ActionSupport {
     }
 
     public Object invokeStaticMethod(String className, String method, Class<?> parameterTypes, Object[] params) {
-        return ClassUtil.getStaticMethod(className, method, parameterTypes, params);
+        if (parameterTypes==null){
+            return ClassUtil.getStaticMethod(className, method, null, null);
+        }
+        return ClassUtil.getStaticMethod(className, method, new Class<?>[]{parameterTypes}, params);
     }
 
     public Object getJboElValue(JboIFace jbo, String expression) {

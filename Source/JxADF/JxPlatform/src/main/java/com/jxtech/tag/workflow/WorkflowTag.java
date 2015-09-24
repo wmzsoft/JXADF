@@ -1,6 +1,17 @@
 package com.jxtech.tag.workflow;
 
-import com.jxtech.jbo.util.JboUtil;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.components.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jxtech.jbo.App;
+import com.jxtech.jbo.JboSetIFace;
+import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.tag.comm.JxBaseUITag;
 import com.jxtech.util.StrUtil;
@@ -8,13 +19,6 @@ import com.jxtech.workflow.base.IWorkflowEngine;
 import com.jxtech.workflow.base.WorkflowBaseInfo;
 import com.jxtech.workflow.base.WorkflowEngineFactory;
 import com.opensymphony.xwork2.util.ValueStack;
-import org.apache.struts2.components.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 /**
  * Oracle bpm 12c 工作流tag标签 Created by cxm on 2014/8/15.
@@ -71,7 +75,15 @@ public class WorkflowTag extends JxBaseUITag {
         String uid = uids[0];
 
         try {
-            String workFlowType = JboUtil.getAppWorkflowEngine(fromApp.toUpperCase());
+            // String workFlowType = JboUtil.getAppWorkflowEngine(fromApp.toUpperCase());
+            String workFlowType = "OBPM";
+            App app = JxSession.getApp(fromApp, fromAppType);
+            if (app != null) {
+                JboSetIFace js = app.getJboset();
+                if (js != null) {
+                    workFlowType = js.getWorkflowEngine();
+                }
+            }
             IWorkflowEngine wfEngine = WorkflowEngineFactory.getWorkflowEngine(workFlowType);
             WorkflowBaseInfo wfi = wfEngine.pretreatment(fromApp, fromJboname, uid);
             if (wfi != null) {

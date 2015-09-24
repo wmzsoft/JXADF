@@ -13,5 +13,19 @@ $author:wmzsoft@gmail.com
 <#else>
     <#assign selectid = parameters.id>
     <#assign params = parameters>
-    <#include 'select-script.ftl'>
+    <#if ((params.readonly!false)==false) >
+        <#if (params.ajax??)>
+        <script type="text/javascript">
+            $(function () {
+                select2AjaxSelectTag('${selectid}', '${params.displayvalue!""}', '${params.dataattribute!""}', '${params.displayname!""}', '${params.ajax!""}', '${params.selectedDisplay!""}', 'Input to Choose Option');
+            });
+        </script>
+        <#elseif ((params.optionsCount!0) &gt; 10) >
+        <script type="text/javascript">
+            $(function () {
+                select2CustomSelectTag('${selectid}', 'Select an option', true);
+            });
+        </script>
+        </#if>
+    </#if>
 </#if>

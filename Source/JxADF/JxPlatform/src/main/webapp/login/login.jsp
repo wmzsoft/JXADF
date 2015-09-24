@@ -30,7 +30,7 @@
             var userid = $("#username").val();
             var pass = $("#password").val();
             var lang = $("#langSelector").val();
-
+            $(".error").hide();
             if ("" == userid || undefined == userid) {
                 $(".error").show().text(getLangString("login.needUserName"));
                 $("#username").focus();
@@ -146,7 +146,7 @@
     </p>
     <div class="user">
         <div style="height:30px;">
-            <p class="error"></p>
+            <p class="error" style="display:none;"></p>
         </div>
         <p><label class="userlabel" id="userlabel" >用户：</label>
         	 <input class="input-txt" type="input" id="username" value=""/>

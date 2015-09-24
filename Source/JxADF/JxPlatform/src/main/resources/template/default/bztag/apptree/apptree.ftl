@@ -59,8 +59,11 @@ $author:xueliang@jxtech.net wmzsoft@gmail.com
         <#if (parameters.fragmentid??)>
             dwr.engine.setAsync(false);
             $("#div_${parameters.fragmentid}").html(treeNode.description + " Loading...");
+            <#if (parameters.configMainJbo!false)>
+                
+            </#if>
             WebClientBean.queryJboSetData(jx_appNameType, "${parameters.fragmentRName!}",
-                    "APP = '" + treeNode.app + "'", function(data) {
+                    "${parameters.app!'APP'} = '" + treeNode.app + "'", function(data) {
                         getTableData("div_${parameters.fragmentid}", event, function(data) {
                             $("#div_${parameters.fragmentid} span.table_list_thead_table_title").text(treeNode.description);
                         });

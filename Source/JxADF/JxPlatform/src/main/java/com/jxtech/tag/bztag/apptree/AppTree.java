@@ -23,6 +23,7 @@ public class AppTree extends JxBaseUIBean {
     protected String fragmentid; // 要关联刷新的对象，要有url属性
     protected String jsondata;// 得到的JSON数据
     protected String fragmentRName;// 要关联刷新对象的联系名
+    protected String app;//字段名默认为APP
 
     public AppTree(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
         super(stack, request, response);
@@ -61,6 +62,9 @@ public class AppTree extends JxBaseUIBean {
         }
         if (fragmentRName != null) {
             addParameter("fragmentRName", findString(fragmentRName));
+        }
+        if (app!=null){
+            addParameter("app",findString(app));
         }
         if (jsondata != null) {
             addParameter("jsondata", jsondata);
@@ -109,6 +113,10 @@ public class AppTree extends JxBaseUIBean {
 
     public void setFragmentRName(String fragmentRName) {
         this.fragmentRName = fragmentRName;
+    }
+
+    public void setApp(String app) {
+        this.app = app;
     }
 
 

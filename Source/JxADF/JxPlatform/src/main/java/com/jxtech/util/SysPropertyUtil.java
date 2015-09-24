@@ -26,6 +26,7 @@ public class SysPropertyUtil {
     public static void loadSystemProperty() {
         loadSystemProperty(getSystemPropertiesFileName());
         loadSystemProperty(getBaseFileName());
+        //LOG.debug(System.getProperties().toString());
     }
 
     /**
@@ -93,7 +94,7 @@ public class SysPropertyUtil {
     }
 
     private static String getBaseFileName() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(System.getProperty(WEB_REALPATH));
         sb.append("WEB-INF");
         sb.append(File.separator);
@@ -104,7 +105,7 @@ public class SysPropertyUtil {
     }
 
     private static String getSystemPropertiesFileName() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append(System.getProperty(WEB_REALPATH));
         sb.append("WEB-INF");
         sb.append(File.separator);
@@ -155,4 +156,6 @@ public class SysPropertyUtil {
         }
         return def;
     }
+    
+
 }

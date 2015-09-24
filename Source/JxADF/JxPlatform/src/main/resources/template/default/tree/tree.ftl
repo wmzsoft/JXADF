@@ -98,6 +98,8 @@ $author:wmzsoft@gmail.com
     </#if>
 
     var treeNodes_${parameters.id!'tree'} = [${parameters.treeNodes!''}];
+    treeNodes_${parameters.id!'tree'} = processTreeNode(treeNodes_${parameters.id!'tree'});
+    debug(treeNodes_${parameters.id!'tree'});
     //点击数展开
     function beforeExpand(treeId, treeNode) {
         //var zTree =$.fn.zTree.getZTreeObj(treeId);

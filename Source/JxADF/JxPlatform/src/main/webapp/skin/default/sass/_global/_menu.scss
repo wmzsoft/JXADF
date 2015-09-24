@@ -1,0 +1,81 @@
+@charset "utf-8";
+$icon-size:22px;
+.menuContainer{
+    .icon-module{
+        @include renderSpriteImage;
+        background-position: 0 -150px;//模块图片为空时的默认图片
+        width: $icon-size;
+        height: $icon-size;
+        display: inline-block;
+        &.icon-module-dashboard{
+            @extend %script_jxmenu_item_icon_dashboard;
+        }
+        &.icon-module-basinf{
+            @extend %script_jxmenu_item_icon_baseinfo;
+        }
+        &.icon-module-sys{
+            @extend %script_jxmenu_item_icon_system;
+        }
+        &.icon-module-pm{
+            @extend %script_jxmenu_item_icon_pm;
+        }
+        &.icon-module-proloan{
+            @extend %script_jxmenu_item_icon_proloan;
+        }
+        &.icon-module-activation{
+            @extend %script_jxmenu_item_icon_activation;
+        }
+        &.icon-module-cccadj{
+            @extend %script_jxmenu_item_icon_cccadj;
+        }
+        &.icon-module-makeinvent{
+            @extend %script_jxmenu_item_icon_makeinvent;
+        }
+        &.icon-module-dealerstat{
+            @extend %script_jxmenu_item_icon_dealerstat;
+        }
+        &.icon-module-regiinfo{
+            @extend %script_jxmenu_item_icon_regiinfo;
+        }
+        &.icon-module-dealinfmai{
+            @extend %script_jxmenu_item_icon_dealinfmai;
+        }
+    }
+    &:hover{
+        .icon-module{
+            &.icon-module-dashboard{
+                @extend %script_jxmenu_item_icon_dashboard_hover;
+            }
+            &.icon-module-basinf{
+                @extend %script_jxmenu_item_icon_baseinfo_hover;
+            }
+            &.icon-module-sys{
+                @extend %script_jxmenu_item_icon_system_hover;
+            }
+            &.icon-module-pm{
+                @extend %script_jxmenu_item_icon_pm_hover;
+            }
+            &.icon-module-proloan{
+                @extend %script_jxmenu_item_icon_proloan_hover;
+            }
+            &.icon-module-activation{
+                @extend %script_jxmenu_item_icon_activation_hover;
+            }
+            &.icon-module-cccadj{
+                @extend %script_jxmenu_item_icon_cccadj_hover;
+            }
+            &.icon-module-makeinvent{
+                @extend %script_jxmenu_item_icon_makeinvent_hover;
+            }
+            &.icon-module-dealerstat{
+                @extend %script_jxmenu_item_icon_dealerstat_hover;
+            }
+            &.icon-module-regiinfo{
+                @extend %script_jxmenu_item_icon_regiinfo_hover;
+            }
+            &.icon-module-dealinfmai{
+                @extend %script_jxmenu_item_icon_dealinfmai_hover;
+            }
+        }
+    }
+}

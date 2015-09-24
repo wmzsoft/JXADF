@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  * 每条记录的所有信息
- *
+ * 
  * @author wmzsoft@gmail.com
  * @date 2013.08
  */
@@ -61,8 +61,7 @@ public class Jbo extends BaseJbo implements JboIFace {
     }
 
     /**
-     * todo:补充完成参数列表说明
-     * 发送工作流的程序
+     * todo:补充完成参数列表说明 发送工作流的程序
      * <p/>
      * canRoute 和 beforeRoute参数列表：
      * <p/>
@@ -77,7 +76,7 @@ public class Jbo extends BaseJbo implements JboIFace {
             return false;
         }
 
-        IWorkflowEngine wfEngine = WorkflowEngineFactory.getAppWorkflowEngine(getJboSet().getAppname());
+        IWorkflowEngine wfEngine = WorkflowEngineFactory.getWorkflowEngine(getJboSet().getWorkflowEngine());
         if (!wfEngine.route(this, params)) {
             return false;
         }
@@ -90,12 +89,12 @@ public class Jbo extends BaseJbo implements JboIFace {
 
     /**
      * 可以按自己的业务逻辑重新指定用户
-     *
-     * @param curAct  当前节点
+     * 
+     * @param curAct 当前节点
      * @param nextAct 下一节点
-     * @param assign  当前工作流引擎计算出来的用户信息。<用户ID、用户名>
-     * @param agree   参见：JxConstant.WORKFLOW_ROUTE_XXX
-     * @param note    工作流备注
+     * @param assign 当前工作流引擎计算出来的用户信息。<用户ID、用户名>
+     * @param agree 参见：JxConstant.WORKFLOW_ROUTE_XXX
+     * @param note 工作流备注
      * @param tousers 指定用户,从页面中指定的用户,以逗号分隔
      * @param options 选项，暂时无使用
      * @return 重新指定的用户，<用户ID、用户名>
@@ -114,28 +113,39 @@ public class Jbo extends BaseJbo implements JboIFace {
 
     @Override
     public String getWorkflowId() {
-        String wfId = getJboSet().getWorkflowId();
-
-        if (StrUtil.isNull(wfId)) {
-            String appname = getJboName();
-            if (!StrUtil.isNull(appname)) {
-                try {
-                    JboIFace appWfIno = JboUtil.getJbo("MAXAPPSWFINFO", "APP", appname.toUpperCase());
-                    if (null != appWfIno) {
-                        wfId = appWfIno.getString("PROCESS");
+        try {
+            String instanceid = getWorkflowInstanceId();
+            if (!StrUtil.isNull(instanceid)) {
+                if (instanceid.startsWith(JboSetIFace.BPM_JX)) {
+                    // JXBPM工作流引擎，获得标识
+                    int start = JboSetIFace.BPM_JX.length();
+                    int end = instanceid.indexOf('.', start + 1);
+                    if (start < end) {
+                        return instanceid.substring(start+1, end);
+                    } else {
+                        return instanceid.substring(start+1);
                     }
-                } catch (JxException ex) {
-                    ex.printStackTrace();
+                } else {
+                    return instanceid;
                 }
             }
+            return getJboSet().getWorkflowId();
+        } catch (JxException e) {
+            LOG.error(e.getMessage(), e);
         }
-        return wfId;
+        return null;
+    }
 
+    /**
+     * 获得工作流实例ID，格式：工作流类型.工作流标识(workflowId).具体流程实例，如：JXBPM.1002.1001
+     */
+    public String getWorkflowInstanceId() throws JxException {
+        return getString(JboIFace.WF_INSTANCEID_COLUMN);
     }
 
     /**
      * 返回当前记录有多少附件
-     *
+     * 
      * @return
      * @throws JxException
      */
@@ -145,10 +155,10 @@ public class Jbo extends BaseJbo implements JboIFace {
         DataQueryInfo dq = attachset.getQueryInfo();
         if (StrUtil.isNull(vFolder)) {
             dq.setWhereCause("object_id=? and upper(object_name)=upper(?)");
-            dq.setWhereParams(new Object[]{getUidValue(), getJboName()});
+            dq.setWhereParams(new Object[] { getUidValue(), getJboName() });
         } else {
             dq.setWhereCause("object_id=? and upper(object_name)=upper(?) and attachment_id in (select attachment_id from top_attachment where data_from = ?)");
-            dq.setWhereParams(new Object[]{getUidValue(), getJboName(), vFolder});
+            dq.setWhereParams(new Object[] { getUidValue(), getJboName(), vFolder });
         }
 
         return attachset.count();
@@ -161,7 +171,7 @@ public class Jbo extends BaseJbo implements JboIFace {
 
     /**
      * 将与之相关联的等待工作流改为待办
-     *
+     * 
      * @param jbo 需要将等待变为正常的对象
      */
     @Override
@@ -171,7 +181,7 @@ public class Jbo extends BaseJbo implements JboIFace {
             throw new JxException(JxLangResourcesUtil.getString("process.not.get.waitingrecord"));
         }
 
-        IWorkflowEngine wfEngine = WorkflowEngineFactory.getAppWorkflowEngine(getJboSet().getAppname());
+        IWorkflowEngine wfEngine = WorkflowEngineFactory.getWorkflowEngine(getJboSet().getWorkflowEngine());
         wfEngine.routeHoldon(this, jbo);
     }
 
@@ -184,7 +194,7 @@ public class Jbo extends BaseJbo implements JboIFace {
         qbe.setWhereCause(where);
         Object uidValue = getUidValue();
         if (null != uidValue) {
-            qbe.setWhereParams(new Object[]{getUidValue()});
+            qbe.setWhereParams(new Object[] { getUidValue() });
             List<Map<String, Object>> list = dq.queryAllPage(getJboName(), qbe);
             if (list != null && list.size() == 1) {
                 setData(list.get(0));
@@ -258,6 +268,7 @@ public class Jbo extends BaseJbo implements JboIFace {
 
     /**
      * 移除某些按钮
+     * 
      * @author yzh 2015-04-03 15:14:04
      * @param menusToolbar
      * @param options
@@ -268,12 +279,12 @@ public class Jbo extends BaseJbo implements JboIFace {
         Iterator<JboIFace> ite = menusToolbar.iterator();
         while (ite.hasNext()) {
             JboIFace menu = ite.next();
-           for(String opt:options){
-               if (opt.equalsIgnoreCase(menu.getString("MENU"))) {
-                   ite.remove();
-                   break;
-               }
-           }
+            for (String opt : options) {
+                if (opt.equalsIgnoreCase(menu.getString("MENU"))) {
+                    ite.remove();
+                    break;
+                }
+            }
         }
     }
 }

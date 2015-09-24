@@ -145,6 +145,10 @@ public class JxAttribute implements Serializable {
         return "LOWER".equalsIgnoreCase(maxType);
     }
 
+    public boolean isBoolean() {
+        return "YORN".equalsIgnoreCase(maxType);
+    }
+
     /**
      * 获得SQL的类型
      * 

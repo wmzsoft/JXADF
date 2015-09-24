@@ -2,7 +2,7 @@
 <Context docBase="D:\deploy\jxweb" path="/jxweb" reloadable="true">
 <Resource name="jdbc/CTDataSource" auth="Container"
               type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
-              url="jdbc:oracle:thin:@192.168.6.158:1521:ORCL"
+              url="jdbc:oracle:thin:@192.168.7.3:1521:ORCL"
               username="JXPLATFORM" password="JXPLATFORM" maxActive="20" maxIdle="10"
               maxWait="-1"/>
 </Context>

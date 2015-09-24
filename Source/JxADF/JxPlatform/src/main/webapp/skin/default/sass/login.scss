@@ -1,0 +1,101 @@
+@charset "utf-8";
+@import "_global/scss_header";
+.bd_bg {
+    background: #1A8CC1;
+    width: 100%;
+    height: 100%;
+    font-size: 12px;
+}
+
+.login {
+    background: url(../images/login/bg-login.gif) no-repeat;
+    width: 611px;
+    height: 311px;
+    padding: 40px 0 0 130px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -370px;
+    margin-top: -170px;
+
+    .user {
+        padding: 15px 0 0 90px;
+        select {
+            border: 1px #9ABDD7 solid;
+            float: left;
+            width: 70px;
+        }
+        p {
+            clear: both;
+            line-height: 23px;
+            .userlabel,
+            .passlabel {
+                width: 70px;
+                text-align: right;
+                float: left;
+            }
+        }
+        .red {
+            color: #f00;
+            margin-left: 10px;
+            padding-bottom: 5px;
+        }
+        .password {
+            margin-top: 15px;
+        }
+
+        .btn-login {
+            margin: 10px 0 0 75px;
+        }
+
+        .btn-login input {
+            cursor: pointer;
+            width: 100px;
+            height: 30px;
+            border: 0;
+            color: #FFF;
+            font-weight: bold;
+            font-size: 14px;
+            @include renderSpriteImage;
+            @extend %page_login_button;
+        }
+        .input-txt {
+             width: 166px;
+             height: 26px;
+             line-height: 28px;
+             border: 0;
+             padding-left: 5px;
+             margin-left: 5px;
+             font-size: 14px;
+             background: url(../images/login/bg-input.gif) no-repeat;
+         }
+        .rememberLabel {
+            float: left;
+            width: 85px;
+        }
+
+        .remeberme {
+            float: left;
+            margin-top: 5px;
+            margin-right: 3px;
+        }
+    }
+    .error {
+        &:before{
+            @include renderSpriteImage;
+            @extend %page_login_error;
+            display: inline-block;
+            vertical-align: middle;
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            content: '';
+            margin-right: 4px;
+        }
+        color: #e43000;
+        font-size: 12px;
+        margin-left: 75px;
+        padding-top: 5px;
+    }
+}
+

@@ -268,43 +268,6 @@ public class JboUtil {
         return fieldIFace;
     }
 
-    /**
-     * 获取应用配置的工作流信息
-     * 
-     * @param appname
-     * @param param 获取工作流的某个信息
-     * @return
-     */
-    public static String getAppWorkflowInfo(String appname, String param) throws JxException {
-        String engine = "";
-        JboIFace appWfJbo = JboUtil.getJbo("MAXAPPSWFINFO", "APP", appname.toUpperCase());
-        if (null != appWfJbo) {
-            engine = appWfJbo.getString(param);
-        }
-        return engine;
-    }
-
-    /**
-     * 获取应用配置的工作流类型
-     * 
-     * @param appname
-     * @return
-     * @throws JxException
-     */
-    public static String getAppWorkflowEngine(String appname) throws JxException {
-        return getAppWorkflowInfo(appname, "ENGINE");
-    }
-
-    /**
-     * 获取应用配置的工作流ID(processname)
-     * 
-     * @param appname
-     * @return
-     * @throws JxException
-     */
-    public static String getAppWorkflowId(String appname) throws JxException {
-        return getAppWorkflowInfo(appname, "PROCESS");
-    }
 
     /**
      * 获取在JXVAR表中的配置信息。
@@ -333,10 +296,9 @@ public class JboUtil {
     public static List<JboIFace> findJboList(String jboName, String whereCase, Object[] args) throws JxException {
         JboSetIFace jboJboSet = JboUtil.getJboSet(jboName);
         if (jboJboSet != null) {
-            DataQueryInfo dao = new DataQueryInfo();
+            DataQueryInfo dao = jboJboSet.getQueryInfo();
             dao.setWhereCause(whereCase);
             dao.setWhereParams(args);
-            jboJboSet.setQueryInfo(dao);
             return jboJboSet.queryAll();
         }
         return new ArrayList<JboIFace>();
@@ -352,11 +314,7 @@ public class JboUtil {
      * @throws JxException
      */
     public static JboIFace getJboSetIFaceByQuery(String jboName, String whereCause, Object[] params) throws JxException {
-        List<JboIFace> list = findJboList(jboName, whereCause, params);
-        if (list != null && !list.isEmpty()) {
-            return list.get(0);
-        }
-        return null;
+        return findJbo(jboName,whereCause,params);
     }
 
     public static JboIFace findJbo(String jboName, String whereCause, Object[] params) throws JxException {

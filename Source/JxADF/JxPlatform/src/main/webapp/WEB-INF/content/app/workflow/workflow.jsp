@@ -1,5 +1,14 @@
 ﻿<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.jxtech.i18n.JxLangResourcesUtil" %>
 <%@ include file="/WEB-INF/content/common/header.jsp" %>
+<%
+    String routecommon_tip = JxLangResourcesUtil.getString("app.workflow.ROUTECOMMON");
+    String appdialogclosetip_tip = JxLangResourcesUtil.getString("app.workflow.APPDIALOGCLOSETIP");
+
+    String operation_lable = JxLangResourcesUtil.getString("app.workflow.OPERATION");
+    String opinion_lable = JxLangResourcesUtil.getString("app.workflow.OPINION");
+    String designateduser_lable = JxLangResourcesUtil.getString("app.workflow.DESIGNATEDUSER");
+%>
 <jxui:head title="工作流发送">
     <script type="text/javascript">
         var jx_appType = "workflow";
@@ -25,13 +34,13 @@
                                 <jxui:section type="head">
                                     <jxui:sectionrow>
                                         <jxui:sectioncol type="head_left">
-                                            <jxui:label value="工作流发送" type="title"/>
+                                            <jxui:label value="{app.workflow.ROUTEBPM}" type="title"/>
                                         </jxui:sectioncol>
                                         <jxui:sectioncol type="head_right" width="70%">
-                                            <jxui:pushbutton label="发送" mxevent="routeCommon" id="routeCommonBtn"
-                                                             style="display:none" title="发送" menutype="INPUT"/>
-                                            <jxui:pushbutton label="关闭-对话框" mxevent="appDialogClose"
-                                                             title="关闭对话框不做任何处理"
+                                            <jxui:pushbutton label="{app.workflow.ROUTECOMMON}" mxevent="routeCommon" id="routeCommonBtn"
+                                                             style="display:none" title="<%=routecommon_tip%>" menutype="INPUT"/>
+                                            <jxui:pushbutton label="{app.workflow.APPDIALOGCLOSE}" mxevent="appDialogClose"
+                                                             title="<%=appdialogclosetip_tip%>"
                                                              menutype="INPUT"/>
                                         </jxui:sectioncol>
                                     </jxui:sectionrow>
@@ -42,12 +51,12 @@
                             <jxui:sectioncol>
                                 <jxui:section type="edit">
                                     <tr>
-                                        <td class="form_td_label">选择操作</td>
+                                        <td class="form_td_label"><%=operation_lable%></td>
                                         <td class="form_td_content" id="actionContent"></td>
                                     </tr>
                                     <jxui:sectionrow>
                                         <td class="form_td_label">
-                                            意见
+                                            <%=opinion_lable%>
                                             <span id="noteRequired" style="display:none">
                                                 <font color="red">*</font>
                                             </span>
@@ -58,7 +67,7 @@
                                         </td>
                                     </jxui:sectionrow>
                                     <tr id="pointuser" style="display:none;padding:3px 3px;">
-                                        <td class="form_td_label">指定用户</td>
+                                        <td class="form_td_label"><%=designateduser_lable%></td>
                                         <td class="form_td_content" id="userContent"></td>
                                     </tr>
                                 </jxui:section>

@@ -96,6 +96,35 @@ public class NumUtil {
         return parseLong(value, 0);
     }
 
+    public static double parseDouble(String value, double defaultvalue) {
+        if (StrUtil.isNull(value)) {
+            return defaultvalue;
+        }
+        try {
+            return Double.parseDouble(value);
+        } catch (Exception e) {
+            LOG.info(e.getMessage() + "\r\n" + value);
+        }
+        return defaultvalue;
+    }
+
+    /**
+     * 返回double或long类型
+     * 
+     * @param value
+     * @param defaultvalue
+     * @return
+     */
+    public static Object parseNumber(String value, double defaultvalue) {
+        double d = parseDouble(value, defaultvalue);
+        long i = (long) d;
+        if (i == d) {
+            return i;
+        } else {
+            return d;
+        }
+    }
+
     /**
      * 取几位小数
      * 
@@ -121,10 +150,10 @@ public class NumUtil {
             String tv = String.valueOf(value);
             if (tv.endsWith(".0")) {
                 return tv.substring(0, tv.length() - 2);
-            } else if (tv.indexOf('E')>0) {
+            } else if (tv.indexOf('E') > 0) {
                 nf = new DecimalFormat("#");
                 return nf.format(value);
-            }else{
+            } else {
                 return tv;
             }
         } else if ("$".equalsIgnoreCase(formatter)) {

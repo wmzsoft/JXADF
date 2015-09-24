@@ -8,6 +8,7 @@ import com.jxtech.jbo.base.JxApps;
 import com.jxtech.jbo.base.JxAppsDao;
 import com.jxtech.jbo.base.JxUserInfo;
 import com.jxtech.jbo.util.JxException;
+import com.jxtech.util.CacheUtil;
 import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.ActionContext;
 import org.apache.struts2.ServletActionContext;
@@ -95,6 +96,7 @@ public class JxSession {
         if (session != null) {
             session.setAttribute(USER_INFO, null);
             session.setAttribute(APPS, null);
+            CacheUtil.cleanUserCache();//清空用户缓存
             session.invalidate();
         } else {
             LOG.warn("Session获取出错。");

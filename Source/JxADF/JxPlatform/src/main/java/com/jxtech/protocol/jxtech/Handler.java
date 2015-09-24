@@ -1,12 +1,12 @@
 package com.jxtech.protocol.jxtech;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * 定义自己的协议
@@ -24,7 +24,7 @@ public class Handler extends URLStreamHandler {
             return null;
         }
         if ("file".equalsIgnoreCase(u.getHost())) {
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             String fs = u.getFile();
             sb.append("file:///");
             int idx = fs.indexOf('/', 1);

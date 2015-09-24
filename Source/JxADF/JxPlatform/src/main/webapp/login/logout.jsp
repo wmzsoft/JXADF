@@ -1,8 +1,8 @@
-﻿<%@ page language="java" pageEncoding="UTF-8" %>
+﻿<%@ page language="java" pageEncoding="UTF-8" import="com.jxtech.jbo.auth.JxSession"%>
 
 <%
     String contextPath = request.getContextPath();
-    session.invalidate();
+    JxSession.logout();
    if (request.getRemoteUser() !=  null) {
        String loginUrl = System.getProperty("CAS_SERVER_URL");
 

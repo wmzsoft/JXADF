@@ -2,6 +2,8 @@ package com.jxtech.jbo.base;
 
 import java.io.Serializable;
 
+import com.jxtech.jbo.util.JxConstant;
+
 /**
  * 每个对象（表）的基本信息
  * 
@@ -185,4 +187,31 @@ public class JxObject implements Serializable {
         this.textdirection = textdirection;
     }
 
+    public boolean isOrgType() {
+        if (siteorgtype == null) {
+            return false;
+        }
+        if (JxConstant.ORG.equalsIgnoreCase(siteorgtype)) {
+            return true;
+        } else if (JxConstant.ORG_ZH.equalsIgnoreCase(siteorgtype)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isSiteType() {
+        if (siteorgtype == null) {
+            return false;
+        }
+        if (JxConstant.SITE.equalsIgnoreCase(siteorgtype)) {
+            return true;
+        } else if (JxConstant.SITE_ZH.equalsIgnoreCase(siteorgtype)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isOrgSiteType() {
+        return isOrgType() || isSiteType();
+    }
 }

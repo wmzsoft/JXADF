@@ -29,6 +29,7 @@ public class AppTreeTag extends JxBaseUITag {
     protected String workflow; // 是否筛选工作流的应用，true/false
     protected String fragmentid; // 要关联刷新的对象，要有url属性
     protected String fragmentRName;//要关联刷新对象的联系名
+    protected String app;//字段名默认为APP
 
     @Override
     public Component getBean(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
@@ -55,6 +56,7 @@ public class AppTreeTag extends JxBaseUITag {
         appTree.setWhereCause(whereCause);
         appTree.setFragmentid(fragmentid);
         appTree.setFragmentRName(fragmentRName);
+        appTree.setApp(app);
         MaxAppMenu mam = new MaxAppMenu();
         try {
             String jsondata = mam.getMaxAppMenuJson(-1, whereCause, auth, wf);
@@ -127,6 +129,14 @@ public class AppTreeTag extends JxBaseUITag {
 
     public void setFragmentRName(String fragmentRName) {
         this.fragmentRName = fragmentRName;
+    }
+
+    public String getApp() {
+        return app;
+    }
+
+    public void setApp(String app) {
+        this.app = app;
     }
 
 }

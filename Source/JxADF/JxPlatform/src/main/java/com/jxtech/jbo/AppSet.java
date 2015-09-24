@@ -147,6 +147,17 @@ public class AppSet {
                 a = new App(a.getAppName());
                 applist.put(appNameType.toUpperCase(), a);
             }
+        } else if (list != null) {
+            if (appNameType.indexOf('.') < 0) {
+                // 只传了APPName，没有传入Type
+                int size = list.size();
+                for (int i = 0; i < size; i++) {
+                    String key = list.get(i).toUpperCase();
+                    if (key.startsWith(appNameType.toUpperCase() + ".")) {
+                        return applist.get(key);
+                    }
+                }
+            }
         }
         return a;
     }

@@ -51,19 +51,13 @@ public class BeanUtil {
             Container container = ctx.getContainer();
             return container.getBean(beanName);
         } catch (Exception e) {
-            LOG.error(e.getMessage(),e);
+            LOG.error(e.getMessage(), e);
         }
         return null;
     }
 
     public static JxParams getJxParams() {
-        Object bean = getBean("jxParams");
-        if (bean != null) {
-            return (JxParams) bean;
-        } else {
-            LOG.warn("没有获得正确的参数信息。");
-        }
-        return null;
+        return JxParams.getInstance();
     }
 
     public static ApplicationContext getApplicationContext() {

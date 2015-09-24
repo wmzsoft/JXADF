@@ -1,0 +1,45 @@
+.ui-layout-pane{
+    border: 0 none;
+    padding: 0;
+    color: #403e3e;
+    &.middle-north {
+        background: url(../images/home/pathbg.png) repeat-x;
+        line-height: 30px;
+        font-size: 12px;
+        color: #403e3e;
+        padding-left: 5px;
+        height: 30px;
+        display: block;
+    }
+    &.ui-layout-pane-west{
+        z-index:10 !important;
+    }
+    &.ui-layout-north {
+        background: url(../images/home/head_bg.png) repeat-x;
+        height: 56px;
+        overflow: visible;
+    }
+}
+.ui-layout-resizer {
+    background: transparent;
+    &:before{
+        display: block;
+        height: 30px;
+        content:"";
+        @include renderSpriteImage();
+        @extend %page_home_override_layout_resizer;
+    }
+}
+.ui-layout-toggler-west-open {
+    @include renderSpriteImage;
+    @extend %page_Home_override_layout_west_open;
+    background-color: transparent;
+    border: none;
+}
+.ui-layout-toggler-west-closed {
+    @include renderSpriteImage;
+    @extend %page_Home_override_layout_west_close;
+    background-color: transparent;
+    border: none;
+    width: 9px;
+}

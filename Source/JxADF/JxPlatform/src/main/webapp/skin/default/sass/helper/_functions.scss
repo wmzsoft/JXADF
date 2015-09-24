@@ -1,0 +1,15 @@
+@function numberConvertToPixelUnit($number){
+    @if ($number == 0){
+        @return 0;
+    }@else{
+        @return #{$number}px;
+    }
+}
+
+@function getAbsolutePath($name,$directory:$base_image_directory){
+    @return $directory+$name;
+}
+
+@function getAbsoluteBackgroundImage($image,$directory:$base_image_directory){
+    @return url(getAbsolutePath($image,$directory));
+}

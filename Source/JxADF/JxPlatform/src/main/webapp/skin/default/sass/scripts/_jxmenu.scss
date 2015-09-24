@@ -1,0 +1,176 @@
+@charset "utf-8";
+.jxMenuDiv {
+    background: #f7f7f8 getAbsoluteBackgroundImage("menu/menu-right-border.png") right top repeat-y;
+    bottom: 0;
+    color: #5d5a5a;
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 10px 0 40px;
+    position: absolute;
+    top: 0;
+    width: 263px;
+    z-index: 1000;
+    .menuAppBar {
+        $search-bar-height:30px;
+        $init-left:20px;
+        $corner-width:12px;
+        position: relative;
+        height: $search-bar-height;
+        padding: 15px 0 10px 0;
+        overflow: hidden;
+        .menuAppBarLeftCorner {
+            height: $search-bar-height;
+            width: $corner-width;
+            left: $init-left;
+            position: absolute;
+            @include renderSpriteImage();
+            @extend %script_jxmenu_search_corner;
+        }
+        .menuAppBarContent {
+            background: getAbsoluteBackgroundImage("menu/titlebarbg.png") repeat-x;
+            height: $search-bar-height;
+            left: $corner-width + $init-left;
+            position: absolute;
+            right: 0;
+        }
+        .visitHisBtn {
+            $height:19px;
+            @include renderSpriteImage();
+            @extend %script_jxmenu_search_visitBtn;
+            width: 17px;
+            height: $height;
+            position: absolute;
+            left: 10px;
+            top: ($search-bar-height - $height)/2;
+            cursor: pointer;
+        }
+        .searchInput {
+            $height:24px;
+            @include renderSpriteImage;
+            @extend %script_jxmenu_search_input_bg;
+            width: 175px;
+            height: 24px;
+            float: left;
+            position: absolute;
+            left: 40px;
+            top: ($search-bar-height - $height)/2;
+        }
+        .input-txt {
+            height: 23px;
+            line-height: 23px;
+            width: 145px;
+            padding-left: 5px;
+            padding-right: 24px;
+            background: transparent;
+            border: none;
+            color: #878383;
+        }
+        .search-btn {
+            display: none;
+        }
+    }
+    .topMenu {
+        $item-height:55px;
+        background: getAbsoluteBackgroundImage("menu/menu_line.png") 20px bottom no-repeat;
+        padding-bottom: 2px;
+        padding-top: 1px;
+        .menuContainer {
+            margin: -1px 0 0 15px;
+            position: relative;
+            z-index: 5;
+        }
+        .menuItem {
+            padding-left: 40px;
+            overflow: hidden;
+            position: relative;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            line-height: $item-height;
+            height: $item-height;
+            font-size: 14px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .icon-module{
+            position: absolute;
+            left: 15px;
+            top: ($item-height - $icon-size) / 2;
+        }
+        .subMenu {
+            display: none;
+        }
+        &:hover{
+            .menuItem {
+                color: #3486ca;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            .menuContainer {
+                background-color: white;
+            }
+        }
+    }
+}
+.popupWin{
+    width: 500px;
+    background-color: white;
+    position: absolute;
+    top: 55px;
+    z-index: 20000;
+    left: 20px;
+    box-shadow: 4px 4px 5px gray;
+    border-radius: 5px;
+    display: none;
+    cursor: pointer;
+    line-height: 35px;
+    overflow: auto;
+    padding: 5px 5px 15px;
+    min-height: 150px;
+    dl{
+        padding: 3px 0 12px 0;
+        margin: 6px 20px 0 20px;
+        overflow: hidden;
+        border-bottom: 1px dotted #D9DCE1;
+        font-size: 12pt;
+        &:last-child{
+            border-bottom: none;
+        }
+    }
+    dt{
+        color: #3486ca;
+        font-weight: bold;
+        float: left;
+        line-height: 22px;
+        text-align: center;
+        margin-right: 8px;
+        margin-top: 10px;
+        font-size: 14px;
+    }
+    em{
+        border-left: 1px solid #CCC;
+        color: #616161;
+        float: left;
+        height: 14px;
+        line-height: 14px;
+        margin: 13px 0 4px 0;
+        padding-left: 12px;
+        padding-right: 12px;
+        font-style: normal;
+        &:hover{
+            color: #ff6000;
+        }
+    }
+    dd{
+        overflow: hidden;
+        margin-left: 2px;
+        font-size: 14px;
+    }
+    //英文系统
+    &.en{
+        width: 680px;
+        dt{
+            width: 130px;
+        }
+    }
+}

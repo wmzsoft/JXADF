@@ -7,17 +7,21 @@ $author:wmzsoft@gmail.com
 -->
 <#t/>
 </td>
-    </tr>
+</tr>
 </table>
-<script type="text/javascript">
-    $(function () {
-        $(".appbar-menu-option").click(function () {
-            $(".appbar-menu-list").show();
-        });
+<#if (parameters.menusList??) >
+    <#if ((parameters.menusList?size) > 0) >
+    <script type="text/javascript">
+        $(function () {
+            $(".appbar-menu-option").click(function () {
+                $(".appbar-menu-list").show();
+            });
 
-        $(".appbar-menu-list").mouseleave(function(){
-            $(".appbar-menu-list").hide();
+            $(".appbar-menu-list").mouseleave(function () {
+                $(".appbar-menu-list").hide();
+            });
         });
-    });
-</script>
+    </script>
+    </#if>
+</#if>
 <!-- appbar end -->

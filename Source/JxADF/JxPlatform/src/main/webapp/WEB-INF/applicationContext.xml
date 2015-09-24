@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dwr="http://www.directwebremoting.org/schema/spring-dwr"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.directwebremoting.org/schema/spring-dwr
+		http://www.directwebremoting.org/schema/spring-dwr-3.0.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context-3.0.xsd"
+       default-lazy-init="true">
+
+    <context:annotation-config/>
+    <context:component-scan base-package="com.jxtech"/>
+       
+    <!-- DWR -->
+    <!-- 启用 annotation 配置模式 -->
+    <dwr:configuration>
+        <dwr:convert type="bean" class="com.jxtech.jbo.JboIFace">
+            <dwr:include method="attachmentCount"/>
+            <dwr:include method="children"/>
+            <!-- 不能添加data方法，data中的数据格式较为复杂，一些格式处理不了，建议直接使用getString方法 或经过转换的datas对象
+                <dwr:include method="data" /> -->
+            <dwr:include method="datas"/>
+            <dwr:include method="getString"/>
+            <dwr:include method="deleteChildren"/>
+            <dwr:include method="jboname"/>
+            <dwr:include method="uidValue"/>
+            <dwr:include method="readonly"/>
+        </dwr:convert>
+        <dwr:convert type="bean" class="com.jxtech.jbo.base.JxTable">
+            <dwr:exclude method="tableModle"/>
+        </dwr:convert>
+        <dwr:convert type="bean" class="com.jxtech.jbo.JboSetIFace">
+            <dwr:include method="jboname"/>
+            <dwr:include method="jbolist"/>
+            <dwr:include method="jbo"/>
+            <dwr:include method="appname"/>
+            <dwr:include method="jxTable"/>
+        </dwr:convert>
+
+        <dwr:convert type="exception" class="com.jxtech.jbo.util.JxException"/>
+        <dwr:convert type="bean" class="java.lang.Object"/>
+    </dwr:configuration>
+    <!-- Spring容器中检查拥有@RemoteProxy 和 @RemoteMethod注解的类 -->
+    <dwr:annotation-config id="dwrAnnotationConfig"/>
+    <!-- 要求DWR将util.js和engine.js映射到dwrController -->
+    <dwr:url-mapping/>
+    <!-- 开启debug -->
+    <dwr:controller id="dwrController" debug="false"/>
+    <dwr:annotation-scan base-package="com.jxtech.dwr"
+                         scanDataTransferObject="true" scanRemoteProxy="true"/>
+</beans>
+	

@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.jxtech.jbo.auth.JxSession;
-import com.jxtech.jbo.base.JxUserInfo;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
 import org.apache.commons.dbutils.handlers.MapHandler;
@@ -22,6 +20,7 @@ import com.jxtech.db.util.JxDataSourceUtil;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.base.DataMap;
 import com.jxtech.jbo.util.DataQueryInfo;
+import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.CacheUtil;
 import com.jxtech.util.JsonUtil;
@@ -111,36 +110,24 @@ public abstract class DataQueryImpl implements DataQuery {
         if (ist) {
             msql.append(") n");
         }
-        if (!StrUtil.isNull(whereCause)) {
-            msql.append(" where ").append(whereCause);
-        }
+        JboSetIFace js = JboUtil.getJboSet(tablename);
+        DataQueryInfo dqi = js.getQueryInfo();
+        dqi.setWhereCause(whereCause);
+        dqi.setWhereParams(params);
+        msql.append(" where ").append(dqi.getWhereAllCause());
 
-        JxUserInfo userInfo = JxSession.getJxUserInfo();
-        
-        if (null != userInfo) {
-            String siteId = userInfo.getSiteid();
-            String orgId = userInfo.getOrgid();
-            if (!StrUtil.isNull(siteId)) {
-                msql.append(" and siteid = '").append(siteId).append("'");
-            }
-
-            if (!StrUtil.isNull(orgId)) {
-                msql.append(" and orgid = '").append(orgId).append("'");
-            }
-        }
-
-        String ps = StrUtil.toString(params);
+        String ps = StrUtil.toString(dqi.getWhereAllParams());
         if (ps != null) {
             ps = String.valueOf(ps.hashCode());
         }
-        String ckey = StrUtil.contact(DBFactory.CACHE_PREX, ".", String.valueOf(msql.hashCode()), ".", ps);
+        String ckey = StrUtil.contact(DBFactory.CACHE_PREX, ".sqlfun.", String.valueOf(msql.hashCode()), ".", ps);
         Object val = CacheUtil.getJbo(ckey);// 读取缓存
         if (val != null) {
             return val;
         }
         QueryRunner qr = new QueryRunner(true);
         try {
-            Map<String, Object> rs = qr.query(conn, msql.toString(), new MapHandler(), params);
+            Map<String, Object> rs = qr.query(conn, msql.toString(), new MapHandler(), dqi.getWhereAllParams());
             Object obj = null;
             if (rs != null) {
                 obj = rs.get("m");

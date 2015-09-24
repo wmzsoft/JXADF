@@ -110,9 +110,7 @@ public class TablecolTag extends JxBaseUITag {
         col.setDataname(dataname);
         JxParams jparam = BeanUtil.getJxParams();
         if (jparam != null) {
-            if ("comtop".equalsIgnoreCase(urlType)) {
-                col.setUrlType(jparam.getComtopUrl());
-            } else if ("report".equalsIgnoreCase(urlType)) {
+            if ("report".equalsIgnoreCase(urlType)) {
                 col.setUrlType(jparam.getReportUrl());
             } else {
                 col.setUrlType(urlType);

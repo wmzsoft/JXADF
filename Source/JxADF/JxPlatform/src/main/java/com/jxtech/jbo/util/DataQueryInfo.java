@@ -185,11 +185,11 @@ public class DataQueryInfo implements java.io.Serializable {
      * @return
      */
     public String getSecurityrestrict() {
-        if (jboset == null || !ignoreSecurityrestrict) {
+        if (jboset == null || ignoreSecurityrestrict) {
             return null;
         }
         try {
-            return jboset.getSecurityrestrict(false);
+            return jboset.getSecurityrestrict(true);
         } catch (JxException e) {
             LOG.error(e.getMessage(), e);
         }

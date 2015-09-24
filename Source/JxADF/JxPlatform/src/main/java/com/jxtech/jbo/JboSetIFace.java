@@ -24,7 +24,15 @@ import java.util.Map;
  * @date 2013.08
  */
 public interface JboSetIFace extends Serializable {
+    
+    //健新工作流名称
+    public static final String BPM_JX = "JXBPM";
 
+    //Oracle 工作流名称
+    public static final String BPM_ORACLE = "OBPM";
+    
+    //Activiti工作流名称 
+    public static final String BPM_ACTIVITI = "ACTIVITI";
     /**
      * 如果要添加业务逻辑，请继承此方法。
      * 
@@ -199,9 +207,13 @@ public interface JboSetIFace extends Serializable {
     public void getBlob(String blobColumnName, String uid, OutputStream os) throws JxException;
 
     // 以下是关于工作流应用的处理
-    public String getWorkflowId();
+    public String getWorkflowId() throws JxException;
 
     public void setWorkflowId(String wfId);
+    
+    public String getWorkflowEngine() throws JxException;
+    
+    public void setWorkflowEngine(String workflowEngine) ;
 
     /**
      * 发送工作流

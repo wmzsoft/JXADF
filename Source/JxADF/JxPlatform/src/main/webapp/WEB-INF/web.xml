@@ -2,24 +2,11 @@
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.4"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-
-    <context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>osgibundle:/META-INF/spring/*.xml</param-value>
-    </context-param>
-    <context-param>
-        <param-name>contextClass</param-name>
-        <param-value>com.jxtech.osgi.framework.common.OsgiWebBundleContext</param-value>
-    </context-param>
-
-    <context-param>
-        <param-name>parentContextKey</param-name>
-        <param-value>parent-context-bean</param-value>
-    </context-param>
     <context-param>
         <param-name>TemplatePath</param-name>
         <param-value>/</param-value>
     </context-param>
+    <!--  com.jxtech.common.JxContextLoaderListener 中读取 -->
     <context-param>
         <param-name>osgi.config.properties</param-name>
         <param-value>/WEB-INF/conf/osgi.config.properties</param-value>
@@ -156,6 +143,7 @@
         <servlet-name>MppDownload</servlet-name>
         <url-pattern>/mppdown/*</url-pattern>
     </servlet-mapping>
+
 
     <mime-mapping>
         <extension>doc</extension>

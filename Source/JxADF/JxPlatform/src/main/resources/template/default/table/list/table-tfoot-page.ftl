@@ -23,7 +23,7 @@ ${parameters.tagbundle['table-tfoot.totalpre']}&nbsp;${parameters.count!0}
     <#if ((parameters.pagesize!'')=='20')>
         <#lt> class="pagesize-select" <#rt>
     </#if>
-    <#lt> onclick="spanSetPageSize('${parameters.id}',20);">20  </span>,<#rt>   
+    <#lt> onclick="spanSetPageSize('${parameters.id}',20);">20</span>,<#rt>
     <#lt><span <#rt>
     <#if ((parameters.pagesize!'')=='50')>
         <#lt> class="pagesize-select" <#rt>

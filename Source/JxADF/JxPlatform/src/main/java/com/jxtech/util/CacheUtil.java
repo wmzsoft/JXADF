@@ -2,6 +2,8 @@ package com.jxtech.util;
 
 import java.util.List;
 
+import com.jxtech.jbo.auth.JxSession;
+
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
@@ -149,4 +151,11 @@ public class CacheUtil {
         removeObjectOfStartWith(PERMISSION_CACHE, prekey);
     }
 
+    /**
+     * 清空登录用户的缓存
+     */
+    public static void cleanUserCache() {
+        String ckey = StrUtil.contact(JxSession.getUserId(), ".");
+        removeObjectOfStartWith(PERMISSION_CACHE, ckey);
+    }
 }

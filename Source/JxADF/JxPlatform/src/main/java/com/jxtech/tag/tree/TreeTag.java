@@ -10,6 +10,7 @@ import com.jxtech.jbo.util.JxException;
 import com.jxtech.tag.comm.JxBaseUITag;
 import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.struts2.components.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,8 @@ public class TreeTag extends JxBaseUITag {
     protected String root; // 自定义根节点
     protected String relationship;// 关系
     protected String i18n; // 国际化
+
+    protected String moreAttributes;//返回的json中包含更多的属性
 
     protected String mode; // 模式 一般在lookup页面或者search页面需要指定
 
@@ -78,7 +81,7 @@ public class TreeTag extends JxBaseUITag {
 
     /**
      * 读取树的数据
-     * 
+     *
      * @param tree
      */
     protected void setData(Tree tree) throws JxException {
@@ -123,7 +126,13 @@ public class TreeTag extends JxBaseUITag {
                 js.setJbo(jboList.get(0));
             }
 
-            String[] attributes = new String[] { treeNodeKey, treeNodeParentKey, treeNodeName };
+            String[] attributes = new String[]{treeNodeKey, treeNodeParentKey, treeNodeName};
+            if (!StrUtil.isNull(moreAttributes)) {
+                String[] moreAtts = moreAttributes.split(",");
+                attributes = ArrayUtils.addAll(attributes, moreAtts);
+
+            }
+
             treeNodes = js.toZTreeJson(attributes, treeNodeKey, treeNodeParentKey, treeNodeName, hasChildName, !"false".equalsIgnoreCase(leafDisplay), getRoot(), getI18n());
             tree.setTreeNodes(treeNodes);
         }
@@ -265,4 +274,11 @@ public class TreeTag extends JxBaseUITag {
         this.i18n = i18n;
     }
 
+    public String getMoreAttributes() {
+        return moreAttributes;
+    }
+
+    public void setMoreAttributes(String moreAttributes) {
+        this.moreAttributes = moreAttributes;
+    }
 }

@@ -264,7 +264,7 @@ public abstract class Permission implements PermissionIFace {
         wc.append(" OPERATION=1 and menu_id in (select maxmenuid from maxmenu where  upper(app)=upper(?))");
         wc.append(" and role_id in (select role_id from PUB_ROLE_USER where upper(user_id)=upper(?))");
         int c = dq.count("PUB_ROLE_OPERATION", wc.toString(), new Object[] { app, JxSession.getUserId() });
-        LOG.debug("检查权限：app=" + app + ",共有:" + c + "\r\n select count(*) from where PUB_ROLE_OPERATION " + wc.toString());
+        LOG.debug("检查权限：app=" + app + ",共有:" + c + "\r\n select count(*) from  PUB_ROLE_OPERATION where " + wc.toString()+"\r\n"+JxSession.getUserId());
         return c;
     }
 }

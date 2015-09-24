@@ -1,0 +1,138 @@
+@charset "utf-8";
+//osgi/console/index.action
+
+.ui-widget-content {
+    .table-menubar {
+        width: 100%;
+        td {
+            border: 0 none;
+            padding: 0 0 5px 10px;
+        }
+    }
+    .table-content {
+        width: 100%;
+        td {
+            border: 1px solid #d7d7d7;
+            font-size: 12px;
+            padding: 5px 10px;
+            color: #666;
+        }
+    }
+    a {
+        color: #336ef1;
+        font-size: 12px;
+    }
+    .osgi-console-table {
+        thead {
+            td {
+                padding: 5px 10px;
+            }
+        }
+        tbody {
+            td {
+                padding: 0;
+                border: 0 none;
+            }
+        }
+        .rowTable {
+            width: 100%;
+            td {
+                padding: 10px;
+                border: 1px solid #d7d7d7;
+            }
+        }
+    }
+    .toolbar_btn img {
+        vertical-align: middle;
+    }
+
+    .wc-results {
+        margin: 0 0 20px 0;
+        width: 99%;
+        background: #000;
+        color: #fff;
+        padding-left: 10px;
+        height: 300px;
+        overflow: auto;
+        border: 2px #999 solid;
+        float: left;
+    }
+
+    .wc-results pre {
+        display: inline;
+    }
+
+    .wc-command {
+        margin: 0px;
+        font-family: courier;
+        height: 30px;
+        border: 1px #d7d7d7 solid;
+        padding-left: 5px;
+        padding-right: 7px;
+        width: 99%;
+        background: #000;
+        color: #fff;
+    }
+}
+
+.ui-tabs .ui-tabs-panel {
+    padding: 15px 10px;
+}
+
+/*插件控制台start*/
+
+.button-silver,
+.mybutton {
+    background: url(../images/pushbutton/toolbar_btn.png) repeat-x;
+    color: #000;
+    border: 1px #ccc solid;
+    height: 28px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 2px;
+    padding: 0 15px;
+    &:hover {
+        background: url(../images/pushbutton/toolbar_btn_hover.png) repeat-x;
+        color: #fff;
+        border: 1px #0e6fa6 solid;
+    }
+}
+
+.mybutton {
+    height: 30px;
+}
+
+.table-content {
+    a:hover {
+        color: #fa6400;
+    }
+    input.btn_href {
+        height: 30px;
+    }
+}
+
+.remoteAction {
+    background: #43c01d;
+    border: 1px #3b9a10 solid;
+    color: #fff;
+    border-radius: 2px;
+    height: 26px;
+    line-height: 26px;
+    padding: 0 15px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.remoteAction-Clicked {
+    background: url(../images/pushbutton/toolbar_btn.png) repeat-x;
+    border: 1px #ccc solid;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.remoteAction-active {
+    background: none;
+    cursor: default;
+    border: none;
+    color: #666;
+}

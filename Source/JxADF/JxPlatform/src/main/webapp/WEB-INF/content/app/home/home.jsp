@@ -41,7 +41,7 @@
     <script type='text/javascript' src='<%=path%>/dwr/engine.js'></script>
     <script type='text/javascript' src='<%=path%>/dwr/util.js'></script>
     <script type='text/javascript' src='<%=path%>/dwr/interface/WebClientBean.js'></script>
-    <script type='text/javascript' src='<%=path%>/javascript/jxkj/jxMenu.js'></script>
+    <script type='text/javascript' src='<%=path%>/javascript/jxkj/jxmenu-v-icon.js'></script>
     <script type='text/javascript' src='<%=path%>/javascript/jxkj/jxcommon.js'></script>
     <script type='text/javascript' src='<%=path%>/javascript/jxkj/jxtable.js'></script>
     <!--加载jQuery.i18n.properties插件-->
@@ -64,8 +64,8 @@
         var panelLayout;
         var langCode = "<%=langCode%>";
 
-        function loadApp(url){
-            $("#centerIframe").attr("src",url);
+        function loadApp(url) {
+            $("#centerIframe").attr("src", url);
             window.dataTableCollection = {};
         }
 
@@ -141,22 +141,20 @@
                         closable: false
                     }
                 },
-                onopen_end:function(){
-                    $.each(window.dataTableCollection,function(index,item){
-                        if(item[0].is(":visible")){
-                            item[0].fnDestroy();
-                            item[0].removeAttr("style").find("th").removeAttr("style");
-                            item[1].loadDataTable(item[0].attr("id"));
-                        }else{
+                onopen_end: function () {
+                    $.each(window.dataTableCollection, function (index, item) {
+                        if (item[0].is(":visible")) {
+                            resizeDataTable(item[0]);
+                        } else {
                             delete window.dataTableCollection[index];
                         }
                     });
                 },
-                onclose_end:function(){
-                    $.each(window.dataTableCollection,function(index,item){
-                        if(item[0].is(":visible")){
-                            item[0].fnDraw();
-                        }else{
+                onclose_end: function () {
+                    $.each(window.dataTableCollection, function (index, item) {
+                        if (item[0].is(":visible")) {
+                            resizeDataTable(item[0]);
+                        } else {
                             delete window.dataTableCollection[index];
                         }
                     });

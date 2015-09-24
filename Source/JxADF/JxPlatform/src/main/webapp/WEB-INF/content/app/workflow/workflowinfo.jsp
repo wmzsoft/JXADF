@@ -10,15 +10,7 @@
     request.setAttribute("instanceid", URLDecoder.decode(instanceid, "UTF-8"));
     request.setAttribute("uid", uid);
 
-    String engine = "";
-    try {
-        JboIFace maxappswfinfoJbo = JboUtil.getJbo("MAXAPPSWFINFO", "APP", appname.toUpperCase());
-        if (null != maxappswfinfoJbo) {
-            engine = maxappswfinfoJbo.getString("ENGINE").toLowerCase();
-        }
-    } catch (Exception e) {
-        e.printStackTrace();
-    }
+    String engine = request.getParameter("engine");
 
     String path = request.getServletContext().getContextPath();
 %>

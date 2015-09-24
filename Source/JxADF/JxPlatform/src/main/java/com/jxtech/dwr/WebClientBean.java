@@ -501,29 +501,47 @@ public class WebClientBean {
      * @return
      * @throws JxException
      */
-    public String routeCommon(String appname, String jboname, String uid, String action, String note, String toUsers, String options) throws JxException {
-        JboSetIFace jboSet = JxSession.getMainApp().getJboset();
+    public String routeCommon(String appname, String jboname, String uid, String action, String note, String toUsers, String options) {
+
         String result = "";
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("ACTION", action);
         params.put("NOTE", note);
         params.put("TOUSERS", toUsers);
         params.put("OPTIONS", options);
-
-        JboIFace jbi = jboSet.queryJbo(uid);
-        if (null != jbi) {
-            boolean routeResult = jbi.route(params);
-            if (routeResult) {
-                result = jbi.getString("WFT_TRANSACTOR");
-                // 只有发送成功了才需要提交
-                jbi.getJboSet().commit();
-            } else {
-                jbi.getJboSet().rollback();
+        JboIFace jbi = null;
+        try {
+            App app = JxSession.getApp(appname);
+            JboSetIFace jboSet = app.getJboset();
+            jbi = jboSet.queryJbo(uid);
+            if (null != jbi) {
+                boolean routeResult = jbi.route(params);
+                if (routeResult) {
+                    result = jbi.getString("WFT_TRANSACTOR");
+                    // 只有发送成功了才需要提交
+                    jbi.getJboSet().commit();
+                    if (jbi.isRouteClose()) {
+                        result = JxLangResourcesUtil.getString("dwr.WebClientBean.routeCommon.end");
+                    }else if (StrUtil.isNull(result)){
+                        result = JxLangResourcesUtil.getString("dwr.WebClientBean.routeCommon.notFoundAssignment");
+                    }else {
+                        result = JxLangResourcesUtil.getString("dwr.WebClientBean.routeCommon.nextAssignment",new String[]{result});
+                    }
+                } else {
+                    jbi.getJboSet().rollback();
+                    result = JxLangResourcesUtil.getString("dwr.WebClientBean.routeCommon.route.failed");
+                }
             }
-        }
 
-        if (StrUtil.isNull(result)) {
-            result = JxLangResourcesUtil.getString("dwr.WebClientBean.no_transactor");
+        } catch (JxException jxe) {
+            if (null != jbi) {
+                try {
+                    jbi.getJboSet().rollback();
+                } catch (JxException exp) {
+                    exp.printStackTrace();
+                }
+            }
+            LOG.error(jxe.getLocalizedMessage(), jxe);
         }
 
         return result;
@@ -542,13 +560,12 @@ public class WebClientBean {
      * @return 返回成功错误信息
      */
     public String route(String appname, String jboname, String uids, String toActId, int isAgree, String note, String toUsers, String options) throws JxException {
-        String wfType = JboUtil.getAppWorkflowEngine(appname);
-        IWorkflowEngine engine = WorkflowEngineFactory.getWorkflowEngine(wfType);
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String[] uidAry = uids.split(",");
         int uidLen = uids.length();
 
         JboSetIFace jboSet = JboUtil.getJboSet(jboname);
+        IWorkflowEngine engine = WorkflowEngineFactory.getWorkflowEngine(jboSet.getWorkflowEngine());
 
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("toActId", toActId == null ? "" : toActId);
@@ -598,7 +615,7 @@ public class WebClientBean {
             jsf = app.getJboset();
         }
         if (null != jsf) {
-            Iterator it = jsf.getJbolist().iterator();
+            Iterator<JboIFace> it = jsf.getJbolist().iterator();
             while (it.hasNext()) {
                 jf = (JboIFace) it.next();
                 if (jboUid.equals(jf.getObject(jboKey).toString())) {
@@ -636,7 +653,7 @@ public class WebClientBean {
 
         if (null != currentApp) {
             JboIFace jbo = currentApp.getJbo();
-            String oldJboname = jboname;// 原来的Jbo名称
+            // String oldJboname = jboname;// 原来的Jbo名称
             // 比如资产，主表就是一棵树
             if (null == jbo) {
                 // 当jbo为空的时候，jboset也是为空的
@@ -645,7 +662,7 @@ public class WebClientBean {
                 currentApp.setJboset(jboSet);
                 currentApp.getJboset().setJbo(jbo);
             } else {
-                oldJboname = jbo.getJboName();
+                // oldJboname = jbo.getJboName();
                 if (!StrUtil.isNull(jboUid) && !jboUid.equalsIgnoreCase(jbo.getUidValue())) {
                     // 先从session获取当前的jbo，如果当前的jbo不是所需要的jbo或者不存在则从jboset中查询获取。
                     // 先查session
@@ -727,10 +744,7 @@ public class WebClientBean {
         if (app != null) {
             JboSetIFace jboset = app.getJboset();
             if (jboset != null) {
-                JboIFace jbo = jboset.getJbo();
-                if (null != jbo) {
-                    result = JboUtil.getAppWorkflowEngine(app.getAppName());
-                }
+                return jboset.getWorkflowEngine();
             }
         }
         return result;
@@ -793,7 +807,13 @@ public class WebClientBean {
         if (app != null) {
             JboSetIFace jboset;
             if (!StrUtil.isNull(relationship)) {
-                jboset = app.getJbo().getRelationJboSet(relationship);
+                JboIFace jbo = app.getJbo();
+                if (jbo != null) {
+                    jboset = jbo.getRelationJboSet(relationship);
+                } else {
+                    String msg = JxLangResourcesUtil.getString("webClientBean.queryJboSetData.notfountJbo", new Object[] { relationship });
+                    throw new JxException(msg);
+                }
             } else {
                 jboset = app.getJboset();
             }
@@ -805,7 +825,8 @@ public class WebClientBean {
                 jboset.count();
             }
         } else {
-            throw new JxException("没有正确设置查询属性：" + appNameType + "," + apprestrictions);
+            String msg = JxLangResourcesUtil.getString("webClientBean.queryJboSetData.notFountApp", new Object[] { appNameType });
+            throw new JxException(msg);
         }
     }
 

@@ -42,9 +42,20 @@ public class AutoKeySet extends JboSet implements AutoKeySetIFace {
         }
 
         DataQueryInfo dqi = getQueryInfo();
-        dqi.putParams("autokeyname=upper(?)", keyname);
-
+        dqi.setWhereCause("autokeyname=? and orgid=? and siteid=?");
+        dqi.setWhereParams(new Object[]{keyname.toUpperCase(),orgid,siteid});
         List<JboIFace> list = query();
+        if (list==null || list.isEmpty()){
+            dqi.setWhereCause("autokeyname=? and orgid=? ");
+            dqi.setWhereParams(new Object[]{keyname.toUpperCase(),orgid});
+            list = query();
+            if (list==null || list.isEmpty()){
+                dqi.setWhereCause("autokeyname=?");
+                dqi.setWhereParams(new Object[]{keyname.toUpperCase()});
+                list = query();
+            }            
+        }
+        
         if (list != null) {
             if (list.size() > 0) {
                 JboIFace myjbo = list.get(0);

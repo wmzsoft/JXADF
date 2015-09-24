@@ -1,0 +1,148 @@
+@charset "utf-8";
+$appbar-height: 40px;
+$item-height: 28px;
+.appbar {
+    width: 100%;
+    height: $appbar-height;
+    position: relative;
+    border-spacing: 0;
+    z-index: 1;
+    td {
+        background: #fff;
+        height: $appbar-height;
+        &.td_bg {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: $appbar-height;
+            border-bottom: 1px solid #d7d7d7;
+        }
+        &.appbar-menu {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 400px;
+            .quickSearchDiv {
+                width: 200px;
+                margin: ($appbar-height - $item-height - 2)/2 0 0 0;
+                background: #fff;
+                border: 1px solid #bbb;
+                border-radius: 2px;
+                box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1) inset;
+                position: relative;
+                float: left;
+                height: $item-height;
+            }
+            .placeholder {
+                color: #ccc;
+                cursor: text;
+                font-size: 12px;
+                height: $item-height;
+                line-height: $item-height;
+                position: absolute;
+                left: 9px;
+                top: 0;
+            }
+            .table_quick_search {
+                height: $item-height;
+                line-height: $item-height;
+                vertical-align: middle;
+                width: 180px;
+                margin: 0 0 0 10px;
+                background: transparent;
+                border: 0 none;
+                font-size: 14px;
+            }
+            .choose-option {
+                position: relative;
+                display: inline-block;
+                .appbar-menu-option {
+                    border: 1px solid #ccc;
+                    display: inline-block;
+                    width: 90px;
+                    height: $item-height;
+                    line-height: $item-height;
+                    color: #000;
+                    font-size: 12px;
+                    padding-left: 20px;
+                    cursor: pointer;
+                    z-index: 10;
+                    top: 0;
+                    margin: ($appbar-height - $item-height - 2)/2 0 0 20px;
+                    border-radius: 2px;
+                    @include renderSpriteImage();
+                    @extend %tag_appbar_menu_list_toggle_button;
+                    &:hover {
+                        border: 1px solid #0e6fa6;
+                        color: #fff;
+                    }
+                }
+                .appbar-menu-list {
+                    position: absolute;
+                    left: 20px;
+                    background: #fff;
+                    display: none;
+                    z-index: 1000;
+                    border: 1px solid #ccc;
+                    padding: 25px 35px 25px 25px;
+                    box-shadow: 1px 1px 4px #888;
+                    box-sizing: border-box;
+                    width: 360px;
+                }
+                .appbar-menu-OPTION {
+                    list-style: none;
+                    a {
+                        color: #5d5a5a;
+                        &:hover{
+                            color: #ff6000;
+                        }
+                    }
+                }
+                .appbar-menu-SEP {
+                    color: #5d5a5a;
+                    height: 30px;
+                }
+
+                .appbar-menu-sub {
+                    white-space: nowrap;
+                    background: #fff;
+                }
+
+                .appbar-menu-sub-OPTION {
+                    display: inline;
+                    color: #5d5a5a;
+                }
+
+                .appbar-menu-vsline {
+                    color: #ccc;
+                    margin-right: 5px;
+                    width: 2px;
+                }
+            }
+        }
+
+        &.appbar-toolbar {
+            text-align: right;
+            position: fixed;
+            right: 0;
+            z-index: 11;
+            top: 0;
+            -webkit-transform: translateZ(0);
+            .appbar-menu-toolbar-icon {
+                vertical-align: middle;
+            }
+        }
+        &.appbar-extends {
+            text-align: right;
+            padding-right: 10px !important;
+            position: fixed;
+            z-index: 10;
+            right: 0;
+            top: 0;
+            span {
+                margin-top: 5px;
+            }
+        }
+    }
+}

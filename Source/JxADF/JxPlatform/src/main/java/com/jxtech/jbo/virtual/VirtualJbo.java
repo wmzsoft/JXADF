@@ -108,4 +108,10 @@ public class VirtualJbo extends BaseJbo {
         return true;
     }
 
+    @Override
+    public String getWorkflowInstanceId() throws JxException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 }

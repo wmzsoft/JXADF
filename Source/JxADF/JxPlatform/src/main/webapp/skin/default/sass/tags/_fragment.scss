@@ -1,0 +1,39 @@
+@charset "utf-8";
+.ui-tabs .fragment-mode{
+    height: 100%;
+}
+.fragment-mode-wrap table,
+.fragment-mode-ellipsis table{
+    table-layout: fixed;
+}
+
+.fragment-mode-ellipsis th{
+    white-space: normal;
+}
+.fragment-mode-ellipsis td{
+    overflow: hidden;
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+}
+.fragment-mode-wrap td,
+.fragment-mode-wrap th{
+    white-space: normal !important;
+    -ms-word-break: break-all;
+    word-break: break-all;
+}
+
+.fragment-mode-wrap td a,
+.fragment-mode-wrap td span{
+    -ms-word-break: break-all;
+    word-break: break-all;
+}
+
+.fragment-mode-inline th,
+.fragment-mode-inline td{
+    white-space: nowrap !important;
+    padding: 0 5px !important;
+}
+.fragment-mode-inline .table-layout-fixed{
+    table-layout: fixed;
+}
