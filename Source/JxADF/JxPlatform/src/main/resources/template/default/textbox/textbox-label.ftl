@@ -18,9 +18,12 @@ $author:wmzsoft@gmail.com
 </#if>
 
 <#if (parameters.mystyle!'TD')=='TD'>
-    <td class="form_td_label${extcss}"><#t>
+    <#lt><td class="form_td_label${extcss}" <#rt>
+    <#if (parameters.labeltip??)>
+        <#lt> title='${parameters.labeltip!}' <#rt>
+    </#if>
+    ><#t>
 </#if>
-
 <#if (parameters.label??)>
     <#assign plabel=parameters.label>
 <#elseif (parameters.dynamicAttributes.label??)>
@@ -40,7 +43,7 @@ $author:wmzsoft@gmail.com
         ${plabel!''}
     </#if>
 <#elseif (((parameters.render!'x')?upper_case)=="LINKLABEL")>
-    <a href="${parameters.renderExtends!''}" target="_blank">${plabel!''}</a>
+    <a href="${parameters.renderExtends!''}${parameters.urlParamValue!}" target="${parameters.urlTarget!'_self'}">${plabel!''}</a>
 <#else>
     ${plabel!''}
 </#if>
@@ -66,11 +69,14 @@ $author:wmzsoft@gmail.com
 </#if>
 <#if (parameters.mystyle!'TD')=='TD'>
     </td><td class="form_td_content" <#rt/>
+    <#if (parameters.valuetip??)>
+        <#lt> title='${parameters.valuetip!}' <#rt/>
+    </#if>
     <#if parameters.colspan??>
-        <#lt> colspan="${parameters.colspan?html}" align="left"<#rt/>
+        <#lt> colspan="${parameters.colspan?html}" align="left" <#rt>
     </#if>
     <#if parameters.rowspan??>
-        <#lt> rowspan="${parameters.rowspan?html}" valign="middle"<#rt/>
+        <#lt> rowspan="${parameters.rowspan?html}" valign="middle" <#rt>
     </#if>
-    <#t>><#t/>
+><#t>
 </#if>

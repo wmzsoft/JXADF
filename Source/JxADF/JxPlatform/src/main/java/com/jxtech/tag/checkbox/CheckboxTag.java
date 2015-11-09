@@ -44,6 +44,9 @@ public class CheckboxTag extends JxBaseUITag {
     private String cause;
     private String queryValue;
     private JxAttribute jxattribute;
+    protected String labeltip;//标签提示
+    protected String valuetip;//值的提示
+
 
     protected String queryType; //查询类型（有CHECKBOX和SELECT2中）
 
@@ -111,6 +114,8 @@ public class CheckboxTag extends JxBaseUITag {
         chk.setNotChecked(notChecked);
         chk.setReadonly(readonly);
         chk.setVisible(visible);
+        chk.setLabeltip(labeltip);
+        chk.setValuetip(valuetip);
         cause = " = ?";
         chk.setCause(cause);
         chk.setQueryValue(queryValue);
@@ -212,5 +217,21 @@ public class CheckboxTag extends JxBaseUITag {
 
     public void setQueryType(String queryType) {
         this.queryType = queryType;
+    }
+
+    public String getLabeltip() {
+        return labeltip;
+    }
+
+    public void setLabeltip(String labeltip) {
+        this.labeltip = labeltip;
+    }
+
+    public String getValuetip() {
+        return valuetip;
+    }
+
+    public void setValuetip(String valuetip) {
+        this.valuetip = valuetip;
     }
 }

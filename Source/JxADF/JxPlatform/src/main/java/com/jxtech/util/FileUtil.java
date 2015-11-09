@@ -23,7 +23,14 @@ import java.security.MessageDigest;
 public class FileUtil {
     private static Logger LOG = LoggerFactory.getLogger(FileUtil.class);
 
-    public static long getMd5OfFile(InputStream is, StringBuffer md5) {
+    /**
+     * 获得文件的MD5码
+     * 
+     * @param is
+     * @param md5
+     * @return
+     */
+    public static long getMd5OfFile(InputStream is, StringBuilder md5) {
         // 缓冲区大小（这个可以抽出一个参数）
         int bufferSize = 256 * 1024;
         DigestInputStream digestInputStream = null;
@@ -83,9 +90,9 @@ public class FileUtil {
             } else {
                 hs = hs + stmp;
             }
-//            if (n < byteArray.length - 1) {
-//                hs = hs + "";
-//            }
+            // if (n < byteArray.length - 1) {
+            // hs = hs + "";
+            // }
         }
         return hs.toUpperCase();
     }
@@ -118,6 +125,7 @@ public class FileUtil {
 
     /**
      * 复制单个文件
+     * 
      * @param s
      * @param t
      * @return
@@ -130,11 +138,11 @@ public class FileUtil {
         try {
             fi = new FileInputStream(s);
             fo = new FileOutputStream(t);
-            /*得到对应的文件通道 */
+            /* 得到对应的文件通道 */
             in = fi.getChannel();
-            /*得到对应的文件通道 */
+            /* 得到对应的文件通道 */
             out = fo.getChannel();
-            /*连接两个通道，并且从in通道读取，然后写入out通道 */
+            /* 连接两个通道，并且从in通道读取，然后写入out通道 */
             in.transferTo(0, in.size(), out);
         } catch (IOException e) {
             e.printStackTrace();
@@ -150,65 +158,48 @@ public class FileUtil {
         }
         return true;
     }
+
     /**
      * 复制文件
+     * 
      * @param sourceFilePath
      * @param toFilePath
      * @return
      */
-    public static File fileCopy(String sourceFilePath,String toFilePath){
+    public static File fileCopy(String sourceFilePath, String toFilePath) {
         File oldFile = new File(sourceFilePath);
         String oldFileName = oldFile.getName();
         String oldFileType = oldFileName.substring(oldFileName.lastIndexOf("."));
-        oldFileName = oldFileName.substring(0,oldFileName.lastIndexOf(".")-1);
-        String newFileName = oldFileName+System.currentTimeMillis()+oldFileType;
-        int lastIndex =  toFilePath.lastIndexOf(File.separator);
-        String newFilePath =toFilePath.substring(0,lastIndex);
-        File newFile = new File(newFilePath+File.separator+newFileName);
-        try{
+        oldFileName = oldFileName.substring(0, oldFileName.lastIndexOf(".") - 1);
+        String newFileName = oldFileName + System.currentTimeMillis() + oldFileType;
+        int lastIndex = toFilePath.lastIndexOf(File.separator);
+        String newFilePath = toFilePath.substring(0, lastIndex);
+        File newFile = new File(newFilePath + File.separator + newFileName);
+        try {
             if (!newFile.getParentFile().exists()) {
                 newFile.getParentFile().mkdirs();
             }
             if (!newFile.exists()) {
                 newFile.createNewFile();
             }
-        }catch (IOException ie){
+        } catch (IOException ie) {
             LOG.info("文件操作错误");
             ie.printStackTrace();
         }
-        /*复制文件*/
+        /* 复制文件 */
         boolean f = fileChannelCopy(oldFile, newFile);
-        if(f){
+        if (f) {
             return newFile;
         }
         return null;
     }
-    public static String getFileSufix(String FilePath){
-        if(StrUtil.isNull(FilePath)){
+
+    public static String getFileSufix(String FilePath) {
+        if (StrUtil.isNull(FilePath)) {
             return "";
         }
-        return  FilePath.substring(FilePath.lastIndexOf(".")+1);
+        return FilePath.substring(FilePath.lastIndexOf(".") + 1);
     }
-
-
-    public static void main(String[] args) {
-        File f = new File("C:\\RHDSetup.log");
-        System.out.println(FileUtil.getMd5OfFile(f));
-        FileInputStream in;
-        try {
-            in = new FileInputStream(f);
-            StringBuffer md5 = new StringBuffer();
-            System.out.println(FileUtil.getMd5OfFile(in, md5));
-            System.out.println(md5.toString());
-            in.close();
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-        }
-    }
-
-
-
-
 
     /**
      * 得到标准的路径
@@ -226,5 +217,68 @@ public class FileUtil {
             return path.replaceAll("\\\\", "/");
         }
         return path;
+    }
+
+    /**
+     * 将字符串写入文件中.
+     * 
+     * @param buf
+     * @param filename
+     * @return
+     */
+    public static boolean writeFile(String buf, String filename) {
+        FileOutputStream fos = null;
+        try {
+            File f = new File(filename);
+            File path = new File(f.getParent());
+            if (!path.exists()) {
+                path.mkdirs();
+            }
+            if (!f.exists()) {
+                f.createNewFile();
+            }
+            fos = new FileOutputStream(f);
+            fos.write(buf.getBytes());
+            return true;
+        } catch (Exception ex) {
+            LOG.info(ex.getMessage(), ex);
+        } finally {
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e) {
+                    LOG.error(e.getMessage(), e);
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 删除过期多少耗秒的文件
+     * 
+     * @param path
+     * @param msecond
+     */
+    public static void deleteOldFile(String path, long msecond) {
+        if (StrUtil.isNull(path) || msecond <= 0) {
+            return;
+        }
+        File file = new File(path);
+        long now = System.currentTimeMillis();
+        if (file.isDirectory()) {
+            // 删除过期的临时文件
+            File[] files = file.listFiles();
+            try {
+                for (int i = 0; i < files.length; i++) {
+                    // 超过1万秒的文件删除
+                    if (now - files[i].lastModified() > msecond) {
+                        files[i].delete();
+                    }
+                }
+            } catch (Exception e) {
+                LOG.error(e.getMessage(), e);
+            }
+        }
     }
 }

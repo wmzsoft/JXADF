@@ -11,6 +11,7 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import com.jxtech.util.*;
+
 import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -114,11 +115,16 @@ public abstract class BaseJbo implements JboIFace {
             readonly = true;
         } else if (!isToBeAdd()) {
             String status = getString("wft_status");
-            readonly = ("CLOSE".equals(status) || "CANCEL".equalsIgnoreCase(status));
+            readonly = ("CLOSE".equals(status) || "CANCEL".equalsIgnoreCase(status) || "CAN".equalsIgnoreCase(status));
         }
         if (!readonly && !isToBeAdd()) {
             // 没有保存按钮的权限，则只读
-            if (!getJboSet().canSave()) {
+            boolean cs = true;
+            try {
+                cs = getJboSet().canSave();
+            } catch (Exception e) {
+            }
+            if (!cs) {
                 readonly = true;
                 return;
             }
@@ -161,8 +167,8 @@ public abstract class BaseJbo implements JboIFace {
             data.put("CHANGEBY", jui.getUserid());
             data.put("CREATEBY", jui.getUserid());
             // 以下为工作流字段
-            data.put("WFT_TRANSACTOR_ID", jui.getUserid());
-            data.put("WFT_TRANSACTOR", jui.getDisplayname());
+            // data.put("WFT_TRANSACTOR_ID", jui.getUserid());
+            // data.put("WFT_TRANSACTOR", jui.getDisplayname());
             // data.put("AUDIT_STATUS", "1");
         }
         java.sql.Timestamp ts = DateUtil.sqlDateTime();
@@ -173,6 +179,7 @@ public abstract class BaseJbo implements JboIFace {
         data.put("MODIFY_TIME", ts);
         data.put("CREATE_DATE", ts);
         data.put("MODIFY_DATE", ts);
+        data.put("WFT_STATUSDATE", ts);
         String uidName = getUidName();
         if (isNumeric(uidName)) {
             data.put(uidName, getNewSequence());
@@ -257,7 +264,7 @@ public abstract class BaseJbo implements JboIFace {
         if (!canSave()) {
             return false;
         }
-        if (!getChangedChildren().isEmpty()) {
+        if (getChangedChildren() != null) {
             getChangedChildren().clear();
         }
         return beforeSave();
@@ -688,6 +695,9 @@ public abstract class BaseJbo implements JboIFace {
      * @throws JxException
      */
     public Object getObjectOfReleationship(String attributeName, long flag) throws JxException {
+        if (attributeName == null) {
+            return null;
+        }
         String[] ans = attributeName.split("\\.");
         if (ans.length < 2) {
             return null;
@@ -706,14 +716,17 @@ public abstract class BaseJbo implements JboIFace {
             idx++;
         }
         if (jset != null && jset.getCount() > 0) {
-            Object value = jset.getJbo().getObject(ans[idx]);
-            data.put(attributeName, value);
-            // 将属性信息放入进去。
-            Map<String, JxAttribute> attrs = getJxAttributes();
-            if (attrs != null) {
-                attrs.put(attributeName, jset.getJxAttribute(ans[idx]));
+            JboIFace jid = jset.getJbo();
+            if (jid != null) {
+                Object value = jid.getObject(ans[idx]);
+                data.put(attributeName, value);
+                // 将属性信息放入进去。
+                Map<String, JxAttribute> attrs = getJxAttributes();
+                if (attrs != null) {
+                    attrs.put(attributeName, jset.getJxAttribute(ans[idx]));
+                }
+                return value;
             }
-            return value;
         } else {
             LOG.debug("没有得到正确的值，属性：" + attributeName);
         }
@@ -724,12 +737,7 @@ public abstract class BaseJbo implements JboIFace {
     public JxAttribute getJxAttribute(String attributeName) throws JxException {
         Map<String, JxAttribute> attrs = getJxAttributes();
         if (attrs != null) {
-            Object obj = attrs.get(attributeName);
-            if (obj instanceof JxAttribute) {
-                return (JxAttribute) obj;
-            } else {
-                // LOG.warn("attributeName[" + attributeName + "] is not JxAttribute");
-            }
+            return attrs.get(attributeName);
         }
         return null;
     }
@@ -768,7 +776,7 @@ public abstract class BaseJbo implements JboIFace {
         if (value instanceof Boolean) {
             return ((Boolean) value).booleanValue();
         } else if (value instanceof String) {
-            String s = ((String) value).trim().toLowerCase();
+            String s = ((String) value).trim().toUpperCase();
             if ("Y".equals(s) || "T".equals(s) || "1".equals(s)) {
                 return true;
             } else {
@@ -961,6 +969,24 @@ public abstract class BaseJbo implements JboIFace {
     }
 
     /**
+     * 用于输出Html中的Input控件中
+     * 
+     * @param attributeName
+     * @return
+     * @throws JxException
+     */
+    public String getHtmlInputValue(String attributeName) throws JxException {
+        String value = getString(attributeName);
+        if (!StrUtil.isNull(value)) {
+            int pos = value.indexOf('\'');
+            if (pos > 0) {
+                value = value.replaceAll("'", "&#39;");
+            }
+        }
+        return value;
+    }
+
+    /**
      * 将值转换为适合JSON格式的字符串
      * 
      * @param attributeName
@@ -1022,22 +1048,25 @@ public abstract class BaseJbo implements JboIFace {
         return setObject(attributeName, value, flag);
     }
 
-    protected JboSetIFace findRelationship(JboIFace jf, String relationship) throws JxException {
+    protected JboSetIFace findRelationship(JboIFace jf, String relationship, boolean queryAll, boolean executeQuery) throws JxException {
         JboSetIFace jsf = null;
         if (null != jf) {
-            jsf = jf.getRelationJboSet(relationship, JxConstant.READ_CACHE);
+            jsf = jf.getRelationJboSet(relationship, JxConstant.READ_CACHE, queryAll, executeQuery);
             if (null == jsf) {
                 Map<String, JboSetIFace> children = jf.getChildren();
                 Iterator<Entry<String, JboSetIFace>> it = children.entrySet().iterator();
                 while (it.hasNext()) {
                     @SuppressWarnings("rawtypes")
                     Map.Entry child = (Map.Entry) it.next();
-                    jsf = findRelationship(((JboSetIFace) child.getValue()).getJbo(), relationship);
+                    jsf = findRelationship(((JboSetIFace) child.getValue()).getJbo(), relationship, queryAll, executeQuery);
                     if (null != jsf) {
                         break;
                     }
                 }
             }
+        }
+        if (jsf != null) {
+            jsf.setRelationshipname(relationship);
         }
         return jsf;
     }
@@ -1050,8 +1079,20 @@ public abstract class BaseJbo implements JboIFace {
     @Override
     public JboSetIFace getRelationJboSet(String name) throws JxException {
         // return getRelationJboSet(name, JxConstant.READ_CACHE);
-        JboSetIFace jsf = findRelationship(this, name);
-        return jsf;
+        return findRelationship(this, name, false, true);
+    }
+
+    /**
+     * 获得联系
+     * 
+     * @param name
+     * @param executeQuery 是否执行查询
+     * @return
+     * @throws JxException
+     */
+    public JboSetIFace getRelationJboSet(String name, boolean executeQuery) throws JxException {
+        // return getRelationJboSet(name, JxConstant.READ_CACHE);
+        return findRelationship(this, name, false, executeQuery);
     }
 
     /**
@@ -1062,7 +1103,7 @@ public abstract class BaseJbo implements JboIFace {
      */
     @Override
     public JboSetIFace getRelationJboSet(String name, long flag) throws JxException {
-        return getRelationJboSet(name, flag, false);
+        return getRelationJboSet(name, flag, false, true);
     }
 
     /**
@@ -1074,6 +1115,30 @@ public abstract class BaseJbo implements JboIFace {
      */
     @Override
     public JboSetIFace getRelationJboSet(String name, long flag, boolean queryAll) throws JxException {
+        return getRelationJboSet(name, flag, queryAll, true);
+    }
+
+    /**
+     * 将联系名与Jbo做成一个唯一的Key
+     * 
+     * @param relationname
+     * @return
+     * @throws JxException
+     */
+    private String getRelationKey(String relationname) throws JxException {
+        return StrUtil.contact(getJboName(), ".", relationname, ".", getUidValue()).toUpperCase();
+    }
+
+    /**
+     * 
+     * @param name 联系名
+     * @param flag 是否从缓存读取数据
+     * @param queryAll 是否查询所有记录,不分页
+     * @param executeQuery 是否执行查询
+     * @return
+     * @throws JxException
+     */
+    public JboSetIFace getRelationJboSet(String name, long flag, boolean queryAll, boolean executeQuery) throws JxException {
         if (StrUtil.isNull(name)) {
             return null;
         }
@@ -1081,7 +1146,7 @@ public abstract class BaseJbo implements JboIFace {
             flag = JxConstant.READ_CACHE;
         }
         String jboName = getJboName();
-        String key = (jboName + "." + name).toUpperCase();
+        String key = getRelationKey(name);
         if (children == null) {
             children = new DataMap<String, JboSetIFace>();
         } else if (children.containsKey(key) && ((flag & JxConstant.READ_CACHE) == JxConstant.READ_CACHE)) {
@@ -1091,7 +1156,7 @@ public abstract class BaseJbo implements JboIFace {
         if (ship != null) {
             JboSetIFace jbos;
 
-            String cacheKey = StrUtil.contact(JxRelationshipDao.CACHE_PREX, name);
+            String cacheKey = StrUtil.contact(JxRelationshipDao.CACHE_PREX, name, ".", getUidValue());
             Object cacheJbos = CacheUtil.getBase(cacheKey);
             if (JxConstant.READ_RELOAD != flag && !isToBeAdd() && null != cacheJbos && cacheJbos instanceof JboSetIFace) {
                 jbos = (JboSetIFace) cacheJbos;
@@ -1145,7 +1210,7 @@ public abstract class BaseJbo implements JboIFace {
 
             }
 
-            if (needQuery) {
+            if (needQuery && executeQuery) {
                 if (queryAll) {
                     jbos.queryAll();
                 } else {
@@ -1158,8 +1223,9 @@ public abstract class BaseJbo implements JboIFace {
             children.put(key, jbos);
 
             // 既然获取了relationship 的jboset，顺便赋值给当前记录(1对1的情况下,非主从)
-            if (jbos.getJbolist().size() == 1) {
-                JboIFace jbo = jbos.getJbolist().get(0);
+            List<JboIFace> jlist = jbos.getJbolist();
+            if (jlist != null && jlist.size() == 1) {
+                JboIFace jbo = jlist.get(0);
                 Map<String, Object> dataMap = getData();
                 Iterator<?> keyIterator = dataMap.keySet().iterator();
                 while (keyIterator.hasNext()) {
@@ -1251,8 +1317,7 @@ public abstract class BaseJbo implements JboIFace {
         }
         JboValue value = getValue(attributeName, false);
         if (value == null) {
-            // return (attributeName.indexOf(".") > 0);
-            return false;
+            return this.getJboSet().isReadonly(attributeName);
         }
         return value.isReadonly();
     }
@@ -1287,6 +1352,23 @@ public abstract class BaseJbo implements JboIFace {
     }
 
     /**
+     * 设定除 attributeNames 字段之外的其它字段只读
+     * 
+     * @param attributeNames
+     * @param flag
+     * @throws JxException
+     */
+    public void setReadonlyBesides(String[] attributeNames, boolean flag) throws JxException {
+        Map<String, JxAttribute> attrs = getJboSet().getJxAttributes();
+        if (attrs != null) {
+            for (Entry<String, JxAttribute> entry : attrs.entrySet()) {
+                this.setReadonly(entry.getKey(), flag);
+            }
+        }
+        setReadonly(attributeNames, !flag);
+    }
+
+    /**
      * 获得某个字段的必填属性
      * 
      * @param attributeName
@@ -1297,12 +1379,7 @@ public abstract class BaseJbo implements JboIFace {
     public boolean isRequired(String attributeName) throws JxException {
         JboValue value = getValue(attributeName, false);
         if (value == null) {
-            JxAttribute attribute = getJxAttribute(attributeName);
-            if (attribute != null) {
-                return attribute.isRequired();
-            } else {
-                return false;
-            }
+            return getJboSet().isRequired(attributeName);
         }
         return value.isRequired();
     }
@@ -1317,7 +1394,6 @@ public abstract class BaseJbo implements JboIFace {
     @Override
     public void setRequired(String attributeName, boolean flag) throws JxException {
         JboValue value = getValue(attributeName, true);
-        // if(value!=null)
         value.setRequired(flag);
     }
 
@@ -1434,20 +1510,17 @@ public abstract class BaseJbo implements JboIFace {
         if (data == null) {
             return null;
         }
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         buf.append("{");
-        int i = 0;
-        int size = data.size();
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             buf.append("\"");
             buf.append(entry.getKey());
             buf.append("\":\"");
             buf.append(StrUtil.toJson(getString(entry.getKey())));
-            buf.append("\"");
-            i++;
-            if (i < size - 1) {
-                buf.append(",");
-            }
+            buf.append("\",");
+        }
+        if (buf.length() > 2) {
+            buf = StrUtil.deleteLastChar(buf);
         }
         buf.append("}");
         return buf.toString();
@@ -1460,6 +1533,9 @@ public abstract class BaseJbo implements JboIFace {
 
     @Override
     public boolean isReadonly() throws JxException {
+        if (readonly == false) {
+            readonly = getJboSet().isReadonly();
+        }
         return readonly;
     }
 
@@ -1566,40 +1642,65 @@ public abstract class BaseJbo implements JboIFace {
 
     @Override
     public JboSetIFace getChildrenJboSet(String relationship) throws JxException {
-        JboSetIFace jboset = null;
+        return getChildrenJboSet(relationship, true);
+    }
 
-        if (getChildren() != null && !getChildren().isEmpty()) {
-            Iterator<String> ite = getChildren().keySet().iterator();
-            while (ite.hasNext()) {
-                String key = ite.next();
-                if (key.equalsIgnoreCase(getJboName() + "." + relationship)) {
-                    jboset = getChildren().get(key);
-                    break;
-                } else {
-                    JboIFace tempJbo = getChildren().get(key).getJbo();
-                    if (null != tempJbo) {
-                        jboset = tempJbo.getChildrenJboSet(relationship);
-                    } else {
-                        jboset = null;
-                    }
-                }
+    /**
+     * 获得Jbo的子Jbo。
+     * 
+     * @param relationship
+     * @param isCreate 如果不存在，是否创建一个新的JboSet
+     * @return
+     * @throws JxException
+     */
+    public JboSetIFace getChildrenJboSet(String relationship, boolean isCreate) throws JxException {
+        if (isCreate) {
+            return this.getRelationJboSet(relationship, JxConstant.READ_CACHE, false, false);
+        } else {
+            if (children == null || children.isEmpty()) {
+                return null;
             }
+            String rkey = this.getRelationKey(relationship);
+            return children.get(rkey);
         }
+    }
 
-        return jboset;
+    /**
+     * 设定当前Jbo的子JboSet的只读属性。
+     * 
+     * @param relationship
+     * @param readonly
+     * @throws JxException
+     */
+    public void setChildrenReadonly(String relationship, boolean readonly) throws JxException {
+        JboSetIFace js = getChildrenJboSet(relationship);
+        if (js != null) {
+            js.setReadonly(readonly);
+        }
     }
 
     private void operateChangedChildren(boolean flag) {
         try {
-            if (null != getParent()) {
-                if (flag && null != getUidValue()) {
-                    getParent().getChangedChildren().add(getJboName() + String.valueOf(getUidValue()));
-                } else {
-                    getParent().getChangedChildren().remove(getJboName() + String.valueOf(getUidValue()));
-                }
+            JboIFace parent = getParent();
+            if (parent == null) {
+                return;
+            }
+            Set<String> changechildren = parent.getChangedChildren();
+            if (changechildren == null) {
+                return;
+            }
+            String vu = this.getUidValue();
+            if (StrUtil.isNull(vu)) {
+                return;
+            }
+            String key = StrUtil.contact(getJboName(), vu);
+            if (flag) {
+                changechildren.add(key);
+            } else {
+                changechildren.remove(key);
             }
         } catch (Exception e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
         }
     }
 
@@ -1627,4 +1728,31 @@ public abstract class BaseJbo implements JboIFace {
         return (routeStatus & JboIFace.ROUTE_START) == JboIFace.ROUTE_START;
     }
 
+    /**
+     * 直接根据表名、条件查询某个值
+     * 
+     * @param jboname
+     * @param whereCause
+     * @param params
+     * @param attributeName
+     * @return
+     * @throws JxException
+     */
+    public Object findDataAttributeValue(String jboname, String whereCause, Object[] params, String attributeName) throws JxException {
+        JboIFace jbo = JboUtil.findJbo(jboname, whereCause, params);
+        if (jbo != null) {
+            return jbo.getObject(attributeName);
+        }
+        return null;
+    }
+
+    /**
+     * 获得在导出时,需要导出的联系关联表.一般情况下,重载getDeleteChildren即可.
+     * 
+     * @return 需要导出的联系名
+     * @throws JxException
+     */
+    public String[] getExportRelationship() throws JxException {
+        return this.getDeleteChildren();
+    }
 }

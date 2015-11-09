@@ -180,7 +180,7 @@
                 var addbtn = $(addBtnStr);
                 if (addbtn) addbtn.bind("click", function () {
                     appDialog("pubdepartment", "newdept", treeId, "app.action?flag=add&tuid=" + treeNode.department_id,
-                            720, 250, rollbackDepartment);
+                            720, 350, rollbackDepartment,'Add');
 
                     $(this).parent().click();
                     return false;
@@ -191,7 +191,7 @@
                 if (editBtn) editBtn.bind("click", function () {
                     WebClientBean.getJbo(jx_appNameType, "PUB_DEPARTMENT", "DEPARTMENT_ID", treeNode.department_id, true, function (jbo) {
                         appDialog("pubdepartment", "newdept", treeId, "app.action?uid=" + jbo.uidValue,
-                                720, 250, rollbackDepartment);
+                                720, 350, rollbackDepartment,'Edit');
                     });
                     $(this).parent().click();
                     return false;

@@ -1,6 +1,7 @@
 package com.jxtech.app.max;
 
 import com.jxtech.app.pubuser.PubUserSetIFace;
+import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
 
@@ -14,10 +15,18 @@ import com.jxtech.jbo.util.JxException;
 public class MaxFactory {
 
     public static MaxSequenceSetIFace getMaxSequenceSetIFace() throws JxException {
-        return (MaxSequenceSetIFace) JboUtil.getJboSet("MAXSEQUENCE");
+        JboSetIFace jboset = JboUtil.getJboSet("MAXSEQUENCE");
+        if (jboset instanceof MaxSequenceSetIFace) {
+            return (MaxSequenceSetIFace) jboset;
+        }
+        return null;
     }
 
     public static PubUserSetIFace getPubUserSetIface() throws JxException {
-        return (PubUserSetIFace) JboUtil.getJboSet("PUB_USER");
+        JboSetIFace jboset = JboUtil.getJboSet("PUB_USER");
+        if (jboset instanceof PubUserSetIFace) {
+            return (PubUserSetIFace) jboset;
+        }
+        return null;
     }
 }

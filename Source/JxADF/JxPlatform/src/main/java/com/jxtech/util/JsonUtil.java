@@ -164,7 +164,7 @@ public class JsonUtil {
      * @throws JxException
      */
     public static String toJson(List<Map<String, Object>> list, String[] columns, boolean head, String jboname, int count, int pageSize, int pageNum) throws JxException {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         if (list == null) {
             return sb.toString();
         }
@@ -202,9 +202,7 @@ public class JsonUtil {
                     sb.append(col2);
                     sb.append("\":\"");
                     String val = jbo.getString(col1);
-                    if (val == null) {
-                        // 不处理
-                    } else {
+                    if (val != null) {
                         sb.append(StrUtil.toJson(val));
                     }
                     sb.append("\"");

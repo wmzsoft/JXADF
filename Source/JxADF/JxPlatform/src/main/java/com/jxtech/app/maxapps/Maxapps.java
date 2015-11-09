@@ -25,4 +25,9 @@ public class Maxapps extends Jbo {
         super.afterLoad();
     }
 
+    @Override
+    public String[] getDeleteChildren() throws JxException {
+        return new String[] { "MAXAPPSWFINFOAPPP", "SECURITYRESTRICTAPPP", "MAXAPPSMENU" };
+    }
+
 }

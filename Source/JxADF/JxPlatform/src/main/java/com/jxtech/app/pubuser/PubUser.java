@@ -52,14 +52,6 @@ public class PubUser extends Jbo {
         return b;
     }
 
-    @Override
-    public boolean save() throws JxException {
-        if (isToBeAdd()) {
-            setObject("USER_ID", getString("LOGIN_ID").toUpperCase());
-        }
-        return super.save();
-    }
-
     /**
      * 查询当前用户是否属于某个角色
      * 

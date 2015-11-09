@@ -3,6 +3,8 @@ package com.jxtech.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jxtech.i18n.JxLangResourcesUtil;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,7 +54,10 @@ public class DateUtil {
 
     public static String dateToString(Object date, String format) {
         java.util.Date d = null;
-        if (date instanceof java.lang.String) {
+        if (date instanceof Long){
+            d = new Date();
+            d.setTime(((Long)date).longValue());
+        }else if (date instanceof java.lang.String) {
             // 可能会出现String格式，出现String格式将其转换
             d = stringToDate((String) date);
         } else if (date instanceof java.sql.Timestamp) {
@@ -297,7 +302,7 @@ public class DateUtil {
     }
 
     /**
-     * 获得某月第一天第一秒
+     * 获得某月第一天第一秒 java.sql.Timestamp
      * 
      * @param date
      * @return
@@ -317,6 +322,11 @@ public class DateUtil {
         return toSqlTimestamp(c.getTime());
     }
 
+    /**
+     * 获得某月的最后一天最后一秒 java.sql.Timestamp
+     * @param date
+     * @return
+     */
     public static java.sql.Timestamp sqlLastDayOfMonth(Object date) {
         java.util.Date d = toJavaDate(date);
         if (date == null) {
@@ -706,4 +716,25 @@ public class DateUtil {
         return c.getTime();
     }
 
+    /**
+     * 将多少秒转换为：2天5小时6分钟这样的格式
+     * 
+     * @param time 单位秒
+     * @return
+     */
+    public static String formatDayHourMins(long time) {
+        if (time < 0) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        int day = (int) (time / (24 * 60 * 60));
+        if (day > 0) {
+            sb.append(day).append(JxLangResourcesUtil.getString("dateUtil.day")).append(" ");
+        }
+        int hour = (int) ((time - day * 24 * 60 * 60) / (60 * 60));
+        sb.append(hour).append(JxLangResourcesUtil.getString("dateUtil.hour")).append(" ");
+        int min = (int) ((time - day * 24 * 60 * 60 - hour * 60 * 60) / 60);
+        sb.append(min).append(JxLangResourcesUtil.getString("dateUtil.minutes"));
+        return sb.toString();
+    }
 }

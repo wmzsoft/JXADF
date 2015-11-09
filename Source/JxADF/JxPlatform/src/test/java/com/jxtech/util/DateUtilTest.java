@@ -34,5 +34,10 @@ public class DateUtilTest {
         t = DateUtil.sqlLastDayOfMonth("201512");
         Assert.assertEquals("2015-12-31 23:59:59",DateUtil.dateTimeToString(t));
     }
-
+    
+    //@Test
+    public void testFormatDayHourMins(){
+        String s = DateUtil.formatDayHourMins(10000);
+        LOG.debug(s);
+    }
 }

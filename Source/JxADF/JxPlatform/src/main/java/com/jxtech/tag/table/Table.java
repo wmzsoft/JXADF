@@ -220,10 +220,10 @@ public class Table extends JxBaseUIBean {
         }
 
         rowSelectable = findString(rowSelectable);
-        if("".equals(rowSelectable)){
+        if ("".equals(rowSelectable)) {
             rowSelectable = "false";
         }
-        addParameter("rowSelectable",rowSelectable);
+        addParameter("rowSelectable", rowSelectable);
 
         if (null != title) {
             addParameter("title", getI18NValue(title));
@@ -235,8 +235,8 @@ public class Table extends JxBaseUIBean {
 
         addParameter("appBundle", JxLangResourcesUtil.getResourceBundle("res.app." + appName));
 
-        addParameter("ignoreLayoutFixed",findString(ignoreLayoutFixed));
-        addParameter("ignoreDataTable",findString(ignoreDataTable));
+        addParameter("ignoreLayoutFixed", findString(ignoreLayoutFixed));
+        addParameter("ignoreDataTable", findString(ignoreDataTable));
     }
 
     @StrutsTagAttribute(description = "set Selectmode", type = "String")
@@ -454,25 +454,35 @@ public class Table extends JxBaseUIBean {
         this.startStr = startStr;
     }
 
-	public String getOrderby() {
-		return orderby;
-	}
+    public String getOrderby() {
+        return orderby;
+    }
 
-	public String getAppName() {
-		return appName;
-	}
+    public String getAppName() {
+        return appName;
+    }
 
-	public String getAppType() {
-		return appType;
-	}
+    public String getAppType() {
+        return appType;
+    }
 
-    public String getIgnoreLayoutFixed(){ return  ignoreLayoutFixed; }
+    public String getIgnoreLayoutFixed() {
+        return ignoreLayoutFixed;
+    }
 
-    public void setIgnoreLayoutFixed(String ignoreLayoutFixed){ this.ignoreLayoutFixed = ignoreLayoutFixed; }
+    public void setIgnoreLayoutFixed(String ignoreLayoutFixed) {
+        this.ignoreLayoutFixed = ignoreLayoutFixed;
+    }
 
-    public String getIgnoreDataTable(){ return ignoreDataTable; }
+    public String getIgnoreDataTable() {
+        return ignoreDataTable;
+    }
 
-    public void setIgnoreDataTable(String ignoreDataTable){ this.ignoreDataTable = ignoreDataTable; }
+    public void setIgnoreDataTable(String ignoreDataTable) {
+        this.ignoreDataTable = ignoreDataTable;
+    }
 
-    public void setRowSelectable(String rowSelectable){ this.rowSelectable = rowSelectable; }
+    public void setRowSelectable(String rowSelectable) {
+        this.rowSelectable = rowSelectable;
+    }
 }

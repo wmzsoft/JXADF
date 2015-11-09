@@ -147,4 +147,11 @@ public class MaxMenu extends Jbo {
             }
         }
     }
+
+    @Override
+    public String[] getDeleteChildren() throws JxException {
+        return new String[]{"PUB_ROLE_OPERATIONMENU_IDP"};
+    }
+    
+    
 }

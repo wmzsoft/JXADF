@@ -20,6 +20,11 @@ public class NumUtilTest {
         Assert.assertEquals("33322.09", NumUtil.format(33322.09, null));
         LOG.debug(NumUtil.format(v, "currency"));
         LOG.debug(NumUtil.format(2.0E9, null));
+        double a = 1002;
+        double b = 21323;
+        double d = a/b;
+        
+        LOG.debug("d="+NumUtil.round(d, 2));
     }
 
 }

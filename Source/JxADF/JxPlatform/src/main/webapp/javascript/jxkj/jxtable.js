@@ -17,6 +17,9 @@ function afterLoadDataTable(tableId, dtTable) {
  */
 function loadDataTable(tableId, options) {
     beforeDataTableLoad(tableId);
+    if (getUrlParam("disableDataTable") == "true") {
+        return;
+    }
 
     var forceScorll = false;
     var table = $("#" + tableId);
@@ -106,7 +109,7 @@ function loadDataTable(tableId, options) {
     // 只有在列表页面下，才需要Y轴滚动
     if ((table.attr("inputmode") != "EDIT" || forceScorll) && table.attr("jboname") != 'TOP_ATTACHMENT' && scroll) {
         dataTableOption["sScrollY"] = height;
-        if(table.closest(".fragment-mode").is(".fragment-mode-inline")){
+        if (table.closest(".fragment-mode").is(".fragment-mode-inline")) {
             dataTableOption["sScrollX"] = "100%";
         }
         dataTableOption["sDom"] = "tS";
@@ -114,9 +117,9 @@ function loadDataTable(tableId, options) {
             var timer;
             $(window).on("resize.resizeDatatable", function () {
                 clearTimeout(timer);
-                timer = setTimeout(function(){
+                timer = setTimeout(function () {
                     resizeDataTable(table);
-                },200);
+                }, 200);
             });
             var rowIdx = 0;
             if (jx_appType && jx_appType == "list") {
@@ -154,8 +157,8 @@ function loadDataTable(tableId, options) {
     afterLoadDataTable(tableId, dttable);
 }
 
-function resizeDataTable(table){
-    if(!table.closest(".fragment-mode").is(".fragment-mode-inline")){
+function resizeDataTable(table) {
+    if (!table.closest(".fragment-mode").is(".fragment-mode-inline")) {
         table.fnAdjustColumnSizing();
     }
 }

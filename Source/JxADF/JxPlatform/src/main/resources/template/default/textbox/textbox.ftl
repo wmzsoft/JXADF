@@ -8,7 +8,9 @@ $author:wmzsoft@gmail.com
 <!--textbox.ftl begin-->
 <#assign inputmode=(parameters.inputmode!'edit')>
 <#if ((parameters.render!"") != "HIDDEN")>
-    <#include "textbox-label.ftl"><#t>
+    <#if (parameters.mystyle!'TD')!='NONE'>
+        <#include "textbox-label.ftl"><#t>
+    </#if>
 </#if>
 <#if (inputmode=='QUERY') || (inputmode=='QUERYIMMEDIATELY')>
 	<#include "textbox-query.ftl"><#t>

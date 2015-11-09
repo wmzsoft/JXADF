@@ -31,6 +31,8 @@ public interface JboIFace extends Serializable {
     public static final long SAVE_NO_CHECK_PERMISSION = ~0x4;
     // 工作流状态字段
     public static final String WF_STATUS_COLUMN = "WFT_STATUS";
+    // 工作流状态时间
+    public static final String WF_STATUS_DATE_COLUMN = "WFT_STATUSDATE";
     // 工作流实例字段
     public static final String WF_INSTANCEID_COLUMN = "WFT_INSTANCEID";
     // 工作流当前分配人员字段
@@ -199,29 +201,141 @@ public interface JboIFace extends Serializable {
 
     public JxTable getJxTable() throws JxException;
 
+    /**
+     * 获得联系JboSet,并执行查询,查询第一页结果
+     * 
+     * @param name
+     * @return
+     * @throws JxException
+     */
     public JboSetIFace getRelationJboSet(String name) throws JxException;
 
+    /**
+     * 获得联系JboSet，如果执行查询，则查询第一页结果
+     * 
+     * @param name
+     * @param executeQuery 是否执行查询
+     * @return
+     * @throws JxException
+     */
+    public JboSetIFace getRelationJboSet(String name, boolean executeQuery) throws JxException;
+
+    /**
+     * 获得联系JboSet，执行查询，获得第一页结果，可自定义是否从缓存取数据
+     * 
+     * @param name
+     * @param flag
+     * @return
+     * @throws JxException
+     */
     public JboSetIFace getRelationJboSet(String name, long flag) throws JxException;
 
+    /**
+     * 获得联系查询结果，可定义是否从缓存取数据，是否获得所有结果。
+     * 
+     * @param name
+     * @param flag
+     * @param queryAll
+     * @return
+     * @throws JxException
+     */
     public JboSetIFace getRelationJboSet(String name, long flag, boolean queryAll) throws JxException;
 
+    /**
+     * 获得联系JboSet
+     * 
+     * @param name 联系名
+     * @param flag 查询标识
+     * @param queryAll 是否获得所有结果
+     * @param executeQuery 是否执行查询
+     * @return
+     * @throws JxException
+     */
+    public JboSetIFace getRelationJboSet(String name, long flag, boolean queryAll, boolean executeQuery) throws JxException;
+
+    /**
+     * 获得Boolean类型值
+     * 
+     * @param attributeName
+     * @return
+     * @throws JxException
+     */
     public boolean getBoolean(String attributeName) throws JxException;
 
+    /**
+     * 获得Boolean类型的值,并确定是否从缓存中获取
+     * 
+     * @param attributeName
+     * @param flag
+     * @return
+     * @throws JxException
+     */
     public boolean getBoolean(String attributeName, long flag) throws JxException;
 
+    /**
+     * 获得某个字段的定义信息
+     * 
+     * @param attributeName
+     * @return
+     * @throws JxException
+     */
     public JxAttribute getJxAttribute(String attributeName) throws JxException;
 
+    /**
+     * 获得某个字段是否是数字类型
+     * 
+     * @param attributeName
+     * @return
+     * @throws JxException
+     */
     public boolean isNumeric(String attributeName) throws JxException;
 
+    /**
+     * 获得一个新的序列号
+     * 
+     * @return
+     * @throws JxException
+     */
     public long getNewSequence() throws JxException;
 
+    /**
+     * 获得工作流标识，用于启动工作流
+     * 
+     * @return
+     */
     public String getWorkflowId();
 
+    /**
+     * 获得工作流实例，用于继续发送工作流
+     * 
+     * @return
+     * @throws JxException
+     */
     public String getWorkflowInstanceId() throws JxException;
 
+    /**
+     * 是否只读
+     * 
+     * @return
+     * @throws JxException
+     */
     public boolean isReadonly() throws JxException;
 
+    /**
+     * 设定只读
+     * 
+     * @param readonly
+     */
     public void setReadonly(boolean readonly);
+
+    /**
+     * 设定除 attributeNames 字段之外的其它字段只读
+     * 
+     * @param attributeNames
+     * @param flag
+     * @throws JxException
+     */
+    public void setReadonlyBesides(String[] attributeNames, boolean flag) throws JxException;
 
     public JboIFace getParent() throws JxException;
 
@@ -429,6 +543,15 @@ public interface JboIFace extends Serializable {
      */
     public JboSetIFace getChildrenJboSet(String relationship) throws JxException;
 
+    /**
+     * 设定当前Jbo的子JboSet的只读属性。
+     * 
+     * @param relationship
+     * @param readonly
+     * @throws JxException
+     */
+    public void setChildrenReadonly(String relationship, boolean readonly) throws JxException;
+
     public JboValue getValue(String attributeName, boolean isCreate) throws JxException;
 
     public void prepareMaxmenu(List<JboIFace> menusToolbar, List<JboIFace> menulist) throws JxException;
@@ -447,4 +570,41 @@ public interface JboIFace extends Serializable {
 
     public boolean isRouteStart();
 
+    /**
+     * 将值转换为URL的格式
+     * 
+     * @param attributeName
+     * @return
+     * @throws JxException
+     */
+    public String getURLString(String attributeName) throws JxException;
+
+    /**
+     * 返回工作流状态内部值
+     * 
+     * @param domainid
+     * @return
+     * @throws JxException
+     */
+    public String getInternalStaus(String domainid) throws JxException;
+
+    /**
+     * 直接根据表名、条件查询某个值
+     * 
+     * @param jboname
+     * @param whereCause
+     * @param params
+     * @param attributeName
+     * @return
+     * @throws JxException
+     */
+    public Object findDataAttributeValue(String jboname, String whereCause, Object[] params, String attributeName) throws JxException;
+
+    /**
+     * 获得在导出时,需要导出的联系关联表.
+     * 
+     * @return 需要导出的联系名
+     * @throws JxException
+     */
+    public String[] getExportRelationship() throws JxException;
 }

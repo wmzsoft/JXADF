@@ -3,6 +3,7 @@ package com.jxtech.util;
 import groovy.lang.Binding;
 import groovy.lang.GroovyShell;
 
+import org.codehaus.groovy.runtime.GStringImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,22 +62,48 @@ public class ELUtil {
      * @return
      */
     public static String getElValue(JboSetIFace jboset, JboIFace jbo, JxUserInfo userinfo, String expression) {
+        Object value = getElValueO(jboset, jbo, userinfo, expression);
+        if (value instanceof String) {
+            return (String) value;
+        } else {
+            return String.valueOf(value);
+        }
+    }
+
+    public static Object getElValueO(JboSetIFace jboset, JboIFace jbo, JxUserInfo userinfo, String expression) {
         if (StrUtil.isNull(expression)) {
             return "";
         }
         try {
             GroovyShell sh = getGroovyShell(jboset, jbo, userinfo);
             String el = "\"" + expression + "\"";
-            Object value = sh.evaluate(el);
-            if (value instanceof String) {
-                return (String) value;
-            } else {
-                return String.valueOf(value);
-            }
+            return sh.evaluate(el);
         } catch (Exception e) {
             LOG.error(e.getMessage() + "\r\n" + expression);
         }
         return expression;
+    }
+
+    public static boolean getELBooleanValue(JboIFace jbo, String expression) {
+        if (!StrUtil.isNull(expression)) {
+            // 替换所有的回车换行为空格符
+            expression = expression.replaceAll("\r", " ");
+            expression = expression.replaceAll("\n", " ").trim();
+            if (!expression.startsWith("${")) {
+                expression = StrUtil.contact("${", expression, "}");
+            }
+            Object val = getElValueO(jbo.getJboSet(), jbo, JxSession.getJxUserInfo(), expression);
+            if (val instanceof GStringImpl) {
+                GStringImpl gval = (GStringImpl) val;
+                if (gval.getValueCount() > 0) {
+                    val = gval.getValue(0);
+                }
+            }
+            if (val instanceof Boolean) {
+                return ((Boolean) val).booleanValue();
+            }
+        }
+        return false;
     }
 
     public static GroovyShell getGroovyShell(JboSetIFace jboset, JboIFace jbo, JxUserInfo userinfo) {

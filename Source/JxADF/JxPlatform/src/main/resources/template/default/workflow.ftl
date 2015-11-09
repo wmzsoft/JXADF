@@ -17,7 +17,7 @@ $author:smellok
         <#list keys as key>
             var tempChoice = $("<input type='radio' name='action' value='${key}' id='r_${key}' />");
             var tempLabel = $("<label for='r_${key}'>${parameters.actions[key]}</label>");
-            $("#actionContent").append(tempChoice).append(tempLabel).append("&nbsp;&nbsp;&nbsp;&nbsp;");
+            $("#actionContent").append(tempChoice).append(tempLabel).append("<br>");
             tempChoice.bind("click",function(){
                 var action = $(this).attr("value");
 

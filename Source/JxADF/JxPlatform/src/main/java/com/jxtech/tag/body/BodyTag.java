@@ -1,5 +1,7 @@
 package com.jxtech.tag.body;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -69,10 +71,12 @@ public class BodyTag extends JxBaseUITag {
                 } else {
                     // 将app放到主app中的refApp对象中
                     String appNameType = appName + "." + appType;
-                    if (null != JxSession.getMainApp()) {
-                        if (null == JxSession.getMainApp().getRefApp().get(appNameType)) {
+                    App mainapp = JxSession.getMainApp();
+                    if (null != mainapp) {
+                        Map<String, App> refApp = mainapp.getRefApp();
+                        if (null == refApp.get(appNameType)) {
                             try {
-                                JxSession.getMainApp().getRefApp().put(appName + "." + appType, new App(appName));
+                                refApp.put(appName + "." + appType, new App(appName,appType));
                             } catch (JxException e) {
                                 LOG.error(e.getMessage(), e);
                             }

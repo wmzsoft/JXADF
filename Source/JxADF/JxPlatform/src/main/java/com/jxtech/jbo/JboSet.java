@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import net.sf.mpxj.ProjectFile;
 import net.sf.mpxj.Task;
@@ -14,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jxtech.app.max.MaxFactory;
+import com.jxtech.app.max.MaxSequenceSetIFace;
 import com.jxtech.db.DBFactory;
 import com.jxtech.db.DataEdit;
 import com.jxtech.db.DataQuery;
@@ -28,6 +29,7 @@ import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.CacheUtil;
 import com.jxtech.util.ELUtil;
 import com.jxtech.util.StrUtil;
+import com.jxtech.workflow.base.WorkflowEngineFactory;
 
 /**
  * 每个表的记录信息
@@ -82,7 +84,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         String uidName = getUidName();
         String where = uidName + " = ?";
         DataQuery dq = DBFactory.getDataQuery(this.getDbtype(), getDataSourceName());
-        DataQueryInfo qbe = new DataQueryInfo();
+        DataQueryInfo qbe = getQueryInfo();
         qbe.setWhereCause(where);
         qbe.setWhereParams(new Object[] { uid });
         List<Map<String, Object>> list = dq.queryAllPage(getJboname(), qbe);
@@ -208,18 +210,18 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
      */
     @Override
     public List<JboIFace> query(String shipname) throws JxException {
-        int pageNum = getQueryInfo().getPageNum();
-        int pageSize = getQueryInfo().getPageSize();
+        DataQueryInfo dqi = getQueryInfo();
+        int pageNum = dqi.getPageNum();
+        int pageSize = dqi.getPageSize();
 
         if (pageNum == 0 && pageSize == 0) {
-            return queryAll();
+            // 查询所有记录，不用分页
         } else {
             if (pageNum == 0) {
-                getQueryInfo().setPageNum(1);
+                dqi.setPageNum(1);
             }
-
             if (pageSize == 0) {
-                getQueryInfo().setPageSize(20);
+                dqi.setPageSize(20);
             }
         }
 
@@ -228,7 +230,8 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             LOG.info("没有正确查询到结果。jboname=" + getJboname());
             return null;
         }
-        getJbolist().clear();
+        List<JboIFace> jbolist = getJbolist();
+        jbolist.clear();
         // 转换类型
         int size = list.size();
         setCount(size);
@@ -236,10 +239,10 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             currentJbo = getJboInstance();
             currentJbo.setData(list.get(i));
             currentJbo.afterLoad();
-            getJbolist().add(currentJbo);
+            jbolist.add(currentJbo);
 
         }
-        return getJbolist();
+        return jbolist;
     }
 
     @Override
@@ -267,7 +270,12 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             if (jbo == null) {
                 continue;
             }
-            if (jbo.isModify() || jbo.isToBeAdd() || jbo.isToBeDel() || jbo.getChangedChildren().size() > 0) {
+            boolean ns = false;
+            List<JboIFace> nsl = jbo.getNeedSaveList();
+            if (nsl != null && !nsl.isEmpty()) {
+                ns = true;
+            }
+            if (ns || jbo.isModify() || jbo.isToBeAdd() || jbo.isToBeDel() || jbo.getChangedChildren().size() > 0) {
                 flag = flag & jbo.save(conn);
             }
             if (!flag) {
@@ -377,7 +385,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             String key = StrUtil.contact(DBFactory.CACHE_PREX, getJboname(), ".");
             CacheUtil.removeJboOfStartWith(key);
         } catch (Exception e) {
-            LOG.error(e.getMessage());
+            LOG.error(e.getMessage(), e);
             bflag = false;
             throw new JxException(e.getMessage());
         } finally {
@@ -451,25 +459,9 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
      */
     protected void initWorkflowInfo() throws JxException {
         String appName = getAppname();
-        if (!StrUtil.isNull(appName)) {
-            // 1.优先查看MaxappsWFInfo表中的配置
-            JboIFace mwf = JboUtil.findJbo("MAXAPPSWFINFO", "app=? and active=1", new Object[] { appName.toUpperCase() });
-            if (mwf != null) {
-                workflowId = mwf.getString("PROCESS");
-                workflowEngine = mwf.getString("engine");
-            } else {
-                // 2. 直接在WFPRocess表中查询
-                mwf = JboUtil.findJbo("WFPROCESS", "Appname=? and active=1", new Object[] { appName.toUpperCase() });
-                if (mwf != null) {
-                    workflowId = mwf.getString("processNUM");
-                    workflowEngine = JboSetIFace.BPM_JX;
-                } else {
-                    LOG.warn("没有找到对应的工作流。");
-                }
-            }
-        } else {
-            LOG.warn("没有找到对应的应用程序名。");
-        }
+        String[] wf = WorkflowEngineFactory.getWorkflow(appName);
+        workflowId = wf[0];
+        workflowEngine = wf[1];
     }
 
     public void setWorkflowEngine(String workflowEngine) {
@@ -488,7 +480,8 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         if (!StrUtil.isNull(aname)) {
             StringBuilder cause = new StringBuilder();
             aname = aname.toUpperCase().trim();
-            String ckey = StrUtil.contact(JxSession.getUserId(), ".Security.", aname, ".", getJboname(), ".", String.valueOf(elValue));
+            String userid = JxSession.getUserId();
+            String ckey = StrUtil.contact(userid, ".Security.", aname, ".", getJboname(), ".", String.valueOf(elValue));
             Object obj = CacheUtil.getPermission(ckey);
             if (obj instanceof String) {
                 return (String) obj;
@@ -503,28 +496,23 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             if (app.size() > 0) {
                 cause.append(app.get(0).getString("RESTRICTIONS"));
             }
-            // 获得当前登录用户的角色数量，以便确定是否每个角色都配置了限制条件，只要有一个没有配置，则无需条件
-            int rolescount = 0;
-            Set<String> roles = JxSession.getJxUserInfo().getRoles();
-            if (roles != null) {
-                rolescount = roles.size();
-            }
-            // 获得角色限制条件
-            JboSetIFace secus = JboUtil.getJboSet("securityrestrict");
-            DataQueryInfo sdqi = secus.getQueryInfo();
-            sdqi.setIgnoreSecurityrestrict(true);
-            StringBuilder sb = new StringBuilder();
-            sb.append("groupname in (select role_id from pub_role_user where user_id=?)");
-            sb.append(" and app=? and objectname=? ");
-            sdqi.setWhereCause(sb.toString());
-            sdqi.setWhereParams(new Object[] { JxSession.getUserId(), aname, getJboname() });
-            List<JboIFace> secs = secus.queryAll();
-            if (secs != null) {
-                int size = secs.size();
-                sb.setLength(0);
-                if (size < rolescount) {
-                    LOG.debug("角色中有没配置限制条件的内容，无需限制。");
-                } else {
+            // 获得是否需要限制条件
+            DataQuery dq = DBFactory.getDataQuery(this.getDbtype(), this.getDataSourceName());
+            int c = dq.count("pub_role", "role_type=1 and role_id in (select role_id from pub_role_user where user_id=?)", new Object[] { userid });
+            if (c <= 0) {
+                // 获得角色限制条件
+                JboSetIFace secus = JboUtil.getJboSet("securityrestrict");
+                DataQueryInfo sdqi = secus.getQueryInfo();
+                sdqi.setIgnoreSecurityrestrict(true);
+                StringBuilder sb = new StringBuilder();
+                sb.append("groupname in (select role_id from pub_role_user where user_id=?)");
+                sb.append(" and app=? and objectname=? ");
+                sdqi.setWhereCause(sb.toString());
+                sdqi.setWhereParams(new Object[] { userid, aname, getJboname() });
+                List<JboIFace> secs = secus.queryAll();
+                if (secs != null) {
+                    int size = secs.size();
+                    sb.setLength(0);
                     boolean start = false;
                     for (int i = 0; i < size; i++) {
                         JboIFace sec = secs.get(i);

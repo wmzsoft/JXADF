@@ -18,7 +18,7 @@ import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.StrUtil;
 
 /**
- * 康拓普用户信息- 健新科技优化实现
+ *  健新科技优化实现
  * 
  * @author wmzsoft@gmail.com
  * @date 2013.09

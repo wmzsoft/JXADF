@@ -132,28 +132,30 @@ public class TableTag extends JxBaseUITag {
         quickSearchCause = StrUtil.getSplitFirst(request.getParameter("quickSearchCause"));
         // 传入JSON格式的数据
         String jh = (String) request.getParameter("jsonhead");
-        List<Map<String, Object>> jhl = JsonUtil.fromJson(jh);
-        if (jhl != null) {
-            int jsize = jhl.size();
-            for (int i = 0; i < jsize; i++) {
-                Map<String, Object> jm = jhl.get(i);
-                for (Map.Entry<String, Object> entry : jm.entrySet()) {
-                    JsonHead jhead = new JsonHead(stack, request, response);
-                    String k = entry.getKey();
-                    if ("fixText".equalsIgnoreCase(k)) {
-                        jhead.setFixText((String) entry.getValue());
-                    } else {
-                        jhead.setAttributeLabel(entry.getKey());
-                        jhead.setAttribute((String) entry.getValue());
+        if (!StrUtil.isNull(jh)) {
+            List<Map<String, Object>> jhl = JsonUtil.fromJson(jh);
+            if (jhl != null) {
+                int jsize = jhl.size();
+                for (int i = 0; i < jsize; i++) {
+                    Map<String, Object> jm = jhl.get(i);
+                    for (Map.Entry<String, Object> entry : jm.entrySet()) {
+                        JsonHead jhead = new JsonHead(stack, request, response);
+                        String k = entry.getKey();
+                        if ("fixText".equalsIgnoreCase(k)) {
+                            jhead.setFixText((String) entry.getValue());
+                        } else {
+                            jhead.setAttributeLabel(entry.getKey());
+                            jhead.setAttribute((String) entry.getValue());
+                        }
+                        jsonHead.add(jhead);
                     }
-                    jsonHead.add(jhead);
                 }
             }
         }
         App app = JxSession.getMainApp();
         if (app != null) {
             if (loadType == JxConstant.READ_PERSISTENCE && null != app.getJboset()) {
-                if (!StrUtil.isNull(appType) && "lookup".equalsIgnoreCase(appType)) {
+                if ("lookup".equalsIgnoreCase(appType)) {
                     pagenum = StrUtil.parseInt(request.getParameter("pagenum"), 1);
                     pagesize = StrUtil.parseIntToString(request.getParameter("pagesize"), 20);
                     loadType = JxConstant.READ_RELOAD;
@@ -189,8 +191,9 @@ public class TableTag extends JxBaseUITag {
             pagenum = 1;
         }
 
-        if ("-1".equals(pagesize))
+        if ("-1".equals(pagesize)){
             pagesize = "20";
+        }
         // custColumns = request.getParameter("custColumns");
         // initTablecol(stack, request, response);
         // LOG.debug("自定义列信息：\r\n" + custColumns);
@@ -237,11 +240,9 @@ public class TableTag extends JxBaseUITag {
         table.setDatasrc(datasrc);
         table.setApprestrictions(apprestrictions);
 
-        if (!StrUtil.isNull(footVisible)) {
-            if ("false".equalsIgnoreCase(footVisible)) {
-                pagesize = "0";
-                pagenum = 0;
-            }
+        if ("false".equalsIgnoreCase(footVisible)) {
+            pagesize = "0";
+            pagenum = 0;
         }
 
         table.setPagesize(pagesize);
@@ -280,7 +281,6 @@ public class TableTag extends JxBaseUITag {
         table.setAppName(appName);
         table.setAppType(appType);
         table.setRelationship(relationship);
-        table.setReadonly(readonly);
         table.setVisible(footVisible);
         table.setExpandtype(expandtype);
         table.setFixedWidth(fixedWidth);
@@ -296,15 +296,14 @@ public class TableTag extends JxBaseUITag {
                 BodyTag body = (BodyTag) tag;
                 appName = body.getAppName();
                 appType = body.getAppType();
-                myapp = JxSession.getApp(appName, appType);
             } else {
-                myapp = JxSession.getApp(appName, appType);
                 // 都属于没有权限系列
                 PermissionIFace perm = PermissionFactory.getPermissionInstance();
                 if (!perm.isPermission(appName, req, resp)) {
                     return;
                 }
             }
+            myapp = JxSession.getApp(appName, appType);
             if (!StrUtil.isNull(relationship)) {
                 jboset = getJboSetByRelationship();// 查询子记录集
             } else if (myapp != null) {
@@ -354,7 +353,7 @@ public class TableTag extends JxBaseUITag {
 
                 }
                 dqi.setWhereCause(wherecause);
-                dqi.putParams(initWhereCause, initWhereParam, "true".equalsIgnoreCase(initOverlay));
+                dqi.putParams(initWhereCause, initWhereParam, StrUtil.isTrue(initOverlay, false));
                 int count = 0;
                 if (loadType == JxConstant.READ_CACHE) {
                     count = jboset.getCount();
@@ -367,10 +366,10 @@ public class TableTag extends JxBaseUITag {
                         String[] rootcauses = rootparent.split(":");
                         if ("NULL".equalsIgnoreCase(rootcauses[1])) {
                             qi.setWhereCause(rootcauses[0] + " is null");
-                            qi.setWhereParams(new Object[]{});
+                            qi.setWhereParams(new Object[] {});
                         } else {
                             qi.setWhereCause(rootcauses[0] + "=?");
-                            qi.setWhereParams(new Object[]{rootcauses[1]});
+                            qi.setWhereParams(new Object[] { rootcauses[1] });
                         }
                     }
 
@@ -397,6 +396,7 @@ public class TableTag extends JxBaseUITag {
                 table.setPagecount(pagecount);
             }
             table.setJboset(jboset);
+            table.setReadonly(readonly);
             JxTable jt = jboset.getJxTable();
             if (jt != null) {
                 jt.setTableModle(table);
@@ -417,10 +417,11 @@ public class TableTag extends JxBaseUITag {
                 Map<String, JboSetIFace> children = jf.getChildren();
                 Iterator<Entry<String, JboSetIFace>> it = children.entrySet().iterator();
                 while (it.hasNext()) {
-                    Map.Entry child = (Map.Entry) it.next();
-                    jsf = findRelationship(((JboSetIFace) child.getValue()).getJbo());
-                    if (null != jsf)
+                    Map.Entry<String, JboSetIFace> child =  it.next();
+                    jsf = findRelationship((child.getValue()).getJbo());
+                    if (null != jsf){
                         break;
+                    }
                 }
             }
         }
@@ -432,23 +433,17 @@ public class TableTag extends JxBaseUITag {
             return null;
         }
         App myapp = JxSession.getApp(appName, appType);
+        JboSetIFace jset = null;
         if (myapp != null) {
             JboIFace mj = myapp.getJbo();
             if (mj != null) {
                 // jboset = mj.getRelationJboSet(relationship, loadType);
-
-                jboset = mj.getRelationJboSet(relationship);
-
+                jset = mj.getRelationJboSet(relationship, false);
             } else {
                 LOG.warn("没有找到Jbo，appName=" + myapp.getAppName());
             }
         }
-        if (jboset == null) {
-            LOG.warn("没有找到对应的联系Jboset：" + jboname + "," + relationship);
-        } else {
-            jboset.setRelationshipname(relationship);
-        }
-        return jboset;
+        return jset;
     }
 
     @Override
@@ -854,5 +849,7 @@ public class TableTag extends JxBaseUITag {
         this.ignoreDataTable = ignoreDataTable;
     }
 
-    public void setRowSelectable(String rowSelectable){ this.rowSelectable = rowSelectable; }
+    public void setRowSelectable(String rowSelectable) {
+        this.rowSelectable = rowSelectable;
+    }
 }

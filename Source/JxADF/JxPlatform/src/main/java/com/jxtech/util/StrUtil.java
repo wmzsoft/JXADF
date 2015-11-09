@@ -561,12 +561,40 @@ public class StrUtil {
         if (str == null) {
             return str;
         }
-        str = str.replaceAll("\"", "\\\\\"");
-        str = str.replaceAll("\r", "\\\\r");
-        str = str.replaceAll("\n", "\\\\n");
-        str = str.replaceAll("\t", "\\\\t");
-        str = str.replaceAll("\f", "\\\\f");
-        return str;
+        StringBuilder sb = new StringBuilder();
+        int len = str.length();
+        for (int i = 0; i < len; i++) {
+            char c = str.charAt(i);
+            switch (c) {
+                case '\"':
+                    sb.append("\\\"");
+                    break;
+                case '\\':
+                    sb.append("\\\\");
+                    break;
+                case '/':
+                    sb.append("\\/");
+                    break;
+                case '\b':
+                    sb.append("\\b");
+                    break;
+                case '\f':
+                    sb.append("\\f");
+                    break;
+                case '\n':
+                    sb.append("\\n");
+                    break;
+                case '\r':
+                    sb.append("\\r");
+                    break;
+                case '\t':
+                    sb.append("\\t");
+                    break;
+                default:
+                    sb.append(c);
+            }
+        }
+        return sb.toString();
     }
 
     /**

@@ -1,23 +1,24 @@
 package com.jxtech.tag.table;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.tagext.Tag;
+
+import org.apache.struts2.components.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jxtech.common.BeanUtil;
 import com.jxtech.common.JxParams;
-import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.base.JxAttribute;
 import com.jxtech.jbo.base.KeyValue;
 import com.jxtech.tag.comm.JxBaseUITag;
 import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
-import org.apache.struts2.components.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.tagext.Tag;
-import java.util.List;
 
 /**
  * @author wmzsoft@gmail.com
@@ -138,17 +139,8 @@ public class TablecolTag extends JxBaseUITag {
                     if (jo != null) {
                         jxattribute = (JxAttribute) jo;
                         col.setJxattribute(jxattribute);
-                        for (JboIFace jbo : jboset.getJbolist()) {
-                            if (null != jbo) {
-                                if (!"TRUE".equalsIgnoreCase(required)) {
-                                    required = String.valueOf(jbo.isRequired(dataattribute));
-                                } else {
-                                    jbo.setRequired(dataattribute, true);
-                                }
-                            }
-
-                        }
-
+                        boolean rq = StrUtil.isTrue(required, false);
+                        jboset.setRequired(dataattribute, rq);
                     }
                 } catch (Exception e) {
                     LOG.error(e.getMessage(), e);

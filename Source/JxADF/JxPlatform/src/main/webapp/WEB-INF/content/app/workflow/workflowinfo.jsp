@@ -1,36 +1,32 @@
-﻿<%@ page import="com.jxtech.jbo.JboIFace" %>
-<%@ page import="com.jxtech.jbo.util.JboUtil" %>
-<%@ page import="java.net.URLDecoder" %>
+﻿<%@ page import="java.net.URLDecoder" %>
+<%@ page import="com.jxtech.workflow.base.WorkflowEngineFactory" %>
 <%
     String appname = request.getParameter("appname");
     String instanceid = request.getParameter("instanceid");
     String uid = request.getParameter("uid");
-
-    request.setAttribute("appname", appname);
-    request.setAttribute("instanceid", URLDecoder.decode(instanceid, "UTF-8"));
-    request.setAttribute("uid", uid);
-
     String engine = request.getParameter("engine");
+    if (instanceid!=null && !"".equals(instanceid)){
+        if (instanceid.indexOf("JXBPM.")>=0){
+            engine="jxbpm";
+            instanceid = instanceid.substring(6);
+        }
+    }else{
+        String[] wf = WorkflowEngineFactory.getWorkflow(appname);
+        engine=wf[1];
+        instanceid=wf[0];
+    }
+    if (engine==null || "".equals(engine)){
+        engine="obpm";
+    }
+    if ("obpm".equals(engine)){    
+        request.setAttribute("appname", appname);
+        request.setAttribute("instanceid", URLDecoder.decode(instanceid, "UTF-8"));
+        request.setAttribute("uid", uid);
+    }
 
     String path = request.getServletContext().getContextPath();
+    String myurl=path+"/"+engine.toLowerCase()+"/wfdetail.action?appname="+appname+"&instanceid="+instanceid+"&uid="+uid;
+    response.sendRedirect(myurl);
 %>
-<!DOCTYPE HTML>
-<html>
-<head>
 
-    <title>工作流信息</title>
-    <script type='text/javascript' src='<%=path%>/javascript/jquery-ui-1.10.3/jquery-1.9.1.min.js'></script>
-    <script type="text/javascript">
-        $(function () {
-            var engine = "<%=engine%>";
-            if ("" != engine) {
-                window.location.href = "<%=path%>/<%=engine%>/wfdetail.action?appname=${appname}&instanceid=${instanceid}&uid=${uid}";
-            } else {
-                $("body").append("无法获取当前应用的工作流引擎！");
-            }
-        });
-    </script>
-</head>
-<body></body>
-</html>
 

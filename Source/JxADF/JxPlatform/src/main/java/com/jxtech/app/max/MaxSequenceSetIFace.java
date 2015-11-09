@@ -20,4 +20,8 @@ public interface MaxSequenceSetIFace extends JboSetIFace {
      * @return 返回序列值
      */
     public long generateNewSequence(String tbName, String name) throws JxException;
+
+    public String getSequeceName(String tbName, String name) throws JxException;
+
+    public String getSequeceName(String tbName, String name, String defaultSeq) throws JxException;
 }

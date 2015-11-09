@@ -12,7 +12,11 @@ $author:wmzsoft@gmail.com
     <#assign pagenum = (parameters.pagenum!1)>
 ${seq + (pagesize?number) * (pagenum?number - 1)}
 <#else>
-    <#assign dateid=(parameters.id)+"_"+(jbo_index)+"_"+(col.dataattribute!'')>
+    <#assign tdidpre=(parameters.id)+"_"+(jbo_index)+"_">
+    <#assign dateid=tdidpre+(col.dataattribute!'')>
+    <#if (cssClass??)>
+        <#assign cssClass=cssClass?replace('dataattribute=',tdidpre)>
+    </#if>
     <#assign attribute=jbo.getJxAttribute(col.dataattribute!'')>
     <#assign maxtype=attribute.maxType!'un'>
 <#--如果maxtype的为YORN则生成checkbox-->
@@ -25,17 +29,13 @@ ${seq + (pagesize?number) * (pagenum?number - 1)}
         </#if>
         <#lt> dataattribute="${attribute.attributeName!''}" <#rt>
         <#lt> onBlur="tableInputOnBlur(this,event)" onChange="inputOnChange(this)" <#rt>
-        <#lt> class="tdcheck validate[${cssClass}]"<#rt>
+        <#lt> class="tdcheck validate[${cssClass!}]"<#rt>
             /><#t>
     <#elseif (col.parameters.readonly??)&&(col.parameters.readonly == "true")>
         <#lt> ${jbo.getString(col.dataattribute)!''}<#rt>
     <#else>
-            <input type="text" id="${dateid}" name="${dateid}" <#rt>
-        <#if inputValue??>
-            <#lt> value="${inputValue}"<#rt>
-        <#else>
-            <#lt> value="${jbo.getString(col.dataattribute)!''}"<#rt>
-        </#if>
+        <input type="text" id="${dateid}" name="${dateid}" <#rt>
+        <#lt> value='${jbo.getHtmlInputValue(col.dataattribute)!''}'<#rt>
         <#lt> dataattribute="${attribute.attributeName!''}" <#rt>
         <#lt> onBlur="tableInputOnBlur(this,event)" onChange="inputOnChange(this)" <#rt>
         <#if (jbo.isRequired("${attribute.attributeName!''}")!false)>
@@ -49,7 +49,7 @@ ${seq + (pagesize?number) * (pagenum?number - 1)}
             </#if>
         </#if>
         <#if (col.parameters.width??)>
-                   style="width:${col.parameters.width}px"
+                  <#lt> style="width:${col.parameters.width}px" <#rt>
         </#if>
     <#--行编辑中的日期只能选择-->
         <#if (maxtype?upper_case)=='DATE'>

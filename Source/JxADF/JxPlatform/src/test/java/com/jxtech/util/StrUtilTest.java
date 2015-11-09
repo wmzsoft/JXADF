@@ -1,5 +1,7 @@
 package com.jxtech.util;
 
+import java.text.MessageFormat;
+
 import junit.framework.Assert;
 
 import org.junit.Test;
@@ -40,21 +42,28 @@ public class StrUtilTest {
     public void testIndexOf() {
         assertEquals(0, StrUtil.indexOf("abc", "a"));
         assertEquals(1, StrUtil.indexOf("abc", "b|d|1"));
-        assertEquals(1, StrUtil.indexOf("abc", "b|d|1",1));
-        assertEquals(3, StrUtil.indexOf("abcd", "xb|d|1",1));
-        assertEquals(-1, StrUtil.indexOf("abcd", "xb|xd|1",1));
+        assertEquals(1, StrUtil.indexOf("abc", "b|d|1", 1));
+        assertEquals(3, StrUtil.indexOf("abcd", "xb|d|1", 1));
+        assertEquals(-1, StrUtil.indexOf("abcd", "xb|xd|1", 1));
 
     }
-    
+
     @Test
-    public void testHowManyStr(){
-        assertEquals(2,StrUtil.howManyStr("abcb", "(?i)B"));
-        assertEquals(7,StrUtil.howManyStr("a''b'''c''b", "'"));
+    public void testHowManyStr() {
+        assertEquals(2, StrUtil.howManyStr("abcb", "(?i)B"));
+        assertEquals(7, StrUtil.howManyStr("a''b'''c''b", "'"));
     }
-    
+
     @Test
-    public void testContact(){
+    public void testContact() {
         Assert.assertNull(StrUtil.contact(null));
-        Assert.assertEquals("ABCDEFG", StrUtil.contact("A","B","C","DEFG"));
+        Assert.assertEquals("ABCDEFG", StrUtil.contact("A", "B", "C", "DEFG"));
+    }
+
+    @Test
+    public void testMessage() {
+        String msg = "{0},hello";
+        String ok = MessageFormat.format(msg, new Object[] { "wmz" });
+        Assert.assertEquals("wmz,hello", ok);
     }
 }

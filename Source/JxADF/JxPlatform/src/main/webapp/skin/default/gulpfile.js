@@ -17,7 +17,7 @@ gulp.task('compass:watch', function() {
             import_path:basepath+"JxPlatform/src/main/webapp/skin/default/sass",
             css: 'css',
             sass: 'sass',
-            style: 'expanded',
+            style: 'compressed',
             task: 'watch'
         }));
 });

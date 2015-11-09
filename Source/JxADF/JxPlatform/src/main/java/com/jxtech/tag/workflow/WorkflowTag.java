@@ -85,11 +85,15 @@ public class WorkflowTag extends JxBaseUITag {
                 }
             }
             IWorkflowEngine wfEngine = WorkflowEngineFactory.getWorkflowEngine(workFlowType);
-            WorkflowBaseInfo wfi = wfEngine.pretreatment(fromApp, fromJboname, uid);
-            if (wfi != null) {
-                wf.setRouteBtnVisible(wfi.isRouteAble() ? "TRUE" : "FALSE");
-                wf.setActions(wfi.getActionMap());
-                wf.setActionUsers(wfi.getActionUserMap());
+            if (wfEngine != null) {
+                WorkflowBaseInfo wfi = wfEngine.pretreatment(fromApp, fromJboname, uid);
+                if (wfi != null) {
+                    wf.setRouteBtnVisible(wfi.isRouteAble() ? "TRUE" : "FALSE");
+                    wf.setActions(wfi.getActionMap());
+                    wf.setActionUsers(wfi.getActionUserMap());
+                }
+            } else {
+                LOG.debug("获得工作流引擎失败：" + workFlowType);
             }
         } catch (JxException e) {
             LOG.error(e.getMessage());

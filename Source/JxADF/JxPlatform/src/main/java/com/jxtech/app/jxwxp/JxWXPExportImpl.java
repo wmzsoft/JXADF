@@ -1,20 +1,26 @@
 package com.jxtech.app.jxwxp;
 
-import com.jxtech.jbo.util.JxException;
-import com.jxtech.util.StrUtil;
-import org.apache.commons.lang3.time.DateFormatUtils;
-import org.apache.poi.hssf.usermodel.*;
-import org.apache.poi.hssf.util.HSSFColor;
-import org.directwebremoting.io.FileTransfer;
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Map;
+
+import org.apache.commons.lang3.time.DateFormatUtils;
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFCellStyle;
+import org.apache.poi.hssf.usermodel.HSSFFont;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.hssf.util.HSSFColor;
+import org.directwebremoting.io.FileTransfer;
+
+import com.jxtech.jbo.util.JxException;
+import com.jxtech.util.StrUtil;
 
 public class JxWXPExportImpl implements JxWXPExport {
 
@@ -170,7 +176,6 @@ public class JxWXPExportImpl implements JxWXPExport {
 
     @Override
     public String booleanTypeConverter(Boolean b) {
-        // TODO Auto-generated method stub
         if (b) {
             return "是";
         } else {
@@ -182,7 +187,6 @@ public class JxWXPExportImpl implements JxWXPExport {
 
     @Override
     public String dateTypeConverter(Date date, String pattern) {
-        // TODO Auto-generated method stub
         if (pattern == null) {
             pattern = "yyy-MM-dd HH:mm:ss";
         }
@@ -191,7 +195,6 @@ public class JxWXPExportImpl implements JxWXPExport {
 
     @Override
     public Double numberTypeConverter(Number n) {
-        // TODO Auto-generated method stub
         return n.doubleValue();
     }
 

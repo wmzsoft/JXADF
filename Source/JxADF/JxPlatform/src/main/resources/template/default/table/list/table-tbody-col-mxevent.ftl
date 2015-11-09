@@ -6,6 +6,18 @@ $author:wmzsoft@gmail.com
 **/
 -->
 <#if (col.parameters.mxevent??)>
+    <#--拆分、拼凑Request传参-->
+        <#assign requestParams>
+            <#if (col.parameters.allUrlParams??)>
+                <#list col.parameters.allUrlParams as item>
+                ${item.key}=${(jbo.getURLString(item.value!'')!'')?url}<#t>
+                    <#lt><#if item_has_next>&</#if><#rt>
+                </#list>
+            <#else>
+                <#lt>${jbo.getURLString(col.parameters.urlParamValue!'')!''}<#rt>
+            </#if>
+        </#assign>
+    <#--拆分、拼凑Request传参 END-->
     <#if (col.parameters.mxevent=="SELECTRECORD") >
         <#t><a href="${base}/app.action?app=${parameters.appName!''}&uid=${jbo.uidValue!0}" <#rt>
         <#lt> target="${col.parameters.urlTarget!'_self'}">${colDataValue}</a><#rt>
@@ -56,7 +68,7 @@ $author:wmzsoft@gmail.com
             <#if col.parameters.urlType=='me' >
                 <#assign urlParam = col.parameters.urlParamName!'uid'>
                 <#assign urlParam = jbo.getElValue(urlParam)>
-                <#t><a href="${base}/${urlParam!'uid'}${requestParams}" <#rt>
+                <#t><a href="${base}/${urlParam!'uid'}${requestParams!}" <#rt>
                 <#lt>  target="${col.parameters.urlTarget!'_self'}"> <#rt>
                 <#if ((colDataValue?length) > ml) >
                     <#t>${colDataValue?substring(0,ml)}...<#t>
@@ -66,7 +78,7 @@ $author:wmzsoft@gmail.com
             </a><#t>
             <#else>
                 <#t><a <#rt>
-                <#lt> href="${col.parameters.urlType}${col.parameters.urlParamName!'uid'}${requestParams}" <#lt>
+                <#lt> href="${col.parameters.urlType}${col.parameters.urlParamName!'uid'}${requestParams!}" <#lt>
                 <#lt> target="${col.parameters.urlTarget!'_self'}"> <#rt>
                 <#if ((colDataValue?length) > ml) >
                     <#t>${colDataValue?substring(0,ml)}...<#t>
@@ -150,13 +162,13 @@ $author:wmzsoft@gmail.com
                 <#-- 当非图片的时候，按照文字处理，具体实现，看满足功能要求-->
                 <input type="button" onclick="${col.parameters.mxevent}(this, event ,'${jbo.uidValue!0}')"
                        class="btn_column"  <#lt>
-                       value="<#t>
+                       value='<#t>
                 <#if ((colDataValue?length) > ml) >
                     <#t>${colDataValue?substring(0,ml)}...<#t>
                 <#else>
                     <#t>${colDataValue}<#t>
                 </#if>
-                "<#t>
+                '<#t>
                     <#if (col.parameters.mxevent_disabled??)>
                        <#assign disabled=action.getJboElValue(jbo,'${col.parameters.mxevent_disabled}')>;
                         <#if (disabled=='disabled' || disabled=='true')>

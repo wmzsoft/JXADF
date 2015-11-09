@@ -113,7 +113,7 @@ public class AuthFilter implements Filter {
     private String getLoginUrl(HttpServletRequest request) {
         // String loginurl = System.getProperty(LOGIN_URL,"/login/login.jsp");
         String loginurl = DefaultMetadata.getInstance().get(MetaData.LOGIN);
-        StringBuffer url = new StringBuffer();
+        StringBuilder url = new StringBuilder();
         String path = request.getContextPath();
         url.append(path);
         url.append(loginurl);

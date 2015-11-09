@@ -85,7 +85,7 @@ public class FormTag extends JxBaseUITag {
         String appType = null;
         try {
             // 当有relationship的时候，应该获取parent为mainapp,此app应该设置为mainApp=false
-            if (tag != null && (tag instanceof BodyTag)) {
+            if (tag instanceof BodyTag) {
                 BodyTag body = (BodyTag) tag;
                 appName = body.getAppName();
                 appType = body.getAppType();
@@ -96,14 +96,14 @@ public class FormTag extends JxBaseUITag {
             }
             if (myapp != null) {
 
-                if (null != relationship) {
+                if (!StrUtil.isNull(relationship)) {
                     jboset = JxSession.getMainApp().getJbo().getRelationJboSet(relationship);
+                    myapp.setJboset(jboset);
                 } else {
                     jboset = myapp.findJboSet(jboname, null, JxConstant.READ_CACHE);
-                }
-
-                if (!"view".equalsIgnoreCase(type)) {
-                    myapp.setJboset(jboset);
+                    if (!"view".equalsIgnoreCase(type)) {
+                        myapp.setJboset(jboset);
+                    }
                 }
                 LOG.debug("jboname=" + jboname + ",appname.apptype=" + appName + "." + appType + ",myapp.getAppNameType()=" + myapp.getAppNameType());
             } else {

@@ -136,21 +136,12 @@
                             <jxui:sectioncol>
                                 <jxui:section type="edit">
                                     <jxui:sectionrow>
-                                        <jxui:textbox dataattribute="LOGIN_ID"
-                                                      label="{app.pubdepartment.PUB_USER.LOGIN_ID}" required="true"/>
-                                        <%--<td class="form_td_label">
-                                            <jxui:label value="{app.pubdepartment.PUB_USER.PASSWORD}"></jxui:label>
-                                        </td>
-                                        <td class="form_td_content">
-                                            <jxui:pushbutton label="{app.pubdepartment.PUB_USER.SETPASSWORD}"/>
-                                        </td>--%>
-                                        <jxui:textbox dataattribute="Password" colspan="4" label="{app.pubdepartment.PUB_USER.SETPASSWORD}" required="true"/>
-
-
-                                    </jxui:sectionrow>
-                                    <jxui:sectionrow>
-                                        <jxui:textbox dataattribute="DISPLAYNAME" colspan="5"
+                                        <jxui:textbox dataattribute="USER_ID"
+                                                      label="{app.pubdepartment.PUB_USER.USER_ID}" required="true"/>
+																				<jxui:textbox dataattribute="DISPLAYNAME" 
                                                       label="{app.pubdepartment.PUB_USER.DISPLAYNAME}" required="true"/>
+                                        <jxui:textbox dataattribute="Password" label="{app.pubdepartment.PUB_USER.SETPASSWORD}" render="PASSWORD"/>
+
                                     </jxui:sectionrow>
                                     <jxui:sectionrow>
                                         <jxui:multipartTextbox dataattribute="DEPARTMENT_ID" id="deptId"

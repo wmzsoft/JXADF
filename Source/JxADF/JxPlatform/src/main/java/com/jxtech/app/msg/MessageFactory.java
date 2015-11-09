@@ -2,6 +2,8 @@ package com.jxtech.app.msg;
 
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.ClassUtil;
+import com.jxtech.util.StrUtil;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,6 +49,10 @@ public class MessageFactory {
     }
 
     public static void putMessageImpl(String key, String value) {
-        impls.put(key, value);
+        if (StrUtil.isNull(value)) {
+            impls.remove(key);
+        } else {
+            impls.put(key, value);
+        }
     }
 }

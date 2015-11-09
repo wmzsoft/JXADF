@@ -19,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import com.jxtech.app.jxwxp.JxWXPExport;
 import com.jxtech.app.jxwxp.JxWXPFactory;
 import com.jxtech.app.jxwxp.JxWXPValueAdapter;
+import com.jxtech.app.max.MaxFactory;
+import com.jxtech.app.max.MaxSequenceSetIFace;
 import com.jxtech.db.DBFactory;
 import com.jxtech.db.DataQuery;
 import com.jxtech.i18n.JxLangResourcesUtil;
@@ -27,6 +29,7 @@ import com.jxtech.jbo.auth.PermissionFactory;
 import com.jxtech.jbo.base.DataMap;
 import com.jxtech.jbo.base.JxAttribute;
 import com.jxtech.jbo.base.JxAttributeDao;
+import com.jxtech.jbo.base.JxAttributeProp;
 import com.jxtech.jbo.base.JxObject;
 import com.jxtech.jbo.base.JxObjectDao;
 import com.jxtech.jbo.base.JxRelationship;
@@ -53,8 +56,10 @@ public abstract class BaseJboSet implements JboSetIFace {
     private String jboname;// 表名
     private String appname;// 当前应用程序名
     private List<JboIFace> jbolist = new ArrayList<JboIFace>();// 记录集
-    // MaxAttribute 当前记录的字段定义信息 HashMap<String,JxAttribute>
+    // MaxAttribute 当前记录的字段定义信息 HashMap<String,JxAttribute>，这个属性是静态的
     private Map<String, JxAttribute> jxAttributes;
+    // 每个字段的动态属性信息
+    private Map<String, JxAttributeProp> jxAttributeProp;
     // 自动增加序列
     private Map<String, JxAttribute> autokeysAttributes;
     // MaxTable 当前表的定义
@@ -105,6 +110,9 @@ public abstract class BaseJboSet implements JboSetIFace {
             beforeAdd();
             currentJbo = getJboInstance();
             currentJbo.add();
+            if (jbolist == null) {
+                jbolist = new ArrayList<JboIFace>();
+            }
             jbolist.add(currentJbo);
             return currentJbo;
         }
@@ -216,8 +224,9 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     @Override
     public List<JboIFace> queryAll() throws JxException {
-        getQueryInfo().setPageNum(-1);
-        getQueryInfo().setPageSize(-1);
+        DataQueryInfo dqi = getQueryInfo();
+        dqi.setPageNum(-1);
+        dqi.setPageSize(-1);
         return query();
     }
 
@@ -401,7 +410,7 @@ public abstract class BaseJboSet implements JboSetIFace {
         if (getJxTable() != null) {
             return jxTable.getUniquecolumnname();
         }
-        LOG.info("请配置表的主关键字：" + jboname);
+        LOG.info("请配置表的主关键字：jboname=" + jboname);
         return null;
     }
 
@@ -476,8 +485,8 @@ public abstract class BaseJboSet implements JboSetIFace {
             }
             // 获得角色能管理的所有地点。
             StringBuilder sb = new StringBuilder();
-            sb.append("siteid = ? or siteid in (select siteid from pubrolesite ");
-            sb.append(" where roleid in ( select role_id from pub_role_user where user_id=?) )");
+            sb.append("( siteid = ? or siteid in (select siteid from pubrolesite ");
+            sb.append(" where roleid in ( select role_id from pub_role_user where user_id=?) ))");
             queryInfo.setOrgsiteClause(sb.toString());
             queryInfo.setOrgsiteParams(new String[] { siteid, jui.getUserid() });
         } else if (jxobject.isOrgType()) {
@@ -489,8 +498,8 @@ public abstract class BaseJboSet implements JboSetIFace {
                 return;
             }
             StringBuilder sb = new StringBuilder();
-            sb.append("orgid = ? or orgid in (select orgid from pubroleorg ");
-            sb.append(" where roleid in ( select role_id from pub_role_user where user_id=?) )");
+            sb.append("( orgid = ? or orgid in (select orgid from pubroleorg ");
+            sb.append(" where roleid in ( select role_id from pub_role_user where user_id=?) ))");
             queryInfo.setOrgsiteClause(sb.toString());
             queryInfo.setOrgsiteParams(new String[] { orgid, jui.getUserid() });
         }
@@ -509,7 +518,7 @@ public abstract class BaseJboSet implements JboSetIFace {
      * @head 是否返回头部
      */
     public String toJson(String[] attributes, boolean head) throws JxException {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         String[] columns = attributes;
         if (attributes == null) {
             columns = ((DataMap<String, JxAttribute>) getJxAttributes()).keys();
@@ -545,9 +554,7 @@ public abstract class BaseJboSet implements JboSetIFace {
                 sb.append(col2);
                 sb.append("\":\"");
                 String val = jbolist.get(i).getString(col1);
-                if (val == null) {
-                    // 不处理
-                } else {
+                if (val != null) {
                     sb.append(StrUtil.toJson(val));
                 }
                 sb.append("\"");
@@ -723,7 +730,7 @@ public abstract class BaseJboSet implements JboSetIFace {
         String quickSql = "";
         if (!StrUtil.isNullOfIgnoreCaseBlank(searchValue)) {
             boolean isnum = StrUtil.isNull(searchValue);// 判断，如果不是数字，则数字类型的字段，无需匹配
-            StringBuffer sb = new StringBuffer();
+            StringBuilder sb = new StringBuilder();
             Map<String, JxAttribute> attrs = this.getJxAttributes();
             Iterator<String> keyIte = attrs.keySet().iterator();
             while (keyIte.hasNext()) {
@@ -764,7 +771,7 @@ public abstract class BaseJboSet implements JboSetIFace {
     public Object max(String attributename) throws JxException {
         DataQuery dq = DBFactory.getDataQuery(dbtype, dataSourceName);
         DataQueryInfo dqi = getQueryInfo();
-        return dq.max(getJboname(), attributename, dqi.getWhereAllCause(), dqi.getWhereAllParams());
+        return dq.max(getEntityname(), attributename, dqi.getWhereAllCause(), dqi.getWhereAllParams());
     }
 
     /**
@@ -777,7 +784,7 @@ public abstract class BaseJboSet implements JboSetIFace {
     public Object min(String attributename) throws JxException {
         DataQuery dq = DBFactory.getDataQuery(dbtype, dataSourceName);
         DataQueryInfo dqi = getQueryInfo();
-        return dq.min(getJboname(), attributename, dqi.getWhereAllCause(), dqi.getWhereAllParams());
+        return dq.min(getEntityname(), attributename, dqi.getWhereAllCause(), dqi.getWhereAllParams());
     }
 
     /**
@@ -1006,4 +1013,66 @@ public abstract class BaseJboSet implements JboSetIFace {
     public void setSaveFlag(long saveFlag) {
         this.saveFlag = saveFlag;
     }
+
+    public JxAttributeProp getJxAttributeProp(String dataattribute) throws JxException {
+        if (StrUtil.isNull(dataattribute)) {
+            return null;
+        }
+        if (jxAttributeProp == null) {
+            jxAttributeProp = new HashMap<String, JxAttributeProp>();
+        }
+        String key = dataattribute.toUpperCase();
+        if (jxAttributeProp.containsKey(key)) {
+            return jxAttributeProp.get(key);
+        } else {
+            JxAttributeProp aprop = new JxAttributeProp();
+            aprop.setAttribute(getJxAttribute(key));
+            jxAttributeProp.put(key, aprop);
+            return aprop;
+        }
+    }
+
+    @Override
+    public void setReadonly(String dataattribute, boolean readonly) throws JxException {
+        JxAttributeProp prop = getJxAttributeProp(dataattribute);
+        if (prop != null) {
+            prop.setReadonly(readonly);
+        }
+    }
+
+    @Override
+    public boolean isReadonly(String dataattribute) throws JxException {
+        if (isReadonly()) {
+            return true;
+        }
+        JxAttributeProp prop = getJxAttributeProp(dataattribute);
+        if (prop != null) {
+            return prop.isReadonly();
+        }
+        return false;
+    }
+
+    @Override
+    public void setRequired(String dataattribute, boolean required) throws JxException {
+        JxAttributeProp prop = getJxAttributeProp(dataattribute);
+        if (prop != null) {
+            prop.setRequired(required);
+        }
+    }
+
+    @Override
+    public boolean isRequired(String dataattribute) throws JxException {
+        JxAttributeProp prop = getJxAttributeProp(dataattribute);
+        if (prop != null) {
+            return prop.isRequired();
+        }
+        return false;
+    }
+
+    @Override
+    public String getSequenceName(String columnName) throws JxException {
+        MaxSequenceSetIFace seqset = MaxFactory.getMaxSequenceSetIFace();
+        return seqset.getSequeceName(getEntityname(), columnName);
+    }
+
 }

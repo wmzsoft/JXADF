@@ -14,7 +14,7 @@
     <constant name="struts.multipart.maxSize" value="100000000"/>
     <constant name="struts.action.excludePattern" value="/dwr/download/.*,/fileup/*,/filedown*"/>
     <!-- 缓存Freemarker模板 -->
-    <constant name="struts.freemarker.templatesCache" value="false" />
+    <constant name="struts.freemarker.templatesCache" value="true" />
     <!-- 
     <constant name="struts.convention.action.packages" value="com.jxtech.action"/> 
     -->

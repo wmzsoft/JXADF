@@ -9,10 +9,17 @@ $author:sl
     <td class="checkbox_td_label <#rt>
     <#if (parameters.readonly!false)>
         <#lt> readonly<#rt>
+    </#if>"<#t>
+    <#if (parameters.labeltip??)>
+        <#lt> title='${parameters.labeltip}' <#rt>
     </#if>
-    "><#t>
+    ><#t>
     <#include "../common/input-label.ftl"/><#t>
-    </td><td class="checkbox_td_content" colspan="${parameters.colspan!'1'}"><#t>
+    </td><td class="checkbox_td_content" colspan="${parameters.colspan!'1'}" <#rt>
+    <#if (parameters.valuetip??)>
+        <#lt> title='${parameters.valuetip}' <#rt>
+    </#if>
+    ><#t>
 </#if>
 <#if (parameters.dataattribute??)>
     <#if ((parameters.inputmode!'edit')=='QUERY') || ((parameters.inputmode!'edit')=='QUERYIMMEDIATELY')>

@@ -31,6 +31,8 @@ public class Checkbox extends JxBaseUIBean {
     private String cause;
     private String queryValue;
     protected String queryType;
+    protected String labeltip;//标签提示
+    protected String valuetip;//值的提示
 
     public Checkbox(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
         super(stack, request, response);
@@ -94,6 +96,12 @@ public class Checkbox extends JxBaseUIBean {
         }
         if (label != null) {
             addParameter("label", getI18NValue(label));
+        }
+        if (labeltip != null) {
+            addParameter("labeltip", findString(labeltip));
+        }
+        if (valuetip != null) {
+            addParameter("valuetip", findString(valuetip));
         }
 
         if (null != cause) {
@@ -173,5 +181,13 @@ public class Checkbox extends JxBaseUIBean {
 
     public void setQueryType(String queryType) {
         this.queryType = queryType;
+    }
+
+    public void setLabeltip(String labeltip) {
+        this.labeltip = labeltip;
+    }
+
+    public void setValuetip(String valuetip) {
+        this.valuetip = valuetip;
     }
 }

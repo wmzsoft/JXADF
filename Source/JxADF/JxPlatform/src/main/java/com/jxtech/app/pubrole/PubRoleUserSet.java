@@ -2,7 +2,6 @@ package com.jxtech.app.pubrole;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -13,7 +12,6 @@ import com.jxtech.app.maxmenu.MaxMenuSetIFace;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSet;
 import com.jxtech.jbo.JboSetIFace;
-import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
@@ -65,7 +63,7 @@ public class PubRoleUserSet extends JboSet implements PubRoleUserSetIFace {
             return null;
         }
         DataQueryInfo dqInfo = getQueryInfo();
-        dqInfo.setWhereCause("USER_ID = ?");
+        dqInfo.setWhereCause("USER_ID = ? AND role_id in (select role_id from pub_role)");
         dqInfo.setWhereParams(new Object[] { userid });
         List<JboIFace> list = queryAll();
         if (list != null) {

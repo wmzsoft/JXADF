@@ -43,6 +43,7 @@ $icon-size:22px;
     }
     &:hover{
         .icon-module{
+            background-position: 0 -200px;//模块图片为空时的默认hover图片
             &.icon-module-dashboard{
                 @extend %script_jxmenu_item_icon_dashboard_hover;
             }

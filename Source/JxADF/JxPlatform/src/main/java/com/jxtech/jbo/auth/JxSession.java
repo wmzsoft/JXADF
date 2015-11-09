@@ -198,19 +198,19 @@ public class JxSession {
             app = apps.getApp(appNameType);
         }
         if (null == app) {
-            LOG.debug("找不到对应的主应用，从主应用的refApp找一下试试看。。");
-            if (null != getMainApp()) {
-                app = getMainApp().getRefApp().get(appNameType);
-            } else {
-                LOG.info("没有找到主应用程序：" + appNameType);
+            App mainapp = getMainApp();
+            if (null != mainapp) {
+                app = mainapp.getRefApp().get(appNameType);
             }
         }
-
         // 对于***/lookup类型的app，不需要重新获取app
         if (app != null) {
             if (app.getJboset() == null && !app.getAppName().contains("/")) {
-                app = new App(app.getAppName());
+                app = new App(app.getAppName(),app.getAppType());
             }
+        }
+        if (app==null){
+            LOG.info("没有找到主应用程序：" + appNameType);
         }
         return app;
     }
@@ -231,7 +231,7 @@ public class JxSession {
     public static App getApp(String appname, String appType, boolean isCreate) throws JxException {
         App app = getApp(appname + "." + appType);
         if (app == null && isCreate) {
-            app = new App(appname);
+            app = new App(appname,appType);
             putApp(appname, appType);
         }
         return app;

@@ -4,6 +4,7 @@ import com.jxtech.common.JxLoadResource;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.base.JxAttribute;
+import com.jxtech.jbo.base.KeyValue;
 import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.tag.body.BodyTag;
@@ -18,6 +19,8 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.tagext.Tag;
+
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -49,6 +52,10 @@ public class TextboxTag extends JxBaseUITag {
     private String queryValue2;// 查询值
     private String cause;// 查询条件1
     private String cause2;// 查询条件2
+    protected String urlParamValue;// 采用LINK渲染的时候，URL的参数值
+    protected String urlTarget;// 采用Link渲染的时候，链接的Target
+    protected String labeltip;// label的提示文字
+    protected String valuetip;// 值的提示文字
     private HttpServletRequest req;
 
     @Override
@@ -62,7 +69,7 @@ public class TextboxTag extends JxBaseUITag {
     @Override
     protected void populateParams() {
         super.populateParams();
-
+        boolean isInput = false;// 默认输入框为：Textarea，而不是Input
         Textbox text = (Textbox) component;
         text.setDataattribute(dataattribute);
         text.setColspan(colspan);
@@ -76,6 +83,8 @@ public class TextboxTag extends JxBaseUITag {
         text.setMystyle(mystyle);
         text.setFormat(format);
         text.setRequired(required);
+        text.setLabeltip(labeltip);
+        text.setValuetip(valuetip);
         columnAttribute = null;
         Map<String, JxAttribute> jxattributes = null;
         Map<String, Object> queryParam = null;
@@ -191,21 +200,56 @@ public class TextboxTag extends JxBaseUITag {
         text.setRenderExtends(renderExtends);
         if ("CKEDITOR".equalsIgnoreCase(render)) {
             JxLoadResource.loadCKEditor(req);
+        } else if ("PASSWORD".equalsIgnoreCase(render) || "HIDDEN".equalsIgnoreCase(render)) {
+            isInput = true;
+        } else if ("query".equalsIgnoreCase(inputmode) || "queryImmediately".equalsIgnoreCase(inputmode)) {
+            isInput = true;
         }
-
+        if (!StrUtil.isNull(urlParamValue)) {
+            urlParamValue = this.findString(urlParamValue);
+            if (jbo != null) {
+                try {
+                    if (urlParamValue.indexOf(',') > 0) {
+                        List<KeyValue> mlist = StrUtil.toList(urlParamValue);
+                        if (mlist != null) {
+                            int msize = mlist.size();
+                            StringBuilder sb = new StringBuilder();
+                            for (int i = 0; i < msize; i++) {
+                                KeyValue kv = mlist.get(i);
+                                sb.append(kv.getKey()).append("=").append(jbo.getURLString(kv.getValue())).append("&");
+                            }
+                            if (sb.length() > 2) {
+                                StrUtil.deleteLastChar(sb);
+                            }
+                            urlParamValue = sb.toString();
+                        }
+                    } else {
+                        urlParamValue = jbo.getURLString(urlParamValue);
+                    }
+                } catch (Exception e) {
+                    LOG.warn(e.getMessage(), e);
+                }
+            }
+            text.setUrlParamValue(urlParamValue);
+        }
+        text.setUrlTarget(urlTarget);
         String maxtype = getMaxType();
         text.setMaxtype(maxtype);
         if ("DATE".equalsIgnoreCase(maxtype) || "DATETIME".equalsIgnoreCase(maxtype) || "TIME".equalsIgnoreCase(maxtype)) {
             JxLoadResource.loadJquerTimepicker(req);
+            isInput = true;
+        } else if (!isInput && columnAttribute != null) {
+            isInput = columnAttribute.isBoolean() || columnAttribute.isNumOrDateTime();
         }
         text.setReadonly(readonly);
         text.setVisible(visible);
         text.setButtonType(getButtonType());
+        text.setInput(isInput);
     }
 
     /**
      * 获得输入框后面是否要添加按钮
-     *
+     * 
      * @return
      */
     private String getButtonType() {
@@ -223,7 +267,7 @@ public class TextboxTag extends JxBaseUITag {
 
     /**
      * 获得数据类型
-     *
+     * 
      * @return
      */
     private String getMaxType() {
@@ -410,5 +454,37 @@ public class TextboxTag extends JxBaseUITag {
 
     public void setRenderExtends(String renderExtends) {
         this.renderExtends = renderExtends;
+    }
+
+    public String getUrlParamValue() {
+        return urlParamValue;
+    }
+
+    public void setUrlParamValue(String urlParamValue) {
+        this.urlParamValue = urlParamValue;
+    }
+
+    public String getUrlTarget() {
+        return urlTarget;
+    }
+
+    public void setUrlTarget(String urlTarget) {
+        this.urlTarget = urlTarget;
+    }
+
+    public String getLabeltip() {
+        return labeltip;
+    }
+
+    public void setLabeltip(String labeltip) {
+        this.labeltip = labeltip;
+    }
+
+    public String getValuetip() {
+        return valuetip;
+    }
+
+    public void setValuetip(String valuetip) {
+        this.valuetip = valuetip;
     }
 }

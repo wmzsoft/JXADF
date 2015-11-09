@@ -16,7 +16,7 @@ public class JxWXPFactory {
 	            return new JxWXPExportImpl();
 	        }
 	        Object obj = ClassUtil.getInstance(implClass);
-	        if (obj != null && obj instanceof JxWXPExport) {
+	        if (obj instanceof JxWXPExport) {
 	            return (JxWXPExport) obj;
 	        } else {
 	            LOG.warn("配置的日志管理类" + implClass + "不能初始化。");

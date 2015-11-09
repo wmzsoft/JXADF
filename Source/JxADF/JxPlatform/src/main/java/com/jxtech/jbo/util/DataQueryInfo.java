@@ -88,11 +88,11 @@ public class DataQueryInfo implements java.io.Serializable {
     // 获得组装之后的所有查询条件
     public String getWhereAllCause() {
         StringBuilder cause = new StringBuilder();
+        List<Object> list = new ArrayList<Object>();
         if (!StrUtil.isNull(whereCause)) {
             cause.append(whereCause);
+            putParamsValueAll(whereParams, list);
         }
-        List<Object> list = new ArrayList<Object>();
-        putParamsValueAll(whereParams, list);
 
         // 组织地点的问题
         if (!StrUtil.isNullOfIgnoreCaseBlank(orgsiteClause)) {
@@ -123,6 +123,9 @@ public class DataQueryInfo implements java.io.Serializable {
         if (params != null) {
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 String key = entry.getKey();
+                if (StrUtil.isNull(key)) {
+                    continue;
+                }
                 Object value = entry.getValue();
                 // LOG.debug("key:" + key + "  value:" + value);
                 if (value == null || (value instanceof String && StrUtil.isNull((String) value))) {

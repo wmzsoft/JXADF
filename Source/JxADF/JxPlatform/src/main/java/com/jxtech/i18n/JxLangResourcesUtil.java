@@ -138,7 +138,7 @@ public class JxLangResourcesUtil {
             }
 
         } else {
-            if (bundle.containsKey(key)) {
+            if (bundle!=null && bundle.containsKey(key)) {
                 value = bundle.getString(key);
             } else {
                 value = "";

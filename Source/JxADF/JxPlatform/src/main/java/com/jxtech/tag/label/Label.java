@@ -19,6 +19,8 @@ public class Label extends JxBaseUIBean {
     protected String dataattribute;
     private Object dataValue;
     private JboIFace jbo;
+    protected String labeltip;// 标签提示
+    protected String valuetip;// 值的提示
 
     public Label(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
         super(stack, request, response);
@@ -43,6 +45,12 @@ public class Label extends JxBaseUIBean {
         if (dataattribute != null) {
             addParameter("dataattribute", findString(dataattribute).toUpperCase());
         }
+        if (labeltip != null) {
+            addParameter("labeltip", findString(labeltip));
+        }
+        if (valuetip != null) {
+            addParameter("valuetip", findString(valuetip));
+        }
         if (jbo != null) {
             addParameter("jbo", jbo);
         }
@@ -64,6 +72,14 @@ public class Label extends JxBaseUIBean {
 
     public void setJbo(JboIFace jbo) {
         this.jbo = jbo;
+    }
+
+    public void setLabeltip(String labeltip) {
+        this.labeltip = labeltip;
+    }
+
+    public void setValuetip(String valuetip) {
+        this.valuetip = valuetip;
     }
 
 }

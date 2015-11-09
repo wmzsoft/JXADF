@@ -239,6 +239,7 @@ public class PermissionCtpDao implements AuthenticateIFace {
         if (StrUtil.md5(password).equalsIgnoreCase(user.getString("PASSWORD"))) {
             return toJxUserInfo(user);
         } else {
+            LOG.warn("无效用户名密码:" + "u=" + userid + ",p=" + password);
             throw new JxException(JxLangResourcesUtil.getString("login.failed"));
         }
     }

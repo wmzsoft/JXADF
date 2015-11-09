@@ -10,9 +10,9 @@ $author:wmzsoft@gmail.com
      <#lt><span style="display:none" <#rt>
      <#list ((col.parameters.secondAttributes)?split(",")) as key>
         <#if ( (key?index_of("="))>=0)>
-            <#lt> ${key} <#rt>
+            <#lt> ${key?replace(".","_")} <#rt>
         <#elseif (key??)>
-            <#lt> ${key}="${jbo.getString(key)!}" <#rt>
+            <#lt> ${key?replace(".","_")}="${jbo.getString(key)!}" <#rt>
         </#if>
      </#list>
      ></span><#t>

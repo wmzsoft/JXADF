@@ -121,9 +121,9 @@ public class Jbo extends BaseJbo implements JboIFace {
                     int start = JboSetIFace.BPM_JX.length();
                     int end = instanceid.indexOf('.', start + 1);
                     if (start < end) {
-                        return instanceid.substring(start+1, end);
+                        return instanceid.substring(start + 1, end);
                     } else {
-                        return instanceid.substring(start+1);
+                        return instanceid.substring(start + 1);
                     }
                 } else {
                     return instanceid;
@@ -287,4 +287,25 @@ public class Jbo extends BaseJbo implements JboIFace {
             }
         }
     }
+
+    /**
+     * 返回工作流状态内部值
+     * 
+     * @param domainid
+     * @return
+     * @throws JxException
+     */
+    @Override
+    public String getInternalStaus(String domainid) throws JxException {
+        String status = this.getString("WFT_STATUS");
+        if (StrUtil.isNull(domainid) || StrUtil.isNull(status)) {
+            return status;
+        }
+        JboIFace syn = JboUtil.findJbo("synonymdomain", "domainid=? and upper(value)=?", new Object[] { domainid.toUpperCase(), status.toUpperCase() });
+        if (syn != null) {
+            return syn.getString("MaxValue");
+        }
+        return status;
+    }
+
 }

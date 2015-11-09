@@ -113,7 +113,7 @@ public class Tablecol extends JxBaseUIBean {
                 addParameter("mxevent", findString(mxeventUp));
             } else {
                 addParameter("mxevent", findString(mxevent));
-                addParameter("mxevent_render",findString(mxevent_render));
+                addParameter("mxevent_render", findString(mxevent_render));
             }
         }
         if (null != dataattribute) {
@@ -138,8 +138,8 @@ public class Tablecol extends JxBaseUIBean {
         if (null != mxevent_icon) {
             addParameter("mxevent_icon", findString(mxevent_icon));
         }
-        if (null !=mxevent_disabled){
-            addParameter("mxevent_disabled",mxevent_disabled);
+        if (null != mxevent_disabled) {
+            addParameter("mxevent_disabled", mxevent_disabled);
         }
         if (null != filterable) {
             addParameter("filterable", findValue(filterable, Boolean.class));
@@ -179,8 +179,12 @@ public class Tablecol extends JxBaseUIBean {
         }
         addParameter("jxattribute", jxattribute);
         addParameter("urlType", urlType);
-        addParameter("urlParamName", urlParamName);
-        addParameter("urlParamValue", urlParamValue);
+        if (urlParamName != null) {
+            addParameter("urlParamName", findString(urlParamName));
+        }
+        if (urlParamValue != null) {
+            addParameter("urlParamValue", findString(urlParamValue));
+        }
         addParameter("allUrlParams", allUrlParams);
         addParameter("urlTarget", urlTarget);
         addParameter("format", format);
@@ -319,7 +323,9 @@ public class Tablecol extends JxBaseUIBean {
         this.filterable = filterable;
     }
 
-    public void setMxevent_render(String mxevent_render){ this.mxevent_render = mxevent_render;}
+    public void setMxevent_render(String mxevent_render) {
+        this.mxevent_render = mxevent_render;
+    }
 
     public void setTable(Table table) {
         this.table = table;

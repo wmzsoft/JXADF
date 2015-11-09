@@ -1,5 +1,17 @@
 package com.jxtech.tag.select;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.tagext.Tag;
+
+import org.apache.struts2.components.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jxtech.common.JxLoadResource;
 import com.jxtech.db.DBFactory;
 import com.jxtech.db.DataQuery;
@@ -7,7 +19,6 @@ import com.jxtech.jbo.App;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.JxSession;
-import com.jxtech.jbo.base.JxAttribute;
 import com.jxtech.jbo.base.KeyValue;
 import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxConstant;
@@ -15,20 +26,11 @@ import com.jxtech.jbo.util.JxException;
 import com.jxtech.tag.body.BodyTag;
 import com.jxtech.tag.comm.JxBaseUITag;
 import com.jxtech.tag.form.FormTag;
+import com.jxtech.tag.table.TableTag;
 import com.jxtech.tag.table.Tablecol;
 import com.jxtech.tag.table.TablecolTag;
 import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
-import org.apache.struts2.components.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.tagext.Tag;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author wmzsoft@gmail.com
@@ -163,7 +165,7 @@ public class SelectTag extends JxBaseUITag {
                             Object o = map.get(dataattribute.toUpperCase() + "=?");
                             if (o != null) {
                                 selected = String.valueOf(o);
-                            }else{
+                            } else {
                                 o = map.get(dataattribute.toUpperCase() + cause);
                                 selected = String.valueOf(o);
                             }
@@ -175,9 +177,19 @@ public class SelectTag extends JxBaseUITag {
                     Tag tag = findAncestorWithClass(getParent(), FormTag.class);
                     if (tag != null) {
                         // 当form为relationship时，从form中取数据
-                        FormTag ft = ((FormTag) tag);
+                        FormTag ft = (FormTag) tag;
                         if (ft.getRelationship() != null && !"".equals(ft.getRelationship())) {
                             ji = ft.getJbo();
+                        }
+                    } else {
+                        //这里是TableTag，但仍然没用
+                        tag = findAncestorWithClass(getParent(), TableTag.class);
+                        if (tag != null) {
+                            TableTag tt = (TableTag) tag;// 表
+                            JboSetIFace tableset = tt.getJboset();
+                            if (tableset != null) {
+                                ji = tableset.getJbo();
+                            }
                         }
                     }
                     if (ji != null && !StrUtil.isNull(dataattribute)) {
@@ -196,15 +208,15 @@ public class SelectTag extends JxBaseUITag {
                             }
                         }
                         if (!"true".equalsIgnoreCase(required)) {
-                            JxAttribute ja = ji.getJxAttribute(dataattribute);
-                            if (ja != null) {
-                                required = String.valueOf(ji.isRequired(dataattribute));
-                            }
+                            required = String.valueOf(ji.isRequired(dataattribute));
                         } else {
                             ji.setRequired(dataattribute, true);
                         }
                         if (!"true".equalsIgnoreCase(readonly)) {
                             readonly = String.valueOf(ji.isReadonly(dataattribute));
+                            if (!"true".equalsIgnoreCase(readonly)) {
+                                readonly = String.valueOf(ji.isReadonly());
+                            }
                         }
                     }
                 }
@@ -231,7 +243,7 @@ public class SelectTag extends JxBaseUITag {
                 select.setParentName("tablecol");
                 TablecolTag colTag = (TablecolTag) tag;
                 Component col = colTag.getComponent();
-                if (null != col && col instanceof Tablecol) {
+                if (col instanceof Tablecol) {
                     Tablecol tc = (Tablecol) col;
                     tc.setSec(select);
                 }
@@ -243,7 +255,7 @@ public class SelectTag extends JxBaseUITag {
 
     /**
      * 根据value返回要显示的值
-     *
+     * 
      * @param list
      * @param value
      * @return
@@ -289,7 +301,7 @@ public class SelectTag extends JxBaseUITag {
 
     /**
      * 处理SQL脚本的数据加载
-     *
+     * 
      * @param select
      * @param list
      * @throws JxException

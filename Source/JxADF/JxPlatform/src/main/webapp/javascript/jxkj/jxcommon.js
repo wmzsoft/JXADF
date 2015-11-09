@@ -17,7 +17,7 @@ function debug(obj) {
     }
 }
 
-//判断是否为移动设备浏览器
+// 判断是否为移动设备浏览器
 function isMobile() {
     if (/AppleWebKit.*Mobile/i.test(navigator.userAgent) || (/MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE/.test(navigator.userAgent))) {
         if (window.location.href.indexOf("?mobile") < 0) {
@@ -216,7 +216,7 @@ var JxUtil = {
         num = num.toString();
         if (num.length > length) {
             reg = new RegExp("\\d{" + length + "}$");
-            return num.match(reg)[0]
+            return num.match(reg)[0];
         } else if (num.length == length) {
             return num;
         } else {
@@ -228,7 +228,7 @@ var JxUtil = {
             return fixStr + num;
         }
     },
-    //用于expandType
+    // 用于expandType
     isExpandContext: false,
     expandSourceRow: null
 };
@@ -384,6 +384,7 @@ function getUrlParamNameValue(url, name) {
 
 /**
  * 获得ContextPath,例:/jxtech
+ *
  * @returns
  */
 function getContextPath() {
@@ -407,8 +408,7 @@ String.prototype.rtrim = function () {
 
 /**
  * * 模拟鼠标点击事件。示例：<INPUT id="test" onkeypress="doClick("buttonId", event)"> *
- * linkId 需要点击的元素ID
- * e event内置对象
+ * linkId 需要点击的元素ID e event内置对象
  */
 function doClick(linkId, e) {
     var fireOnThis = document.getElementById(linkId);
@@ -587,7 +587,7 @@ function checkFieldValid(field) {
     }
 
     var passValidation = !$field.validationEngine("validate", {
-        focusFirstField: true,//TODO 没有效果
+        focusFirstField: true,// TODO 没有效果
         maxErrorsPerField: 1,
         showOneMessage: true
     });
@@ -620,7 +620,7 @@ function checkPassValidation(me, e) {
         }
 
         passValidation = !$(this).validationEngine("validate", {
-            focusFirstField: true,//TODO 没有效果
+            focusFirstField: true,// TODO 没有效果
             maxErrorsPerField: 1,
             showOneMessage: true
         });
@@ -634,7 +634,7 @@ function checkPassValidation(me, e) {
     }
     return passValidation;
 }
-//点保存前事件
+// 点保存前事件
 function beforeSave(me, e) {
     debug("beforeSave...");
     return true;
@@ -646,8 +646,13 @@ function beforeSave(me, e) {
  * @param e
  */
 function save(me, e) {
-    //点保存前事件
+	if ($(me).attr("disabled") == 'disabled') {
+        return;
+    }	
+	$(me).attr("disabled", "disabled");
+    // 点保存前事件
     if (!beforeSave(me, e)) {
+    	$(me).removeAttr("disabled");
         return;
     }
     var passValidation = checkPassValidation(me, e);
@@ -666,6 +671,7 @@ function save(me, e) {
                     // 检查执行回调函数之后是否继续。
                     if ($(me).attr("afterSaveContinue") != "Y") {
                         // 不用继续
+                    	$(me).removeAttr("disabled");
                         return;
                     }
                 }
@@ -691,22 +697,29 @@ function save(me, e) {
                 // 将信息放到后台保存起来
                 WebClientBean.saveMessage(jx_appNameType, getLangString("jxcommon.saveSuccess"), {
                     callback: function () {
-                        saveCallback(myurl);
+                        saveCallback(me,e,myurl);
                     },
                     errorHandler: errorHandler,
                     exceptionHandler: exceptionHandler
                 });
                 dwr.engine.setAsync(true); // 重新设置成异步
+                $(me).removeAttr("disabled");
             },
             errorHandler: errorHandler,
             exceptionHandler: exceptionHandler
         });
         // dwr.engine.setAsync(true); // 设置成异步
     }
+    $(me).removeAttr("disabled");
 }
 
-function saveCallback(url) {
-    window.location.href = encodeURI(url);
+function saveCallback(me,e,url) {
+	if ($(me).attr("refresh")!='false'){
+		window.location.href = encodeURI(url);
+	}else{
+		//显示保存成功的信息
+		showToolbarMsg(getLangString("jxcommon.saveSuccess"));
+	}
 }
 /**
  * 上一条记录
@@ -858,7 +871,7 @@ function del(me, e) {
  */
 function dellist(me, e) {
     var chk_value = "";
-    //支持TAB多表
+    // 支持TAB多表
     var tbids = $(me).attr("fragmentid").split(",");
     for (var i = tbids.length - 1; i >= 0; i--) {
         if ($("#" + tbids[i]).length == 0) {
@@ -1011,12 +1024,12 @@ function searchClear(me, e) {
         if (nulloption && nulloption.length > 0) {
             nulloption.attr("selected", true);
         } else {
-            //selects.get(j).selectedIndex = 0;// 设置每个下拉列表选中第一个option
-            //如果没有请选择，清空后默认加上请选择   需要做国际化
+            // selects.get(j).selectedIndex = 0;// 设置每个下拉列表选中第一个option
+            // 如果没有请选择，清空后默认加上请选择 需要做国际化
             var op = getLangString("jxcommon.selectoption");
             $(selects.get(j)).append("<option selected value=''>" + op + "</option>");
         }
-        $(select).trigger("change"); //select2清除显示
+        $(select).trigger("change"); // select2清除显示
     }
 
     var chks = $("input[type='checkbox']");
@@ -1384,7 +1397,7 @@ function tableSelectChange(me, e) {
     var relationship = table.attr("relationship");
     var dataattribute = $(me).attr("dataattribute");
     // 一定要用me.value啊，不能使用$(me).val()，不兼容IE10以下的浏览器
-    //用me.value不支持多选，改为遍历
+    // 用me.value不支持多选，改为遍历
     var selval = new Array();
     $('option:selected', $(me)).each(function () {
         selval.push($(this).val());
@@ -1418,7 +1431,7 @@ function doPartialTriggers(me, e, dv, dn) {
         for (i = 0; i < trigs.length; i++) {
             var trigTarget = $("#" + trigs[i]);
 
-            //支持表格中的select触发，id是随机生成，用同行的dataattribute定位目标
+            // 支持表格中的select触发，id是随机生成，用同行的dataattribute定位目标
             if (trigTarget.length == 0) {
                 trigTarget = $("[dataattribute='" + trigs[i].toUpperCase() + "']", $(me).closest("tr"));
             }
@@ -1630,7 +1643,7 @@ function getTableData(divid, e, callback, cColumns, loadType) {
         }, function (response, status, xhr) {
             loadingUnmask(mydiv);
             if (status == "error") {
-                mydiv.html("<div class='text-center' style='color:#f30;padding:20px 0;'>loading error</div>")
+                mydiv.html("<div class='text-center' style='color:#f30;padding:20px 0;'>loading error</div>");
             } else {
                 var $tbody = $("tbody", mydiv);
                 $("tr[tobeadd='true']", mydiv).each(function () {
@@ -1776,13 +1789,13 @@ function appDialog(app, appType, fromid, urlValue, w, h, beforeDialogClose, titl
 
     $(".dialog").remove();
 
-    //对话框层
+    // 对话框层
     var $dialog = $("<div class='dialog'></div>");
     $dialog.attr("id", fromid + "div");
-    //等待层
+    // 等待层
     var $waitting = $("<div class='dialog_waitting'></div>");
 
-    //内容层
+    // 内容层
     var $content = $("<iframe frameBorder='0' style='overflow:visible' width='100%' onload='appdialogIframeLoaded(this)' height='100%'></iframe>");
     $dialog.append($waitting).append($content);
     $content.attr("id", fromid + "frame").attr("src", page);
@@ -1821,7 +1834,7 @@ function appDialog(app, appType, fromid, urlValue, w, h, beforeDialogClose, titl
 }
 
 function fixIEProcessBar() {
-    //when multi iframes ,the processbar show loading forever;
+    // when multi iframes ,the processbar show loading forever;
     if (/msie/.test(navigator.userAgent.toLowerCase())) {
         var $fixIframe = $("<iframe style='display:none'/>").appendTo(top.document.body);
         $fixIframe[0].contentDocument.write("");
@@ -1938,7 +1951,7 @@ function lookup(me, e) {
         var dtTableHeadWrap = table.closest(".dataTables_scrollHead");
         var allbox = $("input[type='checkbox'][name='allbox']", table);
         if (dtTableHeadWrap.length) {
-            //没有id说明是经过了datatable的处理
+            // 没有id说明是经过了datatable的处理
             table = dtTableHeadWrap.next().find("table");
         }
         if (allbox && allbox.length > 0) {
@@ -2042,6 +2055,7 @@ function lookup(me, e) {
 }
 /**
  * 清除lookup的值
+ *
  * @param me
  * @param e
  */
@@ -2168,7 +2182,7 @@ function routeDialog(me, e) {
     });
     dwr.engine.setAsync(true); // 重新设置成异步
 }
-//点击流转前事件
+// 点击流转前事件
 function beforeRouteme(me, e) {
     return true;
 }
@@ -2176,7 +2190,7 @@ function beforeRouteme(me, e) {
  * * 在主界面中发送工作流，弹出发送工作流按钮
  */
 function routeme(me, e) {
-    //点击流转前事件
+    // 点击流转前事件
     if (!beforeRouteme(me, e)) {
         return;
     }
@@ -2215,7 +2229,7 @@ function routeme(me, e) {
     if (!passValidation) {
         return;
     }
-    //流程相关
+    // 流程相关
     var uid = $('#uid').val();
     if (uid == null || uid == '' || uid == 'undefined') {
         alert(getLangString("jxcommon.route.error1"));
@@ -2249,7 +2263,7 @@ function routeme(me, e) {
                 if (fromId == undefined || fromId == "") {
                     fromId = "workflow";
                 }
-                appDialog('workflow', 'workflow?engine=' + data, fromId, myurl, 650, 150);
+                appDialog('workflow', 'workflow?engine=' + data, fromId, myurl, 650, 150, null, getLangString("jxcommon.routeme.title"));
             } else {
                 alert(getLangString("jxcommon.loadbpmconfigerror"));
             }
@@ -2264,6 +2278,9 @@ function routeme(me, e) {
  * 点击流程对话框中的发送按钮
  */
 function routeCommon(me, e) {
+    if ($(me).attr("disabled") == "disabled") {
+        return;
+    }
     var checkAction = $('input[name="action"]:checked');
     var action = checkAction.val();
     var checkActionId = checkAction.attr("id");
@@ -2301,7 +2318,7 @@ function routeCommon(me, e) {
 
     dwr.engine.setAsync(false); // 设置成同步
     var appName = $('#fromApp').val();// 应用程序名
-    var appType = $("#fromAppType").val();//应用程序类型
+    var appType = $("#fromAppType").val();// 应用程序类型
     var jboname = $('#fromJboname').val();
     var uid = $('#fromUid').val();
     var tousers = "";
@@ -2312,9 +2329,9 @@ function routeCommon(me, e) {
 
     tousers += actUsers;
 
-    WebClientBean.routeCommon(appName+"."+appType, jboname, uid, action, note, tousers, option, {
+    WebClientBean.routeCommon(appName + "." + appType, jboname, uid, action, note, tousers, option, {
         callback: function (data) {
-            //msgTip(data, getLangString("jxcommon.workflow.nexter.title"));
+            // msgTip(data, getLangString("jxcommon.workflow.nexter.title"));
             alert(data);
             // 发送完工作流后，先在后台将当前的jbo数据刷新一下，然后在刷新当前页面
             WebClientBean.reloadCurrentJboData({
@@ -2346,6 +2363,10 @@ function routeCommon(me, e) {
  * * 发送工作流 * agree 参见：JxConstant.WORKFLOW_ROUTE_XXX * toActId 发送到指定的节点
  */
 function route(me, e, agree, toActId) {
+    if (agree == undefined && toActId == undefined) {
+        routeme(me, e);
+        return;
+    }
     var required = $('#noteRequired').css('display');
     if (required != 'none') {
         if ($('#note').val() == '') {
@@ -2447,8 +2468,8 @@ function routeCancel(me, e) {
     route(me, e, 8, null);
 }
 
-/*新增函数 2015-05-25 开始*/
-/*新增函数 2015-05-25 开始*/
+/* 新增函数 2015-05-25 开始 */
+/* 新增函数 2015-05-25 开始 */
 function expexcel(me, e) {
     dwr.engine.setAsync(false);
     WebClientBean.preExpExcel(jx_appNameType, {
@@ -2496,11 +2517,13 @@ function expexcel(me, e) {
  * 正式导出成为Excel
  */
 function expExcel() {
-    //$("body", window.parent.document).mask(getLangString("jxcommon.expexcelexpExcel"),"");
-    //$("body", window.parent.document).mask(getLangString("jxcommon.expexcelexpExcel"),"",function(){
-    //dwr.engine.setAsync(false);
+    // $("body",
+    // window.parent.document).mask(getLangString("jxcommon.expexcelexpExcel"),"");
+    // $("body",
+    // window.parent.document).mask(getLangString("jxcommon.expexcelexpExcel"),"",function(){
+    // dwr.engine.setAsync(false);
     var title = $("#appName", window.parent.document).text();
-    //这是为了兼容ie
+    // 这是为了兼容ie
     var titlehtml = $("#appName", window.parent.document).html();
     if (!title) {
         if (title.length <= 0) {
@@ -2511,7 +2534,7 @@ function expExcel() {
         jx_appNameType,
         title, {
             callback: function (data) {
-                //dwr.engine.setAsync(true); // 重新设置成异步
+                // dwr.engine.setAsync(true); // 重新设置成异步
                 $("body", window.parent.document).unmask();
                 dwr.engine.openInDownload(data);
             },
@@ -2520,7 +2543,7 @@ function expExcel() {
             exceptionHandler: exceptionHandler
         });
 }
-/*新增函数 2015-05-25 结束*/
+/* 新增函数 2015-05-25 结束 */
 
 // //////////////////////////////
 // 导出Excel
@@ -2768,7 +2791,7 @@ function delrow(me, e) {
                                 + "<div style='width:"
                                 + mywidth
                                 + "px;position:absolute;top:50%;border-bottom:solid 1px #000'></div></div>");
-                            //$("td:first", delTr).attr('oldtext', ot);
+                            // $("td:first", delTr).attr('oldtext', ot);
 
                             // 修改删除标识
                             $("#" + delid).attr('flag', '1');
@@ -2817,14 +2840,17 @@ function addrow(me, e) {
 
 /**
  * 添加行，并设定默认值。
+ *
  * @param me
  * @param e
- * @param data JSON格式的默认值
+ * @param data
+ *            JSON格式的默认值
  */
 function addRowAndSetValue(me, e, data) {
     var tableid = me.id.substring(0, me.id.length - $('#' + me.id).attr('mxevent').length - 1);
     var table = $("#" + tableid);
     if ($(me).attr('enabled') == '0') {
+        alert(getLangString("jxcommon.addFail"));
         return;
     }
     $(me).attr('enabled', '0');
@@ -2936,26 +2962,27 @@ function submitData() {
 function href(me, e) {
     var ps = $(me).attr("params");
     if (ps != null && ps != '') {
-    	var target = $(me).attr("target");
-    	if (target!=null && target!=''){
-    		windowopen(ps,target);
-    	}else{
-    		location.href = ps;
-    	}
+        var target = $(me).attr("target");
+        if (target != null && target != '') {
+            windowopen(ps, target);
+        } else {
+            location.href = ps;
+        }
     }
 }
 
 /**
  * 将jbo中的值赋给给parent内部的所有元素
+ *
  * @param parent
  * @param jbo
  * @param type
  *            类型（扩展使用）
  */
 function setData(parent, jbo, type) {
-    /*主表单条数据赋值*/
+    /* 主表单条数据赋值 */
     setFormData(parent, jbo, type);
-    /*子表重新刷新，刷新赋值*/
+    /* 子表重新刷新，刷新赋值 */
     $("table[relationship!=''][jboname!='']", parent).each(function (idx, dom) {
         var relationship = $(this).attr("relationship");
         var pjboname = $("#jboname", parent.closest("form")).val();
@@ -2963,12 +2990,15 @@ function setData(parent, jbo, type) {
         var children = null;
         if (jbo.children) {
             children = jbo.children[pjboname + "." + relationship];
+            if (typeof(children) == "undefined" || children == null) {
+                children = jbo.children[pjboname + "." + relationship + "." + jbo.uidValue];
+            }
         }
         if (null != children && null != children.jbo) {
             var ctable = pjboname + "." + relationship;
             // TODO : 这里获取table的id可能有问题
             if ($(this).attr("id") != undefined) {
-                /*可编辑的子表才会有id*/
+                /* 可编辑的子表才会有id */
                 getTableData("div_" + $(this).attr("id"), null, null, null, 1);
             } else {
                 try {
@@ -2985,6 +3015,7 @@ function setData(parent, jbo, type) {
 
 /**
  * 将jbo中的值赋给parent内部的元素
+ *
  * @param parent
  * @param jbo
  * @param type
@@ -3013,12 +3044,14 @@ function setFormData(parent, jbo, type) {
             var children = null;
             if (jbo.children) {
                 children = jbo.children[jboname + "." + dataAttrs[0]];
+                if (typeof(children) == "undefined" || children == null) {
+                    children = jbo.children[jboname + "." + dataAttrs[0] + "." + jbo.uidValue];
+                }
             }
-
             if (null != children && null != children.jbo) {
                 tempValue = children.jbo.datas[dataAttrs[1]];
             } else {
-                //关系刷新后可能是null，后面不会处理null值，导致第一次数据没有清空
+                // 关系刷新后可能是null，后面不会处理null值，导致第一次数据没有清空
                 tempValue = "";
             }
         } else {
@@ -3045,7 +3078,7 @@ function setFormData(parent, jbo, type) {
         if (undefined != tempValue && null != tempValue && "null" !== tempValue) {
             if ((typeof($(this).closest("table").attr("relationship")) == "undefined") || type == "TABLE") {
                 var format = $(this).attr("format");
-                //"" != tempValue判断
+                // "" != tempValue判断
                 if (format && format.length > 0 && "" != tempValue) {
                     tempValue = accounting.formatMoney(tempValue);
                 }
@@ -3060,25 +3093,26 @@ function setFormData(parent, jbo, type) {
                     }
                     $(this).val(tempValue);
                 } else if (tagName == "SELECT") {
-                    //var nulloption = $("option[value='']", $(this));
-                    //if (!nulloption.length) {
-                    //    //如果没有请选择，加上请选择
-                    //    var op = getLangString("jxcommon.selectoption");
-                    //    $(this).append("<option selected value=''>" + op + "</option>");
-                    //}
-                    //tempValue = '';
-                    //if($(this).val() != tempValue){
-                    //    $(this).val(tempValue);
-                    //    if ($(this).next(".select2").length) {
-                    //        //$(this).select2();
-                    //        checkFieldValid(this);
-                    //    }
-                    //}
+                    // var nulloption = $("option[value='']", $(this));
+                    // if (!nulloption.length) {
+                    // //如果没有请选择，加上请选择
+                    // var op = getLangString("jxcommon.selectoption");
+                    // $(this).append("<option selected value=''>" + op +
+                    // "</option>");
+                    // }
+                    // tempValue = '';
+                    // if($(this).val() != tempValue){
+                    // $(this).val(tempValue);
+                    // if ($(this).next(".select2").length) {
+                    // //$(this).select2();
+                    // checkFieldValid(this);
+                    // }
+                    // }
                 } else {
                     $(this).val(tempValue);
                 }
             } else {
-                //子表元素则不处理
+                // 子表元素则不处理
             }
         }
 
@@ -3425,6 +3459,7 @@ function importFile(me, e) {
 
 /**
  * tab 完成创建
+ *
  * @param event
  * @param ui
  */
@@ -3438,6 +3473,10 @@ function tabCreate(event, ui) {
  * @param ui
  */
 function beforeActivate(event, ui) {
+}
+
+function beforeLoad(event, ui) {
+
 }
 
 function tabActivate(event, ui) {
@@ -3572,11 +3611,12 @@ function refresh(me, e) {
 
 /**
  * 刷新附件列表 attachmentid附件id
+ *
  * @param attachmentid
  */
 function refreshAttlist(attachmentid) {
     var src = document.getElementById("iframeAtt_" + attachmentid).src;
-    //刷新附件列表 使新生成或上传的附件显示出来
+    // 刷新附件列表 使新生成或上传的附件显示出来
     $("iframeAtt_" + attachmentid).attr('src', $("iframeAtt_" + attachmentid).attr('src'));
     document.getElementById("iframeAtt_" + attachmentid).src = src;
 }
@@ -3744,10 +3784,10 @@ function initSql(me, e) {
 }
 
 /**
- ** 加载完毕之后，执行的操作，请将此函数放到最后。
- **/
+ * * 加载完毕之后，执行的操作，请将此函数放到最后。
+ */
 $(function () {
-    //隐藏搜索框
+    // 隐藏搜索框
     var uid = getUrlParam("uid");
     var flag = getUrlParam("flag");
 
@@ -3757,23 +3797,26 @@ $(function () {
     if (flag && flag != "") {
         $(".appbar-menu").html('');
     }
-    //toolbar按钮的图标变化
-    $('.toolbar_btn').on("mouseenter",function () {
+    // toolbar按钮的图标变化
+    $('.toolbar_btn').on("mouseenter", function () {
         var img = $(this).find('img')[0];
         if (img) {
-            img.src = img.src.replace(".png","_hover.png");
+            img.src = img.src.replace(".png", "_hover.png");
         }
-    }).on("mouseleave",function () {
+    }).on("mouseleave", function () {
         var img = $(this).find('img')[0];
         if (img) {
-            img.src = img.src.replace("_hover.png",".png");
+            img.src = img.src.replace("_hover.png", ".png");
         }
     });
 });
 /**
- *小写金额转大写金额
- * @param dValue  小写金额
- * @param maxDec  小数位数（会四舍五入）
+ * 小写金额转大写金额
+ *
+ * @param dValue
+ *            小写金额
+ * @param maxDec
+ *            小数位数（会四舍五入）
  * @returns {string}
  * @constructor
  */
@@ -3899,14 +3942,10 @@ function AmountInWords(dValue, maxDec) {
 
 function DateAdd(interval, number, date) {
     /*
-     *   功能:日期添加
-     *   参数:interval,字符串表达式，表示要添加的时间间隔.
-     *   参数:number,数值表达式，表示要添加的时间间隔的个数.
-     *   参数:date,时间对象.
-     *   返回:新的时间对象.
-     *   var   now   =   new   Date();
-     *   var   newDate   =   DateAdd( "d",5,now);
-     *---------------   DateAdd(interval,number,date)   -----------------
+     * 功能:日期添加 参数:interval,字符串表达式，表示要添加的时间间隔. 参数:number,数值表达式，表示要添加的时间间隔的个数.
+     * 参数:date,时间对象. 返回:新的时间对象. var now = new Date(); var newDate = DateAdd(
+     * "d",5,now); --------------- DateAdd(interval,number,date)
+     * -----------------
      */
     switch (interval) {
         case   "y"   :
@@ -3974,7 +4013,7 @@ function select2AjaxSelectTag(id, displayvalue, dataattribute, displayname, ajax
     ajaxurl = ajaxurl.replace(/['"]/g, "");
     var formatRepo = function (repo) {
         if (repo.loading) return repo.text;
-        var mark = repo[valueOrAttr]+'-'+repo[displayname];
+        var mark = repo[valueOrAttr] + '-' + repo[displayname];
         return mark;
     };
     var formatRepoSelection = function (repo) {
@@ -4031,8 +4070,10 @@ function select2AjaxSelectTag(id, displayvalue, dataattribute, displayname, ajax
             return markup;
         }, // let our custom formatter work
         minimumInputLength: 1,
-        templateResult: formatRepo, // omitted for brevity, see the source of this page
-        templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
+        templateResult: formatRepo, // omitted for brevity, see the source of
+                                    // this page
+        templateSelection: formatRepoSelection // omitted for brevity, see the
+        // source of this page
     });
 }
 
@@ -4050,8 +4091,9 @@ function initAccountingPlugin() {
     window.accounting = window.accounting || {};
     accounting.settings = {
         currency: {
-            symbol: "￥",   //默认的货币符号 '$'
-            format: "%s%v", // 输出控制: %s = 符号, %v = 值或数字 (can be object: see below)
+            symbol: "￥",   // 默认的货币符号 '$'
+            format: "%s%v", // 输出控制: %s = 符号, %v = 值或数字 (can be object: see
+                            // below)
             decimal: ".",  // 小数点分隔符
             thousand: ",",  // 千位分隔符
             precision: 2   // 小数位数
@@ -4066,6 +4108,7 @@ function initAccountingPlugin() {
 
 /**
  * 执行Action中的方法
+ *
  * @param me
  * @param e
  */
@@ -4073,6 +4116,9 @@ function executActionMethod(me, e) {
     var actionurl = $(me).attr('url');
     if (actionurl == undefined || actionurl == '') {
         return;
+    }
+    if ($(me).attr('disabled')=='true'){
+    	return;
     }
     $(me).attr('disabled', "true");
     var msgid = $(me).attr("msgid");
@@ -4110,7 +4156,10 @@ function executActionMethod(me, e) {
 
 }
 
-//动态设置必填或只读
+function executeaction(me,e){
+	executActionMethod(me,e);
+}
+// 动态设置必填或只读
 function setRequiredOrNot(me, isrequired, type) {
     var $me = $(me);
     var a = function (ee) {
@@ -4145,7 +4194,7 @@ function setRequiredOrNot(me, isrequired, type) {
             setRequied(me);
         } else if ('lookup' == type) {
             var $lookup = $("#" + ($me.attr("id") + "_DESC"));
-            //$(me).parent().prev().attr("class","form_td_label required");
+            // $(me).parent().prev().attr("class","form_td_label required");
             $me.parent().children().each(function (i, e) {
                 if ($(e).attr("id") != $lookup.attr("id")) {
                     $(e).show();
@@ -4219,21 +4268,21 @@ function setRequiredOrNot(me, isrequired, type) {
 }
 
 /**
- * 手动处理table标签BUG问题，
- * 当table标签是子表时，手动控制只读，并隐藏title按钮
+ * 手动处理table标签BUG问题， 当table标签是子表时，手动控制只读，并隐藏title按钮
+ *
  * @param $table
  */
 function setChildTableReadOnly($table) {
     var $dataTr = $("tbody tr", $table);
     var $thead = $("thead tr", $table);
     if ($thead.length > 0) {
-        //隐藏title按钮
+        // 隐藏title按钮
         $("thead>tr:first", $table).hide();
         $("thead>tr:first", $table).next().hide();
     }
     if ($dataTr.length > 0) {
-        //隐藏输入框，加入span 文本过多时现实title显示
-        //有的input需要显示出来，请自己在界面中给该input的父td加上useful属性
+        // 隐藏输入框，加入span 文本过多时现实title显示
+        // 有的input需要显示出来，请自己在界面中给该input的父td加上useful属性
         $("input", $table).each(function (idx, ele) {
             var useful = $(this).closest("td").attr("useful");
             var type = $(this).attr("type");
@@ -4247,14 +4296,14 @@ function setChildTableReadOnly($table) {
                 }
             }
         });
-        //隐藏操作标题
+        // 隐藏操作标题
         $("thead>tr>th", $table).each(function (idx, ele) {
             var dataattribute = $(this).attr("dataattribute");
             if (undefined == dataattribute || "" == dataattribute) {
                 $(this).hide();
             }
         });
-        //隐藏操作按钮
+        // 隐藏操作按钮
         $("tbody>tr>td", $table).each(function (idx, ele) {
             var dataattribute = $(this).attr("dataattribute");
             var tdSelects = $("select", $(this));
@@ -4274,7 +4323,7 @@ function setChildTableReadOnly($table) {
     initAccountingPlugin();
     $.extend($.fn, {
         /**
-         * fn为回调函数  可选
+         * fn为回调函数 可选
          */
         mask: function (msgobj, maskDivClass, fn) {
             this.unmask();
@@ -4312,7 +4361,7 @@ function setChildTableReadOnly($table) {
                 opacity: 0
             });
             maskDiv.appendTo(original);
-            //重新设置大小
+            // 重新设置大小
             $(window).resize(function () {
                 var maskDiv = $("#maskdivgen");
                 var maskWidth = original.outerWidth();
@@ -4330,7 +4379,7 @@ function setChildTableReadOnly($table) {
                 var usefulHeight = window.screen.availHeight;
                 msgDiv.css({left: (widthspace / 2) + 'px', top: (usefulHeight / 2 + scrolltop - 150) + 'px'});
             });
-            //跟随滚动条
+            // 跟随滚动条
             $(window).scroll(function () {
                 var maskDiv = $("#maskdivgen");
                 var msgDiv = $("#msgDiv");
@@ -4418,8 +4467,8 @@ function setChildTableReadOnly($table) {
                                 p.queue("mx", arr);
                             }
                             p.dequeue("mx");
-                        }, delay)
-                    })
+                        }, delay);
+                    });
                 })(i);
             }
             p.queue("mx", arr);
@@ -4447,7 +4496,7 @@ $(function () {
     });
 });
 
-//layout tag
+// layout tag
 function createLayout(layoutId) {
     var $layoutContainer = $("#" + layoutId);
     var options = getLayoutOptions($layoutContainer);
@@ -4483,7 +4532,7 @@ function getLayoutOptions($container) {
     });
     return options;
 }
-//当ui.layout一开始是隐藏的时候，在显示的时候需要进行resizeAll
+// 当ui.layout一开始是隐藏的时候，在显示的时候需要进行resizeAll
 function resizeLayout($parent, beforeResize) {
     var layout = $parent.find(".ui-layout-container.panel").data("layout");
     if (layout) {
@@ -4496,13 +4545,13 @@ function resizeLayout($parent, beforeResize) {
 
 function loadingMask(element, isFloat) {
     if (isFloat) {
-        //适合有一定高度的
+        // 适合有一定高度的
         element.mask({
             element: '<div class="loading-mask float-loading-mask"><span class="loading"></span></div>'
-        })
+        });
     } else {
-        //适合高度为0的
-        element.html('<div class="loading-mask empty-loading-mask"><span class="loading"></span></div>')
+        // 适合高度为0的
+        element.html('<div class="loading-mask empty-loading-mask"><span class="loading"></span></div>');
     }
 }
 
@@ -4515,7 +4564,7 @@ function loadingUnmask(element) {
     }
 }
 
-//tree标签加载数据前进行预处理
+// tree标签加载数据前进行预处理
 function processTreeNode(treeNode) {
     return treeNode;
 }

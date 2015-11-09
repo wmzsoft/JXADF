@@ -21,8 +21,25 @@ $author:wmzsoft@gmail.com
 <#if params.rowspan??>
     <#lt> rowspan="${params.rowspan?html}" valign="middle"<#rt/>
 </#if>
-        >
-<#assign selectid = "${params.id!'st'}_${jbo_index}_select" >
+><#t>
+<#if (params.readonly!false)>
+    <#if ((selected??) && (params.selected??) )>
+         <#assign wc>
+             <#if (params.wherecause??)>
+                 <#lt>${params.wherecause} and <#rt>
+             </#if>
+             <#lt> ${params.displayvalue}=?<#rt>
+         </#assign>
+         <#assign p=[selected]>
+         <#assign colDataValue=(jbo.findDataAttributeValue(params.jboname!,wc!,p,params.displayname))!selected>
+        <#if (col.parameters.mxevent??)>
+            <#include "table-tbody-col-mxevent.ftl">
+        <#else>
+            ${colDataValue!selected}<#t>
+        </#if>
+    </#if>    
+<#else>
+    <#assign selectid = "${params.id!'st'}_${jbo_index}_select" >
     <select onChange="tableSelectChange(this,event);" id="${selectid}" changed="0"<#rt/>
     <#if (avisible==false) >
         <#lt> style="display:none" <#t>
@@ -80,8 +97,6 @@ $author:wmzsoft@gmail.com
     <#else>
         <#if (params.readonly!false)>
             <#lt> disabled <#rt>
-        <#elseif (jbo.isReadonly()) || jbo.isReadonly(params.dataattribute)>
-            <#lt> disabled <#rt>
         </#if>
     </#if>
     <#if (parameters.required!false) >
@@ -97,7 +112,7 @@ $author:wmzsoft@gmail.com
             <#if item.key=='null'>
                 <option value="" <#rt>
             <#else>
-                    <option value="${item.key}" <#rt>
+                <option value="${item.key}" <#rt>
             </#if>
             <#if ((selected!'')==item.key)>
                 <#lt>  selected="selected"<#t>
@@ -115,11 +130,11 @@ $author:wmzsoft@gmail.com
                         <#lt> selected="selected"<#t>
                         <#assign aSelected=1>
                     </#if>
-                        ><#t>
-			<#if (params.displayname??)>
-                ${jbo.getString(params.displayname)}<#t>
+                ><#t>
+			    <#if (params.displayname??)>
+                    ${jbo.getString(params.displayname)!''}<#t>
                 <#else>
-                ${colDataValue}<#t>
+                    ${colDataValue}<#t>
                 </#if>
                 </option><#t>
             </#if>
@@ -129,7 +144,16 @@ $author:wmzsoft@gmail.com
     <#if (aSelected==0)>
         <#assign selectedList = (selected?split(",")) >
         <#list selectedList as sl>
-            <option value="${sl}" selected>${sl}</option><#t>
+            <#if (jbo?? && params.jboname?? && params.displayvalue?? && params.displayname??)>
+                <#assign dp=[sl]>
+                <#if (params.wherecause??)>
+                    <#assign wc=params.wherecause+" and "+params.displayvalue+"=?">
+                <#else>
+                    <#assign wc=params.displayvalue+"=?">
+                </#if>
+                <#assign dname=(jbo.findDataAttributeValue(params.jboname,wc,dp,params.displayname)!sl)>
+            </#if>
+            <option value="${sl}" selected>${dname!sl}</option><#t>
             <#assign aSelected=1>
         </#list>
     </#if>
@@ -153,4 +177,5 @@ $author:wmzsoft@gmail.com
             });
         </script>
     </#if>
+</#if>
 </td>

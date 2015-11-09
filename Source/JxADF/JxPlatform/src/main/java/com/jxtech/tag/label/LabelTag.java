@@ -21,6 +21,8 @@ public class LabelTag extends JxBaseUITag {
     protected JboIFace jbo;
     protected String dataattribute;
     private Object dataValue;
+    protected String labeltip;//标签提示
+    protected String valuetip;//值的提示
 
     @Override
     public Component getBean(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
@@ -35,6 +37,8 @@ public class LabelTag extends JxBaseUITag {
         lab.setType(type);
         lab.setValue(value);
         lab.setDataattribute(dataattribute);
+        lab.setLabeltip(labeltip);
+        lab.setValuetip(valuetip);
         dataValue = null;
         Tag tag = findAncestorWithClass(this, FormTag.class);
         try {
@@ -83,6 +87,22 @@ public class LabelTag extends JxBaseUITag {
 
     public void setDataValue(Object dataValue) {
         this.dataValue = dataValue;
+    }
+
+    public String getLabeltip() {
+        return labeltip;
+    }
+
+    public void setLabeltip(String labeltip) {
+        this.labeltip = labeltip;
+    }
+
+    public String getValuetip() {
+        return valuetip;
+    }
+
+    public void setValuetip(String valuetip) {
+        this.valuetip = valuetip;
     }
 
 }

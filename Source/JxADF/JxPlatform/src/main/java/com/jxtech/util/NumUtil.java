@@ -42,7 +42,7 @@ public class NumUtil {
      * 
      * @param a 记录数
      * @param b 页面大小
-     * @return
+     * @return 页数
      */
     public static int getPageSize(int a, String b) {
         int c = 0;

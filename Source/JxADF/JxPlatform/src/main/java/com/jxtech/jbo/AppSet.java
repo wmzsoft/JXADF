@@ -27,7 +27,7 @@ public class AppSet {
     // 当前App应用
     private App app;
 
-    public final static int MAX_APPS = 10;// 最大同时支持多少个应用程序
+    public final static int MAX_APPS = 50;// 最大同时支持多少个应用程序
 
     public void putApp(String appName, String appType) throws JxException {
         if (StrUtil.isNull(appName)) {
@@ -52,8 +52,7 @@ public class AppSet {
             return;
         }
         // 2.不存在，新建APP
-        app = new App(appName);
-        app.setAppType(appType);
+        app = new App(appName, appType);
         list.add(0, key);// 插入到第一个
         applist.put(key, app);
         int size = list.size();
@@ -94,7 +93,7 @@ public class AppSet {
         }
         if (app != null) {
             if (app.getJboset() == null) {
-                app = new App(app.getAppName());
+                app = new App(app.getAppName(), app.getAppNameType());
                 applist.put(app.getAppNameType(), app);
             }
         }
@@ -127,7 +126,7 @@ public class AppSet {
         App a = applist.get(key);
         if (a != null) {
             if (a.getJboset() == null) {
-                a = new App(a.getAppName());
+                a = new App(a.getAppName(), a.getAppType());
                 applist.put(key, a);
             }
         }
@@ -144,7 +143,7 @@ public class AppSet {
         App a = applist.get(appNameType.toUpperCase());
         if (a != null) {
             if (a.getJboset() == null) {
-                a = new App(a.getAppName());
+                a = new App(a.getAppName(), a.getAppType());
                 applist.put(appNameType.toUpperCase(), a);
             }
         } else if (list != null) {

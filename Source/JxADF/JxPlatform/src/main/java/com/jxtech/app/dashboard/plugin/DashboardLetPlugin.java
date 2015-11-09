@@ -2,30 +2,24 @@ package com.jxtech.app.dashboard.plugin;
 
 import java.util.Map;
 
+import com.jxtech.i18n.JxLangResourcesUtil;
+import com.jxtech.util.StrUtil;
+import com.jxtech.util.SysPropertyUtil;
+
 /**
  * Created by chenxiaomin@jxtech.net on 2015/1/27.
  */
 public abstract class DashboardLetPlugin implements IDashboardLetPlugin {
 
     @Override
-    public abstract String getArtifactId();
-
-    @Override
-    public abstract String getTitle();
-
-    @Override
     public String getPreview() {
-        return "/jxweb/static/" + getArtifactId() + "/preview/let.png";
-    }
-
-
-    public abstract String getType();
-    public String getContent() {
-        return "/jxweb/" + getArtifactId() + "/index.action";
+        return StrUtil.contact(SysPropertyUtil.getBase(), "/static/", getArtifactId(), "/preview/let.png");
     }
 
     @Override
-    public abstract String getDescription();
+    public String getContent() {
+        return StrUtil.contact(SysPropertyUtil.getBase(), "/", getArtifactId(), "/index.action");
+    }
 
     @Override
     public String getLetData(Map<String, String> paramMap) {
@@ -40,21 +34,34 @@ public abstract class DashboardLetPlugin implements IDashboardLetPlugin {
         data.append(paramMap.get("DBNUM")).append("_").append(paramMap.get("DBLETNUM"));
         data.append("', ");
         data.append("title : '");
-        data.append(getTitle().equals("") ? "插件无标题" : getTitle());
+        String title = getTitle();
+        if (StrUtil.isNull(title)) {
+            title = JxLangResourcesUtil.getString("com.jxtech.app.dashboard.plugin.DashboardLetPlugin.getLetData.title");
+        }
+        data.append(title);
         data.append("', ");
         data.append("description : '");
-        data.append(getDescription().equals("") ? "插件无描述" : getDescription());
+        String desc = getDescription();
+        if (StrUtil.isNull(desc)) {
+            desc = JxLangResourcesUtil.getString("com.jxtech.app.dashboard.plugin.DashboardLetPlugin.getLetData.description");
+        }
+        data.append(desc);
         data.append("', ");
         data.append("type : '");
-        data.append(getType().equals("") ? "" : getType());
+        String type = getType();
+        if (!StrUtil.isNull(type)) {
+            data.append(type);
+        }
         data.append("', ");
         data.append("content : '");
-        data.append(getContent().equals("") ? "" : getContent());
+        String content = this.getContent();
+        if (!StrUtil.isNull(content)) {
+            data.append(content);
+        }
         data.append("'}");
 
         return data.toString();
 
     }
-
 
 }

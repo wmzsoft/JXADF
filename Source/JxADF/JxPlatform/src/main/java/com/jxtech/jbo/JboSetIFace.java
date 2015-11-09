@@ -24,15 +24,16 @@ import java.util.Map;
  * @date 2013.08
  */
 public interface JboSetIFace extends Serializable {
-    
-    //健新工作流名称
+
+    // 健新工作流名称
     public static final String BPM_JX = "JXBPM";
 
-    //Oracle 工作流名称
+    // Oracle 工作流名称
     public static final String BPM_ORACLE = "OBPM";
-    
-    //Activiti工作流名称 
+
+    // Activiti工作流名称
     public static final String BPM_ACTIVITI = "ACTIVITI";
+
     /**
      * 如果要添加业务逻辑，请继承此方法。
      * 
@@ -210,10 +211,10 @@ public interface JboSetIFace extends Serializable {
     public String getWorkflowId() throws JxException;
 
     public void setWorkflowId(String wfId);
-    
+
     public String getWorkflowEngine() throws JxException;
-    
-    public void setWorkflowEngine(String workflowEngine) ;
+
+    public void setWorkflowEngine(String workflowEngine);
 
     /**
      * 发送工作流
@@ -238,6 +239,42 @@ public interface JboSetIFace extends Serializable {
     public void expMpp(ProjectFile project, Map<String, String> paramMap, Map<String, String> initMap) throws JxException;
 
     public void setRequired(boolean required);
+
+    /**
+     * 设定字段的readonly属性
+     * 
+     * @param dataattribute
+     * @param readonly
+     * @throws JxException
+     */
+    public void setReadonly(String dataattribute, boolean readonly) throws JxException;
+
+    /**
+     * 某字段的只读属性
+     * 
+     * @param dataattribute
+     * @return
+     * @throws JxException
+     */
+    public boolean isReadonly(String dataattribute) throws JxException;
+
+    /**
+     * 设定字段的必填属性
+     * 
+     * @param dataattribute
+     * @param required
+     * @throws JxException
+     */
+    public void setRequired(String dataattribute, boolean required) throws JxException;
+
+    /**
+     * 某字段是否必填的属性
+     * 
+     * @param dataattribute
+     * @return
+     * @throws JxException
+     */
+    public boolean isRequired(String dataattribute) throws JxException;
 
     public boolean isRequired();
 
@@ -350,7 +387,7 @@ public interface JboSetIFace extends Serializable {
      * @return
      * @throws JxException
      */
-    public List<JboIFace> getTree(String parentName, String parentValue, String idName,boolean includeSelf) throws JxException;
+    public List<JboIFace> getTree(String parentName, String parentValue, String idName, boolean includeSelf) throws JxException;
 
     /**
      * 直接根据条件删除数据
@@ -372,4 +409,13 @@ public interface JboSetIFace extends Serializable {
      * @throws JxException
      */
     public boolean delete(String whereCause, Object[] params) throws JxException;
+
+    /**
+     * 获得序列的名字
+     * 
+     * @param columnName 字段名，为空，则表示唯一一个序列
+     * @return 返回序列名称
+     * @throws JxException
+     */
+    public String getSequenceName(String columnName) throws JxException;
 }

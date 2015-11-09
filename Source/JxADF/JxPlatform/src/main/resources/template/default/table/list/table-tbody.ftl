@@ -131,19 +131,6 @@ $author:wmzsoft@gmail.com
                                     ><#t>
                             </#if>
                         <#-- 显示 <TD> END 75. -->
-
-                        <#--拆分、拼凑Request传参-->
-                            <#assign requestParams>
-                                <#if (col.parameters.allUrlParams??)>
-                                    <#list col.parameters.allUrlParams as item>
-                                    ${item.key}=${(jbo.getURLString(item.value!'')!'')?url}<#t>
-                                        <#lt><#if item_has_next>&</#if><#rt>
-                                    </#list>
-                                <#else>
-                                    <#lt>${jbo.getURLString(col.parameters.urlParamValue!'')!''}<#rt>
-                                </#if>
-                            </#assign>
-                        <#--拆分、拼凑Request传参 END-->
                         <#-- 显示值 Begin 108 -->
                         ${col.parameters.startHtml!''}<#t>
                             <#include "table-tbody-col-secondAttributes.ftl"><#t>

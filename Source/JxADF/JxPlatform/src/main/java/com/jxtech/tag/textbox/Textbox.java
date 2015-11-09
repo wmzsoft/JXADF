@@ -47,6 +47,11 @@ public class Textbox extends JxBaseUIBean {
     private String appName; // 应用名称
     private String maxtype;// 数据类型
     private String buttonType;// 输入框后面需要跟的按钮类型，为DATE、DATETIME、TIME，为空，表示不跟，这是一个计算值
+    protected String urlParamValue;// 采用LINK渲染的时候，URL的参数值
+    protected String urlTarget;// 采用Link渲染的时候，链接的Target
+    protected String labeltip;// label的提示文字
+    protected String valuetip;// 值的提示文字
+    protected boolean isInput;//采用Input控件，还是Textarea控件
 
     public Textbox(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
         super(stack, request, response);
@@ -82,8 +87,15 @@ public class Textbox extends JxBaseUIBean {
         addParameter("queryValue2", queryValue2);
         addParameter("columnAttribute", columnAttribute);
         addParameter("format", format);
+        addParameter("isInput",isInput);
         if (maxtype != null) {
             addParameter("maxtype", maxtype);
+        }
+        if (labeltip != null) {
+            addParameter("labeltip", labeltip);
+        }
+        if (valuetip != null) {
+            addParameter("valuetip", valuetip);
         }
         if (buttonType != null) {
             addParameter("buttonType", buttonType);
@@ -126,44 +138,22 @@ public class Textbox extends JxBaseUIBean {
         if (render != null) {
             addParameter("render", findString(render).toUpperCase());
         }
-
+        if (urlParamValue != null) {
+            addParameter("urlParamValue", urlParamValue);
+        }
+        if (urlTarget != null) {
+            addParameter("urlTarget", findString(urlTarget));
+        }
         if (jbo != null) {
-            if (renderExtends != null) {
-                addParameter("renderExtends", findString(ELUtil.parseJboElValue(jbo, renderExtends)));
-            }
-
             addParameter("jbo", jbo);
-
-            /*try {
-
-                JboValue value = jbo.getValue(dataattribute, false);
-
-                if (!StrUtil.isNull(required)) {
-                    if ("FALSE".equalsIgnoreCase(required)) {
-                        addParameter("required", false);
-                    } else if ("TRUE".equalsIgnoreCase(required)) {
-                        addParameter("required", true);
-                    } else {
-                        if (null != value) {
-                            addParameter("required", value.isRequired());
-                        }
-                    }
-                } else {
-                    if (null != value) {
-                        addParameter("required", value.isRequired());
-                    }
-                }
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }*/
-
-        } else {
-            if (renderExtends != null) {
+        }
+        if (renderExtends != null) {
+            if (jbo != null) {
+                addParameter("renderExtends", findString(ELUtil.parseJboElValue(jbo, renderExtends)));
+            } else {
                 addParameter("renderExtends", findString(renderExtends));
             }
         }
-
         addParameter("label", getI18NValue(label));
 
         if (!StrUtil.isNull(appName)) {
@@ -292,5 +282,25 @@ public class Textbox extends JxBaseUIBean {
 
     public void setMaxtype(String maxtype) {
         this.maxtype = maxtype;
+    }
+
+    public void setUrlParamValue(String urlParamValue) {
+        this.urlParamValue = urlParamValue;
+    }
+
+    public void setUrlTarget(String urlTarget) {
+        this.urlTarget = urlTarget;
+    }
+
+    public void setLabeltip(String labeltip) {
+        this.labeltip = labeltip;
+    }
+
+    public void setValuetip(String valuetip) {
+        this.valuetip = valuetip;
+    }
+
+    public void setInput(boolean isInput) {
+        this.isInput = isInput;
     }
 }

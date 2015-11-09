@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  * 描述单个应用程序的所有信息
- *
+ * 
  * @author wmzsoft@gmail.com
  * @date 2013.08
  */
@@ -42,8 +42,9 @@ public class App {
 
     private Map<String, App> refApp = new HashMap<String, App>();
 
-    public App(String appname) throws JxException {
+    public App(String appname, String appType) throws JxException {
         this.appName = appname;
+        this.appType = appType;
         jxapps = JxAppsDao.getApp(appname);
         if (jxapps != null && jxapps.getMaintbname() != null) {
             jboset = JboUtil.getJboSet(jxapps.getMaintbname());
@@ -68,7 +69,7 @@ public class App {
 
     /**
      * 上一条
-     *
+     * 
      * @return
      * @throws JxException
      */
@@ -91,7 +92,7 @@ public class App {
 
     /**
      * 上一条
-     *
+     * 
      * @return
      * @throws JxException
      */
@@ -114,7 +115,7 @@ public class App {
 
     /**
      * 回滚数据
-     *
+     * 
      * @return
      * @throws JxException
      */
@@ -145,7 +146,7 @@ public class App {
 
     /**
      * 导出之前预处理一下 检查数据是否过多 提示页面是否导出
-     *
+     * 
      * @return 是否需要提示
      * @throws JxException
      */
@@ -153,7 +154,7 @@ public class App {
         if (jboset == null) {
             throw new JxException(JxLangResourcesUtil.getString("app.jboset.null.preexpexcel.failure"));
         }
-        //这里暂时写500行  以后扩展到配置文件里面配置
+        // 这里暂时写500行 以后扩展到配置文件里面配置
         int count = jboset.getCount();
         return count >= 500 ? count : 0;
     }
@@ -167,7 +168,7 @@ public class App {
 
     /**
      * 设定主记录的字段值
-     *
+     * 
      * @param attributeName
      * @param value
      * @return
@@ -221,12 +222,12 @@ public class App {
 
     /**
      * 用于设定子表中某字段的值
-     *
+     * 
      * @param jboname
      * @param relationship
-     * @param uid           子表的唯一关键字
+     * @param uid 子表的唯一关键字
      * @param attributeName 字段名
-     * @param value         字段值
+     * @param value 字段值
      * @return
      * @throws JxException
      */
@@ -258,7 +259,7 @@ public class App {
 
     /**
      * 通过联系名，找到对应的子记录集
-     *
+     * 
      * @param parent
      * @param relationship
      * @return
@@ -269,10 +270,10 @@ public class App {
 
     /**
      * 通过联系名，找到对应的子记录集
-     *
+     * 
      * @param parent
      * @param relationship
-     * @param flag         参见：JxConstant.READ_XXX
+     * @param flag 参见：JxConstant.READ_XXX
      * @return
      * @throws JxException
      */
@@ -350,7 +351,7 @@ public class App {
 
     /**
      * 加载导入文件
-     *
+     * 
      * @param importFileResult LinkedList 有序
      * @return
      */
@@ -371,7 +372,7 @@ public class App {
 
     /**
      * 在发送工作流页面初始化的时候获取当前应用的工作流参数(主要用来扩展工作流发送界面）
-     *
+     * 
      * @return
      * @throws JxException
      */
@@ -383,7 +384,7 @@ public class App {
 
     /**
      * 在发送工作流页面初始化的时候获取当前应用的工作流参数(主要用来扩展工作流发送界面,这个给康拓扑那边的应用调用）
-     *
+     * 
      * @param jbo
      * @return WorkflowInfo
      * @throws JxException

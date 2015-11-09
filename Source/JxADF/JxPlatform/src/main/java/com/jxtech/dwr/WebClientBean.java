@@ -82,7 +82,8 @@ public class WebClientBean {
         if (app != null) {
             return app.save();
         } else {
-            throw new JxException("获得app出错，没有找到应用程序：" + appNameType);
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.appnull", new Object[]{appNameType});
+            throw new JxException(msg);
         }
     }
 
@@ -97,7 +98,8 @@ public class WebClientBean {
         if (app != null) {
             return app.previous();
         } else {
-            throw new JxException("获得app出错，没有找到应用程序：" + appNameType);
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.appnull", new Object[]{appNameType});
+            throw new JxException(msg);
         }
     }
 
@@ -112,7 +114,8 @@ public class WebClientBean {
         if (app != null) {
             return app.next();
         } else {
-            throw new JxException("获得app出错，没有找到应用程序：" + appNameType);
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.appnull", new Object[]{appNameType});
+            throw new JxException(msg);
         }
     }
 
@@ -128,7 +131,8 @@ public class WebClientBean {
         if (app != null) {
             return app.rollback();
         } else {
-            throw new JxException("获得app出错，没有找到应用程序：" + appNameType);
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.appnull", new Object[]{appNameType});
+            throw new JxException(msg);
         }
     }
 
@@ -183,7 +187,8 @@ public class WebClientBean {
         if (null != app) {
             return app.canJboSetAdd();
         } else {
-            throw new JxException("新增记录失败，没有找到对应的应用，请重新登录之后再试。");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.canJboSetAdd.notFoundApp", new Object[]{appNameType});
+            throw new JxException(msg);
         }
     }
 
@@ -199,13 +204,15 @@ public class WebClientBean {
         if (app != null) {
             return app.add();
         } else {
-            throw new JxException("新增记录失败，没有找到对应的应用，请重新登录之后再试。");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.add.notFoundApp", new Object[]{appNameType});
+            throw new JxException(msg);
         }
     }
 
     public boolean delList(String jboname, String uids) throws JxException {
         if (StrUtil.isNull(jboname) || StrUtil.isNull(uids)) {
-            throw new JxException("未选择记录或系统错误。");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.delList.notFound");
+            throw new JxException(msg);
         }
         JboSetIFace js = JboUtil.getJboSet(jboname);
         if (js != null) {
@@ -224,14 +231,16 @@ public class WebClientBean {
      */
     public boolean checkJboOwer(String jboname, String uids) throws JxException {
         if (StrUtil.isNull(jboname) || StrUtil.isNull(uids)) {
-            throw new JxException("未选择记录或系统错误。");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.delList.notFound");
+            throw new JxException(msg);
         }
         String[] uidArray = uids.split(",");
         JxUserInfo user = JxSession.getJxUserInfo();
         for (int i = 0; i < uidArray.length; i++) {
             JboIFace jbo = JboUtil.getJbo(jboname, "", uidArray[i]);
             if (!(user.getUserid()).equals(jbo.getObject("CREATOR_ID"))) {
-                throw new JxException("请选择自己创建的记录。");
+                String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.checkJboOwer.selectSelf");
+                throw new JxException(msg);
             }
         }
         return true;
@@ -249,18 +258,22 @@ public class WebClientBean {
      */
     public boolean delRow(String appNameType, String jboname, String relationship, String uid, boolean isDel) throws JxException {
         if (StrUtil.isNull(appNameType)) {
-            throw new JxException("未知应用程序，删除失败。");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.delRow.notFoundApp");
+            throw new JxException(msg);
         }
         if (StrUtil.isNull(uid)) {
-            throw new JxException("记录ID未知，删除失败。");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.delRow.notFoundId");
+            throw new JxException(msg);
         }
         App app = JxSession.getApp(appNameType);
         if (app == null) {
-            throw new JxException("你的应用已失效，请重新登录。\r\n" + appNameType);
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.delRow.notFoundAppSession",new Object[]{appNameType});
+            throw new JxException(msg);
         }
         JboSetIFace js = app.findJboSet(jboname, relationship, JxConstant.READ_CACHE);
         if (js == null) {
-            throw new JxException("没有找到对应的记录集，删除失败。");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.delRow.notFoundSet");
+            throw new JxException(msg);
         }
 
         if (isDel) {
@@ -287,14 +300,17 @@ public class WebClientBean {
     public JboIFace addRow(String appNameType, String jboname, String relationship, String defaultValue) throws JxException {
         App app = JxSession.getApp(appNameType);
         if (app == null) {
-            throw new JxException("你的应用已失效，请重新登录。\r\n" + appNameType);
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.delRow.notFoundAppSession",new Object[]{appNameType});
+            throw new JxException(msg);
         }
         JboSetIFace js = app.findJboSet(jboname, relationship, JxConstant.READ_CACHE);
         if (js == null) {
-            throw new JxException("没有找到对应的记录集，新增失败。");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.addRow.notFoundSet");
+            throw new JxException(msg);
         }
         if (js.isReadonly()) {
-            throw new JxException("当前记录集只读，无法添加记录！");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.addRow.readonly");
+            throw new JxException(msg);
         }
         if (js.canAdd()) {
             JboIFace row = js.add();
@@ -338,10 +354,12 @@ public class WebClientBean {
             if (jbo != null) {
                 return jbo.getString(attributeName, flag);
             } else {
-                throw new JxException("找不到当前的Jbo对象");
+                String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.getString.notFoundJbo",new Object[]{appNameType});
+                throw new JxException(msg);
             }
         } else {
-            throw new JxException("找不到程序APP");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.getString.notFoundApp",new Object[]{appNameType});
+            throw new JxException(msg);
         }
     }
 
@@ -358,7 +376,8 @@ public class WebClientBean {
             return app.setValue(attributeName, value, relationship);
         }
         LOG.info("JxSession.getApp(appNameType) is null. " + appNameType);
-        throw new JxException("没有找到应用程序。");
+        String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.getString.notFoundApp",new Object[]{appNameType});
+        throw new JxException(msg);
     }
 
     /**
@@ -377,7 +396,8 @@ public class WebClientBean {
 
         JboIFace jbo = inputOnBlur(appNameType, attributeName, value, relationship);
         if (null == jbo) {
-            throw new JxException("获取数据失败。");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.inputOnBlur2.notFoundJbo",new Object[]{appNameType});
+            throw new JxException(msg);
         }
         return jbo;
     }
@@ -420,12 +440,14 @@ public class WebClientBean {
             LOG.debug(appNameType + ",cause=" + cause + ",value=" + value);
             JboSetIFace jboset = app.findJboSet(null, relationship);
             if (jboset == null) {
-                throw new JxException("没有对应的jboset，不知查询哪里：relationship=" + relationship + ",cause=" + cause);
+                String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.inputQueryOnBlur.notFoundJbo",new Object[]{appNameType,relationship,cause});
+                throw new JxException(msg);
             }
             DataQueryInfo qi = jboset.getQueryInfo();
             qi.getParams().put(cause, value);
         } else {
-            throw new JxException("没有正确设置查询属性：" + appNameType + "," + cause + ",value=" + value);
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.inputQueryOnBlur.notFoundApp",new Object[]{appNameType,relationship,cause,value});
+            throw new JxException(msg);
         }
     }
 
@@ -434,12 +456,14 @@ public class WebClientBean {
         if (app != null) {
             JboSetIFace jboset = app.findJboSet(null, relationship);
             if (jboset == null) {
-                throw new JxException("没有对应的jboset，不知查询哪里：relationship=" + relationship);
+                String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.searchClear.notFoundJbo",new Object[]{appNameType,relationship});
+                throw new JxException(msg);
             }
             DataQueryInfo qi = jboset.getQueryInfo();
             qi.getParams().clear();
         } else {
-            throw new JxException("没有正确得到APP信息。appNameType=" + appNameType);
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.searchClear.notFoundApp",new Object[]{appNameType,relationship});
+            throw new JxException(msg);
         }
     }
 
@@ -448,7 +472,8 @@ public class WebClientBean {
         if (app != null) {
             app.setValue(attributeName, value, "");
         } else {
-            throw new JxException("没有找到对应的应用程序，请重新登录。");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.notFoundApp1",new Object[]{appNameType});
+            throw new JxException(msg);
         }
     }
 
@@ -471,9 +496,9 @@ public class WebClientBean {
             } else {
                 app.setValue(jboname, relationship, uid, attributeName, value);
             }
-
         } else {
-            throw new JxException("没有找到对应的应用程序，请重新登录。");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.notFoundApp1",new Object[]{appNameType});
+            throw new JxException(msg);
         }
     }
 
@@ -600,7 +625,8 @@ public class WebClientBean {
                 return false;
             }
         } else {
-            throw new JxException("没有找到对应的应用，请重新登录之后再试。");
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.notFoundApp1",new Object[]{appNameType});
+            throw new JxException(msg);
         }
     }
 
@@ -687,8 +713,8 @@ public class WebClientBean {
                 return jbo;
             }
         }
-
-        throw new JxException("无法找到对应【" + jboname + "】的应用，请重新登录后在尝试！");
+        String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.notFoundJbo2",new Object[]{appNameType,jboname});
+        throw new JxException(msg);
     }
 
     /**

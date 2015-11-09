@@ -16,7 +16,7 @@ import java.util.Map;
  * @author wmzsoft@gmail.com
  * @date 2014.11
  */
-public class VirtualJbo extends BaseJbo {
+public  class VirtualJbo extends BaseJbo {
 
     private static final long serialVersionUID = -7118400319445392043L;
 
@@ -110,6 +110,12 @@ public class VirtualJbo extends BaseJbo {
 
     @Override
     public String getWorkflowInstanceId() throws JxException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getInternalStaus(String domainid) throws JxException {
         // TODO Auto-generated method stub
         return null;
     }

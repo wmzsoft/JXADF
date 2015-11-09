@@ -101,17 +101,23 @@
                     <jxui:section type="edit">
                         <jxui:sectionrow>
                             <jxui:textbox dataattribute="NAME" required="true"/>
-                            <jxui:textbox dataattribute="DEPARTMENT_CODE" required="false"/>
+														<jxui:select label="{app.pubdepartment.LEADER}"
+														        dataattribute="leader"
+														        jboname="pub_user"
+														        displayname="displayname" displayvalue="user_id"
+                                    ajax="app.action?app=pubdepartment&type=user-list"
+														         />     
                         </jxui:sectionrow>
 
                         <jxui:sectionrow>
                             <jxui:multipartTextbox dataattribute="SUPER_DEPARTMENT_ID"
                                                    id="deptId"
                                                    descdataattribute="PUB_DEPARTMENTSUPER_DEPARTMENT_ID.NAME"/>
-                            <jxui:select options='0:无效,1:有效' dataattribute="STATE"/>
+                            <jxui:checkbox dataattribute="STATE" label="{app.pubdepartment.STATE}"/>
                         </jxui:sectionrow>
                         <jxui:sectionrow>
-                            <jxui:textbox dataattribute="DESCRIPTION" colspan="3" rows="2"/>
+                            <jxui:textbox dataattribute="DEPARTMENT_CODE" required="false"/>
+                            <jxui:textbox dataattribute="DESCRIPTION"/>
                         </jxui:sectionrow>
                                     <jxui:sectionrow>
 																			<jxui:select label="{app.pubdepartment.PUB_USER.ORGID}"

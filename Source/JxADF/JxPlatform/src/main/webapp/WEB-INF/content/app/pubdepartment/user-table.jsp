@@ -1,7 +1,7 @@
 ﻿<%@ include file="/WEB-INF/content/common/fragment-header.jsp" %>
 <jxui:table jboname="PUB_USER" id="listtable" selectmode="none"
             relationship="PUB_USERDEPARTMENT_IDP">
-    <jxui:tablecol dataattribute="LOGIN_ID" label="{app.pubdepartment.PUB_USER.LOGIN_ID}" type="link" mxevent="showUser"
+    <jxui:tablecol dataattribute="USER_ID" label="{app.pubdepartment.PUB_USER.USER_ID}" type="link" mxevent="showUser"
                    required="false"/>
     <jxui:tablecol dataattribute="DISPLAYNAME" label="{app.pubdepartment.PUB_USER.DISPLAYNAME}" required="false"/>
     <jxui:tablecol dataattribute="PUB_USERDEPARTMENT_ID.NAME" required="false"

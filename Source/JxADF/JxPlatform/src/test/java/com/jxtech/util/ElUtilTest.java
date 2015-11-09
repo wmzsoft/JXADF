@@ -44,4 +44,28 @@ public class ElUtilTest {
         }
     }
 
+    @Test
+    public void testGetElValueO() {
+        try {
+            JboSetIFace js = new JboSet();
+            JboIFace jbo = js.getJbo(true);
+            Map<String, Object> data = new DataMap<String, Object>();
+            data.put("A", "V1");
+            data.put("B", "V2");
+            data.put("c", 12);
+            jbo.setData(data);
+            String expression = "${ if (jbo.getLong(\"C\") > 10) return true; else return false;}";
+            Object val = ELUtil.getElValueO(js, jbo, null, expression);
+            Assert.assertEquals(true, Boolean.valueOf(val.toString()).booleanValue());
+            expression = "${jbo.getLong(\"C\") > 10}";
+            val = ELUtil.getElValueO(js, jbo, null, expression);
+            Assert.assertEquals(true, Boolean.valueOf(val.toString()).booleanValue());
+            expression = "${return (jbo.getLong(\"C\") > 10)}";
+            val = ELUtil.getElValueO(js, jbo, null, expression);
+            Assert.assertEquals(true, Boolean.valueOf(val.toString()).booleanValue());
+
+        } catch (JxException e) {
+            LOG.error(e.getMessage(), e);
+        }
+    }
 }

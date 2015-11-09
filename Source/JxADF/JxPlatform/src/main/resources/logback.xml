@@ -45,6 +45,7 @@
 	</root>
 
 	<logger name="com.jxtech" level="DEBUG" />
+	<!-- <logger name="com.jxtech" level="DEBUG" />-->
 	<logger name="com.jxtech.jbo.util.DataQuery" level="INFO" />
 	<logger name="com.opensymphony" level="WARN" />
 	<logger name="org.apache" level="WARN" />
