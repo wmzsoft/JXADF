@@ -14,7 +14,6 @@
 	</organization>
 
 	<modules>
-		<module>plugins</module>
 		<module>JxPlatform</module>
 	</modules>
 
