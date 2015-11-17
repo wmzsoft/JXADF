@@ -178,6 +178,9 @@ public class Tablecol extends JxBaseUIBean {
             addParameter("dataname", findString(dataname));
         }
         addParameter("jxattribute", jxattribute);
+        if (jxattribute != null) {
+            addParameter("isBoolean", jxattribute.isBoolean());
+        }
         addParameter("urlType", urlType);
         if (urlParamName != null) {
             addParameter("urlParamName", findString(urlParamName));

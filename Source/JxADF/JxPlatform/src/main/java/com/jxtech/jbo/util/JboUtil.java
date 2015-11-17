@@ -1,5 +1,12 @@
 package com.jxtech.jbo.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.struts2.osgi.DefaultBundleAccessor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jxtech.jbo.App;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSet;
@@ -10,16 +17,10 @@ import com.jxtech.jbo.base.JxObject;
 import com.jxtech.jbo.base.JxObjectDao;
 import com.jxtech.jbo.base.JxTable;
 import com.jxtech.jbo.field.FieldIFace;
+import com.jxtech.tag.table.Table;
 import com.jxtech.util.ClassUtil;
 import com.jxtech.util.ELUtil;
 import com.jxtech.util.StrUtil;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.struts2.osgi.DefaultBundleAccessor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * 处理Jbo的工具类
@@ -83,7 +84,7 @@ public class JboUtil {
         DefaultBundleAccessor bundleAcessor = DefaultBundleAccessor.getInstance();
         if (bundleAcessor != null) {
             Object bobj = ClassUtil.getInstance(className);
-            if ( bobj instanceof JboSetIFace) {
+            if (bobj instanceof JboSetIFace) {
                 try {
                     jboset = (JboSetIFace) bobj;
                 } catch (Exception e) {
@@ -127,69 +128,90 @@ public class JboUtil {
      * @return
      */
     public static JboIFace getSlibingJbo(JboIFace jbo, int slibing) throws JxException {
-        if (null != jbo) {
-            // 这个值有可能是日期格式的
-            Object uidValue = jbo.getUidValue();
-            String jboName = jbo.getJboName();
-            JboSetIFace jboset = JboUtil.getJboSet(jboName);
-            JboSetIFace jboset1 = jbo.getJboSet();
-
-            // 列表定义的排序字段的属性和值
-            String ordername = null;
-            Object value = null;
-            String sorttype = null;
-            JxTable jxtable = jboset1.getJxTable();
-            if (jxtable != null) {
-                App listapp = JxSession.getApp(jxtable.getTableModle().getAppName() + "." + jxtable.getTableModle().getAppType());
-                String orderby = listapp.getJboset().getQueryInfo().getOrderby();
-                if (!StrUtil.isNull(orderby)) {
-                    String strs[] = StringUtils.split(orderby, " ");
-                    if (strs.length == 2) {
-                        sorttype = strs[1];
-                    } else {
-                        sorttype = "ASC";
+        if (jbo == null) {
+            return null;
+        }
+        // 这个值有可能是日期格式的
+        String uidValue = jbo.getUidValue();
+        JboSetIFace jboset = jbo.getJboSet();
+        JxTable jxtable = jboset.getJxTable();
+        if (jxtable != null) {
+            Table table = jxtable.getTableModle();
+            if (table != null) {
+                App listapp = JxSession.getApp(table.getAppName(), table.getAppType());
+                if (listapp != null) {
+                    JboSetIFace listjboset = listapp.getJboset();
+                    if (listjboset != null) {
+                        // 如果得到列表中的记录
+                        List<JboIFace> list = listjboset.getJbolist();
+                        if (list != null) {
+                            int size = list.size();
+                            for (int i = 0; i < size; i++) {
+                                JboIFace ji = list.get(i);
+                                if (StrUtil.equals(uidValue, ji.getUidValue())) {
+                                    if (slibing == JxConstant.SLIBING_PREVIOUS) {
+                                        if (i > 0) {
+                                            return list.get(i - 1);
+                                        }
+                                    } else if (slibing == JxConstant.SLIBING_NEXT) {
+                                        if (i < size - 1) {
+                                            return list.get(i + 1);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        // 上面没有找到对应的记录，需要重新查询
+                        DataQueryInfo ndqi = listjboset.getQueryInfo();
+                        int pagenum = ndqi.getPageNum();
+                        if (slibing == JxConstant.SLIBING_PREVIOUS) {
+                            if (pagenum <= 1) {
+                                LOG.debug("已是第1页，不能再向上翻页了");
+                                return null;
+                            } else {
+                                pagenum = pagenum - 1;
+                            }
+                        } else if (slibing == JxConstant.SLIBING_NEXT) {
+                            pagenum = pagenum + 1;
+                        }
+                        // 设定新的页码
+                        ndqi.setPageNum(pagenum);
+                        List<JboIFace> nlist = listjboset.query();
+                        if (nlist != null && !nlist.isEmpty()) {
+                            if (slibing == JxConstant.SLIBING_PREVIOUS) {
+                                return nlist.get(nlist.size() - 1);// 上一页的最后一条
+                            }
+                            return nlist.get(0);// 下一页的第一条
+                        }
+                        // 经过上面的操作，仍然没有找到，直接退出，找不到了。
+                        return null;
                     }
-                    ordername = StringUtils.upperCase(strs[0]);
-                    value = jbo.getData().get(ordername);
                 }
             }
+        }
 
-            if (null != jboset) {
-                DataQueryInfo dqInfo = new DataQueryInfo();
-                String uidname = null;
-                if (!StrUtil.isNull(ordername) && value != null) {
-                    uidname = ordername;
-                    uidValue = value;
-                } else {
-                    uidname = jbo.getUidName();
-                }
+        // 直接通过UID来判断，查找记录
+        String jboName = jbo.getJboName();
+        JboSetIFace newjboset = JboUtil.getJboSet(jboName);
 
-                if (slibing == JxConstant.SLIBING_PREVIOUS) {
-                    if ("desc".equalsIgnoreCase(sorttype)) {
-                        dqInfo.setWhereCause(uidname + " > ? ");
-                        dqInfo.setOrderby(uidname + " ASC ");
-                    } else {
-                        dqInfo.setWhereCause(uidname + " < ? ");
-                        dqInfo.setOrderby(uidname + " DESC ");
-                    }
-                    dqInfo.setWhereParams(new Object[] { uidValue });
-                } else if (slibing == JxConstant.SLIBING_NEXT) {
-                    if ("desc".equalsIgnoreCase(sorttype)) {
-                        dqInfo.setOrderby(uidname + " DESC ");
-                        dqInfo.setWhereCause(uidname + " < ? ");
-                    } else {
-                        dqInfo.setWhereCause(uidname + " > ? ");
-                        dqInfo.setOrderby(uidname + " ASC ");
-                    }
-                    dqInfo.setWhereParams(new Object[] { uidValue });
-                }
+        if (null != newjboset) {
+            DataQueryInfo dqInfo = newjboset.getQueryInfo();
+            dqInfo.setPageSize(1);// 只查询一条即可
+            String uidname = jbo.getUidName();
+            String uidvalue = jbo.getUidValue();
+            if (slibing == JxConstant.SLIBING_PREVIOUS) {
+                dqInfo.setWhereCause(uidname + " < ? ");
+                dqInfo.setOrderby(uidname + " DESC ");
+                dqInfo.setWhereParams(new Object[] { uidvalue });
+            } else if (slibing == JxConstant.SLIBING_NEXT) {
+                dqInfo.setWhereCause(uidname + " > ? ");
+                dqInfo.setOrderby(uidname + " ASC ");
+                dqInfo.setWhereParams(new Object[] { uidvalue });
+            }
+            List<JboIFace> jbolist = newjboset.query();
 
-                jboset.setQueryInfo(dqInfo);
-                List<JboIFace> jbolist = jboset.query();
-
-                if (jbolist != null && !jbolist.isEmpty()) {
-                    return jbolist.get(0);
-                }
+            if (jbolist != null && !jbolist.isEmpty()) {
+                return jbolist.get(0);
             }
         }
         return null;
@@ -268,7 +290,6 @@ public class JboUtil {
         return fieldIFace;
     }
 
-
     /**
      * 获取在JXVAR表中的配置信息。
      * 
@@ -314,7 +335,7 @@ public class JboUtil {
      * @throws JxException
      */
     public static JboIFace getJboSetIFaceByQuery(String jboName, String whereCause, Object[] params) throws JxException {
-        return findJbo(jboName,whereCause,params);
+        return findJbo(jboName, whereCause, params);
     }
 
     public static JboIFace findJbo(String jboName, String whereCause, Object[] params) throws JxException {

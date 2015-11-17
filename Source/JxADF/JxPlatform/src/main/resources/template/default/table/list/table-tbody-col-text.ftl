@@ -11,7 +11,15 @@
     <#include "table-tbody-col-input.ftl"><#t>
 <#else>
     <#assign ml=(col.parameters.maxlength!200)?number>
-    <#if (((dishtml!false)==true) || (col.parameters.render!'TEXT')=="HTML" )>
+    <#if (col.parameters.isBoolean!false)>
+        <input type="checkbox" class="tdcheck" readonly="readonly"  disabled="disabled"<#rt>
+        <#if (jbo.getString(col.dataattribute)??)>
+            <#if ((jbo.getString(col.dataattribute)!'0')=='1')>
+                <#lt> checked="checked" <#rt>
+            </#if>
+        </#if>
+        /><#t>
+    <#elseif (((dishtml!false)==true) || (col.parameters.render!'TEXT')=="HTML" )>
     <#-- 按HTML风格显示 -->
         <#t>${colDataValue}<#t>
     <#else>

@@ -54,13 +54,19 @@ public class AppbarTag extends JxBaseUITag {
             } catch (JxException e1) {
                 LOG.error(e1.getMessage(), e1);
             }
-            if (jsi != null) {
+            if (jsi instanceof MaxMenuSetIFace) {
                 try {
-
+                    MaxMenuSetIFace mmjsi = (MaxMenuSetIFace) jsi;
                     List<JboIFace> menulist = new ArrayList<JboIFace>();// 下拉菜单选项
                     List<JboIFace> menusToolbar = new ArrayList<JboIFace>();// 工具栏选项
-                    menulist.addAll(((MaxMenuSetIFace) jsi).getMenus(appname, apptype, "LIST", null));
-                    menusToolbar.addAll(((MaxMenuSetIFace) jsi).getMenus(appname, apptype, "TOOLBAR", null));
+                    List<JboIFace> mlist = mmjsi.getMenus(appname, apptype, "LIST", null);
+                    if (mlist != null) {
+                        menulist.addAll(mlist);
+                    }
+                    mlist = mmjsi.getMenus(appname, apptype, "TOOLBAR", null);
+                    if (mlist != null) {
+                        menusToolbar.addAll(mlist);
+                    }
                     // 如果当前jbo是新增的，则不应显示新增按钮
                     App app = JxSession.getMainApp();
                     if (null != app) {
@@ -70,9 +76,9 @@ public class AppbarTag extends JxBaseUITag {
                             if (cJbo.isToBeAdd()) {
                                 cJbo.prepareMaxmenu(menusToolbar, menulist);
                             }
-                            /* 如果jbo是只读模式，将保存与发送按钮移除 删除也移除*/
+                            /* 如果jbo是只读模式，将保存与发送按钮移除 删除也移除 */
                             if (cJbo.isReadonly()) {
-                                String opts[] = {"save", "routeme","del"};
+                                String opts[] = { "save", "routeme", "del" };
                                 cJbo.removeSomeMaxMenu(menusToolbar, Arrays.asList(opts));
                             }
                         }
@@ -93,11 +99,11 @@ public class AppbarTag extends JxBaseUITag {
         }
     }
 
-    public void setHideSearch(String hideSearch){
+    public void setHideSearch(String hideSearch) {
         this.hideSearch = hideSearch;
     }
 
-    public String getHideSearch(){
+    public String getHideSearch() {
         return hideSearch;
     }
 }

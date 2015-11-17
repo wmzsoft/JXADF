@@ -100,6 +100,17 @@ public class JsonJboSet extends VirtualJboSet implements JsonJboSetIFace {
         if (obj != null) {
             listMap = JsonUtil.fromJson((String) obj);
         }
+        if (listMap != null && !listMap.isEmpty()) {
+            Object cnt = listMap.get(0).get("count");
+            if (cnt != null && !"".equals(cnt)) {
+                try {
+                    int count = Integer.parseInt((String) cnt);
+                    this.setCount(count);
+                } catch (Exception e) {
+                    LOG.warn(e.getMessage());
+                }
+            }
+        }
         return listMap;
     }
 

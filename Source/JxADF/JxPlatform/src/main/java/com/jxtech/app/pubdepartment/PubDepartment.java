@@ -32,82 +32,38 @@ public class PubDepartment extends Jbo {
 
     @Override
     public boolean canDelete() throws JxException {
-        boolean b = super.canDelete();
-        if (b) {
-
-            JboSetIFace childDeptSet = getRelationJboSet("PUB_DEPARTMENTSUPER_DEPARTMENT_IDP");
-            List<JboIFace> childs = childDeptSet.getJbolist();
-            if (childs.isEmpty()) {
-                JboSetIFace deptUserJboSet = getRelationJboSet("PUB_USERDEPARTMENT_IDP");
+        if (!super.canDelete()) {
+            return false;
+        }
+        JboSetIFace childDeptSet = getRelationJboSet("PUB_DEPARTMENTSUPER_DEPARTMENT_IDP");
+        List<JboIFace> childs = childDeptSet.getJbolist();
+        if (childs == null) {
+            return true;
+        }
+        if (childs.isEmpty()) {
+            JboSetIFace deptUserJboSet = getRelationJboSet("PUB_USERDEPARTMENT_IDP");
+            if (!deptUserJboSet.getJbolist().isEmpty()) {
+                throw new JxException(JxLangResourcesUtil.getString("app.pubdepartment.DEL.HASUSER"));
+            }
+        } else {
+            int size = childs.size();
+            for (int i = 0; i < size; i++) {
+                JboIFace jbo = childs.get(i);
+                JboSetIFace deptUserJboSet = jbo.getRelationJboSet("PUB_USERDEPARTMENT_IDP");
                 if (!deptUserJboSet.getJbolist().isEmpty()) {
+                    getJboSet().rollback();
                     throw new JxException(JxLangResourcesUtil.getString("app.pubdepartment.DEL.HASUSER"));
-                }
-            } else {
-                for (int i = 0; i < childs.size(); i++) {
-                    JboIFace jbo = childs.get(i);
-                    JboSetIFace deptUserJboSet = jbo.getRelationJboSet("PUB_USERDEPARTMENT_IDP");
-                    if (!deptUserJboSet.getJbolist().isEmpty()) {
-                        getJboSet().rollback();
-                        throw new JxException(JxLangResourcesUtil.getString("app.pubdepartment.DEL.HASUSER"));
-                    } else {
-                        jbo.delete();
-                    }
-                }
-            }
-
-        }
-        return b;
-    }
-
-    @Override
-    public boolean canSave() throws JxException {
-        boolean b = super.canSave();
-        String state = getString("STATE");
-        if (b) {
-            if ("1".equals(state)) {
-
-            } else if ("0".equals(state)) {
-                JboSetIFace childDeptSet = getRelationJboSet("PUB_DEPARTMENTSUPER_DEPARTMENT_IDP");
-                List<JboIFace> childs = childDeptSet.getJbolist();
-                JboSetIFace deptUserJboSet = getRelationJboSet("PUB_USERDEPARTMENT_IDP");
-                List<JboIFace> users = deptUserJboSet.getJbolist();
-                b = hasNoneActiveUser(users);
-
-                if (b && !childs.isEmpty()) {
-                    b = hasNoneActiveDept(childs);
+                } else {
+                    jbo.delete();
                 }
             }
         }
-        return b;
-    }
-
-    private boolean hasNoneActiveUser(List<JboIFace> userList) throws JxException {
-        int size = userList.size();
-        for (int i = 0; i < size; i++) {
-            JboIFace user = userList.get(i);
-            if ("1".equals(user.getString("ACTIVE"))) {
-                throw new JxException(JxLangResourcesUtil.getString("app.pubdepartment.HAS_ACTIVE_USER"));
-            }
-        }
-
-        return true;
-    }
-
-    private boolean hasNoneActiveDept(List<JboIFace> deptList) throws JxException {
-        int size = deptList.size();
-        for (int i = 0; i < size; i++) {
-            JboIFace dept = deptList.get(i);
-            if ("1".equals(dept.getString("STATE"))) {
-                throw new JxException(JxLangResourcesUtil.getString("app.pubdepartment.HAS_ACTIVE_DEPT"));
-            }
-        }
-
         return true;
     }
 
     /**
      * 获取某个部门极其下面的所有子级
-     *
+     * 
      * @param includeSelf 是否包含自己 true || false
      * @return
      */
@@ -118,12 +74,11 @@ public class PubDepartment extends Jbo {
             departmentList.add(this);
         }
 
-
         JboSetIFace jboset = JboUtil.getJboSet("PUB_DEPARTMENT");
         if (null != jboset) {
             DataQueryInfo dataQueryInfo = jboset.getQueryInfo();
             dataQueryInfo.setWhereCause("SUPER_DEPARTMENT_ID = ? and STATE = 1");
-            dataQueryInfo.setWhereParams(new Object[]{getString("DEPARTMENT_ID")});
+            dataQueryInfo.setWhereParams(new Object[] { getString("DEPARTMENT_ID") });
             List<JboIFace> jboIFaceList = jboset.queryAll();
             for (JboIFace jboIFace : jboIFaceList) {
                 PubDepartment pubDepartmentJbo = (PubDepartment) jboIFace;
@@ -132,6 +87,14 @@ public class PubDepartment extends Jbo {
         }
 
         return departmentList;
+    }
+
+    @Override
+    public void afterLoad() throws JxException {
+        super.afterLoad();
+        if (!this.isToBeAdd()) {
+            this.setReadonly("Department_id", true);
+        }
     }
 
 }

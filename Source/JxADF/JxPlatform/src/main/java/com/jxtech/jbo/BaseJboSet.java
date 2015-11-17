@@ -344,7 +344,7 @@ public abstract class BaseJboSet implements JboSetIFace {
     @Override
     public Map<String, JxAttribute> getJxAttributes() throws JxException {
         if (jxAttributes == null || jxAttributes.isEmpty()) {
-            jxAttributes = JxAttributeDao.getObject(getEntityname());
+            jxAttributes = JxAttributeDao.getObject(getJboname());
         }
         return jxAttributes;
     }

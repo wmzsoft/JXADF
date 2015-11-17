@@ -69,9 +69,8 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
         int pageNum = queryinfo.getPageNum();
         int pageSize = queryinfo.getPageSize();
         if (pageNum > 0 && pageSize > 0) {
-            int end = pageSize * pageNum;
             int start = pageSize * (pageNum - 1);
-            msql.append(" LIMIT ").append(start).append(",").append(end);
+            msql.append(" LIMIT ").append(start).append(",").append(pageSize);
         }
         if (isIgnoreLog(tablename)) {
             LOG.debug("\r\n" + msql.toString() + "\r\n" + StrUtil.objectToString(params));

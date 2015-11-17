@@ -1,11 +1,14 @@
 package com.jxtech.db;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jxtech.db.util.JxDataSourceUtil;
 import com.jxtech.util.ClassUtil;
 import com.jxtech.util.StrUtil;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 
@@ -20,15 +23,23 @@ public class DBFactory {
      */
     public static Map<String, String> dbQueryImpl = new HashMap<String, String>();
     public static Map<String, String> dbEditImpl = new HashMap<String, String>();
+    public static Map<String, String> dbColumnImpl = new HashMap<String, String>();
     public static final String CACHE_PREX = "db.jboset.";
+    private static DbColumn defaultDbColumn;
+    private static Logger LOG = LoggerFactory.getLogger(DBFactory.class);
 
     static {
         dbQueryImpl.put(JxDataSourceUtil.ORACLE, "com.jxtech.db.impl.oracle.DataQueryImpl");
         dbEditImpl.put(JxDataSourceUtil.ORACLE, "com.jxtech.db.impl.oracle.DataEditImpl");
+        dbColumnImpl.put(JxDataSourceUtil.ORACLE, "com.jxtech.db.impl.oracle.DbColumnImpl");
+
         dbQueryImpl.put(JxDataSourceUtil.MYSQL, "com.jxtech.db.impl.mysql.DataQueryImpl");
         dbEditImpl.put(JxDataSourceUtil.MYSQL, "com.jxtech.db.impl.mysql.DataEditImpl");
+        dbColumnImpl.put(JxDataSourceUtil.MYSQL, "com.jxtech.db.impl.mysql.DbColumnImpl");
+
         dbQueryImpl.put(JxDataSourceUtil.MSSQLSERVER, "com.jxtech.db.impl.mssqlserver.DataQueryImpl");
         dbEditImpl.put(JxDataSourceUtil.MSSQLSERVER, "com.jxtech.db.impl.mssqlserver.DataEditImpl");
+        dbColumnImpl.put(JxDataSourceUtil.MSSQLSERVER, "com.jxtech.db.impl.mssqlserver.DbColumnImpl");
     }
 
     public static void putDbQueryImplClass(String name, String classname) {
@@ -99,6 +110,49 @@ public class DBFactory {
             return de;
         }
         return null;
+    }
+
+    public static DbColumn getDbColumn(String dbtype) {
+        if (StrUtil.isNull(dbtype)) {
+            return getDefaultDbColumn();
+        }
+        String cn = dbColumnImpl.get(dbtype);
+        if (!StrUtil.isNull(cn)) {
+            Object obj = ClassUtil.getInstance(cn);
+            if (obj instanceof DbColumn) {
+                return (DbColumn) obj;
+            }
+        }
+        return getDefaultDbColumn();
+    }
+
+    public static DbColumn getDefaultDbColumn() {
+        if (defaultDbColumn == null) {
+            String cl = System.getProperty("jx.db.column.class", null);
+            if (!StrUtil.isNull(cl)) {
+                Object obj = ClassUtil.getInstance(cl);
+                if (obj instanceof DbColumn) {
+                    defaultDbColumn = (DbColumn) obj;
+                }
+            }
+            if (defaultDbColumn == null) {
+                if (JxDataSourceUtil.isDbOfSystemOracle()) {
+                    defaultDbColumn = new com.jxtech.db.impl.oracle.DbColumnImpl();
+                } else if (JxDataSourceUtil.isDbOfSystemMsSqlServer()) {
+                    defaultDbColumn = new com.jxtech.db.impl.mssqlserver.DbColumnImpl();
+                } else if (JxDataSourceUtil.isDbOfSystemMySql()) {
+                    defaultDbColumn = new com.jxtech.db.impl.mysql.DbColumnImpl();
+                } else {
+                    defaultDbColumn = new com.jxtech.db.impl.DbColumnImpl();
+                    LOG.warn("请配置默认的数据字段信息类，jx.db.column.class");
+                }
+            }
+        }
+        return defaultDbColumn;
+    }
+
+    public static void setDefaultDbColumn(DbColumn defaultDbColumn) {
+        DBFactory.defaultDbColumn = defaultDbColumn;
     }
 
 }

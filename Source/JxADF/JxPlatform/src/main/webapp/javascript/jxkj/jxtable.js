@@ -253,7 +253,7 @@ function setExpandSourceRowText($source, text) {
         var $children = $target.children();
         if ($children.length) {
             if ($children.is("input")) {
-                $children.val(text)
+                $children.val(text);
             } else if ($children.is("span")) {
                 $children.attr("title", text).text(text);
             }
@@ -333,7 +333,7 @@ function spanSetPageSize(tableId, pSize) {
 }
 
 function pageGoto(tableId) {
-    getTableData('div_' + tableId, null, null);
+    getTableData('div_' + tableId, null,function (){afterFragementLoad(tableId);},null, 3);
 }
 
 function pageNext(tableId) {

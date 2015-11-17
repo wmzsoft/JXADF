@@ -13,6 +13,9 @@ $author:wmzsoft@gmail.com
         <#elseif ((parameters.menutype!'unknow')=='INPUT') >
             
         <#else>
+            <#if (parameters.image??)>
+                <img src="${parameters.image}" class="appbar-menu-toolbar-icon">&nbsp;<#t>
+            </#if>
             ${parameters.label!'按钮'}</span><#t/>
         </#if>        
     </#if>

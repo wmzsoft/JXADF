@@ -87,7 +87,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         DataQueryInfo qbe = getQueryInfo();
         qbe.setWhereCause(where);
         qbe.setWhereParams(new Object[] { uid });
-        List<Map<String, Object>> list = dq.queryAllPage(getJboname(), qbe);
+        List<Map<String, Object>> list = dq.queryAllPage(getEntityname(), qbe);
         if (list != null && list.size() >= 1) {
             currentJbo.setData(list.get(0));
             currentJbo.afterLoad();

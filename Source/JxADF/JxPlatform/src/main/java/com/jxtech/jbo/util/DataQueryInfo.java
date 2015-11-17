@@ -263,6 +263,24 @@ public class DataQueryInfo implements java.io.Serializable {
     }
 
     public String getOrderby() {
+        if (!StrUtil.isNull(orderby)) {
+            // 处理错误格式的Orderby
+            String[] orderbys = orderby.split(" ");
+            if (orderbys.length > 2) {
+                StringBuilder sb = new StringBuilder();
+                String by = "";
+                for (int i = 0; i < orderbys.length; i++) {
+                    String tmp = orderbys[i].trim();
+                    if (!"asc".equalsIgnoreCase(tmp) && !"desc".equalsIgnoreCase(tmp)) {
+                        sb.append(tmp).append(" ");
+                    } else {
+                        by = tmp;
+                    }
+                }
+                sb.append(by);
+                orderby = sb.toString();
+            }
+        }
         return orderby;
     }
 

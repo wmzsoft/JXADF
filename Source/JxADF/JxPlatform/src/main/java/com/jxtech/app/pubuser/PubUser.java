@@ -71,4 +71,13 @@ public class PubUser extends Jbo {
         }
         return 0;
     }
+
+    @Override
+    public void afterLoad() throws JxException {
+        super.afterLoad();
+        if (!this.isToBeAdd()) {
+            this.setReadonly("USER_ID", true);
+        }
+    }
+
 }

@@ -29,7 +29,7 @@ $author:wmzsoft@gmail.com
                 <#if (col.dataname??)>
                     "${col.dataname}"<#t>
                 <#else>
-                    "${((col.dataattribute!)?replace('.','_'))?lower_case}"
+                    "${((col.dataattribute!)?replace('.','_'))?lower_case}"<#t>
                 </#if>
                 :"${jbo.getJsonString(col.dataattribute)!}"<#t>
                 <#if (col.parameters.allUrlParams??)>

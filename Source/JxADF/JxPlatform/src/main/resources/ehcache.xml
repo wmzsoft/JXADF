@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <ehcache xsi:noNamespaceSchemaLocation="../xsd/ehcache.xsd"
-         updateCheck="true" monitoring="autodetect"
+         updateCheck="false" monitoring="autodetect"
          dynamicConfig="true">
  <diskStore path="java.io.tmpdir"/>
  <defaultCache

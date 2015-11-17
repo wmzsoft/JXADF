@@ -910,7 +910,7 @@ public abstract class BaseJbo implements JboIFace {
                 return DateUtil.timeToString(value);
             } else if ("DATETIME".equals(maxtype)) {
                 return DateUtil.dateTimeToString(value);
-            } else if (attr.isNumeric()) {
+            } else if (attr.isNumeric() || attr.isBoolean()) {
                 double d = getDouble(attributeName, flag);
                 return NumUtil.format(d, formatter);
             } else if ("CLOB".equals(maxtype)) {
@@ -1192,7 +1192,11 @@ public abstract class BaseJbo implements JboIFace {
                     if (pos > 0 && end > pos) {
                         pname = clause.substring(pos + 1, end);
                         clause = clause.replaceFirst(":" + pname, "?");
-                        params.add(data.get(pname));
+                        if (data == null) {
+                            params.add(null);
+                        } else {
+                            params.add(data.get(pname));
+                        }
                     }
                     pos = clause.indexOf(":");
                 }
@@ -1227,13 +1231,21 @@ public abstract class BaseJbo implements JboIFace {
             if (jlist != null && jlist.size() == 1) {
                 JboIFace jbo = jlist.get(0);
                 Map<String, Object> dataMap = getData();
-                Iterator<?> keyIterator = dataMap.keySet().iterator();
-                while (keyIterator.hasNext()) {
-                    String dataKey = keyIterator.next().toString();
-                    if (dataKey.indexOf(".") > 0) {
-                        String[] dataKeys = dataKey.split("\\.");
-                        if (dataKeys[0].equalsIgnoreCase(name)) {
-                            dataMap.put(dataKey, jbo.getObject(dataKeys[1]));
+                if (dataMap != null) {
+                    Set<String> dset = dataMap.keySet();
+                    if (dset != null) {
+                        Iterator<?> keyIterator = dset.iterator();
+                        while (keyIterator.hasNext()) {
+                            Object obj = keyIterator.next();
+                            if (obj != null) {
+                                String dataKey = obj.toString();
+                                if (dataKey.indexOf(".") > 0) {
+                                    String[] dataKeys = dataKey.split("\\.");
+                                    if (dataKeys[0].equalsIgnoreCase(name)) {
+                                        dataMap.put(dataKey, jbo.getObject(dataKeys[1]));
+                                    }
+                                }
+                            }
                         }
                     }
                 }

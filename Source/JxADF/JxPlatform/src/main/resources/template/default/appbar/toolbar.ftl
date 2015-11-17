@@ -13,8 +13,8 @@ $author:wmzsoft@gmail.com
             <span class="toolbar_btn appbar-toolbar-${toolbar.data['MENUTYPE']}"
                   onclick="${toolbar.data['MENU']?lower_case}(this, event)" <#rt>
                 <#lt> mxevent="${toolbar.data['MENU']?lower_case}" ${toolbar.data['EXTENDS']!''} ><#rt>
-                <#if (toolbar.data['IMAGE']??)>
-                    <img src="${base}/skin/${skinName}/images/${toolbar.data['IMAGE']}" <#rt>
+                <#if (toolbar.data['IMAGE']?? && toolbar.data['IMAGE']!='')>
+                    <#lt><img src="${base}/skin/${skinName}/images/${toolbar.data['IMAGE']}" <#rt>
                         <#lt> class="appbar-menu-toolbar-icon"/> <#rt>
                 </#if>
                 <#assign buttonValue = toolbar.data['DESCRIPTION']>
@@ -31,8 +31,8 @@ $author:wmzsoft@gmail.com
                     </#if>
                 </#if>
             ${buttonValue}<#t>
-            </span>
-            <span class="appbar-toolbar-SEP"></span>
+            </span><#t>
+            <span class="appbar-toolbar-SEP"></span><#t>
             </#if>
         </#list>
     </#if>

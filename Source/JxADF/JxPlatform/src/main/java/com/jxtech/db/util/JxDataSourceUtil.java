@@ -41,6 +41,7 @@ public class JxDataSourceUtil {
     public static final String MSSQLSERVER = "MSSQLSERVER";
     public static final String DB2 = "DB2";
     public static final String POSTGRESQL = "POSTGRESQL";
+    private static boolean dbconntected=true;//系统数据库连接是否OK
     // 数据源缓存
     private static Map<String, DataSource> dsCache = new HashMap<String, DataSource>();
 
@@ -206,6 +207,7 @@ public class JxDataSourceUtil {
             return conn;
         } catch (SQLException e) {
             LOG.error("获得数据库链接出错：" + e.getMessage());
+            dbconntected=false;
             DefaultMetadata.getInstance().toInsall();
         }
         return null;
@@ -382,5 +384,9 @@ public class JxDataSourceUtil {
      */
     public static boolean isDbOfSystemMsSqlServer() {
         return MSSQLSERVER.equals(sysDatabaseType);
+    }
+
+    public static boolean isDbconntected() {
+        return dbconntected;
     }
 }

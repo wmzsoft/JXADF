@@ -190,4 +190,9 @@ public class VirtualJboSet extends BaseJboSet {
         
     }
 
+    @Override
+    public int getCount(boolean flag) {
+        return super.getCount(false);
+    }
+
 }

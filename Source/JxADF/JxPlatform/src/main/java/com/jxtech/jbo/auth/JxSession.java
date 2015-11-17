@@ -96,7 +96,7 @@ public class JxSession {
         if (session != null) {
             session.setAttribute(USER_INFO, null);
             session.setAttribute(APPS, null);
-            CacheUtil.cleanUserCache();//清空用户缓存
+            CacheUtil.cleanUserCache();// 清空用户缓存
             session.invalidate();
         } else {
             LOG.warn("Session获取出错。");
@@ -206,17 +206,18 @@ public class JxSession {
         // 对于***/lookup类型的app，不需要重新获取app
         if (app != null) {
             if (app.getJboset() == null && !app.getAppName().contains("/")) {
-                app = new App(app.getAppName(),app.getAppType());
+                app = new App(app.getAppName(), app.getAppType());
             }
         }
-        if (app==null){
+        if (app == null) {
             LOG.info("没有找到主应用程序：" + appNameType);
         }
         return app;
     }
 
     public static App getApp(String appname, String appType) throws JxException {
-        return getApp(appname + "." + appType);
+        String key = StrUtil.contact(appname, ".", appType);
+        return getApp(key);
     }
 
     /**
@@ -231,7 +232,7 @@ public class JxSession {
     public static App getApp(String appname, String appType, boolean isCreate) throws JxException {
         App app = getApp(appname + "." + appType);
         if (app == null && isCreate) {
-            app = new App(appname,appType);
+            app = new App(appname, appType);
             putApp(appname, appType);
         }
         return app;

@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 /**
  * 处理URL获得的数据
@@ -21,8 +23,8 @@ public class UrlUtil {
     private static final Logger LOG = LoggerFactory.getLogger(UrlUtil.class);
     public static final String CACHE_PREX = "URL.UTIL.";
 
-    public static Object getUrlContent(String url,boolean cache) {
-        return getUrlContent(url, "UTF-8",cache);
+    public static Object getUrlContent(String url, boolean cache) {
+        return getUrlContent(url, "UTF-8", cache);
     }
 
     /**
@@ -52,6 +54,7 @@ public class UrlUtil {
         Reader reader = null;
         StringBuilder sb = new StringBuilder();
         try {
+            url = encodeUrl(url, "UTF-8");
             URL u = new URL(url);
             bis = new BufferedInputStream(u.openStream());
             reader = new InputStreamReader(bis, urlCode);
@@ -75,6 +78,33 @@ public class UrlUtil {
             IOUtils.closeQuietly(bis);
         }
         return sb.toString();
+    }
+
+    public static String encodeUrl(String url, String code) throws UnsupportedEncodingException {
+        if (StrUtil.isNull(url)) {
+            return url;
+        }
+        int pos = url.indexOf('?');
+        if (pos > 0) {
+            if (StrUtil.isNull(code)) {
+                code = "UTF-8";
+            }
+            StringBuilder usb = new StringBuilder();
+            usb.append(url.substring(0, pos)).append("?");
+            url = url.substring(pos + 1);
+            String[] params = url.split("&");
+            for (int k = 0; k < params.length; k++) {
+                String[] kv = params[k].split("=");
+                if (kv.length == 2 && !StrUtil.isNull(kv[1])) {
+                    usb.append(kv[0]).append("=");
+                    usb.append(URLEncoder.encode(URLDecoder.decode(kv[1], "UTF-8"), "UTF-8"));
+                    usb.append("&");
+                }
+            }
+            StrUtil.deleteLastChar(usb);
+            return usb.toString();
+        }
+        return url;
     }
 
     /**

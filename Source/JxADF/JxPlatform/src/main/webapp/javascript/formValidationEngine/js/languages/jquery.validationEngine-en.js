@@ -223,6 +223,10 @@
                 	"regex": /^\d{6}?$/,
                     "alertText": "* Please input correct date format, ex:201501"
                 },
+                "YYYY-MM":{
+                	"regex": /^\d{4}-\d{2}?$/,
+                    "alertText": "* Please input correct date format, ex:2015-09"
+                },
                 "percent100":{
                 	"regex":/^(([1-9]\d{0,1})|(0)|(100))(\.\d{1,2})?$/,
                 	"alertText": "* Please input 0.00~100.00,ex:69.21"

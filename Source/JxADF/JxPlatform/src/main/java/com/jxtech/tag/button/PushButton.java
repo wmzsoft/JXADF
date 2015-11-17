@@ -1,6 +1,8 @@
 package com.jxtech.tag.button;
 
 import com.jxtech.tag.comm.JxBaseUIBean;
+import com.jxtech.util.StrUtil;
+import com.jxtech.util.SysPropertyUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 import org.apache.struts2.views.annotations.StrutsTag;
 import org.apache.struts2.views.annotations.StrutsTagAttribute;
@@ -73,7 +75,12 @@ public class PushButton extends JxBaseUIBean {
             addParameter("readonly", findValue(readonly, Boolean.class));
         }
         if (image != null) {
-            addParameter("image", findString(image));
+            String icon = findString(image);
+            if (icon != null && icon.indexOf('/') < 0 && icon.length() > 2) {
+                //如果只有文件名，则自动添加路径
+                icon = StrUtil.contact(SysPropertyUtil.getBase(),"/skin/default/images/",icon);
+            }
+            addParameter("image", icon);
         }
         if (type != null) {
             addParameter("type", findString(type));

@@ -303,7 +303,7 @@ public class Jbo extends BaseJbo implements JboIFace {
         }
         JboIFace syn = JboUtil.findJbo("synonymdomain", "domainid=? and upper(value)=?", new Object[] { domainid.toUpperCase(), status.toUpperCase() });
         if (syn != null) {
-            return syn.getString("MaxValue");
+            return syn.getString(DBFactory.getDefaultDbColumn().getColumn("MAXVALUE"));
         }
         return status;
     }
