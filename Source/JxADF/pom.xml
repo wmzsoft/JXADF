@@ -207,13 +207,14 @@
 			<version>1.1.1</version>
 			<scope>provided</scope>
 		</dependency>
+		<!--
 		<dependency>
 			<groupId>oracle.jrf</groupId>
 			<artifactId>jrf-api</artifactId>
 			<version>11.1.1.0.0</version>
 			<scope>provided</scope>
 		</dependency>
-		 
+		--> 
 		<dependency>
 			<groupId>net.sf.json-lib</groupId>
 			<artifactId>json-lib</artifactId>
