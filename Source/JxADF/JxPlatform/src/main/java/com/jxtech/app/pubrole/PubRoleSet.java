@@ -37,7 +37,7 @@ public class PubRoleSet extends JboSet {
     @Override
     public List<JboIFace> query() throws JxException {
         App app = JxSession.getMainApp();
-        if (app.getAppNameType().equalsIgnoreCase("PUBDEPARTMENT.LIST")) {
+        if (app != null && "PUBDEPARTMENT.LIST".equalsIgnoreCase(app.getAppNameType())) {
             DataQueryInfo queryInfo = getQueryInfo();
 
             App userApp = JxSession.getApp("pubdepartment.user");
@@ -77,7 +77,8 @@ public class PubRoleSet extends JboSet {
     /**
      * 角色用户管理界面切换用户显示
      *
-     * @param params 构成有showAll 1 所有 0 角色用户 ； departmentId 部门ID
+     * @param params
+     *            构成有showAll 1 所有 0 角色用户 ； departmentId 部门ID
      * @return
      * @throws JxException
      */
@@ -101,31 +102,31 @@ public class PubRoleSet extends JboSet {
             }
 
             List<JboIFace> departmentUserList = new ArrayList<JboIFace>();
-            //查询当前部门的所有用户
+            // 查询当前部门的所有用户
             if (null != pubDepartmentList) {
                 for (JboIFace jbo : pubDepartmentList) {
                     departmentUserList.addAll(jbo.getRelationJboSet("PUB_USERDEPARTMENT_IDP", JxConstant.READ_RELOAD, true).getJbolist());
                 }
-                //有缓存需要重置该属性
+                // 有缓存需要重置该属性
                 for (JboIFace tempJbo : departmentUserList) {
                     tempJbo.setObject("INROLE", "0");
                 }
             }
 
             List<JboIFace> roleUserList = new ArrayList<JboIFace>();
-            //再查询角色下的用户
+            // 再查询角色下的用户
             PubRoleUserSet roleUserJboSet = (PubRoleUserSet) roleJbo.getRelationJboSet("PUB_ROLE_USERROLE_IDP", JxConstant.READ_RELOAD, true);
             for (JboIFace roleUserJbo : roleUserJboSet.getJbolist()) {
                 if (null != roleUserJbo) {
                     String userId = roleUserJbo.getString("USER_ID");
                     JboIFace userJbo = pubUserJboSet.getUser(userId);
-                    if (null !=userJbo ) {
+                    if (null != userJbo) {
                         roleUserList.add(userJbo);
                     }
                 }
             }
 
-            //显示所有用户
+            // 显示所有用户
             if ("1".equalsIgnoreCase(showAll)) {
                 for (JboIFace roleUser : roleUserList) {
                     String roleUserId = roleUser.getString("USER_ID");
@@ -133,9 +134,9 @@ public class PubRoleSet extends JboSet {
                         String userId = departmentUser.getString("USER_ID");
                         if (userId.equalsIgnoreCase(roleUserId)) {
                             departmentUser.setObject("INROLE", "1");
-                        } /*else {
-                            departmentUser.setObject("INORLE", "0");
-                        }*/
+                        } /*
+                           * else { departmentUser.setObject("INORLE", "0"); }
+                           */
                     }
                 }
                 roleUserJboSetAll.getJbolist().addAll(departmentUserList);
@@ -157,4 +158,6 @@ public class PubRoleSet extends JboSet {
         }
         return result;
     }
+    
+    
 }

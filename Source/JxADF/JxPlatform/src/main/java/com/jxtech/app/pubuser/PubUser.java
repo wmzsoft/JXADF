@@ -80,4 +80,14 @@ public class PubUser extends Jbo {
         }
     }
 
+    @Override
+    public String[] getDeleteChildren() throws JxException {
+        return new String[] { "USERMETADATAUSERIDP", "PUB_ROLE_USERUSER_IDP", "JXACCESSSTATUSERIDP" };
+    }
+
+    @Override
+    public String[] getExportRelationship() throws JxException {
+        return new String[] { "USERMETADATAUSERIDP" };
+    }
+
 }

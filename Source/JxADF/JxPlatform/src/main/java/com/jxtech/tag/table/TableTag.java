@@ -100,6 +100,7 @@ public class TableTag extends JxBaseUITag {
     private String startStr;// 主要用于JSON渲染，添加到JSON最前的字符串
     private String endStr;// 主要用于JSON渲染，添加到JSON最后的字符串
     private String quickSearchCause;// 快速查询的字段信息
+    private String executeQueryAfterLoad;// 是否执行查询之后的afterLoad方法
 
     private String ignoreLayoutFixed;
     private String ignoreDataTable;
@@ -153,11 +154,11 @@ public class TableTag extends JxBaseUITag {
             }
         }
         App app = JxSession.getMainApp();
+        pagenum = StrUtil.parseInt(request.getParameter("pagenum"), 0);
+        pagesize = StrUtil.parseIntToString(request.getParameter("pagesize"), 20);
         if (app != null) {
             if (loadType == JxConstant.READ_PERSISTENCE && null != app.getJboset()) {
                 if ("lookup".equalsIgnoreCase(appType)) {
-                    pagenum = StrUtil.parseInt(request.getParameter("pagenum"), 1);
-                    pagesize = StrUtil.parseIntToString(request.getParameter("pagesize"), 20);
                     loadType = JxConstant.READ_RELOAD;
                 } else {
                     App mainApp = JxSession.getApp(getAppName(), getAppType());
@@ -169,29 +170,21 @@ public class TableTag extends JxBaseUITag {
                     }
                     DataQueryInfo qf = mainJboSet.getQueryInfo();
                     if (null != qf) {
-                        // getCount() 返回-1，表示此表格还未查询过数据，需要使用配置的pagenum
-                        if (mainJboSet.getCount() >= 0 && StrUtil.isNull(pagesize)) {
+                        if (pagenum <= 1) {
+                            pagenum = qf.getPageNum();
                             pagesize = String.valueOf(qf.getPageSize());
                         }
-                        pagenum = qf.getPageNum();
                         loadType = JxConstant.READ_RELOAD;
                     }
                 }
-            } else {
-                pagenum = StrUtil.parseInt(request.getParameter("pagenum"), 1);
-                pagesize = StrUtil.parseIntToString(request.getParameter("pagesize"), 20);
             }
-        } else {
-            pagenum = StrUtil.parseInt(request.getParameter("pagenum"), 1);
-            pagesize = StrUtil.parseIntToString(request.getParameter("pagesize"), 20);
-            // loadtype ?? 应该是可以不需要的。
         }
 
         if (pagenum <= 0) {
             pagenum = 1;
         }
 
-        if ("-1".equals(pagesize)){
+        if ("-1".equals(pagesize)) {
             pagesize = "20";
         }
         // custColumns = request.getParameter("custColumns");
@@ -373,6 +366,10 @@ public class TableTag extends JxBaseUITag {
                         }
                     }
 
+                    if (!StrUtil.isTrue(executeQueryAfterLoad, true)) {
+                        jboset.setQueryFlag(JboSetIFace.NOEXEC_AFTERLOAD);
+                    }
+
                     if (!StrUtil.isNull(relationship)) {
                         jboset.query(relationship);
                         // 当重新查询时，之前做过的afterload设置的内容会丢失，在jboset query方法重新afterload容易造成死循环
@@ -417,9 +414,9 @@ public class TableTag extends JxBaseUITag {
                 Map<String, JboSetIFace> children = jf.getChildren();
                 Iterator<Entry<String, JboSetIFace>> it = children.entrySet().iterator();
                 while (it.hasNext()) {
-                    Map.Entry<String, JboSetIFace> child =  it.next();
+                    Map.Entry<String, JboSetIFace> child = it.next();
                     jsf = findRelationship((child.getValue()).getJbo());
-                    if (null != jsf){
+                    if (null != jsf) {
                         break;
                     }
                 }
@@ -852,4 +849,13 @@ public class TableTag extends JxBaseUITag {
     public void setRowSelectable(String rowSelectable) {
         this.rowSelectable = rowSelectable;
     }
+
+    public String getExecuteQueryAfterLoad() {
+        return executeQueryAfterLoad;
+    }
+
+    public void setExecuteQueryAfterLoad(String executeQueryAfterLoad) {
+        this.executeQueryAfterLoad = executeQueryAfterLoad;
+    }
+
 }

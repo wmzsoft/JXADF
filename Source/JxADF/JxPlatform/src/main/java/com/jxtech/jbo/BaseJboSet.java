@@ -84,6 +84,9 @@ public abstract class BaseJboSet implements JboSetIFace {
     // 当前记录的保存标识
     private long saveFlag = 0xFFFFFF;
 
+    //查询标识
+    private long queryFlag = 0; 
+    
     /**
      * 命名规则：appname,appnameSet 子类必须覆盖此方法
      * 
@@ -727,38 +730,31 @@ public abstract class BaseJboSet implements JboSetIFace {
     @Override
     public void tableQuickSearch(String searchValue) throws JxException {
         DataQueryInfo dqInfo = this.getQueryInfo();
-        String quickSql = "";
-        if (!StrUtil.isNullOfIgnoreCaseBlank(searchValue)) {
-            boolean isnum = StrUtil.isNull(searchValue);// 判断，如果不是数字，则数字类型的字段，无需匹配
-            StringBuilder sb = new StringBuilder();
-            Map<String, JxAttribute> attrs = this.getJxAttributes();
-            Iterator<String> keyIte = attrs.keySet().iterator();
-            while (keyIte.hasNext()) {
-                String key = keyIte.next().toString();
-                if (key.indexOf(".") < 0) {
-                    if (!isnum && attrs.get(key).isNumeric()) {
-                        continue;
-                    }
-                    sb.append(key);
-                    sb.append(" like '%");
-                    sb.append(searchValue + "%' ");
-                    sb.append(" or ");
-                }
-            }
-
-            if (sb.length() > 0) {
-                quickSql = sb.substring(0, sb.length() - 4);
-            }
-        }
-
-        if (!StrUtil.isNull(quickSql)) {
-            dqInfo.setQuickSearchQueryValue(searchValue);
-            dqInfo.setQuickSearchCause(quickSql);
-        } else {
+        if (StrUtil.isNullOfIgnoreCaseBlank(searchValue)) {
             dqInfo.setQuickSearchQueryValue("");
             dqInfo.setQuickSearchCause("");
+            return;
         }
-
+        StringBuilder sb = new StringBuilder();
+        Map<String, JxAttribute> attrs = this.getJxAttributes();
+        Iterator<String> keyIte = attrs.keySet().iterator();
+        String sv = searchValue.toLowerCase().trim();
+        while (keyIte.hasNext()) {
+            String key = keyIte.next().toString();
+            if (key.indexOf(".") < 0) {
+                if (attrs.get(key).isNumOrDateTime()) {
+                    continue;
+                }
+                sb.append(" lower(").append(key).append(") like '%");
+                sb.append(sv);
+                sb.append("%' or ");
+            }
+        }
+        if (sb.length() > 4) {
+            String quickSql = sb.substring(0, sb.length() - 4);
+            dqInfo.setQuickSearchQueryValue(searchValue);
+            dqInfo.setQuickSearchCause(quickSql);
+        }
     }
 
     /**
@@ -1075,4 +1071,11 @@ public abstract class BaseJboSet implements JboSetIFace {
         return seqset.getSequeceName(getEntityname(), columnName);
     }
 
+    public long getQueryFlag() {
+        return queryFlag;
+    }
+
+    public void setQueryFlag(long queryFlag) {
+        this.queryFlag = queryFlag;
+    }    
 }

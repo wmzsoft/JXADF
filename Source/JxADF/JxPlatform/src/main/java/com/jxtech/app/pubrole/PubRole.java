@@ -21,7 +21,7 @@ public class PubRole extends Jbo {
 
     @Override
     public String[] getDeleteChildren() throws JxException {
-        return new String[]{"PUB_ROLE_USERROLE_IDP", "PUB_ROLE_OPERATIONROLE_IDP", "PUB_ROLE_SEC_ID"};
+        return new String[]{"PUB_ROLE_USERROLE_IDP", "PUB_ROLE_OPERATIONROLE_IDP", "PUB_ROLE_SEC_ID","PUBROLEORGROLEIDP","PUBROLESITEROLEIDP","PUBROLEUSERSCOPEROLEIDP"};
     }
         
 }

@@ -23,7 +23,7 @@ $author:wmzsoft@gmail.com
     <script type='text/javascript'>
         $(function () {
             getTableData("div_${parameters.id!test}", null, function () {
-                afterFragementLoad('${parameters.id!test}');<#t>
+                afterFragmentLoad('${parameters.id!test}');<#t>
             }, null, 3);<#t>
         });
     </script>

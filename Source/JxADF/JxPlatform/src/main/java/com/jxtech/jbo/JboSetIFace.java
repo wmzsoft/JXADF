@@ -34,6 +34,9 @@ public interface JboSetIFace extends Serializable {
     // Activiti工作流名称
     public static final String BPM_ACTIVITI = "ACTIVITI";
 
+    //不要执行AfterLoad方法
+    public static final long NOEXEC_AFTERLOAD = 1;
+    
     /**
      * 如果要添加业务逻辑，请继承此方法。
      * 
@@ -418,4 +421,9 @@ public interface JboSetIFace extends Serializable {
      * @throws JxException
      */
     public String getSequenceName(String columnName) throws JxException;
+    
+    public long getQueryFlag();
+
+    public void setQueryFlag(long queryFlag);
+
 }

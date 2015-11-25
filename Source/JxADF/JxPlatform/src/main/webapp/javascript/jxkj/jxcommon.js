@@ -1668,10 +1668,8 @@ function getTableData(divid, e, callback, cColumns, loadType) {
     }
 }
 
-function afterFragmentLoad(tableId) {
-}
-function afterFragementLoad(tableId) {
 
+function afterFragmentLoad(tableId) {
 }
 /**
  * * 转到应用程序

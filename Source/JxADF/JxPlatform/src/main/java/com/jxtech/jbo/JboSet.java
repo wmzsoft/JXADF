@@ -6,15 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.mpxj.ProjectFile;
-import net.sf.mpxj.Task;
-
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jxtech.app.max.MaxFactory;
-import com.jxtech.app.max.MaxSequenceSetIFace;
 import com.jxtech.db.DBFactory;
 import com.jxtech.db.DataEdit;
 import com.jxtech.db.DataQuery;
@@ -30,6 +25,9 @@ import com.jxtech.util.CacheUtil;
 import com.jxtech.util.ELUtil;
 import com.jxtech.util.StrUtil;
 import com.jxtech.workflow.base.WorkflowEngineFactory;
+
+import net.sf.mpxj.ProjectFile;
+import net.sf.mpxj.Task;
 
 /**
  * 每个表的记录信息
@@ -56,6 +54,10 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         return currentJbo; // 创建自己的JBO
     }
 
+    protected boolean isExecAfterLoad() {
+        return (getQueryFlag() & JboSetIFace.NOEXEC_AFTERLOAD) != JboSetIFace.NOEXEC_AFTERLOAD;
+    }
+    
     /**
      * 查询结果集
      * 
@@ -87,10 +89,12 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         DataQueryInfo qbe = getQueryInfo();
         qbe.setWhereCause(where);
         qbe.setWhereParams(new Object[] { uid });
-        List<Map<String, Object>> list = dq.queryAllPage(getEntityname(), qbe);
+        List<Map<String, Object>> list = dq.query(getEntityname(), qbe);
         if (list != null && list.size() >= 1) {
             currentJbo.setData(list.get(0));
-            currentJbo.afterLoad();
+            if (isExecAfterLoad()) {
+                currentJbo.afterLoad();
+            }
             return currentJbo;
         }
         return currentJbo;
@@ -125,7 +129,9 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             for (Map<String, Object> map : list) {
                 currentJbo = getJboInstance();
                 currentJbo.setData(map);
-                currentJbo.afterLoad();
+                if (isExecAfterLoad()) {
+                    currentJbo.afterLoad();
+                }
                 getJbolist().add(currentJbo);
             }
         }
@@ -154,10 +160,12 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         DataQueryInfo qbe = this.getQueryInfo();
         qbe.setWhereCause(where);
         qbe.setWhereParams(new Object[] { uid });
-        List<Map<String, Object>> list = dq.queryAllPage(getJboname(), qbe);
+        List<Map<String, Object>> list = dq.query(getJboname(), qbe);
         if (list != null && list.size() == 1) {
             currentJbo.setData(list.get(0));
-            currentJbo.afterLoad();
+            if (isExecAfterLoad()) {
+                currentJbo.afterLoad();
+            }
             return currentJbo;
         }
         return currentJbo;
@@ -192,10 +200,12 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         }
         qbe.setWhereCause(sb.toString());
         qbe.setWhereParams(new Object[] { uid });
-        List<Map<String, Object>> list = dq.queryAllPage(getJboname(), qbe);
+        List<Map<String, Object>> list = dq.query(getJboname(), qbe);
         if (list != null && list.size() >= 1) {
             currentJbo.setData(list.get(0));
-            currentJbo.afterLoad();
+            if (isExecAfterLoad()) {
+                currentJbo.afterLoad();
+            }
             return currentJbo;
         }
         return currentJbo;
@@ -238,7 +248,9 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         for (int i = 0; i < size; i++) {
             currentJbo = getJboInstance();
             currentJbo.setData(list.get(i));
-            currentJbo.afterLoad();
+            if (isExecAfterLoad()) {
+                currentJbo.afterLoad();
+            }
             jbolist.add(currentJbo);
 
         }

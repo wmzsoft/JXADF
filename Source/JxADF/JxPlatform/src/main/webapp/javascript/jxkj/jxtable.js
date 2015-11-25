@@ -333,7 +333,7 @@ function spanSetPageSize(tableId, pSize) {
 }
 
 function pageGoto(tableId) {
-    getTableData('div_' + tableId, null,function (){afterFragementLoad(tableId);},null, 3);
+    getTableData('div_' + tableId, null,function (){afterFragmentLoad(tableId);},null, 0);
 }
 
 function pageNext(tableId) {

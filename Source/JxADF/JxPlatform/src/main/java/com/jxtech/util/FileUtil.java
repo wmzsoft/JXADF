@@ -1,14 +1,17 @@
 package com.jxtech.util;
 
 import org.apache.poi.util.IOUtils;
+import org.osgi.framework.Bundle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import java.util.Enumeration;
 
 /**
  * 读入microsoft project文件 写出xml格式文件工具类
@@ -280,5 +283,104 @@ public class FileUtil {
                 LOG.error(e.getMessage(), e);
             }
         }
+    }
+    
+    /**
+     * 将文件名和路径组合分离
+     * 
+     * @param path
+     * @param file
+     * @return
+     */
+    public static String[] splitPathFile(String path, String file) {
+        String[] pf = new String[2];// 0：路径，1：文件名
+        if (StrUtil.isNull(path) && StrUtil.isNull(file)) {
+            return pf;
+        }
+        StringBuilder srcfile = new StringBuilder();
+        if (!StrUtil.isNull(path)) {
+            srcfile.append(path.trim()).append("/");
+        }
+        if (file != null) {
+            srcfile.append(file.trim());
+        }
+        String[] pathfile = srcfile.toString().split("\\\\|\\/");// 全路径拆分
+        int len = pathfile.length;
+
+        if (len > 0) {
+            StringBuilder newpath = new StringBuilder();// 新文件的路径
+            boolean flag = false;
+            if ("".equals(pathfile[0].trim())) {
+                newpath.append("/");
+                flag = true;
+            } else if (len > 1) {
+                newpath.append(pathfile[0]).append("/");
+                flag = !"..".equals(pathfile[0].trim());
+            }
+            int pos = 1;
+            for (int i = 1; i < len - 1; i++) {
+                if ("..".equals(pathfile[i].trim()) && flag) {
+                    int end = newpath.length();
+                    int start = end - pathfile[pos - 1].length() - 1;
+                    if (start > 0) {
+                        newpath.delete(start, end);
+                    }
+                    pos--;
+                    if (pos < 1) {
+                        flag = false;
+                    }
+                } else if ("".equals(pathfile[i])) {
+                    continue;
+                } else if (".".equals(pathfile[i])) {
+                    continue;
+                } else {
+                    newpath.append(pathfile[i]).append("/");
+                    if (!flag) {
+                        flag = !"..".equals(pathfile[i].trim());
+                    }
+                    pos = i + 1;
+                }
+            }
+            // 最后再整合
+            boolean b = false;
+            if (StrUtil.isNull(file)) {
+                if (path.trim().endsWith("/") || path.trim().endsWith("\\")) {
+                    b = true;
+                }
+            } else {
+                if (file.trim().endsWith("/") || file.trim().endsWith("\\")) {
+                    b = true;
+                }
+            }
+            if (b) {
+                newpath.append(pathfile[len - 1]).append("/");
+                pf[0] = newpath.toString();
+                pf[1] = null;
+            } else {
+                // 中径名
+                pf[0] = newpath.toString();
+                // 文件名
+                pf[1] = pathfile[len - 1];
+            }
+        }
+        return pf;
+    }
+
+    /**
+     * 将Bundle中的文件转换为URL对象，方便处理
+     * @param bundle
+     * @param filename
+     * @return
+     */
+    public static URL getFile(Bundle bundle, String filename) {
+        if (bundle == null || StrUtil.isNull(filename)) {
+            return null;
+        }
+        String[] pf = splitPathFile(null, filename);
+        Enumeration<?> props = bundle.findEntries(pf[0], pf[1], false);
+        if (props != null && props.hasMoreElements()) {
+            return (URL) props.nextElement();
+        }
+        return null;
     }
 }

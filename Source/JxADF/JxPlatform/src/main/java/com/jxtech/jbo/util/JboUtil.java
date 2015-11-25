@@ -21,6 +21,7 @@ import com.jxtech.tag.table.Table;
 import com.jxtech.util.ClassUtil;
 import com.jxtech.util.ELUtil;
 import com.jxtech.util.StrUtil;
+import com.jxtech.util.NumUtil;
 
 /**
  * 处理Jbo的工具类
@@ -164,6 +165,7 @@ public class JboUtil {
                         // 上面没有找到对应的记录，需要重新查询
                         DataQueryInfo ndqi = listjboset.getQueryInfo();
                         int pagenum = ndqi.getPageNum();
+                        // 判断是否需要重新查询
                         if (slibing == JxConstant.SLIBING_PREVIOUS) {
                             if (pagenum <= 1) {
                                 LOG.debug("已是第1页，不能再向上翻页了");
@@ -172,6 +174,16 @@ public class JboUtil {
                                 pagenum = pagenum - 1;
                             }
                         } else if (slibing == JxConstant.SLIBING_NEXT) {
+                            if (list.size() < ndqi.getPageSize()) {
+                                // 当前列表已小于页面大小，说明没有了
+                                return null;
+                            } else {
+                                int cnt = listjboset.getCount();// 总条数
+                                if (pagenum >= NumUtil.upRounded(cnt, ndqi.getPageSize(), 0)) {
+                                    // 最后一页了。
+                                    return null;
+                                }
+                            }
                             pagenum = pagenum + 1;
                         }
                         // 设定新的页码
@@ -182,6 +194,10 @@ public class JboUtil {
                                 return nlist.get(nlist.size() - 1);// 上一页的最后一条
                             }
                             return nlist.get(0);// 下一页的第一条
+                        } else if (slibing == JxConstant.SLIBING_NEXT) {
+                            // 没有下一页，需要退回到上一页
+                            ndqi.setPageNum(pagenum - 1);
+                            listjboset.query();
                         }
                         // 经过上面的操作，仍然没有找到，直接退出，找不到了。
                         return null;

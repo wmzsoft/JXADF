@@ -487,4 +487,16 @@ public class Tablecol extends JxBaseUIBean {
         this.mxevent_disabled = mxevent_disabled;
     }
 
+    public String getFormat() {
+        return format;
+    }
+
+    public JxAttribute getJxattribute() {
+        return jxattribute;
+    }
+    
+    public String getDataDisplay() {
+        return dataDisplay;
+    }
+    
 }

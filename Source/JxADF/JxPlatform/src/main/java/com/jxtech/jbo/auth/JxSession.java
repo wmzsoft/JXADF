@@ -92,11 +92,11 @@ public class JxSession {
     }
 
     public static void logout() {
+        CacheUtil.cleanUserCache();// 清空用户缓存
         HttpSession session = getSession();
         if (session != null) {
             session.setAttribute(USER_INFO, null);
             session.setAttribute(APPS, null);
-            CacheUtil.cleanUserCache();// 清空用户缓存
             session.invalidate();
         } else {
             LOG.warn("Session获取出错。");

@@ -23,8 +23,8 @@
     <meta http-equiv="pragma" content="no-cache">
     <meta http-equiv="cache-control" content="no-cache">
     <meta http-equiv="expires" content="0">
-    <meta http-equiv="keywords" content="JxPlatform,健新科技">
-    <meta http-equiv="description" content="广州健新自动化科技有限公司，JxPlatform">
+    <meta http-equiv="keywords" content="JXADF,健新科技,http://osgi.help">
+    <meta http-equiv="description" content="广州健新自动化科技有限公司，JXADF,http://osgi.help">
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
 
     <link rel="icon" href="/jxweb/skin/default/images/favicon.ico" type="image/x-icon"/>
@@ -236,6 +236,11 @@
                     <span class="action" id="exitAction">
                         <a href="javascript:void(0);" onClick="logout()" target="_self">
                             <span class="action_exit" id="exit_link">退出</span>
+                        </a>
+                    </span>
+                    <span class="action" id="aboutAction">
+                        <a href="http://osgi.help" target="osgi">
+                            <span style="font-size: small;" id="exit_link">About</span>
                         </a>
                     </span>
         </div>

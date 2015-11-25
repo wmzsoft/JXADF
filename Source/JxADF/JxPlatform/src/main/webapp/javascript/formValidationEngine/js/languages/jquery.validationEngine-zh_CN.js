@@ -1,8 +1,8 @@
-(function($){
-    $.fn.validationEngineLanguage = function(){
+(function ($) {
+    $.fn.validationEngineLanguage = function () {
     };
     $.validationEngineLanguage = {
-        newLang: function(){
+        newLang: function () {
             $.validationEngineLanguage.allRules = {
                 "required": { // Add your regex rules here, you can take telephone as an example
                     "regex": "none",
@@ -12,7 +12,7 @@
                     "alertTextDateRange": "* 日期范围不能为空"
                 },
                 "requiredInFunction": {
-                    "func": function(field, rules, i, options){
+                    "func": function (field, rules, i, options) {
                         return (field.val() == "test") ? true : false;
                     },
                     "alertText": "* Field must equal test"
@@ -37,7 +37,7 @@
                     "alertText": "* 最多 ",
                     "alertText2": " 个字符"
                 },
-				"groupRequired": {
+                "groupRequired": {
                     "regex": "none",
                     "alertText": "* 你必须选填其中一个栏位"
                 },
@@ -135,7 +135,7 @@
                     "alertText": "* 此名称已被其他人使用",
                     "alertTextLoad": "* 正在确认名称是否有其他人使用，请稍等。"
                 },
-				"ajaxUserCallPhp": {
+                "ajaxUserCallPhp": {
                     "url": "phpajax/ajaxValidateFieldUser.php",
                     // you may want to pass extra data on the ajax call
                     "extraData": "name=eric",
@@ -154,35 +154,35 @@
                     // speaks by itself
                     "alertTextLoad": "* 正在确认名称是否有其他人使用，请稍等。"
                 },
-				 "ajaxNameCallPhp": {
-	                    // remote json service location
-	                    "url": "phpajax/ajaxValidateFieldName.php",
-	                    // error
-	                    "alertText": "* 此名称已被其他人使用",
-	                    // speaks by itself
-	                    "alertTextLoad": "* 正在确认名称是否有其他人使用，请稍等。"
-	                },
+                "ajaxNameCallPhp": {
+                    // remote json service location
+                    "url": "phpajax/ajaxValidateFieldName.php",
+                    // error
+                    "alertText": "* 此名称已被其他人使用",
+                    // speaks by itself
+                    "alertTextLoad": "* 正在确认名称是否有其他人使用，请稍等。"
+                },
                 "validate2fields": {
                     "alertText": "* 请输入 HELLO"
                 },
-	            //tls warning:homegrown not fielded
-                "dateFormat":{
+                //tls warning:homegrown not fielded
+                "dateFormat": {
                     "regex": /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$|^(?:(?:(?:0?[13578]|1[02])(\/|-)31)|(?:(?:0?[1,3-9]|1[0-2])(\/|-)(?:29|30)))(\/|-)(?:[1-9]\d\d\d|\d[1-9]\d\d|\d\d[1-9]\d|\d\d\d[1-9])$|^(?:(?:0?[1-9]|1[0-2])(\/|-)(?:0?[1-9]|1\d|2[0-8]))(\/|-)(?:[1-9]\d\d\d|\d[1-9]\d\d|\d\d[1-9]\d|\d\d\d[1-9])$|^(0?2(\/|-)29)(\/|-)(?:(?:0[48]00|[13579][26]00|[2468][048]00)|(?:\d\d)?(?:0[48]|[2468][048]|[13579][26]))$/,
                     "alertText": "* 无效的日期格式"
                 },
                 //tls warning:homegrown not fielded
-				"dateTimeFormat": {
-	                "regex": /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])\s+(1[012]|0?[1-9]){1}:(0?[1-5]|[0-6][0-9]){1}:(0?[0-6]|[0-6][0-9]){1}\s+(am|pm|AM|PM){1}$|^(?:(?:(?:0?[13578]|1[02])(\/|-)31)|(?:(?:0?[1,3-9]|1[0-2])(\/|-)(?:29|30)))(\/|-)(?:[1-9]\d\d\d|\d[1-9]\d\d|\d\d[1-9]\d|\d\d\d[1-9])$|^((1[012]|0?[1-9]){1}\/(0?[1-9]|[12][0-9]|3[01]){1}\/\d{2,4}\s+(1[012]|0?[1-9]){1}:(0?[1-5]|[0-6][0-9]){1}:(0?[0-6]|[0-6][0-9]){1}\s+(am|pm|AM|PM){1})$/,
+                "dateTimeFormat": {
+                    "regex": /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])\s+(1[012]|0?[1-9]){1}:(0?[1-5]|[0-6][0-9]){1}:(0?[0-6]|[0-6][0-9]){1}\s+(am|pm|AM|PM){1}$|^(?:(?:(?:0?[13578]|1[02])(\/|-)31)|(?:(?:0?[1,3-9]|1[0-2])(\/|-)(?:29|30)))(\/|-)(?:[1-9]\d\d\d|\d[1-9]\d\d|\d\d[1-9]\d|\d\d\d[1-9])$|^((1[012]|0?[1-9]){1}\/(0?[1-9]|[12][0-9]|3[01]){1}\/\d{2,4}\s+(1[012]|0?[1-9]){1}:(0?[1-5]|[0-6][0-9]){1}:(0?[0-6]|[0-6][0-9]){1}\s+(am|pm|AM|PM){1})$/,
                     "alertText": "* 无效的日期或时间格式",
                     "alertText2": "可接受的格式： ",
                     "alertText3": "mm/dd/yyyy hh:mm:ss AM|PM 或 ",
                     "alertText4": "yyyy-mm-dd hh:mm:ss AM|PM"
-	            },
-	            "threeIntAndFourDecimal": {
+                },
+                "threeIntAndFourDecimal": {
                     "regex": /^[0-9]\d{0,2}$|^[0-9]\d{0,2}\.[0-9]\d{0,4}/,
                     "alertText": "* 最多只能输入三位整数和四位小数"
                 },
-	            "fiftennnIntAndTwoDecimal": {
+                "fiftennnIntAndTwoDecimal": {
                     "regex": /^[0-9]\d{0,14}$|^[0-9]\d{0,14}\.[0-9]\d{0,2}/,
                     "alertText": "* 最多只能输入十五位整数和两位小数"
                 },
@@ -199,64 +199,144 @@
                     "alertText": "* 最多只能输入两位整数和两位小数"
                 },
                 "sixteenIntAndTwoDecimal": {
-                    "regex":/^(-)?([1-9][\d]{0,15}|0)(\.[\d]{1,2})?$/,
+                    "regex": /^(-)?([1-9][\d]{0,15}|0)(\.[\d]{1,2})?$/,
                     "alertText": "* 最多只能输入十六位整数和两位小数"
                 },
-                "dateTime" : {
-                	"regex": /^((\d{2}(([02468][048])|([13579][26]))[\-\/\s]?((((0?[13578])|(1[02]))[\-\/\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\-\/\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\-\/\s]?((0?[1-9])|([1-2][0-9])))))|(\d{2}(([02468][1235679])|([13579][01345789]))[\-\/\s]?((((0?[13578])|(1[02]))[\-\/\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\-\/\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\-\/\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))(\s((([0-1][0-9])|(2?[0-3]))\:([0-5]?[0-9])((\s)|(\:([0-5]?[0-9])))))?$/,
-                	"alterText" : "* 请输入正确的时间格式"
+                "dateTime": {
+                    "regex": /^((\d{2}(([02468][048])|([13579][26]))[\-\/\s]?((((0?[13578])|(1[02]))[\-\/\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\-\/\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\-\/\s]?((0?[1-9])|([1-2][0-9])))))|(\d{2}(([02468][1235679])|([13579][01345789]))[\-\/\s]?((((0?[13578])|(1[02]))[\-\/\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\-\/\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\-\/\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))(\s((([0-1][0-9])|(2?[0-3]))\:([0-5]?[0-9])((\s)|(\:([0-5]?[0-9])))))?$/,
+                    "alterText": "* 请输入正确的时间格式"
                 },
-                "YYYYMM":{
-                	"regex": /^\d{6}?$/,
+                "YYYYMM": {
+                    "regex": /^\d{6}?$/,
                     "alertText": "* 正确的格式示例:201501"
                 },
-                "YYYY-MM":{
-                	"regex": /^\d{4}-\d{2}?$/,
+                "YYYY-MM": {
+                    "regex": /^\d{4}-\d{2}?$/,
                     "alertText": "* 正确的格式示例:2015-09"
                 },
-                "percent100":{
-                	"regex":/^(([1-9]\d{0,1})|(0)|(100))(\.\d{1,2})?$/,
-                	"alertText": "* 请输入0~100的数字，最多2位小数,示例:69.21"
+                "percent100": {
+                    "regex": /^(([1-9]\d{0,1})|(0)|(100))(\.\d{1,2})?$/,
+                    "alertText": "* 请输入0~100的数字，最多2位小数,示例:69.21"
                 },
-                "orgCodeValiDation":{
-                    "regex":/^\d{8}[-][a-zA-z-0-9]{1}$/,
+                "orgCodeValiDation": {
+                    "regex": /^\d{8}[-][a-zA-z-0-9]{1}$/,
                     "alertText": "* 请输入正确的组织机构代码，示例:12345678-1"
                 },
-                "businessLicenseValiDation":{
-                    "regex":/^\d{16}$|^\d{18}$/,
+                "businessLicenseValiDation": {
+                    "regex": /^\d{16}$|^\d{18}$/,
                     "alertText": "* 请输入正确营业执照号，只能是16或18位数字"
                 },
-                "loanCardNumberValiDation":{
-                    "regex":/^\d{16}$/,
+                "loanCardNumberValiDation": {
+                    "regex": /^\d{16}$/,
                     "alertText": "* 请输入正确的贷款卡号，只能是16位数字"
                 },
-                "orgCreditCodeValiDation":{
-                    "regex":/^[a-zA-z-0-9]{18}$/,
+                "orgCreditCodeValiDation": {
+                    "regex": /^[a-zA-z-0-9]{18}$/,
                     "alertText": "* 请输入正确的机构信用代码，只能是含数字，字母长度为18的字符串"
                 },
-                "chinaId":{
+                "chinaId": {
                     /**
                      * 2013年1月1日起第一代身份证已停用，此处仅验证 18 位的身份证号码
                      * 如需兼容 15 位的身份证号码，请使用宽松的 chinaIdLoose 规则
                      * /^[1-9]\d{5}[1-9]\d{3}(
-                     * 	(
-                     * 		(0[13578]|1[02])
-                     * 		(0[1-9]|[12]\d|3[01])
-                     * 	)|(
-                     * 		(0[469]|11)
-                     * 		(0[1-9]|[12]\d|30)
-                     * 	)|(
-                     * 		02
-                     * 		(0[1-9]|[12]\d)
-                     * 	)
+                     *    (
+                     *        (0[13578]|1[02])
+                     *        (0[1-9]|[12]\d|3[01])
+                     *    )|(
+                     *        (0[469]|11)
+                     *        (0[1-9]|[12]\d|30)
+                     *    )|(
+                     *        02
+                     *        (0[1-9]|[12]\d)
+                     *    )
                      * )(\d{4}|\d{3}[xX])$/i
                      */
-                    "regex":/^[1-9]\d{5}[1-9]\d{3}(((0[13578]|1[02])(0[1-9]|[12]\d|3[0-1]))|((0[469]|11)(0[1-9]|[12]\d|30))|(02(0[1-9]|[12]\d)))(\d{4}|\d{3}[xX])$/,
-                    "alertText":"* 无效的身份证号码"
+                    "regex": /^[1-9]\d{5}[1-9]\d{3}(((0[13578]|1[02])(0[1-9]|[12]\d|3[0-1]))|((0[469]|11)(0[1-9]|[12]\d|30))|(02(0[1-9]|[12]\d)))(\d{4}|\d{3}[xX])$/,
+                    "alertText": "* 无效的身份证号码"
                 },
-                "chinaIdLoose":{
-                    "regex":/^(\d{18}|\d{15}|\d{17}[xX])$/,
-                    "alertText":"* 无效的身份证号码"
+                "chinaIdLoose": {
+                    "regex": /^(\d{18}|\d{15}|\d{17}[xX])$/,
+                    "alertText": "* 无效的身份证号码"
+                },
+                "chinaIdStrict": {
+                    "func": function (field) {
+                        var code = $.trim(field.val());
+                        var city = {
+                            11: "北京",
+                            12: "天津",
+                            13: "河北",
+                            14: "山西",
+                            15: "内蒙古",
+                            21: "辽宁",
+                            22: "吉林",
+                            23: "黑龙江 ",
+                            31: "上海",
+                            32: "江苏",
+                            33: "浙江",
+                            34: "安徽",
+                            35: "福建",
+                            36: "江西",
+                            37: "山东",
+                            41: "河南",
+                            42: "湖北 ",
+                            43: "湖南",
+                            44: "广东",
+                            45: "广西",
+                            46: "海南",
+                            50: "重庆",
+                            51: "四川",
+                            52: "贵州",
+                            53: "云南",
+                            54: "西藏 ",
+                            61: "陕西",
+                            62: "甘肃",
+                            63: "青海",
+                            64: "宁夏",
+                            65: "新疆",
+                            71: "台湾",
+                            81: "香港",
+                            82: "澳门",
+                            91: "国外 "
+                        };
+                        var tip = "";
+                        var pass = true;
+
+                        if (!code || !/^[1-9]\d{5}((1[89]|20)\d{2})(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])\d{3}[\dx]$/i.test(code)) {
+                            tip = "身份证号格式错误";
+                            pass = false;
+                        }
+
+                        else if (!city[code.substr(0, 2)]) {
+                            tip = "地址编码错误";
+                            pass = false;
+                        }
+                        else {
+                            //18位身份证需要验证最后一位校验位
+                            if (code.length == 18) {
+                                code = code.split('');
+                                //∑(ai×Wi)(mod 11)
+                                //加权因子
+                                var factor = [7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2];
+                                //校验位
+                                var parity = [1, 0, 'X', 9, 8, 7, 6, 5, 4, 3, 2];
+                                var sum = 0;
+                                var ai = 0;
+                                var wi = 0;
+                                for (var i = 0; i < 17; i++) {
+                                    ai = code[i];
+                                    wi = factor[i];
+                                    sum += ai * wi;
+                                }
+                                var last = parity[sum % 11];
+                                if (parity[sum % 11].toString().toLowerCase() != code[17].toString().toLowerCase()) {
+                                    tip = "校验位错误";
+                                    pass = false;
+                                }
+                            }
+                        }
+                        return pass;
+                    },
+                    "alertText": "*无效的身份证号码"
                 }
             };
 
