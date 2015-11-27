@@ -23,7 +23,18 @@ public interface MenuAccess {
     public void saveAccess(String app) throws JxException;
 
     /**
+     * 保存访问记录
+     * 
+     * @param app
+     * @param params
+     *            存放其它客户端信息
+     * @throws JxException
+     */
+    public void saveAccess(String app, Map<String, Object> params) throws JxException;
+
+    /**
      * 获得访问记录。最喜欢的、最近访问的
+     * 
      * @return
      * @throws JxException
      */

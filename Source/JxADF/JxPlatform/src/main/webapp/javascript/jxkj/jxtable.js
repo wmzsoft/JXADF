@@ -115,7 +115,7 @@ function loadDataTable(tableId, options) {
         dataTableOption["sDom"] = "tS";
         dataTableOption["fnInitComplete"] = function (obj) {
             var timer;
-            $(window).on("resize.resizeDatatable", function () {
+            $(window).off("resize.resizeDatatable." + tableId).on("resize.resizeDatatable." + tableId, function () {
                 clearTimeout(timer);
                 timer = setTimeout(function () {
                     resizeDataTable(table);
@@ -333,7 +333,9 @@ function spanSetPageSize(tableId, pSize) {
 }
 
 function pageGoto(tableId) {
-    getTableData('div_' + tableId, null,function (){afterFragmentLoad(tableId);},null, 0);
+    getTableData('div_' + tableId, null, function () {
+        afterFragmentLoad(tableId);
+    }, null, 0);
 }
 
 function pageNext(tableId) {

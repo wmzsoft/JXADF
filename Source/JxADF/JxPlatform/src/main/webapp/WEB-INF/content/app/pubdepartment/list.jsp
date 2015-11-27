@@ -341,9 +341,9 @@
                 if (tableId == "listtable") {
                     var table = $("#" + tableId);
                     var headerTr = $("thead tr:last", table);
-                    debug("clientHeight : " + JxUtil.getClientHeight());
-                    debug("top : " + headerTr.offset().top);
-                    debug("headerTr : " + headerTr.outerHeight());
+//                    debug("clientHeight : " + JxUtil.getClientHeight());
+//                    debug("top : " + headerTr.offset().top);
+//                    debug("headerTr : " + headerTr.outerHeight());
                     var tableHeight = JxUtil.getClientHeight() - headerTr.offset().top - headerTr.outerHeight();
                     table.attr("sheight", tableHeight - 50);
                 }

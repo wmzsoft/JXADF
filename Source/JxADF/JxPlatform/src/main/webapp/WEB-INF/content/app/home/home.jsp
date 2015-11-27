@@ -109,7 +109,14 @@
             loadApp(contextPath + "/" + target.attr("appUrl"));
             //设置title
             $("#appName").text(target.text());
-            WebClientBean.saveMaxAppVisitData(target.attr("app"));
+            if (typeof(onAppMenuClick)=='function'){
+                if (myurl.indexOf("http://")!=0){
+                    myurl="http://"+document.domain+myurl;
+                }
+                onAppMenuClick(e,target.attr("app"),myurl);
+            }else{
+                WebClientBean.saveMaxAppVisitData(target.attr("app"));
+            }
         }
         $(function () {
             //加载布局
