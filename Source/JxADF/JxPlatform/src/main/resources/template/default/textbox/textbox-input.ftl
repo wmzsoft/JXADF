@@ -50,7 +50,7 @@ $author:wmzsoft@gmail.com
 <#if (parameters.dataattribute??)>
     <#lt> dataattribute="${parameters.dataattribute!''}" <#rt>
     <#if (parameters.jbo?? ) >
-        <#lt> onBlur="inputOnBlur(this)" onfocus="inputOnFocus(this)" onChange="inputOnChange(this)" onKeyup="inputOnChange(this)" changed="0" <#rt/>
+        <#lt> onBlur="inputOnBlur(this,event)" onfocus="inputOnFocus(this,event)" onChange="inputOnChange(this,event)" onKeyup="inputOnChange(this,event)" changed="0" <#rt/>
     </#if>
 </#if>
 <#if (parameters.render??)>

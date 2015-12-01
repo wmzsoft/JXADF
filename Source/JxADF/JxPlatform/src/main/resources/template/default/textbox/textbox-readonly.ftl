@@ -19,6 +19,21 @@ $author:wmzsoft@gmail.com
         </#if>><#t>
     ${parameters.dataValue!''}<#t>
     </a><#t>
+<#elseif ((parameters.render!'x') == "MXEVENT")>
+    <a href="javascript:void(0);" onclick="${parameters.renderExtends!'void'}(this,event)" id='${parameters.id!"x"}' <#rt>
+       <#lt> target="${parameters.urlTarget!'_self'}" <#rt>
+        <#if (parameters.name??)>
+            <#lt> name="${parameters.name}" <#rt>
+        </#if>
+       <#lt> urlvalue="${parameters.urlParamValue!}"<#rt>
+       <#lt> dataattribute="${parameters.dataattribute!''}" <#rt>
+        <#if fromMultipart?? && fromMultipart>
+            <#lt> class="form_td_multipart_first" <#rt>
+        <#else>
+            <#lt> class="${icss!'form_td_100'}" <#rt>
+        </#if>><#t>
+    ${parameters.dataValue!''}<#t>
+    </a><#t>
 <#elseif ((parameters.isInput!false)==false)>
     <textarea readonly="readonly" class="form_td_textarea readonly" id='${parameters.id!"x"}' <#rt>
           <#lt> dataattribute="${parameters.dataattribute!''}" rows='${parameters.rows!"1"}' <#rt>

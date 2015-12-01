@@ -66,4 +66,11 @@ public class StrUtilTest {
         String ok = MessageFormat.format(msg, new Object[] { "wmz" });
         Assert.assertEquals("wmz,hello", ok);
     }
+    
+    @Test
+    public void testR(){
+        String str = "${base}/jxbox";
+        String nstr = str.replaceAll("\\$\\{base\\}", "/jxweb");
+        Assert.assertEquals("/jxweb/jxbox", nstr);
+    }
 }

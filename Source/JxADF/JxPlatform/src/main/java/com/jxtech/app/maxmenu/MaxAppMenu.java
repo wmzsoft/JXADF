@@ -46,10 +46,14 @@ public class MaxAppMenu {
     /**
      * 返回菜单。
      * 
-     * @param visible 1:可视,0:不可视,-1：全部
-     * @param where 自定义的Where条件
-     * @param permission true：当前用户的权限
-     * @param workflow true:只显示工作流的应用程序
+     * @param visible
+     *            1:可视,0:不可视,-1：全部
+     * @param where
+     *            自定义的Where条件
+     * @param permission
+     *            true：当前用户的权限
+     * @param workflow
+     *            true:只显示工作流的应用程序
      * @return
      * @throws SQLException
      */
@@ -101,26 +105,22 @@ public class MaxAppMenu {
                 rs = ps.executeQuery();
                 // ResourceBundle zTreeBundle = JxLangResourcesUtil.getResourceBundle("res.tree.menu");
                 LanguageIface language = LanguageFactory.getLanguage(null);
-                Map<String, Map<String, Object>> bundles = JxResource.getMyBundles();
+                Map<String, String> loadapps = getLoadApps();
                 while (rs.next()) {
                     String url = rs.getString("appUrl");
                     if (!StrUtil.isNull(url)) {
                         if (!url.startsWith("app.action") && !url.startsWith("http://")) {
                             // 检查插件是否安装，如果没有安装，则不需要加载菜单
-                            url = "/" + url.substring(0, url.lastIndexOf('/') + 1);
+                            String appname = rs.getString("app");
                             boolean isInstall = false;// 是否安装了插件，默认没有安装
-                            for (Map.Entry<String, Map<String, Object>> bnd : bundles.entrySet()) {
-                                Map<String, Object> val = bnd.getValue();
-                                if (val != null) {
-                                    Object jurl = val.get("Jx-AppURL");
-                                    if (jurl != null) {
-                                        String[] jurls = jurl.toString().split(",");
-                                        for (int i = 0; i < jurls.length; i++) {
-                                            if (jurls[i].startsWith(url)) {
-                                                isInstall = true;
-                                                break;
-                                            }
-                                        }
+                            if (loadapps.containsKey(appname)) {
+                                isInstall = true;
+                            } else {
+                                url = "/" + url.substring(0, url.lastIndexOf('/') + 1);
+                                for (Map.Entry<String, String> entry : loadapps.entrySet()) {
+                                    if (entry.getValue().startsWith(url)) {
+                                        isInstall = true;
+                                        break;
                                     }
                                 }
                             }
@@ -211,5 +211,37 @@ public class MaxAppMenu {
     public String getMaxAppMenuJson(int visible, String where, boolean permission, boolean workflow) throws SQLException {
         List<Map<String, Object>> list = getMaxAppMenu(visible, where, permission, workflow);
         return JsonUtil.toJson(list);
+    }
+
+    /**
+     * 获得已加载的插件列表
+     * 
+     * @return <app,url>
+     */
+    public Map<String, String> getLoadApps() {
+        Map<String, String> apps = new HashMap<String, String>();
+        Map<String, Map<String, Object>> bundles = JxResource.getMyBundles();
+        for (Map.Entry<String, Map<String, Object>> bnd : bundles.entrySet()) {
+            Map<String, Object> val = bnd.getValue();
+            if (val != null) {
+                Object jurl = val.get("Jx-AppURL");
+                if (jurl != null) {
+                    String[] jurls = jurl.toString().split(",");
+                    for (int i = 0; i < jurls.length; i++) {
+                        if (jurls[i].length() > 2) {
+                            int pos = jurls[i].indexOf('/', 1);
+                            String appname;
+                            if (pos > 1) {
+                                appname = jurls[i].substring(1, pos);
+                            } else {
+                                appname = jurls[i].substring(1);
+                            }
+                            apps.put(appname.toUpperCase(), jurls[i]);
+                        }
+                    }
+                }
+            }
+        }
+        return apps;
     }
 }

@@ -1,5 +1,17 @@
 package com.jxtech.tag.appbar;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.tagext.Tag;
+
+import org.apache.struts2.components.Component;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jxtech.app.maxmenu.MaxMenuSetIFace;
 import com.jxtech.jbo.App;
 import com.jxtech.jbo.JboIFace;
@@ -9,17 +21,9 @@ import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.tag.body.BodyTag;
 import com.jxtech.tag.comm.JxBaseUITag;
+import com.jxtech.util.StrUtil;
+import com.jxtech.util.SysPropertyUtil;
 import com.opensymphony.xwork2.util.ValueStack;
-import org.apache.struts2.components.Component;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.tagext.Tag;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * @author wmzsoft@gmail.com
@@ -84,8 +88,8 @@ public class AppbarTag extends JxBaseUITag {
                         }
                     }
 
-                    appbar.setMenusList(menulist);
-                    appbar.setMenusToolbar(menusToolbar);
+                    appbar.setMenusList(doEl(menulist));
+                    appbar.setMenusToolbar(doEl(menusToolbar));
 
                     appbar.setAppNameType(appname + "." + apptype);
                 } catch (JxException e) {
@@ -97,6 +101,24 @@ public class AppbarTag extends JxBaseUITag {
         } else {
             LOG.warn("body tag not found.");
         }
+    }
+
+    private List<JboIFace> doEl(List<JboIFace> list) throws JxException {
+        if (list == null || list.isEmpty()) {
+            return list;
+        }
+        int size = list.size();
+        for (int i = 0; i < size; i++) {
+            JboIFace ji = list.get(i);
+            String ext = ji.getString("extends");
+            if (!StrUtil.isNull(ext) && ext.indexOf('$') >= 0) {
+                if (ext.indexOf("${base}") >= 0) {
+                    ext = ext.replaceAll("\\$\\{base\\}", SysPropertyUtil.getBase());
+                    ji.setObject("extends", ext);
+                }
+            }
+        }
+        return list;
     }
 
     public void setHideSearch(String hideSearch) {

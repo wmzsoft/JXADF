@@ -84,9 +84,9 @@ public abstract class BaseJboSet implements JboSetIFace {
     // 当前记录的保存标识
     private long saveFlag = 0xFFFFFF;
 
-    //查询标识
-    private long queryFlag = 0; 
-    
+    // 查询标识
+    private long queryFlag = 0;
+
     /**
      * 命名规则：appname,appnameSet 子类必须覆盖此方法
      * 
@@ -275,7 +275,8 @@ public abstract class BaseJboSet implements JboSetIFace {
     /**
      * 获得查询条件
      * 
-     * @param flag ClearParams 清除之前记忆的查询条件。
+     * @param flag
+     *            ClearParams 清除之前记忆的查询条件。
      * @return
      */
     @Override
@@ -433,7 +434,8 @@ public abstract class BaseJboSet implements JboSetIFace {
     /**
      * 返回JSON格式的字符串
      * 
-     * @param attributes 字段名,为空则显示所有字段信息
+     * @param attributes
+     *            字段名,为空则显示所有字段信息
      */
     @Override
     public String toJson(String[] attributes) throws JxException {
@@ -517,7 +519,8 @@ public abstract class BaseJboSet implements JboSetIFace {
     /**
      * 返回JSON数据格式
      * 
-     * @param attributes 属性名
+     * @param attributes
+     *            属性名
      * @head 是否返回头部
      */
     public String toJson(String[] attributes, boolean head) throws JxException {
@@ -577,12 +580,18 @@ public abstract class BaseJboSet implements JboSetIFace {
     /**
      * 返回zTree的JSON格式的字符串
      * 
-     * @param attributes 需要返回的字段名
-     * @param idName 唯一关键字（与父节点关联）的字段名
-     * @param parentIdName 父节点字段名
-     * @param name 显示
-     * @param hasChildName 是否有孩子节点字段名
-     * @param leafDisplay 是否显示叶子节点,true显示，false不显示
+     * @param attributes
+     *            需要返回的字段名
+     * @param idName
+     *            唯一关键字（与父节点关联）的字段名
+     * @param parentIdName
+     *            父节点字段名
+     * @param name
+     *            显示
+     * @param hasChildName
+     *            是否有孩子节点字段名
+     * @param leafDisplay
+     *            是否显示叶子节点,true显示，false不显示
      * @return
      */
     @Override
@@ -984,14 +993,17 @@ public abstract class BaseJboSet implements JboSetIFace {
      * @throws JxException
      */
     public boolean canSave() throws JxException {
+        if ((saveFlag & JboIFace.SAVE_NO_CHECK_ALL) == JboIFace.SAVE_NO_CHECK_ALL) {
+            return true;
+        }
         // 如果做只读校验,并且只读,则返回false，保存失败
-        if (readonly && !((saveFlag | JboIFace.SAVE_NO_CHECK_READONLY) == JboIFace.SAVE_NO_CHECK_READONLY)) {
+        if (readonly && !((saveFlag & JboIFace.SAVE_NO_CHECK_READONLY) == JboIFace.SAVE_NO_CHECK_READONLY)) {
             LOG.warn("不能保存此记录集" + this.getJboname() + ",saveFlag=" + saveFlag);
             // 此功能问题太多，暂是屏蔽
             // throw new JxException(JxLangResourcesUtil.getString("baseJboSet.canSave.failed.readonly", new Object[] { getJboname() }));
         }
         // 如果要做权限检查
-        if (!((saveFlag | JboIFace.SAVE_NO_CHECK_PERMISSION) == JboIFace.SAVE_NO_CHECK_PERMISSION)) {
+        if (!((saveFlag & JboIFace.SAVE_NO_CHECK_PERMISSION) == JboIFace.SAVE_NO_CHECK_PERMISSION)) {
             boolean flag = PermissionFactory.getPermissionInstance().hasFunctions(getAppname(), "SAVE");
             if (!flag) {
                 readonly = !flag;
@@ -1077,5 +1089,5 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     public void setQueryFlag(long queryFlag) {
         this.queryFlag = queryFlag;
-    }    
+    }
 }

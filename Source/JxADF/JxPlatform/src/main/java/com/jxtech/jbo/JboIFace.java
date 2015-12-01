@@ -22,13 +22,13 @@ import java.util.Set;
 public interface JboIFace extends Serializable {
 
     // 保存时不做任何校验
-    public static final long SAVE_NO_CHECK_ALL = ~0x0;
+    public static final long SAVE_NO_CHECK_ALL = 1L;
     // 保存时，不做只读校验
-    public static final long SAVE_NO_CHECK_READONLY = ~0x1;
+    public static final long SAVE_NO_CHECK_READONLY = 2L;
     // 保存时，不做必填校验
-    public static final long SAVE_NO_CHECK_REQUIRED = ~0x2;
+    public static final long SAVE_NO_CHECK_REQUIRED = 4L;
     // 保存时,不检查权限
-    public static final long SAVE_NO_CHECK_PERMISSION = ~0x4;
+    public static final long SAVE_NO_CHECK_PERMISSION = 8L;
     // 工作流状态字段
     public static final String WF_STATUS_COLUMN = "WFT_STATUS";
     // 工作流状态时间
@@ -214,7 +214,8 @@ public interface JboIFace extends Serializable {
      * 获得联系JboSet，如果执行查询，则查询第一页结果
      * 
      * @param name
-     * @param executeQuery 是否执行查询
+     * @param executeQuery
+     *            是否执行查询
      * @return
      * @throws JxException
      */
@@ -244,10 +245,14 @@ public interface JboIFace extends Serializable {
     /**
      * 获得联系JboSet
      * 
-     * @param name 联系名
-     * @param flag 查询标识
-     * @param queryAll 是否获得所有结果
-     * @param executeQuery 是否执行查询
+     * @param name
+     *            联系名
+     * @param flag
+     *            查询标识
+     * @param queryAll
+     *            是否获得所有结果
+     * @param executeQuery
+     *            是否执行查询
      * @return
      * @throws JxException
      */
@@ -360,8 +365,10 @@ public interface JboIFace extends Serializable {
     /**
      * 设定某个数组字段的只读属性
      * 
-     * @param attributeNames 字段名的数组
-     * @param flag 是否只读
+     * @param attributeNames
+     *            字段名的数组
+     * @param flag
+     *            是否只读
      * @throws JxException
      */
     public void setReadonly(String[] attributeNames, boolean flag) throws JxException;
@@ -442,13 +449,20 @@ public interface JboIFace extends Serializable {
     /**
      * 可以按自己的业务逻辑重新指定用户
      * 
-     * @param curAct 当前节点
-     * @param nextAct 下一节点
-     * @param assign 当前工作流引擎计算出来的用户信息。<用户ID、用户名>
-     * @param agree 参见：JxConstant.WORKFLOW_ROUTE_XXX
-     * @param note 工作流备注
-     * @param tousers 指定用户,从页面中指定的用户,以逗号分隔
-     * @param options 选项，暂时无使用
+     * @param curAct
+     *            当前节点
+     * @param nextAct
+     *            下一节点
+     * @param assign
+     *            当前工作流引擎计算出来的用户信息。<用户ID、用户名>
+     * @param agree
+     *            参见：JxConstant.WORKFLOW_ROUTE_XXX
+     * @param note
+     *            工作流备注
+     * @param tousers
+     *            指定用户,从页面中指定的用户,以逗号分隔
+     * @param options
+     *            选项，暂时无使用
      * @return 重新指定的用户，<用户ID、用户名>
      * @throws JxException
      */
@@ -459,8 +473,10 @@ public interface JboIFace extends Serializable {
     /**
      * 获取用户根据状态自定义工作流发送界面需要填写的字段
      * 
-     * @param status 当前状态
-     * @param nextStatus 下一个状态
+     * @param status
+     *            当前状态
+     * @param nextStatus
+     *            下一个状态
      * @return 返回需要填写字段的集合
      */
     public List<WftParam> getWorkflowParam(String status, String nextStatus);
@@ -537,7 +553,8 @@ public interface JboIFace extends Serializable {
     /**
      * 根据relationship和jboname获取子（嵌套子）jboset
      * 
-     * @param relationship 关系名称
+     * @param relationship
+     *            关系名称
      * @return
      * @throws JxException
      */

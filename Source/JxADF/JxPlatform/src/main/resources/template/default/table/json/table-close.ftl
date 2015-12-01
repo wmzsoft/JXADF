@@ -6,7 +6,7 @@ $author:wmzsoft@gmail.com
 **/
 -->
 <#if ((parameters.jboset??) && (parameters.jboset.jbolist??)) >
-    <#if ((parameters.jboset.jbolist?size) >= 0) >
+    <#if (((parameters.jboset.jbolist)?size) >= 0) >
         ${parameters.startStr!""}<#t>
         <#if (parameters.jsonHead??)>
             <#list parameters.jsonHead as jhead>

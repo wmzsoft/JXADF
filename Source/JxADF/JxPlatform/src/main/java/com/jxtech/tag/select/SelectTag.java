@@ -163,10 +163,10 @@ public class SelectTag extends JxBaseUITag {
                         Map<String, Object> map = jsi.getQueryInfo().getParams();
                         if (map != null) {
                             Object o = map.get(dataattribute.toUpperCase() + "=?");
-                            if (o != null) {
-                                selected = String.valueOf(o);
-                            } else {
+                            if (o==null){
                                 o = map.get(dataattribute.toUpperCase() + cause);
+                            }
+                            if (o != null) {
                                 selected = String.valueOf(o);
                             }
                         }
