@@ -91,7 +91,7 @@
 
     <style type="text/css">
         .fillWidth {
-            width: 100%;
+            width: 98%;
         }
 
         .table_form td.form_td_label {
@@ -134,7 +134,7 @@
 
                         <jxui:sectionrow>
                             <jxui:sectioncol>
-                                <jxui:section type="edit">
+                                <jxui:section type="edit"  style="width:90%">
                                     <jxui:sectionrow>
                                         <jxui:textbox dataattribute="USER_ID"
                                                       label="{app.pubdepartment.PUB_USER.USER_ID}" required="true"/>
@@ -144,9 +144,10 @@
 
                                     </jxui:sectionrow>
                                     <jxui:sectionrow>
-                                        <jxui:multipartTextbox dataattribute="DEPARTMENT_ID" id="deptId"
+                                        <jxui:textbox dataattribute="DEPARTMENT_ID" id="deptId" render='HIDDEN'/>
+                                        <jxui:textbox dataattribute="PUB_USERDEPARTMENT_ID.NAME" id="deptId_DESC"
                                                                label="{app.pubdepartment.PUB_USER.DEPARTMENT_ID}"
-                                                               descdataattribute="PUB_USERDEPARTMENT_ID.NAME"/>
+                                                               />
                                         <jxui:checkbox dataattribute="USER_TYPE"
                                                        label="{app.pubdepartment.PUB_USER.USER_TYPE}"/>
                                         <jxui:checkbox dataattribute="ACTIVE"
@@ -188,12 +189,8 @@
 																			        colspan="4" />     
                                     </jxui:sectionrow>
 
-                                </jxui:section>
-
-
-                                <jxui:section style="width:100%;">
                                     <jxui:sectionrow>
-                                        <jxui:sectioncol>
+                                        <jxui:sectioncol colspan="100">
                                             <jxui:fragment id="user_role" type="user-role"/>
                                         </jxui:sectioncol>
                                     </jxui:sectionrow>

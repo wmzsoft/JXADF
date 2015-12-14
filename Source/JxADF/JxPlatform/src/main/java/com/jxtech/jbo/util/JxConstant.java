@@ -16,6 +16,8 @@ public class JxConstant {
     public final static long READ_CACHE = 1;
     // 重新取值
     public final static long READ_RELOAD = 2;
+    // 缓存中的数据和数据库中的数据全部加载进来
+    public final static long READ_ALL = 4;
 
     public final static long READ_PERSISTENCE = 3;
 
@@ -57,6 +59,5 @@ public class JxConstant {
 
     public final static String SITE = "SITE";
     public final static String SITE_ZH = "地点";
-
 
 }

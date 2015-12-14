@@ -7,20 +7,20 @@ $author:wmzsoft@gmail.com
 -->
 
 <#t/>
-<td <#rt/>
+<td id="${parameters.id}" <#rt/>
 <#if parameters.cssClass??>
-	class="${parameters.cssClass?html}"<#rt/>
+	<#lt> class="${parameters.cssClass?html}"<#rt/>
 <#elseif parameters.dynamicAttributes.cssClass??>
-	class="${parameters.dynamicAttributes.cssClass?html}"<#rt/>
+	<#lt> class="${parameters.dynamicAttributes.cssClass?html}"<#rt/>
 <#elseif parameters.type?? >
 	<#if parameters.type=='HEAD_LEFT'>
-		class="table_head_td_left"<#rt/>
+		<#lt> class="table_head_td_left"<#rt/>
 	<#elseif parameters.type=='HEAD_RIGHT' >
-		class="table_head_td_right"<#rt/>
+		<#lt> class="table_head_td_right"<#rt/>
 	</#if>
 </#if>
 <#if parameters.cssStyle?exists>
- style="${parameters.cssStyle?html}"<#rt/>
+  <#lt> style="${parameters.cssStyle?html}"<#rt/>
 </#if>
 <#include "/${parameters.templateDir}/simple/scripting-events.ftl" /><#rt/>
 <#include "/${parameters.templateDir}/simple/common-attributes.ftl" /><#rt/>

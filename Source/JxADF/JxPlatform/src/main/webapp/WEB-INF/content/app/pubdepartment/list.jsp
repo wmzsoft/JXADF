@@ -316,7 +316,7 @@
         }
 
         function showUser(me, e, uid) {
-            appDialog("pubdepartment", "newuser", $(me).attr("id"), "app.action?uid=" + uid, 700, 500, rollbackUser);
+            appDialog("pubdepartment", "newuser", $(me).attr("id"), "app.action?uid=" + uid, 780, 500, rollbackUser);
         }
 
         function refreshUser(actionType) {

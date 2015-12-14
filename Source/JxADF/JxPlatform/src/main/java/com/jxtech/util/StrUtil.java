@@ -330,23 +330,27 @@ public class StrUtil {
                 return false;
             }
         }
-
-        if ((value1 instanceof Number) || (value1 instanceof BigDecimal)) {
-            if ((value2 instanceof Number) || (value2 instanceof BigDecimal)) {
-                Number v1 = (Number) value1;
-                Number v2 = (Number) value2;
-                return NumUtil.compare(v1.doubleValue(), v2.doubleValue(), operation);
-            }
+        if ((value1 instanceof BigDecimal) && (value2 instanceof BigDecimal)) {
+            BigDecimal bd1 = (BigDecimal) value1;
+            BigDecimal bd2 = (BigDecimal) value2;
+            return NumUtil.compareBigDecimal(bd1, bd2, operation);
         }
+        if ((value1 instanceof String) || (value2 instanceof String)) {
+            return compareStr(value1.toString(), value2.toString(), operation);
+        }
+
         try {
-            double d1 = Double.parseDouble(String.valueOf(value1));
-            double d2 = Double.parseDouble(String.valueOf(value2));
-            return NumUtil.compare(d1, d2, operation);
+            String s1 = value1.toString();
+            BigDecimal bd1 = new BigDecimal(s1);
+            String s2 = value2.toString();
+            BigDecimal bd2 = new BigDecimal(s2);
+            return NumUtil.compareBigDecimal(bd1, bd2, operation);
         } catch (Exception e) {
             // LOG.debug(e.getMessage());
         }
         return compareStr(value1.toString(), value2.toString(), operation);
     }
+
 
     public static boolean compareStr(String value1, String value2, String operation) {
         if ("==".equals(operation) || "=".equals(operation)) {

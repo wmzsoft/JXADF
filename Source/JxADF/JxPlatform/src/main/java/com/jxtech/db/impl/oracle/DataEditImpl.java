@@ -177,6 +177,7 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
         Map<String, Object> data = jbo.getData();
         if (data == null || !jbo.isModify()) {
             LOG.info("没有要保存的数据。" + jboname);
+            return 0;
         }
         String keyName = jbo.getUidName();
         if (keyName == null) {

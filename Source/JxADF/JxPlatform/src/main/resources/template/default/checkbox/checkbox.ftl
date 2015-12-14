@@ -21,10 +21,12 @@ $author:sl
     </#if>
     ><#t>
 </#if>
-<#if (parameters.dataattribute??)>
-    <#if ((parameters.inputmode!'edit')=='QUERY') || ((parameters.inputmode!'edit')=='QUERYIMMEDIATELY')>
+<#if ((parameters.inputmode!'edit')=='QUERY') || ((parameters.inputmode!'edit')=='QUERYIMMEDIATELY')>
+	<#if (parameters.dataattribute??)>
         <#include "checkbox-query.ftl"/>
-    <#else>
-        <#include "checkbox-input.ftl"/>
+	</#if>
+<#else>
+	<#if (parameters.dataattribute??) || (parameters.dataValue??)>
+    	<#include "checkbox-input.ftl"/>
     </#if>
 </#if>

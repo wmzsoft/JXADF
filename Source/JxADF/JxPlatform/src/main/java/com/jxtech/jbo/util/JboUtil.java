@@ -125,7 +125,8 @@ public class JboUtil {
     /**
      * 根据当前jbo查询邻居数据
      * 
-     * @param jbo 当前jbo
+     * @param jbo
+     *            当前jbo
      * @return
      */
     public static JboIFace getSlibingJbo(JboIFace jbo, int slibing) throws JxException {
@@ -136,10 +137,12 @@ public class JboUtil {
         String uidValue = jbo.getUidValue();
         JboSetIFace jboset = jbo.getJboSet();
         JxTable jxtable = jboset.getJxTable();
+        String appname = null;
         if (jxtable != null) {
             Table table = jxtable.getTableModle();
             if (table != null) {
-                App listapp = JxSession.getApp(table.getAppName(), table.getAppType());
+                appname = table.getAppName();
+                App listapp = JxSession.getApp(appname, table.getAppType());
                 if (listapp != null) {
                     JboSetIFace listjboset = listapp.getJboset();
                     if (listjboset != null) {
@@ -209,8 +212,11 @@ public class JboUtil {
         // 直接通过UID来判断，查找记录
         String jboName = jbo.getJboName();
         JboSetIFace newjboset = JboUtil.getJboSet(jboName);
-
+        if (StrUtil.isNull(appname) && null != jboset) {
+            appname = jboset.getAppname();
+        }
         if (null != newjboset) {
+            newjboset.setAppname(appname);
             DataQueryInfo dqInfo = newjboset.getQueryInfo();
             dqInfo.setPageSize(1);// 只查询一条即可
             String uidname = jbo.getUidName();
@@ -260,9 +266,12 @@ public class JboUtil {
     /**
      * 通过应用程序名称和UID的值，解析EL表达式中的内容。
      * 
-     * @param appname 应用程序名 maxapps.app
-     * @param uid 主键
-     * @param expression EL表达式
+     * @param appname
+     *            应用程序名 maxapps.app
+     * @param uid
+     *            主键
+     * @param expression
+     *            EL表达式
      * @return
      */
     public static String getELValue(String appname, String uid, String expression) throws JxException {
@@ -309,7 +318,8 @@ public class JboUtil {
     /**
      * 获取在JXVAR表中的配置信息。
      * 
-     * @param varname 配置项 key
+     * @param varname
+     *            配置项 key
      * @return
      * @throws JxException
      */

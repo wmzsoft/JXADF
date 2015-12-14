@@ -137,18 +137,14 @@ public abstract class DataEditImpl implements DataEdit {
             LOG.info("没有要保存的数据");
             return false;
         }
-        int res;
         if (jbo.isToBeAdd() && jbo.isToBeDel()) {
             return true;
         }
         String tableName = jbo.getJboSet().getEntityname();
         if (jbo.isToBeDel() && !jbo.isToBeAdd()) {
-            if (delete(conn, jbo) > 0) {
-                removeCache(tableName);
-                return true;
-            } else {
-                return false;
-            }
+            delete(conn, jbo);
+            removeCache(tableName);
+            return true;
         }
         if (!jbo.isModify() && !jbo.isToBeAdd()) {
             return true;
@@ -173,17 +169,12 @@ public abstract class DataEditImpl implements DataEdit {
         }
         if (dq.exist(conn, tableName, keyName, keyValue)) {
             // 更改记录，修改人、修改时间要设置为现在
-            res = update(conn, jbo);
+            update(conn, jbo);
         } else {
-            res = insert(conn, jbo);
+            insert(conn, jbo);
         }
-        if (res > 0) {
-            removeCache(tableName);
-            return true;
-        } else {
-            LOG.info("没有保存到数据，" + tableName + "." + keyName + "=" + keyValue);
-            return false;
-        }
+        removeCache(tableName);
+        return true;
     }
 
     public void removeCache(String tablename) {

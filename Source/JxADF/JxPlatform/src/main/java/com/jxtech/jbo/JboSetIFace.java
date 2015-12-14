@@ -17,6 +17,8 @@ import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 /**
  * 每个表的记录信息
  * 
@@ -425,5 +427,9 @@ public interface JboSetIFace extends Serializable {
     public long getQueryFlag();
 
     public void setQueryFlag(long queryFlag);
+    
+    public HttpSession getSession() ;
+
+    public void setSession(HttpSession session) ;
 
 }

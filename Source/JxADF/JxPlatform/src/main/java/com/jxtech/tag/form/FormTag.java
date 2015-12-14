@@ -135,7 +135,11 @@ public class FormTag extends JxBaseUITag {
                     }
                     jbo = jboset.queryJbo(uid);
                     if (null != jbo) {
-                        instanceid = jbo.getString("WFT_INSTANCEID");
+                        instanceid = jbo.getString(JboIFace.WF_INSTANCEID_COLUMN);
+                        if (StrUtil.isNull(instanceid)) {
+                            form.setInstancestatus("0");//流程未启动
+                            instanceid = StrUtil.contact(jboset.getWorkflowEngine(), ".", jboset.getWorkflowId());
+                        }
                         form.setInstanceid(instanceid);
                     }
                 } else if (!StrUtil.isNull(apprestrictions)) {

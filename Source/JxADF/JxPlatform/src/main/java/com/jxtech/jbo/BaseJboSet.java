@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang3.StringUtils;
 import org.directwebremoting.io.FileTransfer;
 import org.slf4j.Logger;
@@ -86,6 +88,9 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     // 查询标识
     private long queryFlag = 0;
+    
+    //保存Session，在有些线程中取不到，就直接在这里取了。
+    private HttpSession session;
 
     /**
      * 命名规则：appname,appnameSet 子类必须覆盖此方法
@@ -1089,5 +1094,13 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     public void setQueryFlag(long queryFlag) {
         this.queryFlag = queryFlag;
+    }
+
+    public HttpSession getSession() {
+        return session;
+    }
+
+    public void setSession(HttpSession session) {
+        this.session = session;
     }
 }

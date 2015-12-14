@@ -61,6 +61,10 @@ public class JxSession {
      * @return
      */
     public static Object getSession(String key) {
+        return getSession(key, null);
+    }
+
+    public static Object getSession(String key, HttpSession hsession) {
         HttpSession session = getSession();
         if (session != null) {
             return session.getAttribute(key);
@@ -68,6 +72,9 @@ public class JxSession {
             ActionContext actx = ActionContext.getContext();
             if (actx != null) {
                 return actx.getSession().get(key);
+            }
+            if (hsession != null) {
+                return hsession.getAttribute(key);
             }
             return null;
         }
@@ -169,7 +176,8 @@ public class JxSession {
      * 获得应用程序名称
      * 
      * @param jboname
-     * @param onlyJboName 仅仅通过Jboname来获得应用程序名称
+     * @param onlyJboName
+     *            仅仅通过Jboname来获得应用程序名称
      * @return
      * @throws JxException
      */
@@ -244,7 +252,11 @@ public class JxSession {
      * @return
      */
     public static JxUserInfo getJxUserInfo() {
-        Object obj = getSession(USER_INFO);
+        return getJxUserInfo(null);
+    }
+
+    public static JxUserInfo getJxUserInfo(HttpSession hsession) {
+        Object obj = getSession(USER_INFO, hsession);
         if (obj == null) {
             return null;
         }
@@ -275,8 +287,8 @@ public class JxSession {
 
     /* 之前的登陆接口 */
     /*
-     * public static boolean login(String userid, String password, boolean relogin) throws JxException { if (StrUtil.isNull(userid)) { return false; } LOG.debug("login user:" + userid); JxUserInfo userinfo = null; if (!relogin) {// 不需要重新登录 userinfo = getJxUserInfo(); if (userinfo != null) { if (userid.equalsIgnoreCase(userinfo.getLoginid())) { return true; } } } AuthenticateIFace auth =
-     * AuthenticateFactory.getAuthenticateInstance(); userinfo = auth.getUserInfo(userid, password); if (userinfo != null) { putSession(USER_INFO, userinfo); } else { return false; } return true; }
+     * public static boolean login(String userid, String password, boolean relogin) throws JxException { if (StrUtil.isNull(userid)) { return false; } LOG.debug("login user:" + userid); JxUserInfo userinfo = null; if (!relogin) {// 不需要重新登录 userinfo = getJxUserInfo(); if (userinfo != null) { if (userid.equalsIgnoreCase(userinfo.getLoginid())) { return true; } } } AuthenticateIFace auth = AuthenticateFactory.getAuthenticateInstance(); userinfo = auth.getUserInfo(userid, password); if (userinfo !=
+     * null) { putSession(USER_INFO, userinfo); } else { return false; } return true; }
      */
 
     public static boolean loginBySsoUser(String userid) {
@@ -345,7 +357,11 @@ public class JxSession {
      * @return
      */
     public static String getUserId() {
-        JxUserInfo userinfo = getJxUserInfo();
+        return getUserId(null);
+    }
+
+    public static String getUserId(HttpSession hsession) {
+        JxUserInfo userinfo = getJxUserInfo(hsession);
         if (userinfo != null) {
             return userinfo.getUserid();
         }

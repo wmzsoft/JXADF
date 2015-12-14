@@ -46,3 +46,6 @@ $author:wmzsoft@gmail.com
     <input type="hidden" id="fromUid" value="${parameters.fromUid!''}"/>
     <input type="hidden" id="jboname" value="${parameters.jboname!''}"/>
     <input type="hidden" id="instanceid" value="${parameters.instanceid!''}"/>
+<#if (parameters.instancestatus??)>
+    <input type="hidden" id="instancestatus" value="${parameters.instancestatus!''}"/>
+</#if>

@@ -1074,7 +1074,8 @@ public abstract class BaseJbo implements JboIFace {
     /**
      * 读取联系JboSet
      * 
-     * @param name 联系名
+     * @param name
+     *            联系名
      */
     @Override
     public JboSetIFace getRelationJboSet(String name) throws JxException {
@@ -1086,7 +1087,8 @@ public abstract class BaseJbo implements JboIFace {
      * 获得联系
      * 
      * @param name
-     * @param executeQuery 是否执行查询
+     * @param executeQuery
+     *            是否执行查询
      * @return
      * @throws JxException
      */
@@ -1098,8 +1100,10 @@ public abstract class BaseJbo implements JboIFace {
     /**
      * 通过联系名获得JboSet
      * 
-     * @param name 联系名
-     * @param flag 参数 JxConstant.READ_CACHE 直接读取Cache，
+     * @param name
+     *            联系名
+     * @param flag
+     *            参数 JxConstant.READ_CACHE 直接读取Cache，
      */
     @Override
     public JboSetIFace getRelationJboSet(String name, long flag) throws JxException {
@@ -1109,9 +1113,12 @@ public abstract class BaseJbo implements JboIFace {
     /**
      * 通过联系名获得JboSet
      * 
-     * @param name 联系名
-     * @param flag 参数 JxConstant.READ_CACHE 直接读取Cache，
-     * @param queryAll 是否查全部
+     * @param name
+     *            联系名
+     * @param flag
+     *            参数 JxConstant.READ_CACHE 直接读取Cache，
+     * @param queryAll
+     *            是否查全部
      */
     @Override
     public JboSetIFace getRelationJboSet(String name, long flag, boolean queryAll) throws JxException {
@@ -1131,10 +1138,14 @@ public abstract class BaseJbo implements JboIFace {
 
     /**
      * 
-     * @param name 联系名
-     * @param flag 是否从缓存读取数据
-     * @param queryAll 是否查询所有记录,不分页
-     * @param executeQuery 是否执行查询
+     * @param name
+     *            联系名
+     * @param flag
+     *            是否从缓存读取数据
+     * @param queryAll
+     *            是否查询所有记录,不分页
+     * @param executeQuery
+     *            是否执行查询
      * @return
      * @throws JxException
      */
@@ -1142,7 +1153,7 @@ public abstract class BaseJbo implements JboIFace {
         if (StrUtil.isNull(name)) {
             return null;
         }
-        if (0 == flag) {
+        if (0 == flag && !queryAll) {
             flag = JxConstant.READ_CACHE;
         }
         String jboName = getJboName();
@@ -1154,11 +1165,11 @@ public abstract class BaseJbo implements JboIFace {
         }
         JxRelationship ship = JxRelationshipDao.getJxRelationship(jboName, name);
         if (ship != null) {
-            JboSetIFace jbos;
+            JboSetIFace jbos;// 子记录
 
             String cacheKey = StrUtil.contact(JxRelationshipDao.CACHE_PREX, name, ".", getUidValue());
             Object cacheJbos = CacheUtil.getBase(cacheKey);
-            if (JxConstant.READ_RELOAD != flag && !isToBeAdd() && null != cacheJbos && cacheJbos instanceof JboSetIFace) {
+            if (((flag & JxConstant.READ_CACHE) == JxConstant.READ_CACHE) && !isToBeAdd() && cacheJbos instanceof JboSetIFace) {
                 jbos = (JboSetIFace) cacheJbos;
             } else {
                 jbos = JboUtil.getJboSet(ship.getChild());
@@ -1221,7 +1232,29 @@ public abstract class BaseJbo implements JboIFace {
                     jbos.query(name);
                 }
             }
-
+            if (children.containsKey(key) && (flag & JxConstant.READ_ALL) == JxConstant.READ_ALL) {
+                List<JboIFace> clist = children.get(key).getJbolist();
+                if (clist != null && !clist.isEmpty()) {
+                    List<JboIFace> nlist = jbos.getJbolist();
+                    if (nlist == null) {
+                        nlist = new ArrayList<JboIFace>();
+                    }
+                    for (JboIFace cl : clist) {
+                        if (cl.isToBeAdd()) {
+                            nlist.add(cl);
+                        } else if (cl.isToBeDel() || cl.isModify()) {
+                            for (JboIFace n : nlist) {
+                                if (cl.getUidValue().equals(n.getUidValue())) {
+                                    nlist.remove(n);
+                                    break;
+                                }
+                            }
+                            nlist.add(cl);
+                        }
+                    }
+                    jbos.setJbolist(nlist);
+                }
+            }
             jbos.setParent(this);
             jbos.setAppname(getJboSet().getAppname());
             children.put(key, jbos);
@@ -1281,8 +1314,10 @@ public abstract class BaseJbo implements JboIFace {
     /**
      * 返回字段的动态信息
      * 
-     * @param attributeName 字段名
-     * @param isCreate 不存在是否创建
+     * @param attributeName
+     *            字段名
+     * @param isCreate
+     *            不存在是否创建
      * @return
      * @throws JxException
      */
@@ -1337,8 +1372,10 @@ public abstract class BaseJbo implements JboIFace {
     /**
      * 设定某个字段的只读属性
      * 
-     * @param attributeName 字段名
-     * @param flag 是否只读
+     * @param attributeName
+     *            字段名
+     * @param flag
+     *            是否只读
      * @throws JxException
      */
     @Override
@@ -1350,8 +1387,10 @@ public abstract class BaseJbo implements JboIFace {
     /**
      * 设定某个数组字段的只读属性
      * 
-     * @param attributeNames 字段名的数组
-     * @param flag 是否只读
+     * @param attributeNames
+     *            字段名的数组
+     * @param flag
+     *            是否只读
      * @throws JxException
      */
     @Override
@@ -1661,7 +1700,8 @@ public abstract class BaseJbo implements JboIFace {
      * 获得Jbo的子Jbo。
      * 
      * @param relationship
-     * @param isCreate 如果不存在，是否创建一个新的JboSet
+     * @param isCreate
+     *            如果不存在，是否创建一个新的JboSet
      * @return
      * @throws JxException
      */

@@ -14,7 +14,7 @@ $author:wmzsoft@gmail.com
                     "${jhead.attributeLabel}"<#t>
                 </#if>
                 <#if (jhead.attribute??)>
-                    :"${parameters.jboset.invokeGetMethod(jhead.attribute)}"<#t>
+                    :"${parameters.jboset.invokeGetMethod(jhead.attribute)!}"<#t>
                 </#if>
                 ${jhead.fixText!""}<#t>
                 <#if (jhead_has_next)>

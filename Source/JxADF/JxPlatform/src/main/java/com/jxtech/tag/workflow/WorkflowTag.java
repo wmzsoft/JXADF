@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import com.jxtech.jbo.App;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.JxSession;
+import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.tag.comm.JxBaseUITag;
 import com.jxtech.util.StrUtil;
@@ -32,6 +33,7 @@ public class WorkflowTag extends JxBaseUITag {
     private String fromAppType;// 应用程序类型
     private String fromJboname;// 应用程序主表名
     private String noteRequired;// 意见必填，取值为：TRUE,FALSE，默认为False
+    private String instanceid;
 
     // 操作列表
     private Map<String, String> actions; // 当前用户在当前节点可以操作的列表
@@ -50,6 +52,7 @@ public class WorkflowTag extends JxBaseUITag {
         fromAppType = request.getParameter("fromapptype");
         fromJboname = request.getParameter("fromjboname");
         noteRequired = request.getParameter("noterequired");
+        instanceid = request.getParameter("instanceid");
         super.initPropertiesValue(false);
         return new Workflow(stack, request, response);
     }
@@ -77,12 +80,19 @@ public class WorkflowTag extends JxBaseUITag {
         try {
             // String workFlowType = JboUtil.getAppWorkflowEngine(fromApp.toUpperCase());
             String workFlowType = "OBPM";
+            if (!StrUtil.isNull(instanceid) && instanceid.indexOf("JXBPM.")>=0){
+                workFlowType="JXBPM";
+            }
             App app = JxSession.getApp(fromApp, fromAppType);
             if (app != null) {
                 JboSetIFace js = app.getJboset();
                 if (js != null) {
                     workFlowType = js.getWorkflowEngine();
                 }
+            }else{
+                JboSetIFace js = JboUtil.getJboSet(fromJboname);
+                js.setAppname(fromApp);
+                workFlowType = js.getWorkflowEngine();
             }
             IWorkflowEngine wfEngine = WorkflowEngineFactory.getWorkflowEngine(workFlowType);
             if (wfEngine != null) {
@@ -177,5 +187,13 @@ public class WorkflowTag extends JxBaseUITag {
 
     public void setActionUsers(Map<String, String> actionUsers) {
         this.actionUsers = actionUsers;
+    }
+
+    public String getInstanceid() {
+        return instanceid;
+    }
+
+    public void setInstanceid(String instanceid) {
+        this.instanceid = instanceid;
     }
 }

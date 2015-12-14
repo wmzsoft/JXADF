@@ -195,6 +195,9 @@ public class TextboxTag extends JxBaseUITag {
         text.setCause2(cause2);
         text.setQueryValue2(queryValue2);
         text.setColumnAttribute(columnAttribute);
+        if (StrUtil.isObjectNull(dataValue)){
+            dataValue = value;
+        }
         text.setDataValue(dataValue);
         text.setRender(render);
         text.setRenderExtends(renderExtends);

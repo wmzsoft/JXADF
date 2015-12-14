@@ -155,7 +155,10 @@ public class TableTag extends JxBaseUITag {
         }
         App app = JxSession.getMainApp();
         pagenum = StrUtil.parseInt(request.getParameter("pagenum"), 0);
-        pagesize = StrUtil.parseIntToString(request.getParameter("pagesize"), 20);
+        String ops = request.getParameter("pagesize");
+        if (!StrUtil.isNull(ops)) {
+            pagesize = StrUtil.parseIntToString(ops, 20);
+        }
         if (app != null) {
             if (loadType == JxConstant.READ_PERSISTENCE && null != app.getJboset()) {
                 if ("lookup".equalsIgnoreCase(appType)) {
@@ -170,7 +173,7 @@ public class TableTag extends JxBaseUITag {
                     }
                     DataQueryInfo qf = mainJboSet.getQueryInfo();
                     if (null != qf) {
-                        if (pagenum <= 1) {
+                        if (pagenum < 1) {
                             pagenum = qf.getPageNum();
                             pagesize = String.valueOf(qf.getPageSize());
                         }

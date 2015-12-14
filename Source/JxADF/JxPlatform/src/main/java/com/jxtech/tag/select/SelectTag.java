@@ -12,7 +12,6 @@ import org.apache.struts2.components.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jxtech.common.JxLoadResource;
 import com.jxtech.db.DBFactory;
 import com.jxtech.db.DataQuery;
 import com.jxtech.jbo.App;
@@ -71,7 +70,7 @@ public class SelectTag extends JxBaseUITag {
     public Component getBean(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
         readonly = null;
         super.initPropertiesValue(false);
-        JxLoadResource.loadSelect2(request);
+        // JxLoadResource.loadSelect2(request);
         return new Select(stack, request, response);
     }
 
@@ -104,6 +103,9 @@ public class SelectTag extends JxBaseUITag {
             displayvalue = dataattribute;
         }
         select.setDisplayvalue(displayvalue);
+        if (selected != null) {
+            selected = selected.trim();
+        }
         String selectedDisplay = selected;
 
         String mycause = wherecause;
@@ -163,7 +165,7 @@ public class SelectTag extends JxBaseUITag {
                         Map<String, Object> map = jsi.getQueryInfo().getParams();
                         if (map != null) {
                             Object o = map.get(dataattribute.toUpperCase() + "=?");
-                            if (o==null){
+                            if (o == null) {
                                 o = map.get(dataattribute.toUpperCase() + cause);
                             }
                             if (o != null) {
@@ -182,7 +184,7 @@ public class SelectTag extends JxBaseUITag {
                             ji = ft.getJbo();
                         }
                     } else {
-                        //这里是TableTag，但仍然没用
+                        // 这里是TableTag，但仍然没用
                         tag = findAncestorWithClass(getParent(), TableTag.class);
                         if (tag != null) {
                             TableTag tt = (TableTag) tag;// 表
@@ -283,13 +285,13 @@ public class SelectTag extends JxBaseUITag {
                 KeyValue kv = new KeyValue();
                 if (pos == 0) {
                     kv.setKey("null");
-                    kv.setValue(opts[i].substring(pos + 1));
+                    kv.setValue(opts[i].substring(pos + 1).trim());
                 } else if (pos > 0) {
-                    kv.setKey(opts[i].substring(0, pos));
-                    kv.setValue(opts[i].substring(pos + 1));
+                    kv.setKey(opts[i].substring(0, pos).trim());
+                    kv.setValue(opts[i].substring(pos + 1).trim());
                 } else {
-                    kv.setKey(opts[i]);
-                    kv.setValue(opts[i]);
+                    kv.setKey(opts[i].trim());
+                    kv.setValue(opts[i].trim());
                 }
                 list.add(kv);
             }

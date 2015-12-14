@@ -81,6 +81,29 @@ public class NumUtil {
         }
     }
 
+    public static boolean compareBigDecimal(BigDecimal value1, BigDecimal value2, String operation) {
+        int ct = -1;
+        if (value1 != null && value2 != null) {
+            ct = value1.compareTo(value2);
+        }
+        if ("=".equals(operation) || "==".equals(operation)) {
+            return (ct == 0);
+        } else if (">".equals(operation)) {
+            return (ct > 0);
+        } else if (">=".equals(operation)) {
+            return (ct >= 0);
+        } else if ("<".equals(operation)) {
+            return (ct < 0);
+        } else if ("<=".equals(operation)) {
+            return ct <= 0;
+        } else if ("!=".equals(operation) || "<>".equals(operation)) {
+            return ct != 0;
+        } else {
+            DecimalFormat df = new DecimalFormat("#");
+            return StrUtil.compareStr(df.format(value1), df.format(value2), operation);
+        }
+    }
+
     public static long parseLong(String value, long defaultValue) {
         if (value == null) {
             return defaultValue;

@@ -1111,6 +1111,9 @@ function checkOnChange(me, e) {
         }
 
         var cause = $(me).attr("dataattribute");
+        if (cause==undefined || cause==''){
+        	return;
+        }
         cause += $(me).attr("cause");
         WebClientBean.inputQueryOnBlur(jx_appNameType, '', cause, tValue, {
             callback: function () {
@@ -1155,7 +1158,6 @@ function inputOnBlur(me, e) {
     if (me == null) {
         return;
     }
-
     if (me.readOnly && $(me).attr("datatype") && "date" != $(me).attr("datatype")) {
         return;
     }
@@ -1164,7 +1166,10 @@ function inputOnBlur(me, e) {
     if (changed == "0" || changed == null || changed == '') {
         return;// 没有变化，不需要做任何事。
     }
-
+    var dt = $(me).attr("dataattribute");
+    if (dt == undefined || dt==''){
+    	return;
+    }
     // 对当前的元素进行校验，返回false则是表示校验通过
     if (!$(me).validationEngine('validate')) {
         var meValue = $(me).val();
@@ -1188,7 +1193,7 @@ function inputOnBlur(me, e) {
         var relationship = $(me).closest("form").attr("relationship");
         relationship = (relationship == undefined ? "" : relationship);
 
-        WebClientBean.inputOnBlur2(jx_appNameType, $('#' + me.id).attr("dataattribute"),
+        WebClientBean.inputOnBlur2(jx_appNameType, $(me).attr("dataattribute"),
             meValue, $(desidv).attr("dataattribute"), relationship, {
                 callback: function (jbo) {
                     if (null != jbo) {
@@ -1259,6 +1264,9 @@ function inputQueryOnBlur(me, e) {
     }
 
     var attribute = $field.attr("dataattribute");
+    if (attribute==undefined || attribute==''){
+    	return;
+    }
     var cause = $field.attr("cause");
     if (cause) {
         if (attribute.indexOf(".") != -1) {
@@ -1309,6 +1317,10 @@ function labelsQuery(me, e) {
         }
         tb = tb.parent();
     }
+    var dt = $(me).attr("dataattribute");
+    if (dt == undefined || dt==''){
+    	return;
+    }
     WebClientBean.inputQueryOnBlur(jx_appNameType, relationship
         , $(me).attr("dataattribute") + $(me).attr("cause")
         , $(me)[0].innerText, {
@@ -1338,7 +1350,10 @@ function selectChange(me, e) {
     }
 
     setExpandSourceRowText($select, $select.find("option:selected").text());
-
+    var dt=$(me).attr("dataattribute");
+    if (dt==undefined || dt==''){
+    	return;
+    }
     var im = $select.attr("inputmode");
     if (im == 'DISPLAY') {
         return;
@@ -1396,6 +1411,9 @@ function tableSelectChange(me, e) {
     var jboname = table.attr("jboname");
     var relationship = table.attr("relationship");
     var dataattribute = $(me).attr("dataattribute");
+    if (dataattribute==undefined || dataattribute==''){
+    	return;
+    }
     // 一定要用me.value啊，不能使用$(me).val()，不兼容IE10以下的浏览器
     // 用me.value不支持多选，改为遍历
     var selval = new Array();
@@ -2249,27 +2267,39 @@ function routeme(me, e) {
     } else {
         bpmInstanceId = instanceid;
     }
-    dwr.engine.setAsync(false); // 设置成同步
-    WebClientBean.getAppWorkflowParam(jx_appNameType, {
-        // 返回一个json对象
-        callback: function (data) {
-            if (data != "") {
-                var myurl = '/jxweb/app.action?fromUid=' + uid + '&fromApp=' + jx_appName
-                    + '&fromAppType=' + jx_appType + '&fromJboname=' + jboname
-                    + '&instanceid=' + bpmInstanceId;
-                var fromId = me.id;
-                if (fromId == undefined || fromId == "") {
-                    fromId = "workflow";
+    if (bpmInstanceId!='' && bpmInstanceId.length>2 && bpmInstanceId.indexOf("JXBPM.")>=0){
+    	//健新科技自己的工作流
+        var myurl = contextPath +'/jxbpm/route.action?fromUid=' + uid + '&fromApp=' + jx_appName
+        	+ '&fromAppType=' + jx_appType + '&fromJboname=' + jboname
+        	+ '&instanceid=' + bpmInstanceId;
+	    var fromId = me.id;
+	    if (fromId == undefined || fromId == "") {
+	        fromId = "workflow";
+	    }
+	    appDialog(jx_appName, jx_appType, fromId, myurl, 650, 150, null, getLangString("jxcommon.routeme.title"));
+    }else{
+        dwr.engine.setAsync(false); // 设置成同步
+        WebClientBean.getAppWorkflowParam(jx_appNameType, {
+            // 返回一个json对象
+            callback: function (data) {
+                if (data != "") {
+                    var myurl = contextPath +'/app.action?fromUid=' + uid + '&fromApp=' + jx_appName
+                        + '&fromAppType=' + jx_appType + '&fromJboname=' + jboname
+                        + '&instanceid=' + bpmInstanceId;
+                    var fromId = me.id;
+                    if (fromId == undefined || fromId == "") {
+                        fromId = "workflow";
+                    }
+                    appDialog('workflow', 'workflow?engine=' + data, fromId, myurl, 650, 150, null, getLangString("jxcommon.routeme.title"));
+                } else {
+                    alert(getLangString("jxcommon.loadbpmconfigerror"));
                 }
-                appDialog('workflow', 'workflow?engine=' + data, fromId, myurl, 650, 150, null, getLangString("jxcommon.routeme.title"));
-            } else {
-                alert(getLangString("jxcommon.loadbpmconfigerror"));
-            }
-        },
-        errorHandler: errorHandler,
-        exceptionHandler: exceptionHandler
-    });
-    dwr.engine.setAsync(true); // 重新设置成异步
+            },
+            errorHandler: errorHandler,
+            exceptionHandler: exceptionHandler
+        });
+        dwr.engine.setAsync(true); // 重新设置成异步    	
+    }
 }
 
 /*
@@ -2303,17 +2333,17 @@ function routeCommon(me, e) {
 
     var required = $('#noteRequired').css('display');
     var note = $("#note").val();
-    if (required != 'none') {
+    if (required!=undefined && required != 'none') {
         if (note == '') {
             alert(getLangString("jxcommon.bpm.neednote"));
             return;
         }
     }
-
+    if (note==undefined){
+    	note='';
+    }
     $(me).attr("disabled", "disabled");
-
     note = actionLabel + ";" + note;
-
     dwr.engine.setAsync(false); // 设置成同步
     var appName = $('#fromApp').val();// 应用程序名
     var appType = $("#fromAppType").val();// 应用程序类型

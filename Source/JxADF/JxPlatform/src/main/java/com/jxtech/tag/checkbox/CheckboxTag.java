@@ -44,11 +44,10 @@ public class CheckboxTag extends JxBaseUITag {
     private String cause;
     private String queryValue;
     private JxAttribute jxattribute;
-    protected String labeltip;//标签提示
-    protected String valuetip;//值的提示
+    protected String labeltip;// 标签提示
+    protected String valuetip;// 值的提示
 
-
-    protected String queryType; //查询类型（有CHECKBOX和SELECT2中）
+    protected String queryType; // 查询类型（有CHECKBOX和SELECT2中）
 
     @Override
     public Component getBean(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
@@ -90,7 +89,7 @@ public class CheckboxTag extends JxBaseUITag {
                                 }
                             }
                         }
-                    }else{
+                    } else {
                         if (!"true".equalsIgnoreCase(readonly)) {
                             readonly = String.valueOf(jbo.isReadonly(dataattribute));
                         }
@@ -102,6 +101,9 @@ public class CheckboxTag extends JxBaseUITag {
         }
         Checkbox chk = (Checkbox) component;
         chk.setDataattribute(dataattribute);
+        if (StrUtil.isNull(dataValue)) {
+            dataValue = value;
+        }
         chk.setDataValue(dataValue);
         chk.setRowspan(rowspan);
         chk.setColspan(colspan);

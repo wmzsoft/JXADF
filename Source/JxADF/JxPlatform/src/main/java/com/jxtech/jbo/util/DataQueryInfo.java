@@ -178,7 +178,11 @@ public class DataQueryInfo implements java.io.Serializable {
             cause.insert(0, '(').append(") AND (").append(restrictions).append(')');
         }
         whereAllParams = list.toArray();
-        allCause = ELUtil.getElValue(jboset, null, JxSession.getJxUserInfo(), cause.toString());
+        if (jboset != null) {
+            allCause = ELUtil.getElValue(jboset, null, JxSession.getJxUserInfo(jboset.getSession()), cause.toString());
+        } else {
+            allCause = ELUtil.getElValue(jboset, null, JxSession.getJxUserInfo(), cause.toString());
+        }
         return allCause;
     }
 

@@ -66,6 +66,9 @@ $author:smellok
 
     <#if ((parameters.routeBtnVisible!'FALSE')=='TRUE')>
         $('#routeCommonBtn').css('display', '');
+        if (typeof(sendwfInit)=='function'){
+        	sendwfInit();
+        }
     </#if>
     <#if ((parameters.noteRequired!'FALSE')=='TRUE')>
         $('#noteRequired').css('display', '');

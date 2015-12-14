@@ -1,11 +1,14 @@
 package com.jxtech.app.pubdepartment;
 
+import com.jxtech.db.DBFactory;
+import com.jxtech.db.DataQuery;
 import com.jxtech.i18n.JxLangResourcesUtil;
 import com.jxtech.jbo.Jbo;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JboUtil;
+import com.jxtech.jbo.util.JxConstant;
 import com.jxtech.jbo.util.JxException;
 
 import java.util.ArrayList;
@@ -96,5 +99,24 @@ public class PubDepartment extends Jbo {
             this.setReadonly("Department_id", true);
         }
     }
-
+    /**
+     * 获取部门有效用户
+     * @return
+     * @throws JxException
+     */
+    public long getActiveuser() throws JxException{
+    	DataQuery dq = DBFactory.getDataQuery(this.getJboSet().getDbtype(), this.getJboSet().getDataSourceName());
+    	int count = dq.count("pub_user", "department_id=? and active=1", new Object[]{getString("department_id")});
+    	return count;
+    }
+    /**
+     * 获取部门无效用户
+     * @return
+     * @throws JxException
+     */
+    public long getNoactiveuser() throws JxException{
+    	DataQuery dq = DBFactory.getDataQuery(this.getJboSet().getDbtype(), this.getJboSet().getDataSourceName());
+    	int count = dq.count("pub_user", "department_id=? and (active=0 or active is null)", new Object[]{getString("department_id")});
+    	return count;
+    }
 }

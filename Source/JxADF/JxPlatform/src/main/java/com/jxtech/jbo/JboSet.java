@@ -57,7 +57,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     protected boolean isExecAfterLoad() {
         return (getQueryFlag() & JboSetIFace.NOEXEC_AFTERLOAD) != JboSetIFace.NOEXEC_AFTERLOAD;
     }
-    
+
     /**
      * 查询结果集
      * 
@@ -75,7 +75,8 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     /**
      * 重新进行查询结果
      * 
-     * @param uid 唯一值
+     * @param uid
+     *            唯一值
      */
     @Override
     public JboIFace queryJbo(String uid) throws JxException {
@@ -103,7 +104,8 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     /**
      * 重新进行查询结果
      * 
-     * @param ids id序列
+     * @param ids
+     *            id序列
      */
     @Override
     public List<JboIFace> queryJbo(String[] ids) throws JxException {
@@ -141,8 +143,10 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     /**
      * 重新进行查询结果
      * 
-     * @param jboKey 列
-     * @param uid 唯一值
+     * @param jboKey
+     *            列
+     * @param uid
+     *            唯一值
      */
     @Override
     public JboIFace queryJbo(String jboKey, String uid) throws JxException {
@@ -174,9 +178,12 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     /**
      * 重新进行查询结果
      * 
-     * @param where 固定条件
-     * @param jboKey 列
-     * @param uid 唯一值
+     * @param where
+     *            固定条件
+     * @param jboKey
+     *            列
+     * @param uid
+     *            唯一值
      */
     @Override
     public JboIFace queryJbo(String where, String jboKey, String uid) throws JxException {
@@ -214,7 +221,8 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     /**
      * 查询结果集
      * 
-     * @param shipname 联系名
+     * @param shipname
+     *            联系名
      * @return
      * @throws JxException
      */
@@ -483,7 +491,8 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     /**
      * 获得安全限制条件，加载maxapp表中配置的条件和角色数据配置中的条件
      * 
-     * @param elValue true时，计算EL表达式的值，否则不用计算
+     * @param elValue
+     *            true时，计算EL表达式的值，否则不用计算
      * @return
      * @throws JxException
      */
@@ -492,7 +501,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         if (!StrUtil.isNull(aname)) {
             StringBuilder cause = new StringBuilder();
             aname = aname.toUpperCase().trim();
-            String userid = JxSession.getUserId();
+            String userid = JxSession.getUserId(getSession());
             String ckey = StrUtil.contact(userid, ".Security.", aname, ".", getJboname(), ".", String.valueOf(elValue));
             Object obj = CacheUtil.getPermission(ckey);
             if (obj instanceof String) {
@@ -548,9 +557,10 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             }
             String rst;
             if (cause.length() > 2 && elValue) {
-                rst = ELUtil.getElValue(this, null, JxSession.getJxUserInfo(), cause.toString());
+                rst = ELUtil.getElValue(this, null, JxSession.getJxUserInfo(getSession()), cause.toString());
+            } else {
+                rst = cause.toString();
             }
-            rst = cause.toString();
             CacheUtil.putPermissionCache(ckey, rst);
             return rst;
         }
@@ -644,9 +654,12 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     /**
      * 获得树节点及其所有的子节点
      * 
-     * @param parentName 父节点的字段名
-     * @param parentValue 父节点的值
-     * @param idName 标识字段名称
+     * @param parentName
+     *            父节点的字段名
+     * @param parentValue
+     *            父节点的值
+     * @param idName
+     *            标识字段名称
      * @return
      * @throws JxException
      */

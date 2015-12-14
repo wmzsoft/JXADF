@@ -5,7 +5,6 @@ $author:wmzsoft@gmail.com
 #date:2013.08
 **/
 -->
-<!--pushbutton.ftl begin-->
 <#t/>
 <#if (parameters.ignorepermission!false==true) || (parameters.permission!false==true)>
     <#if (parameters.visible!false==true)>

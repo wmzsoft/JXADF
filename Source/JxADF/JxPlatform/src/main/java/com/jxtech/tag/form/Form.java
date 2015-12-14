@@ -26,7 +26,8 @@ public class Form extends JxBaseUIBean {
     protected String fromJboname;// 从哪个Jboname过来的
     protected String fromUid;//
     private String uid;
-    private String instanceid;
+    private String instanceid;// 流程实例ID
+    private String instancestatus;// 流程状态，0：未启动
     private String type; // //默认值：edit（和后台jbo对象有交互）；view（和jbo没有关联，仅仅用来显示）
     protected String relationship; // 关系名 (一般用于列表的扩展表单使用，配合mainApp=false使用)
 
@@ -64,6 +65,9 @@ public class Form extends JxBaseUIBean {
         addParameter("type", StrUtil.isNull(type) ? "edit" : findString(type).toLowerCase());
         if (null != relationship) {
             addParameter("relationship", relationship);
+        }
+        if (instancestatus != null) {
+            addParameter("instancestatus", findString(instancestatus));
         }
     }
 
@@ -124,6 +128,10 @@ public class Form extends JxBaseUIBean {
 
     public void setInstanceid(String instanceid) {
         this.instanceid = instanceid;
+    }
+
+    public void setInstancestatus(String instancestatus) {
+        this.instancestatus = instancestatus;
     }
 
 }
