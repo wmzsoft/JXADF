@@ -25,6 +25,8 @@ public class NumUtilTest {
         double d = a/b;
         
         LOG.debug("d="+NumUtil.round(d, 2));
+        LOG.debug(NumUtil.format(0.0000009000000032, null));
+        LOG.debug(NumUtil.format(912345678.0000032D, null));
     }
 
 }

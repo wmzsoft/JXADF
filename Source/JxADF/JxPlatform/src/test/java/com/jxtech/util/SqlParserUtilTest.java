@@ -78,4 +78,13 @@ public class SqlParserUtilTest {
         Assert.assertTrue(SqlParserUtil.isSelectSql(sql));
         Assert.assertFalse(SqlParserUtil.isSelectSql(null));
     }
+    
+    @Test
+    public void testFormatWherecase(){
+        String[] keys=new String[]{"KEY","MAXVALUE"};
+        String msql = "select * from axb where kEy like ?";
+        String nsql = SqlParserUtil.formatWherecase(msql, keys, "1A");
+        String asql = "select * from axb where KEY1A like ?";
+        Assert.assertEquals(asql, nsql);
+    }
 }

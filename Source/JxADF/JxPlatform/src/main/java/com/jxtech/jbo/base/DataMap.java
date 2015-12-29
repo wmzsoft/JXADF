@@ -1,5 +1,7 @@
 package com.jxtech.jbo.base;
 
+import com.jxtech.db.DBFactory;
+import com.jxtech.db.DbColumn;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.util.JxException;
 import org.slf4j.Logger;
@@ -55,7 +57,17 @@ public class DataMap<K, V> extends HashMap<K, V> {
     @Override
     public V put(K key, V value) {
         if (key instanceof String) {
-            return super.put((K) ((String) key).toUpperCase(), value);
+            String mykey = ((String) key).toUpperCase();
+            if (jbo != null) {
+                DbColumn dbc = DBFactory.getDbColumn(jbo.getJboSet().getDbtype());
+                if (dbc != null) {
+                    String mykey2 = dbc.getColumn(mykey).toUpperCase();
+                    if (!mykey.equals(mykey2)) {
+                        super.put((K) mykey2, value);
+                    }
+                }
+            }
+            return super.put((K) mykey, value);
         }
         return super.put(key, value);
     }

@@ -46,12 +46,13 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
             ps = conn.prepareStatement(msql);
             for (i = 0; i < size; i++) {
                 JxAttribute attr = (JxAttribute) columns[i];
+                String attributename = attr.getAttributeName();
                 int type = attr.getSqlType();
                 if (StrUtil.isObjectNull(values[i])) {
-                    sb.append(attr.getAttributeName() + "[" + i + "," + attr.getMaxType() + "," + type + "]=null\r\n");
+                    sb.append(attributename + "[" + i + "," + attr.getMaxType() + "," + type + "]=null\r\n");
                     ps.setNull(i + 1, type);
                 } else {
-                    sb.append(attr.getAttributeName() + "[" + i + "," + attr.getMaxType() + "," + type + "]=" + values[i] + "\r\n");
+                    sb.append(attributename + "[" + i + "," + attr.getMaxType() + "," + type + "]=" + values[i] + "\r\n");
                     if ((type == Types.DATE || type == Types.TIME || type == Types.TIMESTAMP)) {
                         java.sql.Timestamp d = DateUtil.toSqlTimestamp(values[i]);
                         ps.setObject(i + 1, d, type);

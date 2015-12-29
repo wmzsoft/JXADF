@@ -24,6 +24,8 @@ public class DBFactory {
     public static Map<String, String> dbQueryImpl = new HashMap<String, String>();
     public static Map<String, String> dbEditImpl = new HashMap<String, String>();
     public static Map<String, String> dbColumnImpl = new HashMap<String, String>();
+    // 实例
+    public static Map<String, DbColumn> dbColumnInstance = new HashMap<String, DbColumn>();
     public static final String CACHE_PREX = "db.jboset.";
     private static DbColumn defaultDbColumn;
     private static Logger LOG = LoggerFactory.getLogger(DBFactory.class);
@@ -116,11 +118,17 @@ public class DBFactory {
         if (StrUtil.isNull(dbtype)) {
             return getDefaultDbColumn();
         }
+        DbColumn dc = dbColumnInstance.get(dbtype);
+        if (dc != null) {
+            return dc;
+        }
         String cn = dbColumnImpl.get(dbtype);
         if (!StrUtil.isNull(cn)) {
             Object obj = ClassUtil.getInstance(cn);
             if (obj instanceof DbColumn) {
-                return (DbColumn) obj;
+                dc = (DbColumn) obj;
+                dbColumnInstance.put(dbtype, dc);
+                return dc;
             }
         }
         return getDefaultDbColumn();

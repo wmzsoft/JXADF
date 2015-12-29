@@ -1,6 +1,8 @@
 package com.jxtech.common;
 
 import java.io.InputStream;
+import java.lang.reflect.Method;
+import java.net.URL;
 import java.net.URLStreamHandlerFactory;
 
 import javax.servlet.ServletContext;
@@ -13,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import com.jxtech.protocol.JxURLStreamHandlerFactory;
 import com.jxtech.util.CacheUtil;
-import com.jxtech.util.ClassUtil;
 import com.jxtech.util.StrUtil;
 import com.jxtech.util.SysPropertyUtil;
 
@@ -27,10 +28,25 @@ public class JxContextLoaderListener implements ServletContextListener {
     @Override
     public void contextInitialized(ServletContextEvent event) {
         try {
-            // URL.setURLStreamHandlerFactory(new JxURLStreamHandlerFactory());
-            //DirContextURLStreamHandlerFactory.addUserFactory(new JxURLStreamHandlerFactory());
+            // DirContextURLStreamHandlerFactory.addUserFactory(new JxURLStreamHandlerFactory());
             // 处理Tomcat的协议加载，其它中间件，需要将jx-protocols-1.0放到java.ext.dirs 目录中
-            ClassUtil.getStaticMethod("org.apache.naming.resources.DirContextURLStreamHandlerFactory", "addUserFactory", new Class<?>[] { URLStreamHandlerFactory.class }, new Object[] { new JxURLStreamHandlerFactory() });
+            String fn = "org.apache.naming.resources.DirContextURLStreamHandlerFactory";
+            Class<?> cs = null;
+            boolean ok = true;
+            try {
+                cs = Class.forName(fn);
+                Method m = cs.getMethod("addUserFactory", new Class<?>[] { URLStreamHandlerFactory.class });
+                m.invoke(cs, new Object[] { new JxURLStreamHandlerFactory() });
+            } catch (ClassNotFoundException ex) {
+                LOG.error(ex.getMessage());
+                ok = false;
+            } catch (NoSuchMethodException ne) {
+                LOG.error(ne.getMessage());
+                ok = false;
+            }
+            if (!ok) {
+                //URL.setURLStreamHandlerFactory(new JxURLStreamHandlerFactory());
+            }
         } catch (Exception e) {
             LOG.error(e.getMessage() + "\r\n加载jxtech协议失败，请将jxtech-protocols-1.0.jar放到java.ext.dirs目录中", e);
         }

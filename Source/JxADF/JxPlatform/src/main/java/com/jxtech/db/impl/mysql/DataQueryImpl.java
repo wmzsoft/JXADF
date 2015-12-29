@@ -77,6 +77,8 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
         }
         QueryRunner qr = new QueryRunner();
         try {
+            //解码特殊字段名
+            
             List<Map<String, Object>> list = qr.query(conn, msql.toString(), new MapListHandler(), params);
             JxLog jxlog = JxLogFactory.getJxLog(queryinfo.getAppname(), tablename);
             if (jxlog != null) {

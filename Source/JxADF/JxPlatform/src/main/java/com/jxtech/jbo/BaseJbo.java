@@ -715,9 +715,9 @@ public abstract class BaseJbo implements JboIFace {
             jset = jif.getRelationJboSet(ans[i], flag);
             idx++;
         }
-        if (jset != null && jset.getCount() > 0) {
+        if (jset != null) {
             JboIFace jid = jset.getJbo();
-            if (jid != null) {
+            if (jid != null && !StrUtil.isNull(ans[idx])) {
                 Object value = jid.getObject(ans[idx]);
                 data.put(attributeName, value);
                 // 将属性信息放入进去。
@@ -1021,6 +1021,7 @@ public abstract class BaseJbo implements JboIFace {
                 return true;
             }
         }
+        ((DataMap)data).setJbo(this);
         data.put(attributeName, value);
         // 判断是否存在这个属性，如果不存在则是虚拟字段，不予处理。
         JxAttribute attribute = getJxAttribute(attributeName);

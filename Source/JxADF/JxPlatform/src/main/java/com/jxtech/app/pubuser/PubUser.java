@@ -1,5 +1,7 @@
 package com.jxtech.app.pubuser;
 
+import com.jxtech.app.jxvars.JxVars;
+import com.jxtech.app.jxvars.JxVarsFactory;
 import com.jxtech.i18n.JxLangResourcesUtil;
 import com.jxtech.jbo.Jbo;
 import com.jxtech.jbo.JboIFace;
@@ -7,6 +9,7 @@ import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
+import com.jxtech.util.StrUtil;
 
 /**
  * 康拓普用户信息- 健新科技优化实现
@@ -26,12 +29,23 @@ public class PubUser extends Jbo {
     public boolean setDefaultValue() throws JxException {
         boolean b = super.setDefaultValue();
         if (b) {
+            JxVars vars = JxVarsFactory.getInstance();
             setObject("ACTIVE", 1);
             setObject("USER_TYPE", 1);
+            setObject("PASSWORD",StrUtil.md5(vars.getValue("com.jxtech.pubuser.password")));
         }
         return b;
     }
 
+    @Override
+    public boolean beforeSave() throws JxException {
+        boolean b = super.beforeSave();
+        if(b && isToBeAdd()){
+            setObject("LOGIN_ID", getObject("USER_ID"));
+        }
+        return b;
+    }
+    
     @Override
     public boolean canSave() throws JxException {
         boolean b = super.canSave();

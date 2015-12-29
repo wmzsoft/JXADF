@@ -53,13 +53,13 @@ ${seq + (pagesize?number) * (pagenum?number - 1)}
         </#if>
     <#--行编辑中的日期只能选择-->
         <#if (maxtype?upper_case)=='DATE'>
-            <#lt> readonly="true" datatype="date"<#rt>
+            <#lt> readonly="true" datatype="date" <#rt>
             <#assign cssClass = "custom[date]," + cssClass>
         <#elseif (maxtype?upper_case)=='DATETIME'>
-            <#lt> readonly="true" datatype="date<#rt>
-			<#assign cssClass = "custom[datetime]," + cssClass>
+            <#lt> readonly="true" datatype="date" <#rt>
+			<#assign cssClass = "custom[dateTime]," + cssClass>
 		<#elseif (maxtype?upper_case)=='TIME'>
-			<#lt> readonly="true" datatype="date<#rt>
+			<#lt> readonly="true" datatype="date" <#rt>
             <#assign cssClass = "custom[time]," + cssClass>
         </#if>
 

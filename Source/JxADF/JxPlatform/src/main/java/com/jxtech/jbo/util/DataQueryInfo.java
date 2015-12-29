@@ -8,11 +8,14 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jxtech.db.DBFactory;
+import com.jxtech.db.DbColumn;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.base.JxRelationship;
 import com.jxtech.jbo.base.JxRelationshipDao;
 import com.jxtech.util.ELUtil;
+import com.jxtech.util.SqlParserUtil;
 import com.jxtech.util.StrUtil;
 
 /**
@@ -54,7 +57,8 @@ public class DataQueryInfo implements java.io.Serializable {
     /**
      * 获得这个查询的ID值
      * 
-     * @param cache 是否需要重新计算查询条件。
+     * @param cache
+     *            是否需要重新计算查询条件。
      * @return
      */
     public int getQueryId(boolean cache) {
@@ -127,7 +131,7 @@ public class DataQueryInfo implements java.io.Serializable {
                     continue;
                 }
                 Object value = entry.getValue();
-                // LOG.debug("key:" + key + "  value:" + value);
+                // LOG.debug("key:" + key + " value:" + value);
                 if (value == null || (value instanceof String && StrUtil.isNull((String) value))) {
                     if (key.indexOf("?") > 0) {
                         continue;
@@ -180,6 +184,11 @@ public class DataQueryInfo implements java.io.Serializable {
         whereAllParams = list.toArray();
         if (jboset != null) {
             allCause = ELUtil.getElValue(jboset, null, JxSession.getJxUserInfo(jboset.getSession()), cause.toString());
+            // 处理特殊符号的字段名
+            DbColumn dbc = DBFactory.getDbColumn(jboset.getDbtype());
+            if (dbc != null) {
+                allCause = SqlParserUtil.formatWherecase(allCause, dbc.getKeys(), dbc.getSuffix());
+            }
         } else {
             allCause = ELUtil.getElValue(jboset, null, JxSession.getJxUserInfo(), cause.toString());
         }
@@ -228,9 +237,11 @@ public class DataQueryInfo implements java.io.Serializable {
     /**
      * 将条件put 到 params对象中。
      * 
-     * @param key column = ?
+     * @param key
+     *            column = ?
      * @param value
-     * @param overlay 是否覆盖
+     * @param overlay
+     *            是否覆盖
      */
     public void putParams(String key, String value, boolean overlay) {
         if (StrUtil.isNull(key)) {

@@ -29,10 +29,11 @@ public class JxVarsFactory {
             return jxvarsInstance;
         }
         Object obj = ClassUtil.getInstance(implClass);
-        if (obj != null && obj instanceof JxVars) {
+        if (obj instanceof JxVars) {
             jxvarsInstance = (JxVars) obj;
         } else {
             LOG.warn("配置的变量管理类" + implClass + "不能初始化。");
+            jxvarsInstance = new JxVarsImpl();
         }
         return jxvarsInstance;
     }

@@ -35,4 +35,30 @@ public class DbColumnImpl implements DbColumn {
     public String[] getKeys() {
         return null;
     }
+
+    @Override
+    public String getSourceColumn(String column) {
+        if (StrUtil.isNull(column)) {
+            return column;
+        }
+        String suf = this.getSuffix();
+        if (StrUtil.isNull(suf)) {
+            return column;
+        }
+        int pos = column.indexOf(suf);
+        if (pos <= 0) {
+            return column;
+        }
+        String sc = column.substring(0, pos);
+        String[] keys = this.getKeys();
+        if (keys == null) {
+            return column;
+        }
+        for (int i = 0; i < keys.length; i++) {
+            if (sc.equalsIgnoreCase(keys[i])) {
+                return sc;
+            }
+        }
+        return column;
+    }
 }

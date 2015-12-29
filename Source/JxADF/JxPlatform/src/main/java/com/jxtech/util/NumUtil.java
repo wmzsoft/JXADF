@@ -174,7 +174,7 @@ public class NumUtil {
             if (tv.endsWith(".0")) {
                 return tv.substring(0, tv.length() - 2);
             } else if (tv.indexOf('E') > 0) {
-                nf = new DecimalFormat("#");
+                nf = new DecimalFormat("#.#################");
                 return nf.format(value);
             } else {
                 return tv;

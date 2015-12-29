@@ -1,7 +1,5 @@
 package com.jxtech.util;
 
-import java.util.Map;
-
 /**
  * 
  * @author wmzsoft@gmail.com
@@ -14,5 +12,6 @@ public class SqlUtil {
     public static final String WHERE = "WHERE";
     public static final String INSERT = "INSERT";
     public static final String ORDERBY = "ORDERBY";
+
 
 }

@@ -115,8 +115,10 @@ public class SqlParserUtil {
     /**
      * 从文本text中找到regex首次匹配的字符串，不区分大小写
      * 
-     * @param regex ： 正则表达式
-     * @param text ：欲查找的字符串
+     * @param regex
+     *            ： 正则表达式
+     * @param text
+     *            ：欲查找的字符串
      * @return regex首次匹配的字符串，如未匹配返回空
      */
     public static String getMatchedString(String regex, String text) {
@@ -306,4 +308,17 @@ public class SqlParserUtil {
         return isContains(s, "^(?i)\\s*INSERT\\s+INTO\\s+(.|\\n)+\\s*(values|select)");
     }
 
+    public static String formatWherecase(String msql, String[] columns, String suffix) {
+        if (StrUtil.isNull(msql) || columns == null || StrUtil.isNull(suffix)) {
+            return msql;
+        }
+        char[] c = new char[] { '=', '!', '>', '<' };
+        for (int i = 0; i < columns.length; i++) {
+            msql = msql.replaceAll("(?i)\\s+" + columns[i] + "\\s+", " " + columns[i] + suffix + " ");
+            for (int j = 0; j < c.length; j++) {
+                msql = msql.replaceAll("(?i)\\s+" + columns[i] + c[j], " " + columns[i] + suffix + c[j]);
+            }
+        }
+        return msql;
+    }
 }
