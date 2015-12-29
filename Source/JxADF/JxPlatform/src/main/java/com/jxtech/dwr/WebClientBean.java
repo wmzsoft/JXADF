@@ -82,7 +82,7 @@ public class WebClientBean {
         if (app != null) {
             return app.save();
         } else {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.appnull", new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.appnull", new Object[] { appNameType });
             throw new JxException(msg);
         }
     }
@@ -98,7 +98,7 @@ public class WebClientBean {
         if (app != null) {
             return app.previous();
         } else {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.appnull", new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.appnull", new Object[] { appNameType });
             throw new JxException(msg);
         }
     }
@@ -114,7 +114,7 @@ public class WebClientBean {
         if (app != null) {
             return app.next();
         } else {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.appnull", new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.appnull", new Object[] { appNameType });
             throw new JxException(msg);
         }
     }
@@ -131,7 +131,7 @@ public class WebClientBean {
         if (app != null) {
             return app.rollback();
         } else {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.appnull", new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.appnull", new Object[] { appNameType });
             throw new JxException(msg);
         }
     }
@@ -187,7 +187,7 @@ public class WebClientBean {
         if (null != app) {
             return app.canJboSetAdd();
         } else {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.canJboSetAdd.notFoundApp", new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.canJboSetAdd.notFoundApp", new Object[] { appNameType });
             throw new JxException(msg);
         }
     }
@@ -204,7 +204,30 @@ public class WebClientBean {
         if (app != null) {
             return app.add();
         } else {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.add.notFoundApp", new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.add.notFoundApp", new Object[] { appNameType });
+            throw new JxException(msg);
+        }
+    }
+
+    /**
+     * 复制当前记录
+     * 
+     * @param appNameType
+     * @return
+     * @throws JxException
+     */
+    public String duplicate(String appNameType) throws JxException {
+        App app = JxSession.getApp(appNameType);
+        if (app != null) {
+            JboIFace jbo = app.getJbo();
+            if (jbo == null) {
+                throw new JxException(JxLangResourcesUtil.getString("dwr.WebClientBean.duplicate.jbo.notFound", new Object[] { appNameType }));
+            }
+            jbo = jbo.duplicate();
+            jbo.getJboSet().commit();
+            return jbo.getUidValue();
+        } else {
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.duplicate.app.notFound", new Object[] { appNameType });
             throw new JxException(msg);
         }
     }
@@ -249,11 +272,16 @@ public class WebClientBean {
     /**
      * 标记删除行，并没有真正删除，只是标记删除，点击保存时，才真正删除。
      * 
-     * @param appNameType 应用程序名+应用程序类型
-     * @param jboname 主表表名
-     * @param relationship 联系名
-     * @param uid 要删除的记录的唯一ID
-     * @param isDel 是删除(true)还是恢复(false)
+     * @param appNameType
+     *            应用程序名+应用程序类型
+     * @param jboname
+     *            主表表名
+     * @param relationship
+     *            联系名
+     * @param uid
+     *            要删除的记录的唯一ID
+     * @param isDel
+     *            是删除(true)还是恢复(false)
      * @return
      */
     public boolean delRow(String appNameType, String jboname, String relationship, String uid, boolean isDel) throws JxException {
@@ -267,7 +295,7 @@ public class WebClientBean {
         }
         App app = JxSession.getApp(appNameType);
         if (app == null) {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.delRow.notFoundAppSession",new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.delRow.notFoundAppSession", new Object[] { appNameType });
             throw new JxException(msg);
         }
         JboSetIFace js = app.findJboSet(jboname, relationship, JxConstant.READ_CACHE);
@@ -293,14 +321,15 @@ public class WebClientBean {
      * @param appNameType
      * @param jboname
      * @param relationship
-     * @param defaultValue 默认值，传JSON格式，非JSON格式，一律不处理
+     * @param defaultValue
+     *            默认值，传JSON格式，非JSON格式，一律不处理
      * @return
      * @throws JxException
      */
     public JboIFace addRow(String appNameType, String jboname, String relationship, String defaultValue) throws JxException {
         App app = JxSession.getApp(appNameType);
         if (app == null) {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.delRow.notFoundAppSession",new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.delRow.notFoundAppSession", new Object[] { appNameType });
             throw new JxException(msg);
         }
         JboSetIFace js = app.findJboSet(jboname, relationship, JxConstant.READ_CACHE);
@@ -354,11 +383,11 @@ public class WebClientBean {
             if (jbo != null) {
                 return jbo.getString(attributeName, flag);
             } else {
-                String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.getString.notFoundJbo",new Object[]{appNameType});
+                String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.getString.notFoundJbo", new Object[] { appNameType });
                 throw new JxException(msg);
             }
         } else {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.getString.notFoundApp",new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.getString.notFoundApp", new Object[] { appNameType });
             throw new JxException(msg);
         }
     }
@@ -376,7 +405,7 @@ public class WebClientBean {
             return app.setValue(attributeName, value, relationship);
         }
         LOG.info("JxSession.getApp(appNameType) is null. " + appNameType);
-        String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.getString.notFoundApp",new Object[]{appNameType});
+        String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.getString.notFoundApp", new Object[] { appNameType });
         throw new JxException(msg);
     }
 
@@ -396,7 +425,7 @@ public class WebClientBean {
 
         JboIFace jbo = inputOnBlur(appNameType, attributeName, value, relationship);
         if (null == jbo) {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.inputOnBlur2.notFoundJbo",new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.inputOnBlur2.notFoundJbo", new Object[] { appNameType });
             throw new JxException(msg);
         }
         return jbo;
@@ -440,13 +469,13 @@ public class WebClientBean {
             LOG.debug(appNameType + ",cause=" + cause + ",value=" + value);
             JboSetIFace jboset = app.findJboSet(null, relationship);
             if (jboset == null) {
-                String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.inputQueryOnBlur.notFoundJbo",new Object[]{appNameType,relationship,cause});
+                String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.inputQueryOnBlur.notFoundJbo", new Object[] { appNameType, relationship, cause });
                 throw new JxException(msg);
             }
             DataQueryInfo qi = jboset.getQueryInfo();
             qi.getParams().put(cause, value);
         } else {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.inputQueryOnBlur.notFoundApp",new Object[]{appNameType,relationship,cause,value});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.inputQueryOnBlur.notFoundApp", new Object[] { appNameType, relationship, cause, value });
             throw new JxException(msg);
         }
     }
@@ -456,13 +485,13 @@ public class WebClientBean {
         if (app != null) {
             JboSetIFace jboset = app.findJboSet(null, relationship);
             if (jboset == null) {
-                String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.searchClear.notFoundJbo",new Object[]{appNameType,relationship});
+                String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.searchClear.notFoundJbo", new Object[] { appNameType, relationship });
                 throw new JxException(msg);
             }
             DataQueryInfo qi = jboset.getQueryInfo();
             qi.getParams().clear();
         } else {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.searchClear.notFoundApp",new Object[]{appNameType,relationship});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.save.searchClear.notFoundApp", new Object[] { appNameType, relationship });
             throw new JxException(msg);
         }
     }
@@ -472,7 +501,7 @@ public class WebClientBean {
         if (app != null) {
             app.setValue(attributeName, value, "");
         } else {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.notFoundApp1",new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.notFoundApp1", new Object[] { appNameType });
             throw new JxException(msg);
         }
     }
@@ -497,7 +526,7 @@ public class WebClientBean {
                 app.setValue(jboname, relationship, uid, attributeName, value);
             }
         } else {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.notFoundApp1",new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.notFoundApp1", new Object[] { appNameType });
             throw new JxException(msg);
         }
     }
@@ -516,13 +545,20 @@ public class WebClientBean {
     /**
      * 通用的工作流发送
      * 
-     * @param appname 对应MAXAPP表中的APP字段
-     * @param jboname 对应MAXOBJECT
-     * @param uid 单条记录发送的UID
-     * @param action 操作比如SUBMIT,APPROVE,REJECT,自定义的action等
-     * @param note 说明
-     * @param toUsers 指定用户
-     * @param options 扩展
+     * @param appname
+     *            对应MAXAPP表中的APP字段
+     * @param jboname
+     *            对应MAXOBJECT
+     * @param uid
+     *            单条记录发送的UID
+     * @param action
+     *            操作比如SUBMIT,APPROVE,REJECT,自定义的action等
+     * @param note
+     *            说明
+     * @param toUsers
+     *            指定用户
+     * @param options
+     *            扩展
      * @return
      * @throws JxException
      */
@@ -547,10 +583,10 @@ public class WebClientBean {
                     jbi.getJboSet().commit();
                     if (jbi.isRouteClose()) {
                         result = JxLangResourcesUtil.getString("dwr.WebClientBean.routeCommon.end");
-                    }else if (StrUtil.isNull(result)){
+                    } else if (StrUtil.isNull(result)) {
                         result = JxLangResourcesUtil.getString("dwr.WebClientBean.routeCommon.notFoundAssignment");
-                    }else {
-                        result = JxLangResourcesUtil.getString("dwr.WebClientBean.routeCommon.nextAssignment",new String[]{result});
+                    } else {
+                        result = JxLangResourcesUtil.getString("dwr.WebClientBean.routeCommon.nextAssignment", new String[] { result });
                     }
                 } else {
                     jbi.getJboSet().rollback();
@@ -575,13 +611,20 @@ public class WebClientBean {
     /**
      * 康拓普 - 发送工作流
      * 
-     * @param appname 应用程序名
-     * @param jboname 表名
-     * @param uids 需要发送工作流的单据ID号
-     * @param toActId 发送到指定的节点号
-     * @param isAgree 是否同意
-     * @param note 备注
-     * @param toUsers 指定用户
+     * @param appname
+     *            应用程序名
+     * @param jboname
+     *            表名
+     * @param uids
+     *            需要发送工作流的单据ID号
+     * @param toActId
+     *            发送到指定的节点号
+     * @param isAgree
+     *            是否同意
+     * @param note
+     *            备注
+     * @param toUsers
+     *            指定用户
      * @return 返回成功错误信息
      */
     public String route(String appname, String jboname, String uids, String toActId, int isAgree, String note, String toUsers, String options) throws JxException {
@@ -625,7 +668,7 @@ public class WebClientBean {
                 return false;
             }
         } else {
-            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.notFoundApp1",new Object[]{appNameType});
+            String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.notFoundApp1", new Object[] { appNameType });
             throw new JxException(msg);
         }
     }
@@ -655,11 +698,16 @@ public class WebClientBean {
     /**
      * 根据jboname和jbouid获取jbo
      * 
-     * @param appNameType 应用
-     * @param jboname 名称
-     * @param jboUid 应用的id
-     * @param setCurrentJbo 是否将获取到的jbo设置为其children某个jboset的默认jbo
-     * @param relationship 如果setCurrentJbo为true，必须要有关系名
+     * @param appNameType
+     *            应用
+     * @param jboname
+     *            名称
+     * @param jboUid
+     *            应用的id
+     * @param setCurrentJbo
+     *            是否将获取到的jbo设置为其children某个jboset的默认jbo
+     * @param relationship
+     *            如果setCurrentJbo为true，必须要有关系名
      * @return
      * @throws JxException
      */
@@ -713,7 +761,7 @@ public class WebClientBean {
                 return jbo;
             }
         }
-        String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.notFoundJbo2",new Object[]{appNameType,jboname});
+        String msg = JxLangResourcesUtil.getString("dwr.WebClientBean.notFoundJbo2", new Object[] { appNameType, jboname });
         throw new JxException(msg);
     }
 
@@ -748,7 +796,8 @@ public class WebClientBean {
     /**
      * 将msg保存到当前应用中
      * 
-     * @param msg (appNameType.msg);
+     * @param msg
+     *            (appNameType.msg);
      */
     public void saveMessage(String appNameType, String msg) throws JxException {
         App currentApp = JxSession.getApp();
@@ -960,13 +1009,20 @@ public class WebClientBean {
     /**
      * 在table控件的tablebutton添加lookup交互 点击弹出框lookup的多选table中的tablebutton后的回调操作
      * 
-     * @param lookupAppNameType 弹出窗的应用
-     * @param lookupJboname 需要选择的数据来源
-     * @param lookupRelationship 关系
-     * @param lookupUids 选择的数据来源uid
-     * @param pAppNameType 需要设置的应用
-     * @param pJboname 需要设置的数据
-     * @param pRelationship 需要设置数据的关系
+     * @param lookupAppNameType
+     *            弹出窗的应用
+     * @param lookupJboname
+     *            需要选择的数据来源
+     * @param lookupRelationship
+     *            关系
+     * @param lookupUids
+     *            选择的数据来源uid
+     * @param pAppNameType
+     *            需要设置的应用
+     * @param pJboname
+     *            需要设置的数据
+     * @param pRelationship
+     *            需要设置数据的关系
      * @return
      * @throws JxException
      */
@@ -1070,8 +1126,10 @@ public class WebClientBean {
     /**
      * 导出Excel 方法
      * 
-     * @param appNameType 当前应用的名称
-     * @param title 文件名称 默认传的是页面的title
+     * @param appNameType
+     *            当前应用的名称
+     * @param title
+     *            文件名称 默认传的是页面的title
      * @return dwr专用下载链接
      * @throws JxException
      */
@@ -1087,7 +1145,8 @@ public class WebClientBean {
     /**
      * 导出Excel之前校验 判断是否需要提示
      * 
-     * @param appNameType 当前应用的名称
+     * @param appNameType
+     *            当前应用的名称
      * @return 当为0的时候 就是可以直接导出 否则返回条数
      * @throws JxException
      */

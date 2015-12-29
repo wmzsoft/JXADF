@@ -475,26 +475,22 @@ public abstract class BaseJbo implements JboIFace {
      * @return 复制之后的对象
      */
     @Override
-    @SuppressWarnings("unchecked")
     public JboIFace duplicate() throws JxException {
         JboIFace jbi = getJboSet().add();
-        // 将对象的值全部复制过来
-
-        Map<String, Object> nData = (DataMap<String, Object>) ((DataMap<String, Object>) data).clone();
-        jbi.setData(nData);
+        Map<String, Object> iData = jbi.getData();
         String[] ignores = getIgnoreAttributesOfDuplicate();
-        if (ignores != null) {
-            for (int i = 0; i < ignores.length; i++) {
-                nData.remove(ignores[i].toUpperCase());
+        // 将对象的值全部复制过来
+        for (Map.Entry<String, Object> entry : data.entrySet()) {
+            String key = entry.getKey();
+            if (!iData.containsKey(entry.getKey()) && !isIgnoreAttributeOfDuplicate(key, ignores)) {
+                jbi.setObject(key, entry.getValue());
             }
         }
-        nData.remove(getUidName());// 自动忽略主键
         // 复制主对象
         String[] needChildren = getNeedChildrenOfDuplicate();
         if (needChildren != null && children != null) {
             for (int j = 0; j < needChildren.length; j++) {
-                String key = getJboName() + "." + needChildren[j];
-                key = key.toUpperCase();
+                String key = getRelationKey(needChildren[j]);
                 if (children.containsKey(key)) {
                     JboSetIFace js = children.get(key);
                     if (js != null) {
@@ -502,7 +498,9 @@ public abstract class BaseJbo implements JboIFace {
                         if (list != null) {
                             int size = list.size();
                             for (int k = 0; k < size; k++) {
-                                list.get(k).duplicate();
+                                JboIFace jk = list.get(k);
+                                jk.getJboSet().setParent(jbi);
+                                jk.duplicate();
                             }
                         }
                         Map<String, JboSetIFace> cs = jbi.getChildren();
@@ -524,17 +522,41 @@ public abstract class BaseJbo implements JboIFace {
      * @return
      */
     protected String[] getIgnoreAttributesOfDuplicate() throws JxException {
-        return null;
+        return new String[] { getUidName() };
     }
 
     /**
-     * 请覆盖
+     * 是否不复制此字段
+     * 
+     * @param attributeName
+     *            需要判断的字段
+     * @param ignoreAttributes
+     *            需要忽略的所有字段名
+     * @return
+     * @throws JxException
+     */
+    protected boolean isIgnoreAttributeOfDuplicate(String attributeName, String[] ignoreAttributes) throws JxException {
+        if (StrUtil.isNull(attributeName)) {
+            return true;
+        }
+        if (ignoreAttributes != null) {
+            for (int i = 0; i < ignoreAttributes.length; i++) {
+                if (attributeName.equalsIgnoreCase(ignoreAttributes[i])) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 请覆盖,一般情况下,重载getDeleteChildren即可.
      * 
      * @return 返回需要复制的子对象的联系名。
      * @throws JxException
      */
     protected String[] getNeedChildrenOfDuplicate() throws JxException {
-        return null;
+        return this.getDeleteChildren();
     }
 
     @Override
@@ -1021,7 +1043,7 @@ public abstract class BaseJbo implements JboIFace {
                 return true;
             }
         }
-        ((DataMap)data).setJbo(this);
+        ((DataMap) data).setJbo(this);
         data.put(attributeName, value);
         // 判断是否存在这个属性，如果不存在则是虚拟字段，不予处理。
         JxAttribute attribute = getJxAttribute(attributeName);

@@ -634,6 +634,19 @@ function checkPassValidation(me, e) {
     }
     return passValidation;
 }
+
+function duplicate(me,e){
+    WebClientBean.duplicate(jx_appNameType, {
+        callback: function (data) {
+            if (data!=null) {
+                showJboDetail(data);
+            }
+        },
+        errorHandler: errorHandler,
+        exceptionHandler: exceptionHandler
+    });    
+}
+
 // 点保存前事件
 function beforeSave(me, e) {
     debug("beforeSave...");
