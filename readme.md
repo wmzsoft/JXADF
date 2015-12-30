@@ -18,7 +18,7 @@
 
 7、学习成本低、效率高。
 
-8、有丰富的文档，参见：<a href="http://wiki.osgi.help/display/JXADF/Home" target="wiki">http://wiki.osgi.help</a>
+8、有丰富的文档，参见：http://wiki.osgi.help/display/JXADF/Home
 
 9、演示地址：http://demo.osgi.help 用户名：admin 密码：123456
 
