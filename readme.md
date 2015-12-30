@@ -1,11 +1,12 @@
 ﻿JXADF
 =======
+官网：http://osgi.help
 
-插件化（OSGi）开源快速开发平台JXADF功能特点：
+<a href="http://osgi.help" target="osgi">插件化（OSGi）开源快速开发平台JXADF功能特点</a>：
 
 1、基于OSGi、J2EE
 
-2、插件集市 http://osgi.help 中有丰富的插件。
+2、插件集市 http://osgi.help/jxweb/pluginstore/index.action 中有丰富的插件。
 
 3、前端代码（界面、CSS、JS、图片等）、后端代码（JAVA业务逻辑、SQL脚本【只需要提供一种数据库脚本，在安装时会根据数据库类型自动转换】）全部打包在一个Bundle（JAR）中，分发、测试、积累、部署都十分方便。
 
@@ -17,7 +18,7 @@
 
 7、学习成本低、效率高。
 
-8、有丰富的文档，参见：http://osgi.help
+8、有丰富的文档，参见：http://wiki.osgi.help
 
 9、演示地址：http://demo.osgi.help 用户名：admin 密码：123456
 
@@ -35,4 +36,16 @@ QQ群：429895245
 
 
 ---------------------------------------------------
+插件控制台
+======
+![插件控制台](doc/images/console.png)
+
+工作流
+=======
+![工作流绘制](doc/images/wf01.png)
+![工作流历史](doc/images/wf02.png)
+
+工作流更多 http://wiki.osgi.help/pages/viewpage.action?pageId=22054753
+
+
 
