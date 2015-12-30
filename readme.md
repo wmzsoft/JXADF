@@ -21,6 +21,8 @@
 
 9、演示地址：http://demo.osgi.help 用户名：admin 密码：123456
 
+![http://osgi.hep](doc/images/osgi.help.png)
+
 ------------------------------------
 官网：http://osgi.help
 QQ群：429895245
