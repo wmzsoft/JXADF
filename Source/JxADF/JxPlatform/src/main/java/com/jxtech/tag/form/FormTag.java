@@ -97,8 +97,14 @@ public class FormTag extends JxBaseUITag {
             if (myapp != null) {
 
                 if (!StrUtil.isNull(relationship)) {
-                    jboset = JxSession.getMainApp().getJbo().getRelationJboSet(relationship);
-                    myapp.setJboset(jboset);
+                    App mainapp = JxSession.getMainApp();
+                    if (mainapp != null) {
+                        JboIFace mainJbo = mainapp.getJbo();
+                        if (mainJbo != null) {
+                            jboset = mainJbo.getRelationJboSet(relationship);
+                            myapp.setJboset(jboset);
+                        }
+                    }
                 } else {
                     jboset = myapp.findJboSet(jboname, null, JxConstant.READ_CACHE);
                     if (!"view".equalsIgnoreCase(type)) {
@@ -137,7 +143,7 @@ public class FormTag extends JxBaseUITag {
                     if (null != jbo) {
                         instanceid = jbo.getString(JboIFace.WF_INSTANCEID_COLUMN);
                         if (StrUtil.isNull(instanceid)) {
-                            form.setInstancestatus("0");//流程未启动
+                            form.setInstancestatus("0");// 流程未启动
                             instanceid = StrUtil.contact(jboset.getWorkflowEngine(), ".", jboset.getWorkflowId());
                         }
                         form.setInstanceid(instanceid);

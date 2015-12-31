@@ -132,6 +132,10 @@ public class TablecolTag extends JxBaseUITag {
         Tag tag = findAncestorWithClass(this, TableTag.class);
         if (tag != null && dataattribute != null) {
             TableTag ttag = (TableTag) tag;
+            String treadonly = ttag.getReadonly();
+            if ("readonly".equalsIgnoreCase(treadonly) || "readonly".equalsIgnoreCase(ttag.getInputmode())) {
+                col.setReadonly("readonly");
+            }
             JboSetIFace jboset = ttag.getJboset();
             if (jboset != null) {
                 try {
@@ -293,9 +297,13 @@ public class TablecolTag extends JxBaseUITag {
         this.mxevent_icon = mxevent_icon;
     }
 
-    public String getMxevent_render(){return mxevent_render; }
+    public String getMxevent_render() {
+        return mxevent_render;
+    }
 
-    public  void setMxevent_render(String mxevent_render){ this.mxevent_render = mxevent_render;}
+    public void setMxevent_render(String mxevent_render) {
+        this.mxevent_render = mxevent_render;
+    }
 
     public String getFilterable() {
         return filterable;

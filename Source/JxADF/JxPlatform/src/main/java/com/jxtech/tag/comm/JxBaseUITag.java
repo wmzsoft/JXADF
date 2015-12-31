@@ -142,4 +142,12 @@ public class JxBaseUITag extends AbstractClosingTag {
         this.rendererTag = rendererTag;
     }
 
+    public String getReadonly() {
+        return readonly;
+    }
+
+    public String getVisible() {
+        return visible;
+    }
+
 }

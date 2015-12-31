@@ -122,8 +122,8 @@ $author:wmzsoft@gmail.com
             </#if>
             </span><#t>
         <#else>
-            <#if ((col.parameters.type!'x')=='LINK')>
-            <a href="javascript:${col.parameters.mxevent}(this,event,'${jbo.uidValue!0}');">
+            <#if (((col.parameters.type!'x')=='LINK') || ((col.parameters.mxevent_render!'') == "LINK") )>
+            <a href="javascript:${col.parameters.mxevent}(this,event,'${jbo.uidValue!0}');"><#t>
                 <#if ((colDataValue?length) > ml) >
                     <#t>${colDataValue?substring(0,ml)}...<#t>
                 <#else>
@@ -160,9 +160,9 @@ $author:wmzsoft@gmail.com
                 </div>
                 <#else>
                 <#-- 当非图片的时候，按照文字处理，具体实现，看满足功能要求-->
-                <input type="button" onclick="${col.parameters.mxevent}(this, event ,'${jbo.uidValue!0}')"
-                       class="btn_column"  <#lt>
-                       value='<#t>
+                <#lt><input type="button" onclick="${col.parameters.mxevent}(this, event ,'${jbo.uidValue!0}')" <#rt>
+                      <#lt> class="btn_column"  <#rt>
+                      <#lt> value='<#rt>
                 <#if ((colDataValue?length) > ml) >
                     <#t>${colDataValue?substring(0,ml)}...<#t>
                 <#else>

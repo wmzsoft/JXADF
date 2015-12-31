@@ -488,28 +488,26 @@ public abstract class BaseJbo implements JboIFace {
         }
         // 复制主对象
         String[] needChildren = getNeedChildrenOfDuplicate();
-        if (needChildren != null && children != null) {
+        if (needChildren != null) {
             for (int j = 0; j < needChildren.length; j++) {
-                String key = getRelationKey(needChildren[j]);
-                if (children.containsKey(key)) {
-                    JboSetIFace js = children.get(key);
-                    if (js != null) {
-                        List<JboIFace> list = js.getJbolist();
-                        if (list != null) {
-                            int size = list.size();
-                            for (int k = 0; k < size; k++) {
-                                JboIFace jk = list.get(k);
-                                jk.getJboSet().setParent(jbi);
-                                jk.duplicate();
-                            }
+                JboSetIFace js = getRelationJboSet(needChildren[j], JxConstant.READ_ALL, true, true);
+                if (js != null) {
+                    List<JboIFace> list = js.getJbolist();
+                    if (list != null) {
+                        int size = list.size();
+                        for (int k = 0; k < size; k++) {
+                            JboIFace jk = list.get(k);
+                            jk.getJboSet().setParent(jbi);
+                            jk.duplicate();
                         }
-                        Map<String, JboSetIFace> cs = jbi.getChildren();
-                        if (cs == null) {
-                            cs = new DataMap<String, JboSetIFace>();
-                            jbi.setChildren(cs);
-                        }
-                        cs.put(key, js);
                     }
+                    Map<String, JboSetIFace> cs = jbi.getChildren();
+                    if (cs == null) {
+                        cs = new DataMap<String, JboSetIFace>();
+                        jbi.setChildren(cs);
+                    }
+                    String key = this.getRelationKey(needChildren[j]);
+                    cs.put(key, js);
                 }
             }
         }

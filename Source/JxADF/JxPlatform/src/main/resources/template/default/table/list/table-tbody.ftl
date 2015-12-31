@@ -134,7 +134,7 @@ $author:wmzsoft@gmail.com
                         <#-- 显示值 Begin 108 -->
                         ${col.parameters.startHtml!''}<#t>
                             <#include "table-tbody-col-secondAttributes.ftl"><#t>
-                            <#if (col.parameters.mxevent??) >
+                            <#if ((col.parameters.mxevent??) && ((col.parameters.readonlyb!false) || (jbo.isReadonly(col.parameters.dataattribute!'')!false) )) >
                                 <#include "table-tbody-col-mxevent.ftl"><#t>
                             <#elseif ((col.parameters.render!'TEXT')=='LABELS')>
                                 <#include "table-tbody-col-label.ftl"><#t>

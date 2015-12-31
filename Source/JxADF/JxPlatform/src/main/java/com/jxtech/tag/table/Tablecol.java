@@ -172,7 +172,15 @@ public class Tablecol extends JxBaseUIBean {
             addParameter("note", findValue(note, String.class));
         }
         if (null != readonly) {
-            addParameter("readonly", findValue(readonly, String.class));
+            Object r = findValue(readonly, String.class);
+            boolean ro = false;
+            if ("readonly".equalsIgnoreCase((String) r)) {
+                ro = true;
+            } else {
+                ro = StrUtil.isTrue((String) r, false);
+            }
+            addParameter("readonly", r);
+            addParameter("readonlyb", ro);
         }
         if (null != dataname) {
             addParameter("dataname", findString(dataname));
@@ -494,9 +502,9 @@ public class Tablecol extends JxBaseUIBean {
     public JxAttribute getJxattribute() {
         return jxattribute;
     }
-    
+
     public String getDataDisplay() {
         return dataDisplay;
     }
-    
+
 }

@@ -232,6 +232,9 @@ public class TableTag extends JxBaseUITag {
             }
         }
         table.setOrderby(orderby);
+        if (StrUtil.isNull(inputmode)) {
+            inputmode = "readonly";
+        }
         table.setInputmode(inputmode);
         table.setDatasrc(datasrc);
         table.setApprestrictions(apprestrictions);
