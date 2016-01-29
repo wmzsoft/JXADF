@@ -12,6 +12,7 @@ import com.jxtech.util.StrUtil;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -153,12 +154,17 @@ public class FileupServlet extends HttpServlet {
     }
 
     /**
-     * @param filetype  图片类型
-     * @param filename  图片名称
-     * @param imgTime   图片时间(当文件重复在+时间)
+     * @param filetype
+     *            图片类型
+     * @param filename
+     *            图片名称
+     * @param imgTime
+     *            图片时间(当文件重复在+时间)
      * @param filepaths
-     * @param filepath  原图最终上传的地址
-     * @param userinfo  userinfo对象，用来获取projectName用的
+     * @param filepath
+     *            原图最终上传的地址
+     * @param userinfo
+     *            userinfo对象，用来获取projectName用的
      * @throws IOException
      * @throws JxException
      */
@@ -190,10 +196,11 @@ public class FileupServlet extends HttpServlet {
 
             String url = docpath + filepath;
             imgExcute.condense(url, ysPath);// 图片压缩的方法
-
+            FileInputStream input = null;
+            FileOutputStream output = null;
             try {
-                FileInputStream input = new FileInputStream(url);// 原图地址
-                FileOutputStream output = new FileOutputStream(syPath);// 可替换为任何路径何和文件名
+                input = new FileInputStream(url);// 原图地址
+                output = new FileOutputStream(syPath);// 可替换为任何路径何和文件名
 
                 int in = input.read();
                 while (in != -1) {
@@ -201,12 +208,13 @@ public class FileupServlet extends HttpServlet {
                     in = input.read();
                 }
                 if (in == -1) {
-                    input.close();
                     output.flush();
-                    output.close();
                 }
             } catch (IOException e) {
                 LOG.error(e.getMessage());
+            } finally {
+                IOUtils.closeQuietly(input);
+                IOUtils.closeQuietly(output);
             }
             String pname = "TEST";
             imgExcute.createMark(syPath, pname, Color.BLACK, 70f, new Font("宋体", Font.LAYOUT_LEFT_TO_RIGHT, 25));

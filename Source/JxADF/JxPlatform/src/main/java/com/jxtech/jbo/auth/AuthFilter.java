@@ -1,8 +1,10 @@
 package com.jxtech.jbo.auth;
 
+import com.jxtech.app.jxlogin.JxLoginUtil;
 import com.jxtech.app.usermetadata.DefaultMetadata;
 import com.jxtech.app.usermetadata.MetaData;
 import com.jxtech.jbo.base.JxUserInfo;
+import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.StrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,11 +40,16 @@ public class AuthFilter implements Filter {
             isLogin = true;
         } else {
             String ssoUserId = req.getRemoteUser();
+            if (StrUtil.isNull(ssoUserId)) {
+                //看看是否有内部认证机制
+                String jxsessionid = request.getParameter(JxSessionID.ID);
+                ssoUserId = JxSessionID.getUserId(jxsessionid);
+            }
             if (!StrUtil.isNull(ssoUserId)) {
                 // SSO已登录了。
                 isLogin = JxSession.loginBySsoUser(ssoUserId);
                 if (isLogin) {
-                    uid = ssoUserId;
+                    // uid = ssoUserId;
                     JxUserInfo userInfo = JxSession.getJxUserInfo();
                     if (null != userInfo) {
                         String lang = request.getParameter("locale");
@@ -58,9 +65,9 @@ public class AuthFilter implements Filter {
                 }
             }
         }
-        PermissionIFace perm = PermissionFactory.getPermissionInstance();
-        String url = req.getServletPath();
         if (!isLogin) {
+            PermissionIFace perm = PermissionFactory.getPermissionInstance();
+            String url = req.getServletPath();
             // 没有登录 ，判断是否需要权限检查。
             if (perm.isIgoreSecurity(url)) {
                 // 不检查权限，且没有登录，则自动添加匿名登录信息
@@ -79,23 +86,23 @@ public class AuthFilter implements Filter {
             }
         } else {
             // 检查权限
-            //这里不使用URL来进行权限判断，直接通过标签处理来判断权限 by wmzsoft.2015.07
+            // 这里不使用URL来进行权限判断，直接通过标签处理来判断权限 by wmzsoft.2015.07
             chain.doFilter(request, response);
-//            if (perm.isIgoreSecurity(url)) {
-//                chain.doFilter(request, response);
-//            } else {
-//                url = req.getRequestURL().toString();
-//                String qs = req.getQueryString();
-//                if (!StrUtil.isNull(qs)) {
-//                    url = url + "?" + qs;
-//                }
-//                if (perm.hasFunctions(url)) {
-//                    chain.doFilter(request, response);
-//                } else {
-//                    String s = DefaultMetadata.getInstance().get(MetaData.NOT_PERMISSION);
-//                    ((HttpServletResponse) response).sendRedirect(req.getContextPath() + s);
-//                }
-//            }
+            // if (perm.isIgoreSecurity(url)) {
+            // chain.doFilter(request, response);
+            // } else {
+            // url = req.getRequestURL().toString();
+            // String qs = req.getQueryString();
+            // if (!StrUtil.isNull(qs)) {
+            // url = url + "?" + qs;
+            // }
+            // if (perm.hasFunctions(url)) {
+            // chain.doFilter(request, response);
+            // } else {
+            // String s = DefaultMetadata.getInstance().get(MetaData.NOT_PERMISSION);
+            // ((HttpServletResponse) response).sendRedirect(req.getContextPath() + s);
+            // }
+            // }
         }
     }
 

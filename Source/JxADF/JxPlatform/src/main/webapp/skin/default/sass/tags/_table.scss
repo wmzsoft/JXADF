@@ -115,6 +115,7 @@ div.table_form {
         line-height: $field-line-height;
         border: 1px solid #c0bebe;
         box-sizing: border-box;
+        text-align:right;
         @extend %table_field_disabled;
     }
     input.tdinputdate {

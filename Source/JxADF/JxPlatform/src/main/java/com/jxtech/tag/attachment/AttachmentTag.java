@@ -7,6 +7,7 @@ import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.tag.comm.JxBaseUITag;
+import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 import org.apache.struts2.components.Component;
 import org.slf4j.Logger;
@@ -60,10 +61,10 @@ public class AttachmentTag extends JxBaseUITag {
         JboSetIFace attJboSet = null;
         try {
             attJboSet = JboUtil.getJboSet(jboname);
+            attJboSet.setRequired(StrUtil.isTrue(needed, false));
         } catch (JxException e1) {
             LOG.error(e1.getMessage(), e1);
         }
-        attJboSet.setRequired("true".equalsIgnoreCase(needed) ? true : false);
         att.setAttrJboSet(attJboSet);
 
         // 附件依赖于其他应用，主app为当前应用的app，不能从attachment来获取
@@ -82,15 +83,14 @@ public class AttachmentTag extends JxBaseUITag {
                 jbo = myapp.getJbo();
                 if (jbo != null) {
                     att.setAcount(jbo.getAttachmentCount(vfolder));
+                    att.setJbo(jbo);
+                    jbo.addAttachment(vfolder, attJboSet);
                 }
             } catch (JxException e) {
                 LOG.error(e.getMessage());
             }
-            att.setJbo(jbo);
-
-            jbo.addAttachment(vfolder, attJboSet);
-            readonly = attJboSet.isReadonly() ? "true" : "false";
-            needed = attJboSet.isRequired() ? "true" : "false";
+            readonly = Boolean.toString(attJboSet.isReadonly());
+            needed = Boolean.toString(attJboSet.isRequired());
         }
         att.setType(type);
         att.setImgheight(imgheight);

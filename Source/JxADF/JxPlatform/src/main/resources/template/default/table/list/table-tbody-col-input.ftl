@@ -34,8 +34,10 @@ ${seq + (pagesize?number) * (pagenum?number - 1)}
     <#elseif (col.parameters.readonly??)&&(col.parameters.readonly == "true")>
         <#lt> ${jbo.getString(col.dataattribute)!''}<#rt>
     <#else>
-        <input type="text" id="${dateid}" name="${dateid}" <#rt>
-        <#lt> value='${jbo.getHtmlInputValue(col.dataattribute)!''}'<#rt>
+    	<#assign colDataValue=jbo.getHtmlInputValue(col.dataattribute)!''>
+    	<#include "format-value-number.ftl">
+        <#lt><input type="text" id="${dateid}" name="${dateid}" <#rt>
+        <#lt> value='${colDataValue!''}'<#rt>
         <#lt> dataattribute="${attribute.attributeName!''}" <#rt>
         <#lt> onBlur="tableInputOnBlur(this,event)" onChange="inputOnChange(this)" <#rt>
         <#if (jbo.isRequired("${attribute.attributeName!''}")!false)>
@@ -49,7 +51,7 @@ ${seq + (pagesize?number) * (pagenum?number - 1)}
             </#if>
         </#if>
         <#if (col.parameters.width??)>
-                  <#lt> style="width:${col.parameters.width}px" <#rt>
+        	<#lt> style="width:${col.parameters.width}px" <#rt>
         </#if>
     <#--行编辑中的日期只能选择-->
         <#if (maxtype?upper_case)=='DATE'>

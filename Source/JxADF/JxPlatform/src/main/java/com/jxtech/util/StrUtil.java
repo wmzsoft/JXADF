@@ -547,6 +547,9 @@ public class StrUtil {
     }
 
     public static String md5(String plainText) {
+        if (isNull(plainText)){
+            return null;
+        }
         byte[] secretBytes = null;
         try {
             secretBytes = MessageDigest.getInstance("md5").digest(plainText.getBytes());

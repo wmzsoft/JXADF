@@ -182,3 +182,7 @@ $(function () {
         $this.attr("href", url);
     });
 });
+
+function osgia(){
+    window.location.href="http://www.osgia.com";
+}

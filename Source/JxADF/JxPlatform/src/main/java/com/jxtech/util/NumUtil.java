@@ -19,7 +19,8 @@ public class NumUtil {
      * 
      * @param a
      * @param b
-     * @param defaultb 如果b=0,则取defaultb作为默认值
+     * @param defaultb
+     *            如果b=0,则取defaultb作为默认值
      * @return
      */
     public static int upRounded(int a, int b, int defaultb) {
@@ -40,14 +41,18 @@ public class NumUtil {
     /**
      * 获得页数
      * 
-     * @param a 记录数
-     * @param b 页面大小
+     * @param a
+     *            记录数
+     * @param b
+     *            页面大小
      * @return 页数
      */
     public static int getPageSize(int a, String b) {
         int c = 0;
         try {
-            c = Integer.parseInt(b);
+            if (b != null) {
+                c = Integer.parseInt(b);
+            }
         } catch (Exception e) {
             LOG.error(e.getMessage());
         }
@@ -151,8 +156,10 @@ public class NumUtil {
     /**
      * 取几位小数
      * 
-     * @param x 处理值
-     * @param pos 位数
+     * @param x
+     *            处理值
+     * @param pos
+     *            位数
      * @return
      */
     public static double round(double x, int pos) {

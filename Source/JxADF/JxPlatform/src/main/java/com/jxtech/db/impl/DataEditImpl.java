@@ -159,7 +159,7 @@ public abstract class DataEditImpl implements DataEdit {
         // 设定记录信息
         java.sql.Timestamp ts = DateUtil.sqlDateTime();
         JxUserInfo user = JxSession.getJxUserInfo();
-        if (user != null && jbo != null) {
+        if (user != null) {
             jbo.setString("MODIFIER_ID", user.getUserid());
             jbo.setString("MODIFIER", user.getDisplayname());
             jbo.setObject("MODIFY_TIME", ts);

@@ -84,6 +84,14 @@ ul.nav-tabs li a.share_qzone{
 ul.nav-tabs li a.share_qzone:hover{
     background-position: -55px -55px;
 }
+ul.nav-tabs li a.share_alliance{
+    background-image:url(../images/alliance.png);
+    width:32px;height:32px;
+}
+ul.nav-tabs li a.share_alliance:hover{
+    background-image:url(../images/alliance.png);
+    width:32px;height:32px;
+}
 
 ul.nav-tabs li span {
     float: left;
@@ -144,7 +152,7 @@ h3 span {
     text-indent: 30px;
 }
 
-/*äº§å“ç®€ä»‹*/
+/*²úÆ·¼ò½é*/
 .section1 {
     margin-top: 0;
 }
@@ -175,9 +183,9 @@ h3 span {
     line-height: 22px;
 }
 
-/*å¼€å‘æ¨¡å¼*/
+/*¿ª·¢Ä£Ê½*/
 
-/*äº§å“å¸‚åœºå®šä½*/
+/*²úÆ·ÊÐ³¡¶¨Î»*/
 .earnings {
     margin: 30px 30px 60px;
     background: #FBFFE0;
@@ -195,7 +203,7 @@ h3 span {
     font-size: 30px;
 }
 
-/*4-23æ ·å¼*/
+/*4-23ÑùÊ½*/
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:focus, .navbar-default .navbar-nav > .active > a:hover {
     background: #ffa629;
     color: #FFF;

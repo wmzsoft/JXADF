@@ -84,20 +84,16 @@ public class FileUtil {
     }
 
     public static String byteArrayToHex(byte[] byteArray) {
-        String hs = "";
         String stmp = "";
+        StringBuilder hsb = new StringBuilder();
         for (int n = 0; n < byteArray.length; n++) {
             stmp = (Integer.toHexString(byteArray[n] & 0XFF));
             if (stmp.length() == 1) {
-                hs = hs + "0" + stmp;
-            } else {
-                hs = hs + stmp;
+                hsb.append('0');
             }
-            // if (n < byteArray.length - 1) {
-            // hs = hs + "";
-            // }
+            hsb.append(stmp);
         }
-        return hs.toUpperCase();
+        return hsb.toString().toUpperCase();
     }
 
     /**
@@ -148,16 +144,12 @@ public class FileUtil {
             /* 连接两个通道，并且从in通道读取，然后写入out通道 */
             in.transferTo(0, in.size(), out);
         } catch (IOException e) {
-            e.printStackTrace();
+            LOG.error(e.getMessage(), e);
         } finally {
-            try {
-                fi.close();
-                in.close();
-                fo.close();
-                out.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            IOUtils.closeQuietly(fi);
+            IOUtils.closeQuietly(in);
+            IOUtils.closeQuietly(fo);
+            IOUtils.closeQuietly(out);
         }
         return true;
     }
@@ -172,8 +164,8 @@ public class FileUtil {
     public static File fileCopy(String sourceFilePath, String toFilePath) {
         File oldFile = new File(sourceFilePath);
         String oldFileName = oldFile.getName();
-        String oldFileType = oldFileName.substring(oldFileName.lastIndexOf("."));
-        oldFileName = oldFileName.substring(0, oldFileName.lastIndexOf(".") - 1);
+        String oldFileType = oldFileName.substring(oldFileName.lastIndexOf('.'));
+        oldFileName = oldFileName.substring(0, oldFileName.lastIndexOf('.') - 1);
         String newFileName = oldFileName + System.currentTimeMillis() + oldFileType;
         int lastIndex = toFilePath.lastIndexOf(File.separator);
         String newFilePath = toFilePath.substring(0, lastIndex);
@@ -186,8 +178,7 @@ public class FileUtil {
                 newFile.createNewFile();
             }
         } catch (IOException ie) {
-            LOG.info("文件操作错误");
-            ie.printStackTrace();
+            LOG.info("文件操作错误" + ie.getMessage(), ie);
         }
         /* 复制文件 */
         boolean f = fileChannelCopy(oldFile, newFile);
@@ -284,7 +275,7 @@ public class FileUtil {
             }
         }
     }
-    
+
     /**
      * 将文件名和路径组合分离
      * 
@@ -368,6 +359,7 @@ public class FileUtil {
 
     /**
      * 将Bundle中的文件转换为URL对象，方便处理
+     * 
      * @param bundle
      * @param filename
      * @return
@@ -382,5 +374,23 @@ public class FileUtil {
             return (URL) props.nextElement();
         }
         return null;
+    }
+
+    /**
+     * 通过路径文件名，获得文件名
+     * @param pathfile
+     * @return
+     */
+    public static String getFileName(String pathfile) {
+        if (StrUtil.isNull(pathfile)) {
+            return null;
+        }
+        int pos1 = pathfile.lastIndexOf('/');
+        int pos2 = pathfile.lastIndexOf('\\');
+        int pos = Math.max(pos1, pos2);
+        if (pos > 0) {
+            return pathfile.substring(pos + 1);
+        }
+        return pathfile;
     }
 }

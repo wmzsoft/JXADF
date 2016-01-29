@@ -11,6 +11,7 @@ import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.FileUploadException;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
+import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,7 +67,7 @@ public class ImportFileServlet extends HttpServlet {
                 if (!item.isFormField()) {
                     InputStream in = item.openStream();
                     String filename = item.getName();
-                    String fileType = filename.substring(filename.lastIndexOf(".") + 1, filename.length());// 判断文件类型
+                    String fileType = filename.substring(filename.lastIndexOf('.') + 1, filename.length());// 判断文件类型
 
                     HttpSession session = request.getSession();
                     /*
@@ -109,13 +110,18 @@ public class ImportFileServlet extends HttpServlet {
                             json.append("\"name\":\"" + filename + "\",");
                             json.append("\"size\": " + filesize + "}");
                         } else {
-                            resulet = errorMsg == "" ? "导入失败！" : errorMsg;
+                            if ("".equals(errorMsg)) {
+                                resulet = "导入失败！";
+                            } else {
+                                resulet = errorMsg;
+                            }
+
                             json.append("{\"error\":\"" + resulet + "\"}");
                         }
                     } catch (Exception e) {
                         LOG.error(e.getMessage());
                     } finally {
-                        in.close();
+                        IOUtils.closeQuietly(in);
                     }
                 }
             }

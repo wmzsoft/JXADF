@@ -28,6 +28,9 @@ public class MessageBody {
     private Date createTime;// 创建时间
     private long messageType;// 消息类型
     private List<String> files = new Vector<String>();// 附件文件集合
+    // 图片集合 邮件中的标识<img src='cid:A+图片路径的Hashcode'>
+    private List<String> images = new Vector<String>();
+    private boolean imageAutoDisplay = false;// 图片自动显示
 
     public String getSender() {
         return sender;
@@ -139,20 +142,50 @@ public class MessageBody {
     }
 
     public String getFileNames() {
-        if (files == null) {
+        return list2String(files);
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
+    }
+
+    public void addImage(String image) {
+        if (!StrUtil.isNull(image)) {
+            images.add(image);
+        }
+    }
+
+    public String getImageFiles() {
+        return list2String(images);
+    }
+
+    public String list2String(List<String> list) {
+        if (list == null) {
             return null;
         }
-        int size = files.size();
+        int size = list.size();
         if (size <= 0) {
             return null;
         }
-        StringBuffer fns = new StringBuffer();
+        StringBuilder fns = new StringBuilder();
         for (int i = 0; i < size; i++) {
-            fns.append(files.get(i).trim());
+            fns.append(list.get(i).trim());
             if (i < size - 1) {
                 fns.append(",");
             }
         }
         return fns.toString();
+    }
+
+    public boolean isImageAutoDisplay() {
+        return imageAutoDisplay;
+    }
+
+    public void setImageAutoDisplay(boolean imageAutoDisplay) {
+        this.imageAutoDisplay = imageAutoDisplay;
     }
 }

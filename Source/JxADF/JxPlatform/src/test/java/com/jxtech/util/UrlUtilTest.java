@@ -43,4 +43,11 @@ public class UrlUtilTest {
         Matcher matcher = p.matcher(s2);
         Assert.assertEquals(true, matcher.find());
     }
+    
+    @Test
+    public void testLoginMe(){
+        String url = "http://127.0.0.1/jxweb/jxemail/index.action?username=admin&password=123456";
+        String sid = ""+UrlUtil.getUrlContent(url, false);
+        LOG.debug(sid);
+    }
 }

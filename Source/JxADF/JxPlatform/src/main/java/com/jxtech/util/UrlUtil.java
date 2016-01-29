@@ -1,5 +1,7 @@
 package com.jxtech.util;
 
+import com.jxtech.app.usermetadata.DefaultMetadata;
+import com.jxtech.app.usermetadata.MetaData;
 import com.jxtech.i18n.JxLangResourcesUtil;
 import com.jxtech.jbo.util.JxException;
 import org.apache.poi.util.IOUtils;
@@ -7,6 +9,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
@@ -165,4 +169,5 @@ public class UrlUtil {
         }
         return FileUtil.formatPath(saveFile);
     }
+
 }

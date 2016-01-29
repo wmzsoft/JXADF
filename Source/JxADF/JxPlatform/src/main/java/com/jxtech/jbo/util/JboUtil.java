@@ -31,6 +31,7 @@ import com.jxtech.util.NumUtil;
  */
 public class JboUtil {
     private static Logger LOG = LoggerFactory.getLogger(JboUtil.class);
+    private static final String DEFAULTCLASSNAME = "psdi.mbo.custapp.CustomMboSet";
 
     /**
      * @param jboname
@@ -43,10 +44,11 @@ public class JboUtil {
         String clsname = "";
         if (obj != null) {
             clsname = obj.getClassname();
-            if (StrUtil.isNull(clsname)) {
+            if (StrUtil.isNull(clsname) || DEFAULTCLASSNAME.equals(clsname)) {
                 LOG.debug(jboname + " not config jboset ,use default jbo");
+            } else {
+                jboset = getJboSetLocal(clsname);
             }
-            jboset = getJboSetLocal(clsname);
         } else {
             LOG.warn("没有找到" + jboname + ",请在maxobject中注册，谢谢。");
         }
@@ -67,7 +69,7 @@ public class JboUtil {
      */
     public static JboSetIFace getJboSetLocal(String className) {
         JboSetIFace jboset = null;
-        if (!StrUtil.isNull(className) && !"psdi.mbo.custapp.CustomMboSet".equals(className)) {
+        if (!StrUtil.isNull(className) && !DEFAULTCLASSNAME.equals(className)) {
             Object obj = ClassUtil.getInstance(className);
             if (obj != null && obj instanceof JboSetIFace) {
                 jboset = (JboSetIFace) obj;

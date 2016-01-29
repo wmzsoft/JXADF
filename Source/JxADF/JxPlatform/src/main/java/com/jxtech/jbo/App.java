@@ -356,7 +356,6 @@ public class App {
      * @return
      */
     public String loadImportFile(List<Map<Object, String>> importFileResult, String relationship, JxUserInfo unserInfo) throws JxException {
-        String msg = "";
         if (!StrUtil.isNull(relationship)) {
             JboIFace jbo = getJbo();
             if (null != jbo) {
@@ -365,9 +364,7 @@ public class App {
                 throw new JxException(JxLangResourcesUtil.getString("app.loadimportfile.jbo.null"));
             }
         }
-
-        msg = jboset.loadImportFile(importFileResult, unserInfo);
-        return msg;
+        return jboset.loadImportFile(importFileResult, unserInfo);
     }
 
     /**
@@ -378,8 +375,7 @@ public class App {
      */
     public WorkflowBaseInfo getWorkflowinfo() throws JxException {
         IWorkflowEngine wfEngine = WorkflowEngineFactory.getWorkflowEngine(getJboset().getWorkflowEngine());
-        WorkflowBaseInfo workFlowInfo = wfEngine.pretreatment(getAppName(), getJbo().getJboName(), getJbo().getUidValue());
-        return workFlowInfo;
+        return wfEngine.pretreatment(getAppName(), getJbo().getJboName(), getJbo().getUidValue());
     }
 
     /**
@@ -391,12 +387,11 @@ public class App {
      */
     public WorkflowBaseInfo getWorkflowinfo(JboIFace jbo) throws JxException {
         IWorkflowEngine wfEngine = WorkflowEngineFactory.getWorkflowEngine(this.getJboset().getWorkflowEngine());
-        WorkflowBaseInfo workFlowInfo = wfEngine.pretreatment(getAppName(), jbo.getJboName(), jbo.getUidValue());
-        return workFlowInfo;
+        return wfEngine.pretreatment(getAppName(), jbo.getJboName(), jbo.getUidValue());
     }
 
     public String getAppNameType() {
-        return appName + "." + appType;
+        return StrUtil.contact(appName , "." , appType);
     }
 
     public JboIFace getJbo() throws JxException {

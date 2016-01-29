@@ -329,6 +329,9 @@ public class JxSession {
         if (null != userInfo) {
             lang = userInfo.getLangcode();
         }
+        if (StrUtil.isNull(lang)){
+            return "zh-CN";
+        }
         return lang.replace("_", "-");
     }
 

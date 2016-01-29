@@ -134,8 +134,8 @@ public class JxFormat {
                 }
                 outStr = r.toString();
             }
-            String rets = new Long(num.longValue()).toString();
-            if ((outStr != null) && (rets != null) && (!outStr.trim().equalsIgnoreCase(rets))) {
+            String rets = String.valueOf(num.longValue());
+            if ((outStr != null) && (!outStr.trim().equalsIgnoreCase(rets))) {
                 Object[] params = {s};
                 throw new JxException("system", "invalidnumberint", params);
             }
@@ -702,7 +702,7 @@ public class JxFormat {
         boolean isError = false;
         try {
             DecimalFormatSymbols symb = new DecimalFormatSymbols(l);
-            Character minusSign = new Character(symb.getMinusSign());
+            Character minusSign = Character.valueOf(symb.getMinusSign());
 
             if (minusSign != null) {
                 if (s.startsWith(minusSign.toString())) {
@@ -1038,23 +1038,21 @@ public class JxFormat {
     }
 
     public static String clobToString(Clob c) {
-        String s = "";
         try {
             long pos = 1L;
-            int len = new Long(c.length()).intValue();
-            s = c.getSubString(pos, len);
+            int len = (int)c.length();
+            return c.getSubString(pos, len);
         } catch (Exception e) {
             LOG.error(e.getMessage());
         }
-
-        return s;
+        return "";
     }
 
     public static byte[] blobToBytes(Blob b) {
         byte[] array = null;
         try {
             long pos = 1L;
-            int len = new Long(b.length()).intValue();
+            int len = (int)(b.length());
             array = b.getBytes(pos, len);
         } catch (Exception e) {
             LOG.error(e.getMessage());
