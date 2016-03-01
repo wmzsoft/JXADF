@@ -1,19 +1,24 @@
 package com.jxtech.jbo.auth;
 
-import com.jxtech.app.jxlogin.JxLoginUtil;
-import com.jxtech.app.usermetadata.DefaultMetadata;
-import com.jxtech.app.usermetadata.MetaData;
-import com.jxtech.jbo.base.JxUserInfo;
-import com.jxtech.jbo.util.JxException;
-import com.jxtech.util.StrUtil;
+import java.io.IOException;
+import java.net.URLEncoder;
+
+import javax.servlet.Filter;
+import javax.servlet.FilterChain;
+import javax.servlet.FilterConfig;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.*;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.URLEncoder;
+import com.jxtech.app.usermetadata.DefaultMetadata;
+import com.jxtech.app.usermetadata.MetaData;
+import com.jxtech.jbo.base.JxUserInfo;
+import com.jxtech.util.StrUtil;
 
 /**
  * 登录滤镜

@@ -1,0 +1,3 @@
+gulp
+echo "test"
+pause

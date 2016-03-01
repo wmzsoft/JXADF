@@ -2,8 +2,6 @@ package com.jxtech.jbo.auth;
 
 import java.util.Date;
 
-import com.jxtech.app.jxvars.JxVars;
-import com.jxtech.app.jxvars.JxVarsFactory;
 import com.jxtech.util.DateUtil;
 import com.jxtech.util.StrUtil;
 

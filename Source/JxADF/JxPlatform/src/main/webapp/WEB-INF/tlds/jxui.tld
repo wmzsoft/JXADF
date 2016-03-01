@@ -874,7 +874,7 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
-            <name>renderExends</name>
+            <name>renderExtends</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>
         </attribute>

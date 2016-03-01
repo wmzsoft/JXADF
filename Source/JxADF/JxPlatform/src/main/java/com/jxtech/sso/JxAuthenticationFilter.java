@@ -1,7 +1,11 @@
 package com.jxtech.sso;
 
+import com.jxtech.jbo.auth.JxSession;
+import com.jxtech.jbo.auth.JxSessionID;
 import com.jxtech.jbo.auth.PermissionFactory;
 import com.jxtech.jbo.auth.PermissionIFace;
+import com.jxtech.util.StrUtil;
+
 import org.jasig.cas.client.authentication.DefaultGatewayResolverImpl;
 import org.jasig.cas.client.authentication.GatewayResolver;
 import org.jasig.cas.client.util.AbstractCasFilter;
@@ -93,6 +97,20 @@ public class JxAuthenticationFilter extends AbstractCasFilter {
             filterChain.doFilter(request, response);
             return;
         }
+        // by wmzsoft 2016.02 begin
+        // 没有发现票据，则检查是否内部模式登录
+        String jxsessionid = request.getParameter(JxSessionID.ID);// 得到内部的Sessionid
+        String ssoUserId = JxSessionID.getUserId(jxsessionid);// 得到登录名称
+        if (!StrUtil.isNull(ssoUserId)) {
+            // 准备内部登录
+            boolean isLogin = JxSession.loginBySsoUser(ssoUserId);
+            if (isLogin) {
+                // 如果登录成功，则不需要跳转到登录页面了。
+                filterChain.doFilter(request, response);
+                return;
+            }
+        }
+        // by wmzsoft 2016.02 end
         final String modifiedServiceUrl;
         LOG.debug("no ticket and no assertion found");
         if (this.gateway) {

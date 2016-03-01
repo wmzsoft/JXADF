@@ -106,6 +106,7 @@ public class TableTag extends JxBaseUITag {
     private String ignoreDataTable;
     private String rowSelectable;
     private HttpServletResponse resp;
+    private String uid;// 用于直接访问JSON时，主表的ID号
 
     @Override
     public Component getBean(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
@@ -131,6 +132,7 @@ public class TableTag extends JxBaseUITag {
         endStr = StrUtil.getSplitFirst(request.getParameter("endStr"));
         loadType = NumUtil.parseLong(StrUtil.getSplitFirst(request.getParameter("loadType")));
         quickSearchCause = StrUtil.getSplitFirst(request.getParameter("quickSearchCause"));
+        uid = StrUtil.getSplitFirst(request.getParameter("uid"));
         // 传入JSON格式的数据
         String jh = (String) request.getParameter("jsonhead");
         if (!StrUtil.isNull(jh)) {
@@ -436,15 +438,29 @@ public class TableTag extends JxBaseUITag {
             return null;
         }
         App myapp = JxSession.getApp(appName, appType);
+        if (myapp == null && !StrUtil.isNull(uid) && !StrUtil.isNull(appName) && !StrUtil.isNull(appType)) {
+            myapp = new App(appName, appType);
+        }
         JboSetIFace jset = null;
         if (myapp != null) {
             JboIFace mj = myapp.getJbo();
             if (mj != null) {
-                // jboset = mj.getRelationJboSet(relationship, loadType);
-                jset = mj.getRelationJboSet(relationship, false);
-            } else {
-                LOG.warn("没有找到Jbo，appName=" + myapp.getAppName());
+                if (StrUtil.isNull(uid) || uid.equals(mj.getUidValue())) {
+                    // jboset = mj.getRelationJboSet(relationship, loadType);
+                    jset = mj.getRelationJboSet(relationship, false);
+                }
             }
+            if (jset == null && !StrUtil.isNull(uid)) {
+                mj = myapp.getJboset().queryJbo(uid);
+                if (mj != null) {
+                    jset = mj.getRelationJboSet(relationship, false);
+                }
+            }
+            if (jset == null) {
+                LOG.warn("Not found jbo，appName=" + myapp.getAppName());
+            }
+        } else {
+            LOG.info("not found app,appName=" + appName + ",type=" + appType);
         }
         return jset;
     }

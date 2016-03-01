@@ -321,6 +321,9 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             boolean flag = true;
             for (int i = 0; i < ids.length; i++) {
                 JboIFace j = queryJbo(ids[i]);
+                if (j == null) {
+                    continue;
+                }
                 flag = delete(conn, j);
                 if (!flag) {
                     break;

@@ -267,6 +267,7 @@ input.tdinput {
     height: 20px;
     line-height: 20px;
     border: 1px solid #c0bebe;
+    text-align: left;
 }
 
 input[required=true].tdinput {
@@ -288,7 +289,8 @@ input.tdinputdate {
     width: 70%;
     height: 20px;
     line-height: 20px;
-    border: 1px solid #c0bebe;;
+    border: 1px solid #c0bebe;
+    text-align: left;
 }
 
 input[required=true].tdinputnum {
