@@ -1468,7 +1468,10 @@ function doPartialTriggers(me, e, dv, dn) {
             }
 
             // 需要判断触发对象的类型，分为select和form表单
-            var tagName = trigTarget[0].tagName;
+            var tagName = '';
+            if (trigTarget.length > 0){
+                tagName= trigTarget[0].tagName;
+            }
             if ("select" == tagName || "SELECT" == tagName) {
                 var partialCause = trigTarget.attr("partialCause");
                 if (partialCause != null) {

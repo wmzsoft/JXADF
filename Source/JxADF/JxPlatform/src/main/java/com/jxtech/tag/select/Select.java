@@ -1,5 +1,12 @@
 package com.jxtech.tag.select;
 
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.struts2.views.annotations.StrutsTag;
+
 import com.jxtech.i18n.JxLangResourcesUtil;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSetIFace;
@@ -7,11 +14,6 @@ import com.jxtech.jbo.base.KeyValue;
 import com.jxtech.tag.comm.JxBaseUIBean;
 import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
-import org.apache.struts2.views.annotations.StrutsTag;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * @author wmzsoft@gmail.com
@@ -173,7 +175,7 @@ public class Select extends JxBaseUIBean {
             addParameter("multiple", findValue(multiple, Boolean.class));
         }
         if (null != ajax) {
-            String aj = findString(ajax);
+            String aj = findString(ajax);            
             if (aj != null) {
                 if (aj.indexOf('\'') < 0 && aj.indexOf('"') < 0) {
                     aj = "\"" + aj + "\"";

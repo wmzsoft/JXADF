@@ -10,7 +10,7 @@ $author:wmzsoft@gmail.com
     ${parameters.selectedDisplay!''}<#t>
 <#else>  
     <#-- 真正开始Select标签生成了 -->
-    <select onChange="selectChange(this,event);" id="${parameters.id!'st'}" changed="0" <#rt>
+    <select onChange="${parameters.onchange!'selectChange'}(this,event)" id="${parameters.id!'st'}" changed="0" <#rt>
     <#if (avisible==false) >
         <#lt> style="display:none" <#t>
     <#elseif parameters.width??>

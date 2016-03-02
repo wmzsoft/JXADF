@@ -28,6 +28,7 @@ import com.jxtech.tag.form.FormTag;
 import com.jxtech.tag.table.TableTag;
 import com.jxtech.tag.table.Tablecol;
 import com.jxtech.tag.table.TablecolTag;
+import com.jxtech.util.ELUtil;
 import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 
@@ -221,11 +222,15 @@ public class SelectTag extends JxBaseUITag {
                             }
                         }
                     }
+                    if (ji != null && !StrUtil.isNull(ajax)) {
+                        select.setAjax(findString(ELUtil.parseJboElValue(ji, ajax)));
+                    } 
                 }
             }
         } catch (JxException e) {
             LOG.error(e.getMessage());
         }
+
         select.setSelected(selected);
         if (StrUtil.isNull(selectedDisplay) && !StrUtil.isNull(selected)) {
             selectedDisplay = getSelectedDispaly(select.getOptionsList(), selected);
