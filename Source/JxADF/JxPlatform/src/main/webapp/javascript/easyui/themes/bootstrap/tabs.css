@@ -10,10 +10,6 @@
   padding-top: 2px;
   overflow: hidden;
 }
-.tabs-header-plain {
-  border: 0;
-  background: transparent;
-}
 .tabs-scroller-left,
 .tabs-scroller-right {
   position: absolute;
@@ -203,12 +199,12 @@
 }
 .tabs-header-left .tabs {
   height: 100%;
-  padding: 4px 0 0 4px;
+  padding: 4px 0 0 2px;
   border-width: 0 1px 0 0;
 }
 .tabs-header-right .tabs {
   height: 100%;
-  padding: 4px 4px 0 0;
+  padding: 4px 2px 0 0;
   border-width: 0 0 0 1px;
 }
 .tabs-header-left .tabs li,
@@ -229,9 +225,15 @@
   margin: 0 0 4px -1px;
   float: left;
 }
+.tabs-justified li a.tabs-inner {
+  padding-left: 0;
+  padding-right: 0;
+}
 .tabs-header-left .tabs li a.tabs-inner {
   display: block;
   text-align: left;
+  padding-left: 10px;
+  padding-right: 10px;
   -moz-border-radius: 5px 0 0 5px;
   -webkit-border-radius: 5px 0 0 5px;
   border-radius: 5px 0 0 5px;
@@ -239,6 +241,8 @@
 .tabs-header-right .tabs li a.tabs-inner {
   display: block;
   text-align: left;
+  padding-left: 10px;
+  padding-right: 10px;
   -moz-border-radius: 0 5px 5px 0;
   -webkit-border-radius: 0 5px 5px 0;
   border-radius: 0 5px 5px 0;
@@ -258,6 +262,53 @@
 .tabs-header-plain {
   border: 0px;
   background: transparent;
+}
+.tabs-pill {
+  padding-bottom: 3px;
+}
+.tabs-header-bottom .tabs-pill {
+  padding-top: 3px;
+  padding-bottom: 0;
+}
+.tabs-header-left .tabs-pill {
+  padding-right: 3px;
+}
+.tabs-header-right .tabs-pill {
+  padding-left: 3px;
+}
+.tabs-header .tabs-pill li a.tabs-inner {
+  -moz-border-radius: 5px 5px 5px 5px;
+  -webkit-border-radius: 5px 5px 5px 5px;
+  border-radius: 5px 5px 5px 5px;
+}
+.tabs-header-narrow,
+.tabs-header-narrow .tabs-narrow {
+  padding: 0;
+}
+.tabs-narrow li,
+.tabs-header-bottom .tabs-narrow li {
+  margin-left: 0;
+  margin-right: -1px;
+}
+.tabs-narrow li.tabs-last,
+.tabs-header-bottom .tabs-narrow li.tabs-last {
+  margin-right: 0;
+}
+.tabs-header-left .tabs-narrow,
+.tabs-header-right .tabs-narrow {
+  padding-top: 0;
+}
+.tabs-header-left .tabs-narrow li {
+  margin-bottom: -1px;
+  margin-right: -1px;
+}
+.tabs-header-left .tabs-narrow li.tabs-last,
+.tabs-header-right .tabs-narrow li.tabs-last {
+  margin-bottom: 0;
+}
+.tabs-header-right .tabs-narrow li {
+  margin-bottom: -1px;
+  margin-left: -1px;
 }
 .tabs-scroller-left {
   background: #F2F2F2 url('images/tabs_icons.png') no-repeat 1px center;
@@ -353,4 +404,10 @@
 }
 .tabs-header-right .tabs li.tabs-selected a.tabs-inner {
   border-left: 1px solid #ffffff;
+}
+.tabs-header .tabs-pill li.tabs-selected a.tabs-inner {
+  background: #0081c2;
+  color: #fff;
+  filter: none;
+  border-color: #D4D4D4;
 }

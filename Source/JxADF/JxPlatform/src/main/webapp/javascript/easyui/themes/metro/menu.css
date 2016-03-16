@@ -6,6 +6,9 @@
   border-style: solid;
   overflow: hidden;
 }
+.menu-inline {
+  position: relative;
+}
 .menu-item {
   position: relative;
   margin: 0;
@@ -48,6 +51,13 @@
 .menu-sep {
   margin: 3px 0px 3px 25px;
   font-size: 1px;
+}
+.menu-noline .menu-line {
+  display: none;
+}
+.menu-noline .menu-sep {
+  margin-left: 0;
+  margin-right: 0;
 }
 .menu-active {
   -moz-border-radius: 0px 0px 0px 0px;

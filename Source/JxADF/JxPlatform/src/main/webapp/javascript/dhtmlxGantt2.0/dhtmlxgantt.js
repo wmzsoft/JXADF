@@ -6625,6 +6625,13 @@ gantt.date={
 	},
 	add:function(date,inc,mode){
 		/*jsl:ignore*/
+		if (isNaN(date)){ 
+			date=new Date();
+			date.setFullYear(2015,01,1)
+		}
+		if (isNaN(inc)){
+			inc=1;
+		}
 		var ndate=new Date(date.valueOf());
 		switch(mode){
 			case "week":

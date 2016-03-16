@@ -561,6 +561,17 @@ public interface JboIFace extends Serializable {
     public JboSetIFace getChildrenJboSet(String relationship) throws JxException;
 
     /**
+     * 获得Jbo的子Jbo。
+     * 
+     * @param relationship
+     * @param isCreate
+     *            如果不存在，是否创建一个新的JboSet
+     * @return
+     * @throws JxException
+     */
+    public JboSetIFace getChildrenJboSet(String relationship, boolean isCreate) throws JxException ;
+    
+    /**
      * 设定当前Jbo的子JboSet的只读属性。
      * 
      * @param relationship
@@ -624,4 +635,8 @@ public interface JboIFace extends Serializable {
      * @throws JxException
      */
     public String[] getExportRelationship() throws JxException;
+    
+    public boolean isToBeDuplicate() ;
+
+    public void setToBeDuplicate(boolean toBeDuplicate) ;
 }

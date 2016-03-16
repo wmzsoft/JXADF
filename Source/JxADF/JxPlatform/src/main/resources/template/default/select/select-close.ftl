@@ -14,18 +14,17 @@ $author:wmzsoft@gmail.com
     <#assign selectid = parameters.id>
     <#assign params = parameters>
     <#if ((params.readonly!false)==false) >
+      <#if ((params.ajax??) || ((params.optionsCount!0) &gt; 10) || (params.partialTriggers??))>
+    	<script type="text/javascript">$(function () {<#t>
         <#if (params.ajax??)>
-        <script type="text/javascript">
-            $(function () {
-                select2AjaxSelectTag('${selectid}', '${params.displayvalue!""}', '${params.dataattribute!""}', '${params.displayname!""}', '${params.ajax!""}', '${params.selectedDisplay!""}', 'Input to Choose Option');
-            });
-        </script>
+        	select2AjaxSelectTag('${selectid}', '${params.displayvalue!""}', '${params.dataattribute!""}', '${params.displayname!""}', '${params.ajax!""}', '${params.selectedDisplay!""}', 'Input to Choose Option');<#t>
         <#elseif ((params.optionsCount!0) &gt; 10) >
-        <script type="text/javascript">
-            $(function () {
-                select2CustomSelectTag('${selectid}', 'Select an option', true);
-            });
-        </script>
+        	select2CustomSelectTag('${selectid}', 'Select an option', true);
         </#if>
+        <#if (params.partialTriggers??)>
+        	doPartialTriggers($('#${selectid}'));<#t>
+        </#if>
+        });</script><#t>
+      </#if>  
     </#if>
 </#if>

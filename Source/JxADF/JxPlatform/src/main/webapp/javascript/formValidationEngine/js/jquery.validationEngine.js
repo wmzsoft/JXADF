@@ -1215,7 +1215,15 @@
 
             if (p.toLowerCase() == "now") {
                 pdate = new Date();
-            } else if (undefined != fieldAlt.val()) {
+            }else if(0 == fieldAlt.length&&p.indexOf("+")>-1){
+                var p2 = p.substring(0,p.indexOf("+")) ;
+                var p3 = parseInt(p.substring(p.indexOf("+")+1));
+                fieldAlt=$(form.find("*[name='" + p2.replace(/^#+/, '') + "']"));
+                pdate= methods._parseDate(fieldAlt.val());
+                pdate =pdate.setDate(pdate.getDate()+p3);
+                pdate = new Date(pdate) 
+            } 
+            else if (undefined != fieldAlt.val()) {
                 if (fieldAlt.is(":disabled"))
                     return;
                 pdate = methods._parseDate(fieldAlt.val());

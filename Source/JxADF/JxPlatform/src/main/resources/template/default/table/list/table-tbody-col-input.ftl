@@ -10,7 +10,7 @@ $author:wmzsoft@gmail.com
 <#if col.dataattribute == 'ROWNUM'>
     <#assign pagesize = parameters.pagesize!20>
     <#assign pagenum = (parameters.pagenum!1)>
-${seq + (pagesize?number) * (pagenum?number - 1)}
+	${seq + (pagesize?number) * (pagenum?number - 1)}<#t>
 <#else>
     <#assign tdidpre=(parameters.id)+"_"+(jbo_index)+"_">
     <#assign dateid=tdidpre+(col.dataattribute!'')>
@@ -19,16 +19,20 @@ ${seq + (pagesize?number) * (pagenum?number - 1)}
     </#if>
     <#assign attribute=jbo.getJxAttribute(col.dataattribute!'')>
     <#assign maxtype=attribute.maxType!'un'>
-<#--如果maxtype的为YORN则生成checkbox-->
+
     <#if (maxtype=='YORN')>
-    <input type="checkbox" id="${dateid}" <#rt>
+        <input type="checkbox" id="${dateid}" <#rt>
         <#if (jbo.getString(col.dataattribute)??)>
             <#if ((jbo.getString(col.dataattribute)!'0')=='1')>
                 <#lt> checked="checked" <#rt>
             </#if>
         </#if>
-        <#lt> dataattribute="${attribute.attributeName!''}" <#rt>
-        <#lt> onBlur="tableInputOnBlur(this,event)" onChange="inputOnChange(this)" <#rt>
+        <#if (col.parameters.readonly??)&&(col.parameters.readonly == "true")>
+        	 <#lt> disabled="disabled" <#rt>
+        <#else>
+        	<#lt> dataattribute="${attribute.attributeName!''}" <#rt>
+        	<#lt> onBlur="tableInputOnBlur(this,event)" onChange="inputOnChange(this)" <#rt>
+        </#if>
         <#lt> class="tdcheck validate[${cssClass!}]"<#rt>
             /><#t>
     <#elseif (col.parameters.readonly??)&&(col.parameters.readonly == "true")>

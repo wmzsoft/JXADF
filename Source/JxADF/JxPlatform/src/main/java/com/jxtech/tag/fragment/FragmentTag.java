@@ -8,7 +8,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jxtech.common.JxLoadResource;
+import com.jxtech.jbo.App;
+import com.jxtech.jbo.JboIFace;
+import com.jxtech.jbo.auth.JxSession;
+import com.jxtech.jbo.util.JxException;
 import com.jxtech.tag.comm.JxBaseUITag;
+import com.jxtech.util.ELUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 
 /**
@@ -43,7 +48,22 @@ public class FragmentTag extends JxBaseUITag {
     protected void populateParams() {
         super.populateParams();
         Fragment frag = (Fragment) component;
-        frag.setUrl(url);
+        try {
+            App myapp = JxSession.getApp();
+            if(myapp!=null){
+                JboIFace jbi = myapp.getJbo();
+                if(jbi!=null){
+                    frag.setUrl(findString(ELUtil.parseJboElValue(jbi, url)));
+                }else{
+                    frag.setUrl(url);
+                }
+            }else{
+                frag.setUrl(url);
+            }
+        } catch (JxException e) {
+            LOG.error(e.getMessage());
+        }
+        //frag.setUrl(url);
         frag.setApp(app);
         frag.setType(type);
         frag.setLazyload(lazyload);

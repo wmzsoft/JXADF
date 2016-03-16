@@ -164,8 +164,9 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         DataQueryInfo qbe = this.getQueryInfo();
         qbe.setWhereCause(where);
         qbe.setWhereParams(new Object[] { uid });
+        qbe.setPageSize(1);
         List<Map<String, Object>> list = dq.query(getJboname(), qbe);
-        if (list != null && list.size() == 1) {
+        if (list != null && list.size() >= 1) {
             currentJbo.setData(list.get(0));
             if (isExecAfterLoad()) {
                 currentJbo.afterLoad();

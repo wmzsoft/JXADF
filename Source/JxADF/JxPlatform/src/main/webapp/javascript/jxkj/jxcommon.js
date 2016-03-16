@@ -1394,7 +1394,8 @@ function selectChange(me, e) {
             me.value, {
                 callback: function (jbo) {
                     if (jbo) {
-                        if (null != jbo) {
+                        var refresh = ($(me).attr("refresh")||"").toLowerCase();
+                        if (null != jbo && refresh !='false') {
                             setData($select.closest("table[class='table_edit']"), jbo, "");
                         }
                     } else {

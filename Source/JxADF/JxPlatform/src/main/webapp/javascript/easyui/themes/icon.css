@@ -7,12 +7,6 @@
 .icon-edit{
 	background:url('icons/pencil.png') no-repeat center center;
 }
-.icon-put{
-	background:url('icons/basket_put.png') no-repeat center center;
-}
-.icon-bremove{
-	background:url('icons/basket_remove.png') no-repeat center center;
-}
 .icon-clear{
 	background:url('icons/clear.png') no-repeat center center;
 }
@@ -70,11 +64,8 @@
 .icon-lock{
 	background:url('icons/lock.png') no-repeat center center;
 }
-.icon-drag{
-	background:url('icons/drag.png') no-repeat center center;
-}
-.icon-default{
-	background:url('icons/default.png') no-repeat center center;
+.icon-more{
+	background:url('icons/more.png') no-repeat center center;
 }
 
 

@@ -62,6 +62,8 @@ public abstract class BaseJbo implements JboIFace {
     private boolean toBeAdd = false;
     // 当前记录是否准备删除
     private boolean toBeDel = false;
+    // 当前是否正在复制
+    private boolean toBeDuplicate=false;
     // 当前记录是否为只读
     private boolean readonly = false;
     // 当前记录的保存标识
@@ -340,6 +342,9 @@ public abstract class BaseJbo implements JboIFace {
         } else if (toBeDel) {
             setToBeDel(false);
         }
+        if (this.toBeDuplicate){
+            this.setToBeDuplicate(false);
+        }
         // 让儿子们也要往回滚
         Map<String, JboSetIFace> children = getChildren();
         if (null != children) {
@@ -477,6 +482,7 @@ public abstract class BaseJbo implements JboIFace {
     @Override
     public JboIFace duplicate() throws JxException {
         JboIFace jbi = getJboSet().add();
+        jbi.setToBeDuplicate(true);//开始复制
         Map<String, Object> iData = jbi.getData();
         String[] ignores = getIgnoreAttributesOfDuplicate();
         // 将对象的值全部复制过来
@@ -1827,5 +1833,13 @@ public abstract class BaseJbo implements JboIFace {
      */
     public String[] getExportRelationship() throws JxException {
         return this.getDeleteChildren();
+    }
+
+    public boolean isToBeDuplicate() {
+        return toBeDuplicate;
+    }
+
+    public void setToBeDuplicate(boolean toBeDuplicate) {
+        this.toBeDuplicate = toBeDuplicate;
     }
 }

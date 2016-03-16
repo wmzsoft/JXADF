@@ -1,0 +1,21 @@
+
+.icon-drag{
+	background:url('icons/drag.png') no-repeat center center;
+}
+.icon-default{
+	background:url('icons/default.png') no-repeat center center;
+}
+.icon-put{
+	background:url('icons/basket_put.png') no-repeat center center;
+}
+
+
+
+.tableform{
+    
+}
+
+.tableform tr th{
+    text-align: right;
+    font-weight: normal;
+}

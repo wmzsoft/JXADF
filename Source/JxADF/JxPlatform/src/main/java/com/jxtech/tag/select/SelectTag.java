@@ -140,7 +140,7 @@ public class SelectTag extends JxBaseUITag {
                 jboset = app.findJboSet(null, relationship);
             }
             // 只有当不是ajax加载的情况下，才进行数据查询
-            if (jboset != null && StrUtil.isNull(ajax)) {
+            if (jboset != null && StrUtil.isNull(ajax) && StrUtil.isNull(partialCause)) {
                 jboset.getQueryInfo().setWhereCause(mycause);
                 jboset.getQueryInfo().setOrderby(orderby);
                 jboset.queryAll();
