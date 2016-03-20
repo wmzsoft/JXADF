@@ -2,6 +2,8 @@ package com.jxtech.app.export.word;
 
 import java.util.Map;
 
+import org.osgi.framework.Bundle;
+
 /**
  * 导出Word的接口
  * 
@@ -23,6 +25,17 @@ public interface ExpWord {
      * @return
      */
     public boolean createDocByFile(String xmlFileName, String docFileName, Map<String, Object> data);
+
+    /**
+     * 生成WORD文件，xml文件可以放在bundle中，示例：META-INF/xml/week.xml
+     * 
+     * @param xmlFileName
+     * @param docFileName
+     * @param data
+     * @param bundle
+     * @return
+     */
+    public boolean createDocByFile(String xmlFileName, String docFileName, Map<String, Object> data, Bundle bundle);
 
     /**
      * 生成Word

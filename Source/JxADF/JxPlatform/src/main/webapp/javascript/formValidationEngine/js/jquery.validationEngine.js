@@ -1222,6 +1222,20 @@
                 pdate= methods._parseDate(fieldAlt.val());
                 pdate =pdate.setDate(pdate.getDate()+p3);
                 pdate = new Date(pdate) 
+            }else if(0==fieldAlt.length && p.indexOf(".")>-1){
+            	 var p2 = p.substring(0,p.indexOf(".")) ;
+                 var p3 = p.substring(p.indexOf(".")+1);
+                 fieldAlt=$(form.find("*[name='" + p2.replace(/^#+/, '') + "']"));
+                 pdate= methods._parseDate(fieldAlt.val());
+                 if(p3=="monthend"){
+                	 pdate.setDate(1);
+                	 pdate.setMonth(pdate.getMonth()+1);
+                	 pdate=new Date(pdate.getTime()-1000*60*60*24);
+                 }else{
+                	 pdate.setDate(1);
+                	 pdate=pdate.setDate(pdate.getDate+25);
+                	 pdate=new Date(pdate);
+                 }
             } 
             else if (undefined != fieldAlt.val()) {
                 if (fieldAlt.is(":disabled"))
