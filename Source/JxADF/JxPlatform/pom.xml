@@ -190,7 +190,6 @@
 			<artifactId>ehcache</artifactId>
 			<version>2.10.0</version>
 		</dependency>
-
 	</dependencies>
 
 	<!--项目开发者列表 -->

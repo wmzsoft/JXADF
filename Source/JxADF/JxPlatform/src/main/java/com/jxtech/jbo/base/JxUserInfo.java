@@ -28,8 +28,9 @@ public class JxUserInfo implements Serializable {
     private JboIFace department;// 部门信息,Pub_department
     private JboIFace user;// 用户信息，Pub_user
     // maximo信息
-    private String orgid;
-    private String siteid;
+    private String tenantnum;//租户信息
+    private String orgid;//组织标识
+    private String siteid;//地点标识
     private String langcode;
 
     private Map<String, String> metadata;// 用户元数据。
@@ -189,6 +190,14 @@ public class JxUserInfo implements Serializable {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public String getTenantnum() {
+        return tenantnum;
+    }
+
+    public void setTenantnum(String tenantnum) {
+        this.tenantnum = tenantnum;
     }
 
 }

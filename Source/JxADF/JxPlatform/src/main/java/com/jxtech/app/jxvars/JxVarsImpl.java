@@ -1,5 +1,6 @@
 package com.jxtech.app.jxvars;
 
+import com.jxtech.util.StrUtil;
 import com.jxtech.util.SysPropertyUtil;
 
 /**
@@ -24,6 +25,32 @@ public class JxVarsImpl implements JxVars {
     @Override
     public void setValue(String key, String value) {
         SysPropertyUtil.storeSystemProperties(key, value);
+    }
+
+    @Override
+    public long getLong(String key, long def) {
+        String value = getValue(key, null);
+        if (!StrUtil.isNull(value)) {
+            try {
+                return Long.parseLong(value);
+            } catch (Exception e) {
+                return def;
+            }
+        }
+        return def;
+    }
+
+    @Override
+    public double getDouble(String key, double def) {
+        String value = getValue(key, null);
+        if (!StrUtil.isNull(value)) {
+            try {
+                return Double.parseDouble(value);
+            } catch (Exception e) {
+                return def;
+            }
+        }
+        return 0;
     }
 
 }

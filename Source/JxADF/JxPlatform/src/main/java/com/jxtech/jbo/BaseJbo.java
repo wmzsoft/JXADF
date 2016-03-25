@@ -63,7 +63,7 @@ public abstract class BaseJbo implements JboIFace {
     // 当前记录是否准备删除
     private boolean toBeDel = false;
     // 当前是否正在复制
-    private boolean toBeDuplicate=false;
+    private boolean toBeDuplicate = false;
     // 当前记录是否为只读
     private boolean readonly = false;
     // 当前记录的保存标识
@@ -342,7 +342,7 @@ public abstract class BaseJbo implements JboIFace {
         } else if (toBeDel) {
             setToBeDel(false);
         }
-        if (this.toBeDuplicate){
+        if (this.toBeDuplicate) {
             this.setToBeDuplicate(false);
         }
         // 让儿子们也要往回滚
@@ -482,7 +482,7 @@ public abstract class BaseJbo implements JboIFace {
     @Override
     public JboIFace duplicate() throws JxException {
         JboIFace jbi = getJboSet().add();
-        jbi.setToBeDuplicate(true);//开始复制
+        jbi.setToBeDuplicate(true);// 开始复制
         Map<String, Object> iData = jbi.getData();
         String[] ignores = getIgnoreAttributesOfDuplicate();
         // 将对象的值全部复制过来
@@ -611,7 +611,14 @@ public abstract class BaseJbo implements JboIFace {
         return null;
     }
 
-    protected Object invokeGetMethod(String name) {
+    /**
+     * 通过反射，调用Jbo的方法，无参数
+     * 
+     * @param name
+     *            方法名
+     * @return
+     */
+    public Object invokeGetMethod(String name) {
         try {
             Method m = getClass().getMethod(name);
             return m.invoke(this);
@@ -625,7 +632,18 @@ public abstract class BaseJbo implements JboIFace {
         return null;
     }
 
-    protected Object invokeMethod(String name, Class<?> parameterTypes, Object[] params) {
+    /**
+     * 通过反射调用Jbo的方法，有参数
+     * 
+     * @param name
+     *            方法名
+     * @param parameterTypes
+     *            参数类型
+     * @param params
+     *            参数值
+     * @return
+     */
+    public Object invokeMethod(String name, Class<?> parameterTypes, Object[] params) {
         try {
             Method m;
             if (parameterTypes != null) {

@@ -14,5 +14,9 @@ public interface JxVars {
 
     public String getValue(String key, String def);
 
+    public long getLong(String key, long def);
+
+    public double getDouble(String key, double def);
+
     public void setValue(String key, String value);
 }

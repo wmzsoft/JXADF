@@ -186,7 +186,7 @@ public class PermissionCtpDao implements AuthenticateIFace {
         LOG.info("加载部门信息失败：" + department);
         return null;
     }
-
+    
     @Override
     public JxUserInfo getUserInfo(String userid) throws JxException {
         JboIFace jbo = getUser(userid);
@@ -210,6 +210,7 @@ public class PermissionCtpDao implements AuthenticateIFace {
         user.setUserid(jbo.getString("user_id"));
         user.setSiteid(jbo.getString("SITEID"));
         user.setOrgid(jbo.getString("orgid"));
+        user.setTenantnum(jbo.getString("PUBUSERORGANIZATION.TenantNum"));
         user.setUser(jbo);
         // 加载部门信息
         user.setDepartment(getDepartment(jbo.getString("department_id")));

@@ -150,6 +150,12 @@ public interface JboIFace extends Serializable {
      */
     public java.util.Date getDate(String attributeName, long flag) throws JxException;
 
+    /**
+     * 返回字段值
+     * @param attributeName 字段名
+     * @return
+     * @throws JxException
+     */
     public Object getObject(String attributeName) throws JxException;
 
     public Object getObject(String attributeName, long flag) throws JxException;
@@ -569,8 +575,8 @@ public interface JboIFace extends Serializable {
      * @return
      * @throws JxException
      */
-    public JboSetIFace getChildrenJboSet(String relationship, boolean isCreate) throws JxException ;
-    
+    public JboSetIFace getChildrenJboSet(String relationship, boolean isCreate) throws JxException;
+
     /**
      * 设定当前Jbo的子JboSet的只读属性。
      * 
@@ -635,8 +641,31 @@ public interface JboIFace extends Serializable {
      * @throws JxException
      */
     public String[] getExportRelationship() throws JxException;
-    
-    public boolean isToBeDuplicate() ;
 
-    public void setToBeDuplicate(boolean toBeDuplicate) ;
+    public boolean isToBeDuplicate();
+
+    public void setToBeDuplicate(boolean toBeDuplicate);
+
+    /**
+     * 通过反射，调用Jbo的方法，无参数
+     * 
+     * @param name
+     *            方法名
+     * @return
+     */
+    public Object invokeGetMethod(String name);
+
+    /**
+     * 通过反射调用Jbo的方法，有参数
+     * 
+     * @param name
+     *            方法名
+     * @param parameterTypes
+     *            参数类型
+     * @param params
+     *            参数值
+     * @return
+     */
+    public Object invokeMethod(String name, Class<?> parameterTypes, Object[] params);
+
 }
