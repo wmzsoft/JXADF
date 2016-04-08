@@ -1,16 +1,14 @@
 package com.jxtech.jbo.virtual;
 
-import com.jxtech.jbo.BaseJboSet;
-import com.jxtech.jbo.JboIFace;
-import com.jxtech.jbo.base.JxUserInfo;
-import com.jxtech.jbo.util.JxException;
-import net.sf.mpxj.ProjectFile;
-import net.sf.mpxj.Task;
-
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.util.List;
 import java.util.Map;
+
+import com.jxtech.jbo.BaseJboSet;
+import com.jxtech.jbo.JboIFace;
+import com.jxtech.jbo.base.JxUserInfo;
+import com.jxtech.jbo.util.JxException;
 
 /**
  * 虚拟JboSet，不会进行持久化
@@ -106,18 +104,6 @@ public class VirtualJboSet extends BaseJboSet {
     }
 
     @Override
-    public void addMpp(List<Task> tasks, Map<String, String> paramMap, Map<String, String> initMap) throws JxException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void expMpp(ProjectFile project, Map<String, String> paramMap, Map<String, String> initMap) throws JxException {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
     public String loadImportFile(List<Map<Object, String>> importFileResult, JxUserInfo userInfo) throws JxException {
         // TODO Auto-generated method stub
         return null;
@@ -194,5 +180,6 @@ public class VirtualJboSet extends BaseJboSet {
     public int getCount(boolean flag) {
         return super.getCount(false);
     }
+
 
 }

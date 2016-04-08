@@ -13,7 +13,7 @@
 	<url>http://svn.jxtech.net</url>
 	<organization>
 		<name>JIANXIN TECHNOLOGY</name>
-		<url>http://www.jxtech.net</url>
+		<url>http://osgia.com</url>
 	</organization>
 	<scm>
 		<connection>scm:svn:${project.svn.url}/JxPlatform/</connection>
@@ -24,12 +24,13 @@
 
 	<build>
 		<plugins>
+            <!-- 编译 -->
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.5.1</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>${project.jdk.version}</source>
+					<target>${project.jdk.version}</target>
 					<encoding>${project.build.sourceEncoding}</encoding>
 				</configuration>
 			</plugin>
@@ -41,7 +42,7 @@
 				<version>2.5</version>
 				<executions>
 					<execution>
-						<phase>package</phase>
+						<phase>compile</phase>
 						<goals>
 							<goal>exploded</goal>
 						</goals>
@@ -49,19 +50,19 @@
 				</executions>
 				<configuration>
 					<!-- 
-					<archiveClasses>true</archiveClasses>
-					<webResources>  
-		        <resource>  
-		          <directory>src/main/resources/</directory>  
-		          <targetPath>WEB-INF/classes</targetPath>
-		          <filtering>false</filtering>  
-		          <includes>  
-		            <include>*.xml</include>  
-		            <include>*.properties</include>  
-		          </includes>
-		        </resource>  
-      		</webResources>
-      		-->
+                    <archiveClasses>true</archiveClasses>
+                    <webResources>  
+                        <resource>  
+                          <directory>src/main/resources/</directory>  
+                          <targetPath>WEB-INF/classes</targetPath>
+                          <filtering>false</filtering>  
+                          <includes>  
+                            <include>*.xml</include>  
+                            <include>*.properties</include>  
+                          </includes>
+                        </resource>  
+                    </webResources>
+                    -->
 					<webappDirectory>${project.deploy.dir}/jxweb</webappDirectory>
 				</configuration>
 			</plugin>
@@ -134,57 +135,14 @@
 				</executions>
 			</plugin>
 		</plugins>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.apache.maven.plugins</groupId>
-										<artifactId>maven-dependency-plugin</artifactId>
-										<versionRange>[1.0,)</versionRange>
-										<goals>
-											<goal>copy-dependencies</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore/>
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 	</build>
 
 	<dependencies>
-	    <!-- added by lizhao 补充json依赖 -->
-		<dependency>    
-		    <groupId>net.sf.json-lib</groupId>   
-		    <artifactId>json-lib</artifactId>    
-		    <version>2.4</version>    
-		</dependency>
-		
 		<dependency>
 			<groupId>org.jasig.cas.client</groupId>
 			<artifactId>cas-client-core</artifactId>
 			<version>3.2.1</version>
-			<scope>provided</scope>
 		</dependency>
-		<!--wordTopdf-->
-		<dependency>
-			<groupId>net.sf.jacob-project</groupId>
-			<artifactId>jacob</artifactId>
-			<version>1.18-M2</version>
-			<scope>provided</scope>
-		</dependency>		
 		<dependency>
 			<groupId>net.sf.ehcache</groupId>
 			<artifactId>ehcache</artifactId>

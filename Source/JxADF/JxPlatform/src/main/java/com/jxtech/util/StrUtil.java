@@ -160,6 +160,26 @@ public class StrUtil {
         }
     }
 
+    /**
+     * 判断字符串Str中，有多少个in字符串
+     * 
+     * @param str
+     * @param in
+     * @return
+     */
+    public static int count(String str, String in) {
+        if (StrUtil.isNull(str) || StrUtil.isNull(in)) {
+            return 0;
+        }
+        Pattern p = Pattern.compile(in);
+        Matcher m = p.matcher(str);
+        int idx = 0;
+        while (m.find()) {
+            idx++;
+        }
+        return idx;
+    }
+
     public static int parseInt(String i, int defaultvalue) {
         if (isNull(i)) {
             return defaultvalue;
@@ -268,7 +288,8 @@ public class StrUtil {
      * json中的数据都不需要带''或""
      * </p>
      * 
-     * @param json 输入为json格式的字符串,最好不要带有"{}"
+     * @param json
+     *            输入为json格式的字符串,最好不要带有"{}"
      * @return
      */
     public static List<KeyValue> toList(String json) {
@@ -350,7 +371,6 @@ public class StrUtil {
         }
         return compareStr(value1.toString(), value2.toString(), operation);
     }
-
 
     public static boolean compareStr(String value1, String value2, String operation) {
         if ("==".equals(operation) || "=".equals(operation)) {
@@ -547,7 +567,7 @@ public class StrUtil {
     }
 
     public static String md5(String plainText) {
-        if (isNull(plainText)){
+        if (isNull(plainText)) {
             return null;
         }
         byte[] secretBytes = null;
@@ -573,32 +593,32 @@ public class StrUtil {
         for (int i = 0; i < len; i++) {
             char c = str.charAt(i);
             switch (c) {
-                case '\"':
-                    sb.append("\\\"");
-                    break;
-                case '\\':
-                    sb.append("\\\\");
-                    break;
-                case '/':
-                    sb.append("\\/");
-                    break;
-                case '\b':
-                    sb.append("\\b");
-                    break;
-                case '\f':
-                    sb.append("\\f");
-                    break;
-                case '\n':
-                    sb.append("\\n");
-                    break;
-                case '\r':
-                    sb.append("\\r");
-                    break;
-                case '\t':
-                    sb.append("\\t");
-                    break;
-                default:
-                    sb.append(c);
+            case '\"':
+                sb.append("\\\"");
+                break;
+            case '\\':
+                sb.append("\\\\");
+                break;
+            case '/':
+                sb.append("\\/");
+                break;
+            case '\b':
+                sb.append("\\b");
+                break;
+            case '\f':
+                sb.append("\\f");
+                break;
+            case '\n':
+                sb.append("\\n");
+                break;
+            case '\r':
+                sb.append("\\r");
+                break;
+            case '\t':
+                sb.append("\\t");
+                break;
+            default:
+                sb.append(c);
             }
         }
         return sb.toString();
@@ -626,7 +646,8 @@ public class StrUtil {
      * 
      * 移除特殊字符 用于Excel的列头显示 目前支持移除所有的 " : "," ： ","*" 三个特殊字符 还有html标签
      * 
-     * @param str 需要处理的字符
+     * @param str
+     *            需要处理的字符
      * @return 处理之后的字符
      */
     public static String removeSpecialChar(String str) {

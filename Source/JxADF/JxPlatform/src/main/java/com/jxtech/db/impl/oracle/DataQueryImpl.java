@@ -22,6 +22,7 @@ import com.jxtech.db.util.JxDataSourceUtil;
 import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.CacheUtil;
+import com.jxtech.util.DateUtil;
 import com.jxtech.util.StrUtil;
 
 /**
@@ -202,6 +203,16 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
             JxDataSourceUtil.closeStatement(pst);
             JxDataSourceUtil.closeResultSet(rs);
         }
+    }
+
+    @Override
+    public String date2String(Object date) {     
+        return DateUtil.oracleToDate(date);
+    }
+
+    @Override
+    public String datetime2String(Object datetime) {
+        return DateUtil.oracleToDateTime(datetime);
     }
 
 }

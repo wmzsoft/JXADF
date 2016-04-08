@@ -17,6 +17,8 @@ public interface JxVars {
     public long getLong(String key, long def);
 
     public double getDouble(String key, double def);
+    
+    public boolean getBoolean(String key,boolean def);
 
     public void setValue(String key, String value);
 }

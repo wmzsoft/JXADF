@@ -17,6 +17,7 @@ import com.jxtech.db.DBFactory;
 import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.CacheUtil;
+import com.jxtech.util.DateUtil;
 import com.jxtech.util.StrUtil;
 
 /**
@@ -127,6 +128,16 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
     public void getBlob(Connection conn, String tableName, String blobColumnName, String uidName, String uidValue, OutputStream os) throws JxException {
         // TODO Auto-generated method stub
 
+    }
+    
+    @Override
+    public String date2String(Object date) {     
+        return DateUtil.sqlserverToDate(date);
+    }
+
+    @Override
+    public String datetime2String(Object datetime) {
+        return DateUtil.sqlserverToDateTime(datetime);
     }
 
 }

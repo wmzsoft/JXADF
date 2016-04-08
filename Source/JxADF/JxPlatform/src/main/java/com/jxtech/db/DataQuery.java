@@ -22,9 +22,12 @@ public interface DataQuery {
     /**
      * 查询数据
      * 
-     * @param conn 数据库连接
-     * @param tablename 表名
-     * @param queryinfo 查询对象
+     * @param conn
+     *            数据库连接
+     * @param tablename
+     *            表名
+     * @param queryinfo
+     *            查询对象
      * @return
      */
     public List<Map<String, Object>> query(Connection conn, String tablename, DataQueryInfo queryinfo) throws JxException;
@@ -36,12 +39,18 @@ public interface DataQuery {
     /**
      * 执行数据库的sql函数
      * 
-     * @param conn 数据库连接
-     * @param fun 函数名，如：sum、count等
-     * @param tablename 表名
-     * @param columnName 字段名
-     * @param whereCause 查询条件
-     * @param params 参数值
+     * @param conn
+     *            数据库连接
+     * @param fun
+     *            函数名，如：sum、count等
+     * @param tablename
+     *            表名
+     * @param columnName
+     *            字段名
+     * @param whereCause
+     *            查询条件
+     * @param params
+     *            参数值
      * @return
      * @throws JxException
      */
@@ -50,7 +59,8 @@ public interface DataQuery {
     /**
      * 统计记录数
      * 
-     * @param conn 数据库连接
+     * @param conn
+     *            数据库连接
      * @param tablename
      * @param whereCause
      * @param params
@@ -113,9 +123,12 @@ public interface DataQuery {
     /**
      * 通过SQL脚本、参数得到结果集
      * 
-     * @param conn 数据库连接
-     * @param msql SQL脚本
-     * @param params 参数值
+     * @param conn
+     *            数据库连接
+     * @param msql
+     *            SQL脚本
+     * @param params
+     *            参数值
      * @return
      */
     public List<Map<String, Object>> getResultSet(Connection conn, String msql, Object[] params) throws JxException;
@@ -148,7 +161,8 @@ public interface DataQuery {
     /**
      * 将SQL语句直接转换为JSON格式。
      * 
-     * @param conn 数据库连接
+     * @param conn
+     *            数据库连接
      * @param msql
      * @param params
      * @param columns
@@ -162,7 +176,8 @@ public interface DataQuery {
     /**
      * 将SQL语句直接转换为JSON格式。
      * 
-     * @param conn 数据库连接
+     * @param conn
+     *            数据库连接
      * @param msql
      * @param params
      * @param columns
@@ -197,4 +212,20 @@ public interface DataQuery {
     public String getDataSourceName();
 
     public void setDataSourceName(String dataSourceName);
+
+    /**
+     * 将日期格式转换为字符串，用作查询条件
+     * 
+     * @param date
+     * @return
+     */
+    public String date2String(Object date);
+
+    /**
+     * 将Datetime转换为字符串，用作查询条件
+     * 
+     * @param datetime
+     * @return
+     */
+    public String datetime2String(Object datetime);
 }

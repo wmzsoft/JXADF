@@ -54,10 +54,10 @@ public class DateUtil {
 
     public static String dateToString(Object date, String format) {
         java.util.Date d = null;
-        if (date instanceof Long){
+        if (date instanceof Long) {
             d = new Date();
-            d.setTime(((Long)date).longValue());
-        }else if (date instanceof java.lang.String) {
+            d.setTime(((Long) date).longValue());
+        } else if (date instanceof java.lang.String) {
             // 可能会出现String格式，出现String格式将其转换
             d = stringToDate((String) date);
         } else if (date instanceof java.sql.Timestamp) {
@@ -121,6 +121,46 @@ public class DateUtil {
     public static String oracleToDate(Object date) {
         String ds = dateToString(date);
         return "TO_DATE('" + ds + "','YYYY-MM-DD')";
+    }
+
+    /**
+     * 将日期转换为mysql sql脚本，格式：str_to_date(date,'%Y-%m-%d')
+     * @param date
+     * @return
+     */
+    public static String mysqlToDate(Object date) {
+        String ds = dateToString(date);
+        return "str_to_date('" + ds + "','%Y-%m-%d')";
+    }
+    
+    /**
+     * 将datetime转换为MySQL sql脚本，格式：str_to_date(date,'%Y-%m-%d %H:%i:%s')
+     * @param date
+     * @return
+     */
+    public static String mysqlToDateTime(Object date){
+        String ds = dateTimeToString(date);
+        return "str_to_date('" + ds + "','%Y-%m-%d %H:%i:%s')"; 
+    }
+    
+    /**
+     * 将日期转换为sqlserver 脚本，格式：cast(ds as date)
+     * @param date
+     * @return
+     */
+    public static String sqlserverToDate(Object date){
+        String ds = dateToString(date);
+        return "cast('"+ds+"' as date)";
+    }
+    
+    /**
+     * 将datetime转换为sqlserver脚本，格式：cast(ds as datetime)
+     * @param date
+     * @return
+     */
+    public static String sqlserverToDateTime(Object date){
+        String ds = dateTimeToString(date);
+        return "cast('"+ds+"' as datetime)";
     }
 
     /**
@@ -253,8 +293,10 @@ public class DateUtil {
     /**
      * 当前时间，加上多少微秒
      * 
-     * @param date 为空表示当前时间
-     * @param milliseconds 可正可负
+     * @param date
+     *            为空表示当前时间
+     * @param milliseconds
+     *            可正可负
      * @return
      */
     public static java.sql.Timestamp sqlDateTimeAdd(java.util.Date date, long milliseconds) {
@@ -324,6 +366,7 @@ public class DateUtil {
 
     /**
      * 获得某月的最后一天最后一秒 java.sql.Timestamp
+     * 
      * @param date
      * @return
      */
@@ -452,8 +495,10 @@ public class DateUtil {
     /**
      * 时间比较大小。yyyy-MM-dd
      * 
-     * @param strSmallDate 被减数
-     * @param strLargeDate 减数
+     * @param strSmallDate
+     *            被减数
+     * @param strLargeDate
+     *            减数
      * @return 传入参数为空时，返回null
      * @throws ParseException
      */
@@ -624,8 +669,10 @@ public class DateUtil {
 
     /**
      * 
-     * @param date 基础时间
-     * @param year 延长的年数
+     * @param date
+     *            基础时间
+     * @param year
+     *            延长的年数
      * @return
      */
     public static Date getDateAfterYear(Date date, int year) {
@@ -665,8 +712,10 @@ public class DateUtil {
 
     /**
      * 
-     * @param date 基础时间
-     * @param month 延长月数
+     * @param date
+     *            基础时间
+     * @param month
+     *            延长月数
      * @return
      */
     public static Date getDateAfterMonth(Date date, int month) {
@@ -719,7 +768,8 @@ public class DateUtil {
     /**
      * 将多少秒转换为：2天5小时6分钟这样的格式
      * 
-     * @param time 单位秒
+     * @param time
+     *            单位秒
      * @return
      */
     public static String formatDayHourMins(long time) {

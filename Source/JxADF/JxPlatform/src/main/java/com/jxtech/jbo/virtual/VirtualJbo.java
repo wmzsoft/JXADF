@@ -85,10 +85,6 @@ public  class VirtualJbo extends BaseJbo {
         throw new JxException("此方法未实现,请实现.reloadData");
     }
 
-    @Override
-    public void expMpp(Task task, JboIFace jbo) throws JxException {
-        throw new JxException("此方法未实现,请实现.expMpp");
-    }
 
     @Override
     public void prepareMaxmenu(List<JboIFace> menusToolbar, List<JboIFace> menulist) throws JxException {

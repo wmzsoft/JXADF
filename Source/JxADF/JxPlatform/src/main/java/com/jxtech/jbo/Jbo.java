@@ -239,20 +239,6 @@ public class Jbo extends BaseJbo implements JboIFace {
         }
     }
 
-    /**
-     * 导出.mpp文件
-     */
-    @Override
-    public void expMpp(Task task, JboIFace jbo) throws JxException {
-        task.setLevelAssignments(true);
-        task.setLevelingCanSplit(true);
-        task.setEffortDriven(true);
-        task.setRecurring(true);
-        task.setMilestone(false);
-        task.setCritical(false);
-
-    }
-
     @Override
     public void prepareMaxmenu(List<JboIFace> menusToolbar, List<JboIFace> menulist) throws JxException {
         if (this.isToBeAdd()) {

@@ -1,16 +1,5 @@
 package com.jxtech.jbo;
 
-import com.jxtech.app.jxwxp.JxWXPValueAdapter;
-import com.jxtech.jbo.base.JxAttribute;
-import com.jxtech.jbo.base.JxObject;
-import com.jxtech.jbo.base.JxTable;
-import com.jxtech.jbo.base.JxUserInfo;
-import com.jxtech.jbo.util.DataQueryInfo;
-import com.jxtech.jbo.util.JxException;
-import net.sf.mpxj.ProjectFile;
-import net.sf.mpxj.Task;
-import org.directwebremoting.io.FileTransfer;
-
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.sql.Connection;
@@ -18,6 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpSession;
+
+import org.directwebremoting.io.FileTransfer;
+
+import com.jxtech.app.jxwxp.JxWXPValueAdapter;
+import com.jxtech.jbo.base.JxAttribute;
+import com.jxtech.jbo.base.JxObject;
+import com.jxtech.jbo.base.JxTable;
+import com.jxtech.jbo.base.JxUserInfo;
+import com.jxtech.jbo.util.DataQueryInfo;
+import com.jxtech.jbo.util.JxException;
 
 /**
  * 每个表的记录信息
@@ -36,9 +35,9 @@ public interface JboSetIFace extends Serializable {
     // Activiti工作流名称
     public static final String BPM_ACTIVITI = "ACTIVITI";
 
-    //不要执行AfterLoad方法
+    // 不要执行AfterLoad方法
     public static final long NOEXEC_AFTERLOAD = 1;
-    
+
     /**
      * 如果要添加业务逻辑，请继承此方法。
      * 
@@ -50,7 +49,8 @@ public interface JboSetIFace extends Serializable {
     /**
      * 查询结果集，如果要根据不同联系名，处理不同业务逻辑，则请继承此方法 。
      * 
-     * @param shipname 联系名
+     * @param shipname
+     *            联系名
      * @return
      * @throws JxException
      */
@@ -178,7 +178,8 @@ public interface JboSetIFace extends Serializable {
     /**
      * 获得查询条件
      * 
-     * @param flag ClearParams 清除之前记忆的查询条件。
+     * @param flag
+     *            ClearParams 清除之前记忆的查询条件。
      * @return
      */
     public DataQueryInfo getQueryInfo(String flag);
@@ -196,12 +197,18 @@ public interface JboSetIFace extends Serializable {
     /**
      * 返回zTree的JSON格式的字符串
      * 
-     * @param attributes 需要返回的字段名
-     * @param idName 唯一关键字（与父节点关联）的字段名
-     * @param parentIdName 父节点字段名
-     * @param name 显示名称
-     * @param hasChildName 是否有孩子节点字段名
-     * @param leafDisplay 是否显示叶子节点
+     * @param attributes
+     *            需要返回的字段名
+     * @param idName
+     *            唯一关键字（与父节点关联）的字段名
+     * @param parentIdName
+     *            父节点字段名
+     * @param name
+     *            显示名称
+     * @param hasChildName
+     *            是否有孩子节点字段名
+     * @param leafDisplay
+     *            是否显示叶子节点
      * @return
      */
     public String toZTreeJson(String[] attributes, String idName, String parentIdName, String name, String hasChildName, boolean leafDisplay, String root, String i18n) throws JxException;
@@ -238,10 +245,6 @@ public interface JboSetIFace extends Serializable {
     public boolean isReadonly();
 
     public void afterLoad() throws JxException;
-
-    public void addMpp(List<Task> tasks, Map<String, String> paramMap, Map<String, String> initMap) throws JxException;
-
-    public void expMpp(ProjectFile project, Map<String, String> paramMap, Map<String, String> initMap) throws JxException;
 
     public void setRequired(boolean required);
 
@@ -328,8 +331,10 @@ public interface JboSetIFace extends Serializable {
     /**
      * 把jboset的数据导出成为Excel文件
      * 
-     * @param title 文件的名称，一般在前台取网页的title标签
-     * @param uids 页面选择的数据
+     * @param title
+     *            文件的名称，一般在前台取网页的title标签
+     * @param uids
+     *            页面选择的数据
      * @return dwr专用下载类
      * @throws JxException
      */
@@ -338,9 +343,12 @@ public interface JboSetIFace extends Serializable {
     /**
      * 把jboset的数据导出成为Excel文件
      * 
-     * @param title 文件的名称，一般在前台取网页的title标签
-     * @param uids 页面选择的数据
-     * @param dataMap 需要导出的数据 不为空时，优先dataMap
+     * @param title
+     *            文件的名称，一般在前台取网页的title标签
+     * @param uids
+     *            页面选择的数据
+     * @param dataMap
+     *            需要导出的数据 不为空时，优先dataMap
      * @return dwr专用下载类
      * @throws JxException
      */
@@ -349,7 +357,8 @@ public interface JboSetIFace extends Serializable {
     /**
      * 修改导出的Excel的表头信息
      * 
-     * @param header 默认导出的表头
+     * @param header
+     *            默认导出的表头
      * @return 修改后的表头 key即所要导出的dataattribute value即为表头的标题
      */
     public Map<String, String> modifyExcelColumn(Map<String, String> header);
@@ -372,7 +381,8 @@ public interface JboSetIFace extends Serializable {
     /**
      * 获得安全限制条件，加载maxapp表中配置的条件和角色数据配置中的条件
      * 
-     * @param elValue true时，计算EL表达式的值，否则不用计算
+     * @param elValue
+     *            true时，计算EL表达式的值，否则不用计算
      * @return
      * @throws JxException
      */
@@ -385,10 +395,14 @@ public interface JboSetIFace extends Serializable {
     /**
      * 获得树节点及其所有的子节点
      * 
-     * @param parentName 父节点的字段名
-     * @param parentValue 父节点的值
-     * @param idName 标识字段名称
-     * @param includeSelf 是否包含自己
+     * @param parentName
+     *            父节点的字段名
+     * @param parentValue
+     *            父节点的值
+     * @param idName
+     *            标识字段名称
+     * @param includeSelf
+     *            是否包含自己
      * @return
      * @throws JxException
      */
@@ -418,18 +432,19 @@ public interface JboSetIFace extends Serializable {
     /**
      * 获得序列的名字
      * 
-     * @param columnName 字段名，为空，则表示唯一一个序列
+     * @param columnName
+     *            字段名，为空，则表示唯一一个序列
      * @return 返回序列名称
      * @throws JxException
      */
     public String getSequenceName(String columnName) throws JxException;
-    
+
     public long getQueryFlag();
 
     public void setQueryFlag(long queryFlag);
-    
-    public HttpSession getSession() ;
 
-    public void setSession(HttpSession session) ;
+    public HttpSession getSession();
+
+    public void setSession(HttpSession session);
 
 }

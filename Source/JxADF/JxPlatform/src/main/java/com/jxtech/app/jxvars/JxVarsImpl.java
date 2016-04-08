@@ -53,4 +53,10 @@ public class JxVarsImpl implements JxVars {
         return 0;
     }
 
+    @Override
+    public boolean getBoolean(String key, boolean def) {
+        String value = getValue(key, null);
+        return StrUtil.isTrue(value, def);
+    }
+
 }

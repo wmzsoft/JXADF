@@ -65,11 +65,11 @@ public class FileupServlet extends HttpServlet {
         }
 
         DiskFileItemFactory factory = new DiskFileItemFactory();
-        String tmp = docpath + File.separator + "temp" + File.separator;
+        String tmp = StrUtil.contact(docpath, File.separator, "temp", File.separator);
         File tf = new File(tmp);
         if (!tf.exists()) {
             if (!tf.mkdirs()) {
-                LOG.error("创建临时目录失败。");
+                LOG.error("创建临时目录失败。" + tmp);
                 return;
             }
         }
@@ -96,14 +96,14 @@ public class FileupServlet extends HttpServlet {
                         filename = filename.substring(pos + 1);
                     }
                     long filesize = item.getSize(); // 文件的大小，以字节为单位
-                    String filepath = File.separator + code + File.separator;
+                    String filepath = StrUtil.contact(File.separator, code, File.separator);
 
                     String filepaths = filepath;
 
                     File fp = new File(docpath + filepath);
                     if (!fp.exists()) {
                         if (!fp.mkdirs()) {
-                            LOG.error("创建目录失败，无法添加文件。");
+                            LOG.error("创建目录失败，无法添加文件。" + docpath + filepath);
                             continue;
                         }
                     }

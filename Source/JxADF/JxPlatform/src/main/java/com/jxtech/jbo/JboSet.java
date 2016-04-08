@@ -26,9 +26,6 @@ import com.jxtech.util.ELUtil;
 import com.jxtech.util.StrUtil;
 import com.jxtech.workflow.base.WorkflowEngineFactory;
 
-import net.sf.mpxj.ProjectFile;
-import net.sf.mpxj.Task;
-
 /**
  * 每个表的记录信息
  * 
@@ -616,28 +613,6 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
                 setReadonly(true);
             }
         }
-    }
-
-    @Override
-    public void addMpp(List<Task> tasks, Map<String, String> paramMap, Map<String, String> initMap) throws JxException {
-        int jumpIndex = 0;
-        for (Task task : tasks) {
-            String wbs = task.getWBS();
-            if (null != wbs && !"0".equals(wbs)) {
-                JboIFace jbo = add();
-                jbo.addMpp(task, paramMap, initMap);
-                int temp = task.getID() - jumpIndex;
-                task.setID(temp);
-            } else {
-                jumpIndex++;
-            }
-        }
-        commit();
-    }
-
-    @Override
-    public void expMpp(ProjectFile project, Map<String, String> paramMap, Map<String, String> initMap) throws JxException {
-
     }
 
     @Override

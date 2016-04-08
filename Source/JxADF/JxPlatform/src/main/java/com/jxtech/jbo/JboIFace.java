@@ -502,8 +502,6 @@ public interface JboIFace extends Serializable {
      */
     public void reloadData() throws JxException;
 
-    public void expMpp(Task task, JboIFace jbo) throws JxException;
-
     /**
      * 添加一个附件
      * 

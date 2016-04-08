@@ -5,12 +5,12 @@
 	<artifactId>JxFramework</artifactId>
 	<packaging>pom</packaging>
 	<version>1.0.0</version>
-	<name>健新科技快速开发平台</name>
-	<url>http://osgi.help</url>
+	<name>健新科技快速开发平台JXADF</name>
+	<url>http://osgia.com</url>
 
 	<organization>
 		<name>JIANXIN TECHNOLOGY</name>
-		<url>http://osgia.com</url>
+		<url>http://www.jxtech.net</url>
 	</organization>
 
 	<modules>
@@ -22,6 +22,7 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<spring.version>3.0.5.RELEASE</spring.version>
 		<struts2.version>2.3.16.3</struts2.version>
+        <project.jdk.version>1.7</project.jdk.version>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<project.svn.url>http://svn.jxtech.net/svn/JxPlatform/开发库/源代码/framework</project.svn.url>
@@ -43,8 +44,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.4</version>
 				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
+					<source>${project.jdk.version}</source>
+					<target>${project.jdk.version}</target>
 				</configuration>
 			</plugin>
 
@@ -259,9 +260,9 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>net.sourceforge</groupId>
+			<groupId>net.sf.mpxj</groupId>
 			<artifactId>mpxj</artifactId>
-			<version>4.3.0</version>
+			<version>5.2.2</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -506,6 +507,11 @@
 			<scope>provided</scope>
 		</dependency>
 		-->
+		<dependency>
+			<groupId>net.sf.jacob-project</groupId>
+			<artifactId>jacob</artifactId>
+			<version>1.18-M2</version>
+		</dependency>		        
 		<dependency>
 			<groupId>velocity-tools</groupId>
 			<artifactId>velocity-tools</artifactId>
