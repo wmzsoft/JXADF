@@ -47,6 +47,7 @@ QQ群：429895245
 
 工作流更多 http://wiki.osgi.help/pages/viewpage.action?pageId=22054753
 
+微信号: wmzsoft
 https://gratipay.com/~wmzsoft
 
 
