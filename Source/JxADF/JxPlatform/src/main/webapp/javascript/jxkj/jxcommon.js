@@ -1350,6 +1350,9 @@ function labelsQuery(me, e) {
  */
 function selectChange(me, e) {
     var $select = $(me);
+    if ($select.attr("inputmode")=='DISPLAY'){
+        return;
+    }
     if ($select.is("select:hidden")) {
         var $parent = $select.parent();
         if ($parent.css("position") != "position" || $parent.css("position") != "fixed") {

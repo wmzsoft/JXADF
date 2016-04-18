@@ -127,12 +127,16 @@
                 if (node[i].appType == "MODULE" && node[i].parent) {
                     isLastItemApp = false;
                     var menuItem = $('<dt appUrl="'+node[i].appUrl+'" app="'+node[i].app+'" appId="'+node[i].maxAppsId+'">'+node[i].description+'</dt>');
-                    if(parent[0].tagName == "DL" || parent[0].tagName == "DD"){
-                        parent = parent.closest(".subMenu");
+                    if (parent!=null){
+                        if(parent.length>1 && parent[0].tagName == "DL" || parent[0].tagName == "DD"){
+                            parent = parent.closest(".subMenu");
+                        }                        
                     }
-                    var subMenu = $("<dl/>").append(menuItem).appendTo(parent);
-                    if (node[i].children != null)
-                        this.createMenu(node[i].children, subMenu);
+                    if (parent!=null){
+                        var subMenu = $("<dl/>").append(menuItem).appendTo(parent);
+                        if (node[i].children != null)
+                            this.createMenu(node[i].children, subMenu);                        
+                    }
                 }
 
                 if (node[i].appType == "APP" && parent) {

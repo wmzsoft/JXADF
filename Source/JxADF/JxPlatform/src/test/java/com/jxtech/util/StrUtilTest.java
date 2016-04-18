@@ -73,4 +73,11 @@ public class StrUtilTest {
         String nstr = str.replaceAll("\\$\\{base\\}", "/jxweb");
         Assert.assertEquals("/jxweb/jxbox", nstr);
     }
+    
+    @Test
+    public void testCount(){
+        String sql = "select * from abc where def=?";
+        int c = StrUtil.count(sql, "\\u003F");
+        Assert.assertEquals(1, c);
+    }
 }
