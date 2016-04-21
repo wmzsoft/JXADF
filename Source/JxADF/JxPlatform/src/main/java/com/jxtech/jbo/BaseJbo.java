@@ -1065,7 +1065,7 @@ public abstract class BaseJbo implements JboIFace {
                 return true;
             }
         }
-        ((DataMap) data).setJbo(this);
+        ((DataMap<String,Object>) data).setJbo(this);
         data.put(attributeName, value);
         // 判断是否存在这个属性，如果不存在则是虚拟字段，不予处理。
         JxAttribute attribute = getJxAttribute(attributeName);
@@ -1099,13 +1099,14 @@ public abstract class BaseJbo implements JboIFace {
             jsf = jf.getRelationJboSet(relationship, JxConstant.READ_CACHE, queryAll, executeQuery);
             if (null == jsf) {
                 Map<String, JboSetIFace> children = jf.getChildren();
-                Iterator<Entry<String, JboSetIFace>> it = children.entrySet().iterator();
-                while (it.hasNext()) {
-                    @SuppressWarnings("rawtypes")
-                    Map.Entry child = (Map.Entry) it.next();
-                    jsf = findRelationship(((JboSetIFace) child.getValue()).getJbo(), relationship, queryAll, executeQuery);
-                    if (null != jsf) {
-                        break;
+                if (children != null && !children.isEmpty()) {
+                    Iterator<Entry<String, JboSetIFace>> it = children.entrySet().iterator();
+                    while (it != null && it.hasNext()) {
+                        Map.Entry<String, JboSetIFace> child = it.next();
+                        jsf = findRelationship(((JboSetIFace) child.getValue()).getJbo(), relationship, queryAll, executeQuery);
+                        if (null != jsf) {
+                            break;
+                        }
                     }
                 }
             }

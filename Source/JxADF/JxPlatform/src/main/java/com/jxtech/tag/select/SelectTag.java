@@ -210,9 +210,10 @@ public class SelectTag extends JxBaseUITag {
                                 selectedDisplay = oj.getString(displayname);
                             }
                         }
-                        if (!"true".equalsIgnoreCase(required)) {
+                        if (!StrUtil.isTrue(required, false)) {
                             required = String.valueOf(ji.isRequired(dataattribute));
                         } else {
+                            required = "true";
                             ji.setRequired(dataattribute, true);
                         }
                         if (!"true".equalsIgnoreCase(readonly)) {
@@ -224,7 +225,7 @@ public class SelectTag extends JxBaseUITag {
                     }
                     if (ji != null && !StrUtil.isNull(ajax)) {
                         select.setAjax(findString(ELUtil.parseJboElValue(ji, ajax)));
-                    } 
+                    }
                 }
             }
         } catch (JxException e) {

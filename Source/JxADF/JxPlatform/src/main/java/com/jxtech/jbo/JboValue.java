@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class JboValue implements Serializable {
     public static final long READONLY = 1L;// 只读
     public static final long REQUIRED = 2L;// 必填
-    public static final long VISIBLE = 3L; //可见
+    public static final long VISIBLE = 4L; //可见
 
     private static final long serialVersionUID = -5899672332412281875L;
 
@@ -56,7 +56,7 @@ public class JboValue implements Serializable {
         if (value) {
             flag = flag | myflag;
         } else {
-            flag = flag ^ myflag;
+            flag = flag & (~myflag);
         }
     }
 

@@ -16,7 +16,7 @@
         }
     }
     else
-        response.sendRedirect(contextPath);
+        response.sendRedirect(contextPath+"/");
 %>
 
 <html>
