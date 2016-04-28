@@ -5,76 +5,46 @@ $author:wmzsoft@gmail.com
 #date:2014.09
 **/
 -->
-<#t/>
-<#if (parameters.menusList??) >
-    <#if ((parameters.menusList?size) > 0) >
-    <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-        ${parameters.tagbundle['appbar.menu.option']}<span class="caret"></span></a><#t>
-        <ul class="dropdown-menu" role="menu">
-            <#list parameters.menusList as menu>
-                <#if menu.data??>
-                    <#assign submenus=menu.getJboSet().getMenus(menu.data['APP'],menu.data['APPTYPE'],'LIST',menu.data['MENU']) >
-                    <#if (submenus??)>
-                        <#if (submenus?size>0)>
-                            <#list submenus as subm>
-                                <#if subm.data??>
-                                    <li><#t/>
-                                        <span <#rt>
-                                            <#lt> onclick="${subm.data['MENU']?lower_case}(this,event)" <#rt/>
-                                            <#lt> mxevent="${subm.data['MENU']?lower_case}" ${subm.data['EXTENDS']!''}
-                                                ><#t>
-                                            <#if (toolbar.data['IMAGE']??)>
-                                                <img src="${base}/skin/${skinName}/images/${toolbar.data['IMAGE']}" <#rt>
-                                                    <#lt> class="appbar-menu-toolbar-icon"/> <#rt>
-                                            </#if>
-                                            <#assign subMenuValue = subm.data['DESCRIPTION']>
-                                            <#if lang??>
-                                                <#assign subMenuValue = lang["maxmenu.${parameters.appNameType!''}.${subm.data['MENU']}"]>
-                                                <#if (subMenuValue == "")>
-                                                    <#assign subMenuValue = lang["maxmenu.${subm.data['MENU']}"]>
-                                                    <#if (subMenuValue == "")>
-                                                        <#assign subMenuValue = lang["maxmenu.${subm.data['DESCRIPTION']}"]>
-                                                        <#if (subMenuValue == "")>
-                                                            <#assign subMenuValue = subm.data['DESCRIPTION']>
-                                                        </#if>
-                                                    </#if>
-                                                </#if>
-                                            </#if>
-                                        ${subMenuValue}</span>
-                                    </li><#t/>
-                                </#if>
-                            </#list>
-                            <li class="divider"></li><#t/>
-                        <#else>
-                            <li><#t>
-                                <a href="javascript:void(0)" <#rt>
-                                    <#lt> onclick="${menu.data['MENU']?lower_case}(this,event)" <#rt/>
-                                    <#lt> mxevent="${menu.data['MENU']?lower_case}" ${menu.data['EXTENDS']!''} <#rt/>
-                                        ><#t>
-                                    <#if (toolbar??) && (toolbar.data['IMAGE']??)>
-                                        <img src="${base}/skin/${skinName}/images/${toolbar.data['IMAGE']}" <#rt>
-                                            <#lt> class="appbar-menu-toolbar-icon"/> <#rt>
-                                    </#if>
-                                    <#assign subMenuValue = menu.data['DESCRIPTION']>
-                                    <#if lang??>
-                                        <#assign subMenuValue = lang["maxmenu.${parameters.appNameType!''}.${menu.data['MENU']}"]>
-                                        <#if (subMenuValue == "")>
-                                            <#assign subMenuValue = lang["maxmenu.${menu.data['MENU']}"]>
-                                            <#if (subMenuValue == "")>
-                                                <#assign subMenuValue = lang["maxmenu.${menu.data['DESCRIPTION']}"]>
-                                                <#if (subMenuValue == "")>
-                                                    <#assign subMenuValue = menu.data['DESCRIPTION']>
-                                                </#if>
-                                            </#if>
-                                        </#if>
-                                    </#if>
-                                ${subMenuValue}</a>
-                            </li><#t/>
-                        </#if>
-                    </#if>
-                </#if>
-            </#list>
-        </ul>
-    </#if>
+<#if (parameters.mobileMenu > startidx) >
+	<div class="input-group-btn">
+    	<div class="btn-group" role="group">
+	        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	        	<span class="glyphicon glyphicon-menu-hamburger"></span>
+	        </button>
+          	<ul class="dropdown-menu">
+			<#if (parameters.mobileToolbar??) >
+				<#assign msize=(parameters.mobileToolbar?size)>
+			    <#if (msize > 0) >
+			        <#list parameters.mobileToolbar as toolbar>
+			        	<#assign button = (toolbar.data)>
+			            <#if ((msize-toolbar_index)>startidx) >
+			            	<li><#include "button.ftl"></li><#t>
+			            </#if>
+			        </#list>
+			    </#if>
+			</#if>
+			<#if (parameters.mobileList??) >
+				<#if ((parameters.mobileList?size) > 0) >
+					<li role="separator" class="divider"></li>
+					<#list parameters.mobileList as menu>
+						<#assign submenus=menu.getJboSet().getMenus(menu.data['APP'],menu.data['APPTYPE'],'LIST',menu.data['MENU']) >
+						<#if (submenus??)>
+							<#if (submenus?size>0)>
+								<#list submenus as subm>
+									<#assign button = (subm.data)>
+									<li><#include "button.ftl"></li><#t>
+								</#list>
+								<li role="separator" class="divider"></li>
+							</#if>
+						<#else>
+							<#assign button = (menu.data)>
+							<li><#include "button.ftl"></li><#t>
+						</#if>
+					</#list>
+				</#if>
+			</#if>
+			</ul>
+		</div>
+	</div>
 </#if>
+

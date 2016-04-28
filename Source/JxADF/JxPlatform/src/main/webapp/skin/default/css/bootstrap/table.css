@@ -9,7 +9,7 @@
 .m-table-list .key{
     white-space: nowrap;
     font-size: 15px;
-    font-weight: bold;
-    color:#333;
+    text-align: right;
+    color:rgba(5, 146, 146, 0.65);
     padding-right: 15px;
 }

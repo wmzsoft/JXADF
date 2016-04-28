@@ -7,8 +7,8 @@
         <meta http-equiv="pragma" content="no-cache">
         <meta http-equiv="cache-control" content="no-cache">
         <meta http-equiv="expires" content="0">
-        <meta http-equiv="keywords" content="JxPlatform,健新科技">
-        <meta http-equiv="description" content="广州健新自动化科技有限公司，JxPlatform">
+        <meta http-equiv="keywords" content="JXADF,健新科技">
+        <meta http-equiv="description" content="广州健新自动化科技有限公司，JXADF">
     </#if>
     <meta name="format-detection" content="telephone=no" />
     <meta name="msapplication-tap-highlight" content="no" />
@@ -30,14 +30,6 @@
         <script type='text/javascript' src='${base}/javascript/jquery-ui-1.10.3/jquery-migrate-1.2.1.min.js'></script>
         <script type='text/javascript' src='${base}/javascript/jquery-ui-1.10.3/jquery.hoverIntent.minified.js'></script>
         <script type='text/javascript' src='${base}/javascript/jquery-ui-1.10.3/jquery.dcmegamenu.1.2.js'></script>
-        <#-- 加载datatable -->
-        <script type='text/javascript' src='${base}/javascript/dataTables1.9.4/js/jquery.dataTables.min.js'></script>
-        <link rel='stylesheet' type='text/css' href='${base}/javascript/dataTables1.9.4/css/jquery.dataTables.css'/>
-        <link rel='stylesheet' type='text/css'  href='${base}/javascript/dataTables1.9.4/css/jquery.dataTables_themeroller.css'/>
-        <script type='text/javascript' src='${base}/javascript/dataTables1.9.4/plugins/scroller/js/dataTables.scroller.js'></script>
-        <link rel='stylesheet' type='text/css'  href='${base}/javascript/dataTables1.9.4/plugins/scroller/css/dataTables.scroller.css'/>
-        <script type='text/javascript' src='${base}/javascript/jxkj/jxtable.js'></script>
-        <script type='text/javascript' src='${base}/javascript/jxkj/bootstrap/jxtable-override.js'></script>
         <script type='text/javascript' src='${base}/javascript/jxkj/jquery.ba-resize.js'></script>
     </#if>
 
@@ -53,8 +45,10 @@
 
     <#--加载自定义js相关的资源-->
     <script type='text/javascript' src='${base}/javascript/jxkj/jxcommon.js'></script>
+	<script type='text/javascript' src='${base}/javascript/jxkj/jxtable.js'></script>
     <script type='text/javascript' src='${base}/javascript/jxkj/bootstrap/jxcommon-override.js'></script>
-
+	<script type='text/javascript' src='${base}/javascript/jxkj/bootstrap/jxtable-override.js'></script>
+	
     <#-- 加载自定义的CSS样式相关的资源,必须放到最后以方便覆盖前面的预定义的CSS -->
     <link rel="stylesheet" type="text/css" href="${base}/skin/${skinName}/css/bootstrap/default.css" title="skin"/>
 <#t/>

@@ -152,6 +152,13 @@ public class StrUtil {
         }
     }
 
+    /**
+     * 字符串s1中是否包含字符s2,如果都为空或包含，则返回true
+     * 
+     * @param s1
+     * @param s2
+     * @return
+     */
     public static boolean contains(String s1, String s2) {
         if (s1 == null) {
             return (s2 == null);

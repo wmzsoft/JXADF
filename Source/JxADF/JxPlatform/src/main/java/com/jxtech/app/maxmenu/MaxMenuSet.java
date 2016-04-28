@@ -37,10 +37,14 @@ public class MaxMenuSet extends JboSet implements MaxMenuSetIFace {
     /**
      * 获得应用程序菜单
      *
-     * @param appname    应用程序名
-     * @param appType    应用程序类型，列表、还是主程序
-     * @param tabDisplay 显示到更多中，还是显示到Toolbar中。
-     * @param parent     父级菜单
+     * @param appname
+     *            应用程序名
+     * @param appType
+     *            应用程序类型，列表、还是主程序
+     * @param tabDisplay
+     *            显示到更多中，还是显示到Toolbar中。
+     * @param parent
+     *            父级菜单
      * @return
      * @throws JxException
      */
@@ -68,7 +72,7 @@ public class MaxMenuSet extends JboSet implements MaxMenuSetIFace {
             params.put("(APPTYPE='ALL' or APPTYPE=?)", appType.toUpperCase());
         }
         if (!StrUtil.isNull(tabDisplay)) {
-            params.put("(TABDISPLAY='ALL' or TABDISPLAY=?)", tabDisplay.toUpperCase());
+            params.put("(TABDISPLAY='ALL' or TABDISPLAY like ?)", tabDisplay.toUpperCase() + "%");
         }
         if (!StrUtil.isNull(parent)) {
             params.put("PARENT=?", parent.toUpperCase());

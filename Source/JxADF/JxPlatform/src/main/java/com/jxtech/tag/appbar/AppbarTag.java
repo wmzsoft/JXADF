@@ -32,6 +32,8 @@ import com.opensymphony.xwork2.util.ValueStack;
 public class AppbarTag extends JxBaseUITag {
     private static final long serialVersionUID = -1985878464219264608L;
     private static final Logger LOG = LoggerFactory.getLogger(AppbarTag.class);
+    // 默认需要显示到移动端的菜单
+    public static final String MOBILE_TOOLBAR = "GOTOAPP,PREVIOUS,NEXT,ROUTEME";
 
     protected String hideSearch;
 
@@ -48,10 +50,12 @@ public class AppbarTag extends JxBaseUITag {
         super.populateParams();
         Tag body = findAncestorWithClass(this, BodyTag.class);
         Appbar appbar = (Appbar) component;
-        appbar.setHideSearch(hideSearch);
         if (body != null) {
             String appname = ((BodyTag) body).getAppName();
             String apptype = ((BodyTag) body).getAppType();
+            if (StrUtil.isNull(hideSearch) && !"LIST".equalsIgnoreCase(apptype)) {
+                hideSearch = "true";// 不是列表，默认就不显示快速查询
+            }
             JboSetIFace jsi = null;
             try {
                 jsi = JboUtil.getJboSet("MAXMENU");
@@ -92,6 +96,36 @@ public class AppbarTag extends JxBaseUITag {
                     appbar.setMenusToolbar(doEl(menusToolbar));
 
                     appbar.setAppNameType(appname + "." + apptype);
+
+                    // 规划移动端菜单
+                    if (JxSession.isMobile()) {
+                        int msize = menulist.size();
+                        // 下拉列表
+                        List<JboIFace> mobileList = new ArrayList<JboIFace>();
+                        for (int i = 0; i < msize; i++) {
+                            JboIFace dto = menulist.get(i);
+                            String tbd = dto.getString("TABDISPLAY");
+                            if (StrUtil.contains(tbd, "MOBILE") || StrUtil.contains(tbd, "ALL")) {
+                                mobileList.add(dto);
+                            }
+                        }
+                        appbar.setMobileList(mobileList);
+                        // 工具栏
+                        msize = menusToolbar.size();
+                        List<JboIFace> mobileToolbar = new ArrayList<JboIFace>();
+                        for (int i = 0; i < msize; i++) {
+                            JboIFace dto = menusToolbar.get(i);
+                            String tbd = dto.getString("TABDISPLAY");
+                            if (StrUtil.contains(tbd, "MOBILE") || StrUtil.contains(tbd, "ALL")) {
+                                mobileToolbar.add(dto);
+                            }
+                            String mu = dto.getString("menu");
+                            if (MOBILE_TOOLBAR.indexOf(mu) >= 0 && !StrUtil.contains(mu, "DESKTOP")) {
+                                mobileToolbar.add(dto);
+                            }
+                        }
+                        appbar.setMobileToolbar(mobileToolbar);
+                    }
                 } catch (JxException e) {
                     LOG.error(e.getMessage(), e);
                 }
@@ -101,6 +135,7 @@ public class AppbarTag extends JxBaseUITag {
         } else {
             LOG.warn("body tag not found.");
         }
+        appbar.setHideSearch(hideSearch);
     }
 
     private List<JboIFace> doEl(List<JboIFace> list) throws JxException {

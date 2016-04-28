@@ -6,6 +6,17 @@ $author:wmzsoft@gmail.com
 **/
 -->
 <div <#t>
+<#if parameters.cssClass??>
+	<#lt> class="${parameters.cssClass?html}"<#rt/>
+<#elseif parameters.dynamicAttributes.cssClass??>
+	<#lt> class="${parameters.dynamicAttributes.cssClass?html}"<#rt/>
+<#elseif parameters.type?? >
+	<#if parameters.type=='HEAD_LEFT'>
+		<#lt> class="table_head_td_left"<#rt/>
+	<#elseif parameters.type=='HEAD_RIGHT' >
+		<#lt> class="table_head_td_right"<#rt/>
+	</#if>
+</#if>
 <#if parameters.cssStyle?exists>
         style="${parameters.cssStyle?html}"<#t>
 </#if>

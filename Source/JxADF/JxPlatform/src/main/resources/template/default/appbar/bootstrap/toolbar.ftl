@@ -5,35 +5,21 @@ $author:wmzsoft@gmail.com
 #date:2014.09
 **/
 -->
-<#t/>
-<#if (parameters.menusToolbar??) >
-    <#if ((parameters.menusToolbar?size) > 0) >
-        <#list parameters.menusToolbar as toolbar>
-            <#if toolbar.data??>
-            <li>
-                <span <#t>
-                   onclick="${toolbar.data['MENU']?lower_case}(this,event)" <#t>
-                   mxevent="${toolbar.data['MENU']?lower_case}" ${toolbar.data['EXTENDS']!''} ><#t>
-                    <#if (toolbar.data['IMAGE']??)>
-                        <img src="${base}/skin/${skinName}/images/${toolbar.data['IMAGE']}" <#t>
-                             class="appbar-menu-toolbar-icon"/> <#t>
-                    </#if>
-                    <#assign buttonValue = toolbar.data['DESCRIPTION']>
-                    <#if lang??>
-                        <#assign buttonValue = lang["maxmenu.${parameters.appNameType!''}.${toolbar.data['MENU']}"]>
-                        <#if (buttonValue == "")>
-                            <#assign buttonValue = lang["maxmenu.${toolbar.data['MENU']}"]>
-                            <#if (buttonValue == "")>
-                                <#assign buttonValue = lang["maxmenu.${toolbar.data['DESCRIPTION']}"]>
-                                <#if (buttonValue == "")>
-                                    <#assign buttonValue = toolbar.data['DESCRIPTION']>
-                                </#if>
-                            </#if>
-                        </#if>
-                    </#if>
-                ${buttonValue}</span><#t>
-            </li><#t>
-            </#if>
-        </#list>
-    </#if>
+<#if (parameters.mobileMenu > 0) >
+	<#if (parameters.mobileToolbar??) >
+		<#assign msize=(parameters.mobileToolbar?size)>
+	    <#if (msize > 0) >
+	    	<div class="btn-group btn-group-justified" role="group" aria-label="...">
+	    	<#assign btnclass="btn btn-default">
+	        <#list parameters.mobileToolbar as toolbar>
+	        	<#assign button = (toolbar.data)>
+	            <#if ((msize-toolbar_index)<=startidx) >
+	            	<div class="btn-group" role="group">
+					<#include "button.ftl">
+					</div><#t>
+	            </#if>
+	        </#list>
+			</div>
+	    </#if>
+	</#if>
 </#if>

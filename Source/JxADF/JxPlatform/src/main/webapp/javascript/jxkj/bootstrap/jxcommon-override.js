@@ -6,3 +6,10 @@
 // todo override [jxcommon.js]window.selectTableTr
 // todo override [jxcommon.js]window.ckOneSelectHandler
 
+function bindTableEvent(tableId){
+    
+}
+
+function selectTableTr(tr,e){
+    
+}

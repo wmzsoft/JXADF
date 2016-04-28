@@ -1,7 +1,5 @@
 <div class="panel-heading">
-<#if parameters.title??>
-    <#include "table-thead-title.ftl"><#t>
-</#if>
+	<span class="glyphicon glyphicon-list-alt">${parameters.title!''}</span>
 </div>
 
 

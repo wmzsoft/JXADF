@@ -27,6 +27,8 @@ public class MetaData {
     public static final String SKIN = "SKIN";
     // 定义主页打开的默认APP应用
     public static final String HOME_PAGE_APP = "HOMEPAGEAPP";
+    // 定义移动页面打开的默认APP应用
+    public static final String HOME_MOBILE_PAGE_APP = "HOMEMOBILEAPP";
     // 定义退出程序
     public static final String LOGOUT = "LOGOUT";
     // 定义登录页面

@@ -43,7 +43,7 @@ public class JboUtil {
         JxObject obj = JxObjectDao.getJxObject(jboname);
         String clsname = "";
         if (obj != null) {
-            clsname = obj.getClassname();
+            clsname = obj.getClassname();//通过call PAK_TOOL.CofigTableClassName()注册在 MaxObject表中
             if (StrUtil.isNull(clsname) || DEFAULTCLASSNAME.equals(clsname)) {
                 LOG.debug(jboname + " not config jboset ,use default jbo");
             } else {

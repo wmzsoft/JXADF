@@ -10,5 +10,5 @@ $author:wmzsoft@gmail.com
 <#else>
     <#assign selectid = parameters.id>
     <#assign params = parameters>
-    <#include '../select-script.ftl'>
+    <#-- <#include '../select-script.ftl'> -->
 </#if>

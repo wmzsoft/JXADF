@@ -1,1 +1,0 @@
-<span>${parameters.title!''}</span>

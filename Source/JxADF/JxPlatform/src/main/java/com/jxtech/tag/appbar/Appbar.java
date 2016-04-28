@@ -21,11 +21,14 @@ import com.opensymphony.xwork2.util.ValueStack;
 public class Appbar extends JxBaseUIBean {
 
     // 以下不是标签属性
-    private List<JboIFace> menusList;// 下拉菜单选项
-    private List<JboIFace> menusToolbar;// 下拉菜单选项
+    private List<JboIFace> menusList;// 下拉列表菜单选项
+    private List<JboIFace> menusToolbar;// 菜单选项
+
+    private List<JboIFace> mobileList;// 移动端下拉列表菜单选项
+    private List<JboIFace> mobileToolbar;// 移动端 菜单选项
 
     private String appNameType; // 应用程序
-    private String hideSearch;//隐藏搜索框
+    private String hideSearch;// 隐藏搜索框
 
     private String quickSearchValue;
 
@@ -48,15 +51,19 @@ public class Appbar extends JxBaseUIBean {
         super.evaluateParams();
         addParameter("menusList", menusList);
         addParameter("menusToolbar", menusToolbar);
-
+        addParameter("mobileList", mobileList);
+        addParameter("mobileToolbar", mobileToolbar);
+        if (mobileList != null && mobileToolbar != null) {
+            addParameter("mobileMenu", mobileList.size() + mobileToolbar.size());// 移动端按钮总数
+        }
         if (!StrUtil.isNull(appNameType)) {
             addParameter("appNameType", findString(appNameType).toUpperCase());
         }
 
-        if(!StrUtil.isNull(quickSearchValue)){
+        if (!StrUtil.isNull(quickSearchValue)) {
             addParameter("quickSearchValue", findString(quickSearchValue));
         }
-        if(!StrUtil.isNull(hideSearch)) {
+        if (!StrUtil.isNull(hideSearch)) {
             addParameter("hideSearch", findString(hideSearch));
         }
     }
@@ -65,7 +72,7 @@ public class Appbar extends JxBaseUIBean {
         return quickSearchValue;
     }
 
-    public String getHideSearch(){
+    public String getHideSearch() {
         return hideSearch;
     }
 
@@ -85,7 +92,15 @@ public class Appbar extends JxBaseUIBean {
         this.appNameType = appNameType;
     }
 
-    public void setHideSearch(String hideSearch){
+    public void setHideSearch(String hideSearch) {
         this.hideSearch = hideSearch;
+    }
+
+    public void setMobileList(List<JboIFace> mobileList) {
+        this.mobileList = mobileList;
+    }
+
+    public void setMobileToolbar(List<JboIFace> mobileToolbar) {
+        this.mobileToolbar = mobileToolbar;
     }
 }
