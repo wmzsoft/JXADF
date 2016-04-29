@@ -7,6 +7,7 @@ import org.apache.struts2.views.annotations.StrutsTag;
 
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.tag.comm.JxBaseUIBean;
+import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 
 /**
@@ -25,21 +26,21 @@ public class WfStatus extends JxBaseUIBean {
     private String bpmengine;// 工作流类型
     private String instanceid;// 工作流实例ID
     private String ownerid;// 工作流主表记录ID
-    private String statusDesc;//显示状态值
-    private String statusValue;//状态值
-    
+    private String statusDesc;// 显示状态值
+    private String statusValue;// 状态值
+
     public WfStatus(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
         super(stack, request, response);
     }
 
     @Override
     protected String getDefaultTemplate() {
-        return "bztag/wfstatus/wfstatus-close";
+        return StrUtil.contact("bztag/wfstatus/", getRenderer(), "wfstatus-close");
     }
 
     @Override
     public String getDefaultOpenTemplate() {
-        return "bztag/wfstatus/wfstatus";
+        return StrUtil.contact("bztag/wfstatus/", getRenderer(), "wfstatus");
     }
 
     @Override
