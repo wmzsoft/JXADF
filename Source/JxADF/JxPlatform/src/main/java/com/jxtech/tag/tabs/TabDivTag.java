@@ -1,11 +1,13 @@
 package com.jxtech.tag.tabs;
 
 import com.jxtech.tag.comm.JxBaseUITag;
+import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 import org.apache.struts2.components.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.tagext.Tag;
 
 /**
  * 
@@ -27,6 +29,14 @@ public class TabDivTag extends JxBaseUITag {
     @Override
     protected void populateParams() {
         super.populateParams();
+        Tag tag = getParent();
+        if (tag instanceof TabsTag) {
+            String activeurl = ((TabsTag) tag).getActivetab();
+            if (StrUtil.compareStr(activeurl, "#" + id, "=")) {
+                TabDiv td = (TabDiv) component;
+                td.setActive("in active");
+            }
+        }
     }
 
 }

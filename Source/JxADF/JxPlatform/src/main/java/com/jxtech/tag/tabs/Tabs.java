@@ -1,6 +1,7 @@
 package com.jxtech.tag.tabs;
 
 import com.jxtech.tag.comm.JxBaseUIBean;
+import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +15,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Tabs extends JxBaseUIBean {
     protected String beforeLoadEvent;// 事件
-    protected String tabCreateEvent;//创建Tab的事件
+    protected String tabCreateEvent;// 创建Tab的事件
     protected String activateEvent;
     protected String beforeActivateEvent;
 
@@ -24,12 +25,12 @@ public class Tabs extends JxBaseUIBean {
 
     @Override
     protected String getDefaultTemplate() {
-        return "tabs/tabs-close";
+        return StrUtil.contact("tabs/", getRenderer(), "tabs-close");
     }
 
     @Override
     public String getDefaultOpenTemplate() {
-        return "tabs/tabs";
+        return StrUtil.contact("tabs/", getRenderer(), "tabs");
     }
 
     public void setBeforeLoadEvent(String beforeLoadEvent) {

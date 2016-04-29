@@ -1,0 +1,11 @@
+.navbar-default {
+    background-color: #f8f8f8;
+    border-color: #CDCEF5;
+}
+
+.form-control[disabled], .form-control[readonly], fieldset[disabled] {
+    background-color: rgba(253, 251, 242, 0.26);
+    border-style: hidden;
+    border-bottom-style: solid;
+    border-bottom-color: rgba(209, 208, 228, 0.57);
+}

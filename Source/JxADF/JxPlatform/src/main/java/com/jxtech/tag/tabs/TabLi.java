@@ -1,6 +1,7 @@
 package com.jxtech.tag.tabs;
 
 import com.jxtech.tag.comm.JxBaseUIBean;
+import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 
 import javax.servlet.http.HttpServletRequest;
@@ -22,12 +23,12 @@ public class TabLi extends JxBaseUIBean {
 
     @Override
     protected String getDefaultTemplate() {
-        return "tabs/tabs-li-close";
+        return StrUtil.contact("tabs/", getRenderer(), "tabs-li-close");
     }
 
     @Override
     public String getDefaultOpenTemplate() {
-        return "tabs/tabs-li";
+        return StrUtil.contact("tabs/", getRenderer(), "tabs-li");
     }
 
     @Override
@@ -48,5 +49,4 @@ public class TabLi extends JxBaseUIBean {
     public void setTitle(String title) {
         this.title = title;
     }
-
 }

@@ -19,6 +19,7 @@ public class TabsTag extends JxBaseUITag {
     protected String tabCreateEvent;//创建Tab的事件
     protected String activateEvent;
     protected String beforeActivateEvent;
+    protected String activetab;//活动的Tab页面
 
     @Override
     public Component getBean(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
@@ -62,6 +63,14 @@ public class TabsTag extends JxBaseUITag {
 
     public void setBeforeActivateEvent(String beforeActivateEvent) {
         this.beforeActivateEvent = beforeActivateEvent;
+    }
+
+    public String getActivetab() {
+        return activetab;
+    }
+
+    public void setActivetab(String activetab) {
+        this.activetab = activetab;
     }
 
 }

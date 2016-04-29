@@ -1,0 +1,35 @@
+.navbar {
+    margin: 0 !important;
+    padding: 8px 5px;
+}
+
+.navbar.search-hidden input {
+    display: none;
+}
+
+.navbar.button-hidden .input-group{
+    width: 100%;
+}
+.navbar.button-hidden .input-group-btn {
+    display: none;
+}
+
+.navbar.button-hidden .navbar-collapse {
+    display: none;
+}
+
+.navbar.search-hidden.button-hidden {
+    display: none;
+}
+
+.navbar .input-group-btn button {
+    margin: 0 0 0 -1px;
+}
+
+.navbar li span{
+    display: block;
+    cursor: pointer;
+    height: 34px;
+    line-height: 34px;
+    padding: 0 15px;
+}
