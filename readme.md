@@ -14,7 +14,7 @@ OSGi联盟(OSGi Alliance)官网：http://osgia.com
 
 5、支持多种工流引擎，包括：健新科技自己研发的工作流引擎、Activiti、Oracle BPM，可根据需要集成自己的工作流引擎。
 
-6、桌面端、移动端自己适应，开发一次，即可支持多种终端。
+6、桌面端、移动端自适应，采用模板技术，开发一次，解析为桌面、手机、平板前端界面。
 
 7、学习成本低、效率高。
 
@@ -46,6 +46,11 @@ QQ群：429895245
 ![工作流历史](doc/images/wf02.png)
 
 工作流更多 http://wiki.osgi.help/pages/viewpage.action?pageId=22054753
+
+移动端自适效果图
+![首页面](doc/images/mobile-inbox.png)
+![主界面](doc/images/mobile-main.png)
+![菜单页面](doc/images/mobile-menu.png)
 
 微信号: wmzsoft
 https://gratipay.com/~wmzsoft
