@@ -8,12 +8,9 @@ $author:wmzsoft@gmail.com
 <#assign cssClass = (parameters.dynamicAttributes.cssClass!'text-input') />
 <#assign icss = ''>
 <#if ((parameters.rows!1)?number) &gt; 1>
-        <textarea rows="${parameters.rows}" <#rt/>
+        <textarea rows="${parameters.rows}" style="width: 100%;"<#rt/>
     <#if (parameters.name??)>
         <#lt> name="${parameters.name}" <#rt>
-    </#if>
-    <#if parameters.cols??>
-        <#lt> cols="${parameters.cols}" <#rt/>
     </#if>
     <#lt> length="${(inputsize!20)?c}" <#rt>
     <#if ((parameters.required!false) && !(parameters.readonly!false))>

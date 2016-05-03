@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import com.jxtech.app.usermetadata.DefaultMetadata;
 import com.jxtech.app.usermetadata.MetaData;
 import com.jxtech.jbo.base.JxUserInfo;
+import com.jxtech.util.BrowserUtils;
 import com.jxtech.util.StrUtil;
 
 /**
@@ -46,7 +47,7 @@ public class AuthFilter implements Filter {
         } else {
             String ssoUserId = req.getRemoteUser();
             if (StrUtil.isNull(ssoUserId)) {
-                //看看是否有内部认证机制
+                // 看看是否有内部认证机制
                 String jxsessionid = request.getParameter(JxSessionID.ID);
                 ssoUserId = JxSessionID.getUserId(jxsessionid);
             }
@@ -54,6 +55,14 @@ public class AuthFilter implements Filter {
                 // SSO已登录了。
                 isLogin = JxSession.loginBySsoUser(ssoUserId);
                 if (isLogin) {
+                    // 配置浏览器类型
+                    String renderer = req.getParameter("renderer");
+                    if (StrUtil.isNull(renderer)) {
+                        if (BrowserUtils.isPhone(req)) {
+                            // 如果是手机端，强行使用Bootstrap
+                            req.getSession().setAttribute(JxSession.RENDERER, "bootstrap");
+                        }
+                    }
                     // uid = ssoUserId;
                     JxUserInfo userInfo = JxSession.getJxUserInfo();
                     if (null != userInfo) {

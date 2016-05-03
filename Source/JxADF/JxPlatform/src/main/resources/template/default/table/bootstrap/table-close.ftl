@@ -1,5 +1,5 @@
 <#if ((parameters.render!'x')?lower_case=='json')>
-<div>To do json/table.ftl</div>
+	<#include "../json/table-close.ftl">
 <#else>
     <#include "table-html.ftl">
 </#if>

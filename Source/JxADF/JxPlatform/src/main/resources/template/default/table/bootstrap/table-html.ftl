@@ -34,6 +34,6 @@
         <#include "list/table.ftl"><#t>
     </#if>
 <#else>
-    <div class="text-center alert alert-danger">表格配置有误，请与管理员联系</div>
+    <div class="text-center alert alert-danger">${parameters.tagbundle['table-tbody.table_config_error']}</div>
 </#if>
 </div><#t>

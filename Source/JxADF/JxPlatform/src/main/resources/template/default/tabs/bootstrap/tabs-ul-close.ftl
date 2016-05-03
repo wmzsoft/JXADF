@@ -10,7 +10,7 @@ $author:wmzsoft@gmail.com
 	<#list parameters.tabli as tabli>
 		<#if (tabli_index == 0 )>
 			<li  class="active">
-		<#elseif ((tabli_index == 2) && (tsize>2) )>
+		<#elseif ((tabli_index == 2) && (tsize>3) )>
 			<li class="dropdown">
 				<a href="#" id="${parameters.tabsid}_d" class="dropdown-toggle"  data-toggle="dropdown">
 					${parameters.tagbundle['more']!'...'}<b class="caret"></b>
@@ -22,7 +22,7 @@ $author:wmzsoft@gmail.com
 		</#if>
 		<#include "a.ftl"></li>
 	</#list>
-	<#if ((tsize) > 2) >
+	<#if ((tsize) > 3) >
 			</ul>
 		</li>
 	</#if>

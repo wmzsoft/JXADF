@@ -1842,6 +1842,9 @@ function appDialog(app, appType, fromid, urlValue, w, h, beforeDialogClose, titl
     if (h > 0) {
         height = h;
     }
+    if (isMobile()){
+        width="98%";
+    }
     $content.attr("pwidth", width);
     $content.attr("pheight", height);
     var options = {
@@ -1855,7 +1858,12 @@ function appDialog(app, appType, fromid, urlValue, w, h, beforeDialogClose, titl
         beforeClose: beforeDialogClose == null ? dialogBeforeClose : beforeDialogClose,
         close: dialogClose,
         resize: function (event, ui) {
-            $content.attr("width", ui.size.width - 30);
+            if (isMobile()){
+                $content.attr("width", "96%");
+            }else{
+                $content.attr("width", ui.size.width - 30);
+            }
+            
         }
     };
 

@@ -17,9 +17,9 @@ $author:wmzsoft@gmail.com
       <#if ((params.ajax??) || ((params.optionsCount!0) &gt; 10) || (params.partialTriggers??))>
     	<script type="text/javascript">$(function () {<#t>
         <#if (params.ajax??)>
-        	select2AjaxSelectTag('${selectid}', '${params.displayvalue!""}', '${params.dataattribute!""}', '${params.displayname!""}', '${params.ajax!""}', '${params.selectedDisplay!""}', 'Input to Choose Option');<#t>
+        	select2AjaxSelectTag('${selectid}', '${params.displayvalue!""}', '${params.dataattribute!""}', '${params.displayname!""}', '${params.ajax!""}', '${params.selectedDisplay!""}', "${(parameters.tagbundle['select.inputchoose'])!'input choose option'}");<#t>
         <#elseif ((params.optionsCount!0) &gt; 10) >
-        	select2CustomSelectTag('${selectid}', 'Select an option', true);
+        	select2CustomSelectTag('${selectid}', "${(parameters.tagbundle['select.pleaseselect'])!'Select a Option'}", true);
         </#if>
         <#if (params.partialTriggers??)>
         	doPartialTriggers($('#${selectid}'));<#t>

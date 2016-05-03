@@ -7,7 +7,7 @@ $author:wmzsoft@gmail.com
 -->
 <#if (parameters.readonly!false)>  
     <#-- 显示只读信息 -->
-    ${parameters.selectedDisplay!''}<#t>
+    <input type="text" readonly="readonly" class="form-control" value="${parameters.selectedDisplay!''}"><#t>
 <#else>
     <#assign cssClass="form-control" >
     <#-- 真正开始Select标签生成了 -->

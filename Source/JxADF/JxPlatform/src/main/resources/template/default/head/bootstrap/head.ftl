@@ -16,6 +16,7 @@
     <title>${parameters.title!''}</title>
     <link rel="icon" href="${base}/skin/default/images/favicon.ico" type="image/x-icon" />
     <link rel="shortcut icon" href="${base}/skin/default/images/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="/jxweb/javascript/jquery-ui-1.10.3/themes/base/jquery.ui.all.css"/>    
     <link rel="stylesheet" type="text/css" href="${base}/javascript/bootstrap/bootstrap/3.3.4/css/bootstrap.min.css"/>
     <#--加载jQuery相关的资源-->
     <script type='text/javascript' src='${base}/javascript/jquery-ui-1.10.3/jquery-1.9.1.min.js'></script>
@@ -31,6 +32,8 @@
         <script type='text/javascript' src='${base}/javascript/jquery-ui-1.10.3/jquery.hoverIntent.minified.js'></script>
         <script type='text/javascript' src='${base}/javascript/jquery-ui-1.10.3/jquery.dcmegamenu.1.2.js'></script>
         <script type='text/javascript' src='${base}/javascript/jxkj/jquery.ba-resize.js'></script>
+	    <link rel='stylesheet' type='text/css' href="${base}/javascript/select2/css/select2.min.css"/>
+	    <script type="text/javascript" src="${base}/javascript/select2/js/select2.full.min.js"></script>
     </#if>
 
     <#--加载DWR相关的资源-->

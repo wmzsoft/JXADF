@@ -1,6 +1,7 @@
 package com.jxtech.tag.workflow;
 
 import com.jxtech.tag.comm.JxBaseUIBean;
+import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 
 import javax.servlet.http.HttpServletRequest;
@@ -19,7 +20,6 @@ public class Workflow extends JxBaseUIBean {
     private String fromJboname;// 应用程序主表名
     private String noteRequired;// 意见必填，取值为：TRUE,FALSE，默认为False
 
-
     private String complete;
 
     // 操作列表
@@ -36,12 +36,12 @@ public class Workflow extends JxBaseUIBean {
 
     @Override
     protected String getDefaultTemplate() {
-        return "workflow";
+        return StrUtil.contact("workflow/", getRenderer(), "workflow");
     }
 
     @Override
     public String getDefaultOpenTemplate() {
-        return "workflow-close";
+        return StrUtil.contact("workflow/", getRenderer(), "workflow-close");
     }
 
     @Override
@@ -62,7 +62,6 @@ public class Workflow extends JxBaseUIBean {
 
         addParameter("complete", findString(complete));
     }
-
 
     public String getFromUid() {
         return fromUid;

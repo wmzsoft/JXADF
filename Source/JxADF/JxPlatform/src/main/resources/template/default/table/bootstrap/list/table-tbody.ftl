@@ -4,12 +4,12 @@
         <#list parameters.jboset.jbolist as jbo>
             <#if jbo.data??>
                 <li class="list-group-item" id="tr_${parameters.id}_${jbo_index}" uid='${jbo.uidValue!0}'
-                    onclick="selectTableTr(this,event)" <#rt>
+                    <#lt> onclick="selectTableTr(this,event)" <#rt>
                     <#if jbo.toBeAdd?? && jbo.toBeAdd>
-                    toBeAdd="true" <#t>
+                    	<#lt> toBeAdd="true" <#t>
                     </#if>
                     <#if jbo.toBeDel?? && jbo.toBeDel>
-                    toBeDel="true" <#t>
+                    	<#lt> toBeDel="true" <#t>
                     </#if>
                 <#--todo  根据条件设置字体颜色及背景颜色-->
                         ><#t>
@@ -35,7 +35,7 @@
                     <#list parameters.columns as col>
                         <#if ((col.parameters.visible!true)==true)>
                             <#assign mytitle=col.parameters.label!''>
-                            <#if (parameters.appBundle?? && parameters.appBundle.containsKey('${col.dataattribute}'))>
+                            <#if (parameters.appBundle?? && col.dataattribute?? && parameters.appBundle.containsKey('${col.dataattribute}'))>
                                 <#assign mytitle = parameters.appBundle.getString('${col.dataattribute}')>
                             </#if>
                             <#if (mytitle=='') && col.parameters.jxattribute??>
@@ -88,6 +88,12 @@
                                         </#if>
                                         <#if (col.parameters.mxevent??) >
                                             <#include "../../list/table-tbody-col-mxevent.ftl">
+                                        <#elseif (maxtype=='YORN')>
+                                        	<#include "table-tbody-col-yorn.ftl">
+                                        <#elseif (col.sec??)>
+                                        	<#assign params = col.sec.parameters>
+                            				<#assign selected = jbo.getString(col.sec.parameters.dataattribute)!''>
+                                        	<#include "table-tbody-col-select.ftl">
                                         <#else>
                                             ${colDataValue!}
                                         </#if>
