@@ -49,7 +49,15 @@ QQ群：429895245
 
 移动端自适效果图
 =======
-![首页面](doc/images/mobile-inbox.png)![主界面](doc/images/mobile-main.png)![菜单页面](doc/images/mobile-menu.png)
+
+######首页
+![首页面](doc/images/mobile-inbox.png)!
+
+######功能模块主界面
+[主界面](doc/images/mobile-main.png)!
+
+######菜单页面
+[菜单页面](doc/images/mobile-menu.png)
 
 
 编译好的执行程序下载
