@@ -49,8 +49,13 @@ QQ群：429895245
 
 移动端自适效果图
 =======
-![首页面](doc/images/mobile-inbox.png =300x)![主界面](doc/images/mobile-main.png)![菜单页面](doc/images/mobile-menu.png)
-<img src="doc/images/mobile-main.png" alt="Drawing" style="width: 300px;"/>
+![首页面](doc/images/mobile-inbox.png)![主界面](doc/images/mobile-main.png)![菜单页面](doc/images/mobile-menu.png)
+
+
+编译好的执行程序下载
+========
+http://osgia.com
+
 微信号: wmzsoft
 https://gratipay.com/~wmzsoft
 
