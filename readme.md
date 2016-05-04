@@ -49,8 +49,8 @@ QQ群：429895245
 
 移动端自适效果图
 =======
-![首页面](doc/images/mobile-inbox.png=300x)![主界面](doc/images/mobile-main.png)![菜单页面](doc/images/mobile-menu.png)
-
+![首页面](doc/images/mobile-inbox.png =300x)![主界面](doc/images/mobile-main.png)![菜单页面](doc/images/mobile-menu.png)
+<img src="doc/images/mobile-main.png" alt="Drawing" style="width: 300px;"/>
 微信号: wmzsoft
 https://gratipay.com/~wmzsoft
 
