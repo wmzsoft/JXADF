@@ -49,7 +49,7 @@ QQ群：429895245
 
 移动端自适效果图
 =======
-![首页面](doc/images/mobile-inbox.png)![主界面](doc/images/mobile-main.png)![菜单页面](doc/images/mobile-menu.png)
+![首页面](doc/images/mobile-inbox.png=300x)![主界面](doc/images/mobile-main.png)![菜单页面](doc/images/mobile-menu.png)
 
 微信号: wmzsoft
 https://gratipay.com/~wmzsoft
