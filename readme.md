@@ -49,13 +49,7 @@ QQ群：429895245
 
 移动端自适效果图
 =======
-
-######功能模块主界面
-![主界面](doc/images/mobile-main.png)
-
-######菜单页面
-![菜单页面](doc/images/mobile-menu.png)
-
+![手机自适应访问截图](doc/images/jxadf-mobile.demo.gif)
 
 编译好的执行程序下载
 ========
