@@ -1,14 +1,20 @@
 @charset "utf-8";
 /* CSS Document */
 body, form, div, p, img, ul, li, a, input, table, tr, td, button {
-    margin: 0;
-    padding: 0;
+	margin: 0;
+	padding: 0;
 }
 
 input, a {
-    outline: none;
+	outline: none;
 }
 
-textarea{
-	width:"100%"
+textarea {
+	width: "100%"
+}
+
+.required:after {
+	content: "*";
+	color: red;
+	font-family: Arial, sans-serif
 }

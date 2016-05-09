@@ -48,8 +48,7 @@ public class AuthFilter implements Filter {
             String ssoUserId = req.getRemoteUser();
             if (StrUtil.isNull(ssoUserId)) {
                 // 看看是否有内部认证机制
-                String jxsessionid = request.getParameter(JxSessionID.ID);
-                ssoUserId = JxSessionID.getUserId(jxsessionid);
+                ssoUserId = JxSession.getUserid(req);
             }
             if (!StrUtil.isNull(ssoUserId)) {
                 // SSO已登录了。
@@ -69,7 +68,7 @@ public class AuthFilter implements Filter {
                         String lang = request.getParameter("locale");
                         if (lang != null) {
                             userInfo.setLangcode(lang);
-                        } else {
+                        } else if (StrUtil.isNull(userInfo.getLangcode())) {
                             userInfo.setLangcode("zh_CN");
                         }
                         // 设定IP、机器名等信息

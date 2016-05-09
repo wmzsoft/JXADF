@@ -62,6 +62,14 @@ public class JxLangResourcesUtil {
                 rb = getResourceBundle(type, country[0]);
             }
         }
+        if (rb == null) {
+            LOG.debug("Loading language failed..." + type + "," + userLangCode);
+            rb = getResourceBundle(type, "en");
+        }
+        if (rb == null) {
+            LOG.error("Loading lauage failed........" + type + "_en");
+            rb = getResourceBundle("lang", "en");
+        }
         return rb;
     }
 
@@ -102,7 +110,8 @@ public class JxLangResourcesUtil {
     /**
      * 获取值
      * 
-     * @param key key有2中模式，一种app.appname开头，一种其他任意字符串。
+     * @param key
+     *            key有2中模式，一种app.appname开头，一种其他任意字符串。
      * @return
      */
     public static String getString(String key) {
@@ -138,7 +147,7 @@ public class JxLangResourcesUtil {
             }
 
         } else {
-            if (bundle!=null && bundle.containsKey(key)) {
+            if (bundle != null && bundle.containsKey(key)) {
                 value = bundle.getString(key);
             } else {
                 value = "";

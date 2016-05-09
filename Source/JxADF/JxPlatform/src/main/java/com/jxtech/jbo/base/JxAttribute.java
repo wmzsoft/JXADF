@@ -111,8 +111,8 @@ public class JxAttribute implements Serializable {
             case 17:
             case 18:
             default:
+                return false;
         }
-        return false;
     }
 
     /**

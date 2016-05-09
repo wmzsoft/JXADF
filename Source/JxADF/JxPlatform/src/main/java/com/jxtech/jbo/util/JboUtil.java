@@ -107,9 +107,6 @@ public class JboUtil {
             return null;
         }
         JboSetIFace js = getJboSet(jboname);
-        if (js == null) {
-            return null;
-        }
         if (StrUtil.isNull(jboKey)) {
             return js.queryJbo(uid);
         } else
@@ -344,13 +341,10 @@ public class JboUtil {
      */
     public static List<JboIFace> findJboList(String jboName, String whereCase, Object[] args) throws JxException {
         JboSetIFace jboJboSet = JboUtil.getJboSet(jboName);
-        if (jboJboSet != null) {
-            DataQueryInfo dao = jboJboSet.getQueryInfo();
-            dao.setWhereCause(whereCase);
-            dao.setWhereParams(args);
-            return jboJboSet.queryAll();
-        }
-        return new ArrayList<JboIFace>();
+        DataQueryInfo dao = jboJboSet.getQueryInfo();
+        dao.setWhereCause(whereCase);
+        dao.setWhereParams(args);
+        return jboJboSet.queryAll();
     }
 
     /**

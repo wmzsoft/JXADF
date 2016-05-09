@@ -510,10 +510,11 @@ public class StrUtil {
         Map<String, Object> map = new HashMap<String, Object>();
         // 最外层解析
         JSONObject json = JSONObject.fromObject(jsonStr);
-        for (Object k : json.keySet()) {
-            Object v = json.get(k);
-            // 如果内层还是数组的话，继续解析
-            if (v instanceof JSONArray) {
+        for (Object entry :json.entrySet()){
+            Map.Entry<?,?> en = (Map.Entry<?,?>)entry;
+            Object v = en.getValue();
+            Object k = en.getKey();
+            if (v instanceof JSONArray){
                 List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
                 Iterator<JSONObject> it = ((JSONArray) v).iterator();
                 while (it.hasNext()) {

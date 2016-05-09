@@ -72,6 +72,11 @@ public class JxAuthenticationFilter extends AbstractCasFilter {
 
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
+        final HttpSession session = request.getSession(false);
+        if (session.getAttribute(JxSession.USER_INFO)!=null) {
+            filterChain.doFilter(servletRequest, servletResponse);// 如果已经登录，就不必了吧，到下一个滤镜吧
+            return;
+        }
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         // by wmzsoft.201301.27 以下5行
         PermissionIFace perm = PermissionFactory.getPermissionInstance();
@@ -81,7 +86,6 @@ public class JxAuthenticationFilter extends AbstractCasFilter {
             return;
         }
 
-        final HttpSession session = request.getSession(false);
         final Assertion assertion = session != null ? (Assertion) session.getAttribute(CONST_CAS_ASSERTION) : null;
 
         if (assertion != null) {
@@ -103,7 +107,7 @@ public class JxAuthenticationFilter extends AbstractCasFilter {
         String ssoUserId = JxSessionID.getUserId(jxsessionid);// 得到登录名称
         if (!StrUtil.isNull(ssoUserId)) {
             // 准备内部登录
-            boolean isLogin = JxSession.loginBySsoUser(ssoUserId);
+            boolean isLogin = JxSession.loginBySsoUser(ssoUserId,session);
             if (isLogin) {
                 // 如果登录成功，则不需要跳转到登录页面了。
                 filterChain.doFilter(request, response);

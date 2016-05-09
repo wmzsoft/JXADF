@@ -102,6 +102,7 @@ public class JxSession {
         CacheUtil.cleanUserCache();// 清空用户缓存
         HttpSession session = getSession();
         if (session != null) {
+            JxSessionID.removeCurrentUser();
             session.setAttribute(USER_INFO, null);
             session.setAttribute(APPS, null);
             session.invalidate();
@@ -285,13 +286,11 @@ public class JxSession {
         return permission.hasFunctions(pageid, methodName);
     }
 
-    /* 之前的登陆接口 */
-    /*
-     * public static boolean login(String userid, String password, boolean relogin) throws JxException { if (StrUtil.isNull(userid)) { return false; } LOG.debug("login user:" + userid); JxUserInfo userinfo = null; if (!relogin) {// 不需要重新登录 userinfo = getJxUserInfo(); if (userinfo != null) { if (userid.equalsIgnoreCase(userinfo.getLoginid())) { return true; } } } AuthenticateIFace auth = AuthenticateFactory.getAuthenticateInstance(); userinfo = auth.getUserInfo(userid, password); if (userinfo !=
-     * null) { putSession(USER_INFO, userinfo); } else { return false; } return true; }
-     */
-
     public static boolean loginBySsoUser(String userid) {
+        return loginBySsoUser(userid, null);
+    }
+
+    public static boolean loginBySsoUser(String userid, HttpSession session) {
         if (StrUtil.isNull(userid)) {
             return false;
         }
@@ -306,16 +305,16 @@ public class JxSession {
             return false;
         }
         if (userinfo != null) {
-            putSession(USER_INFO, userinfo);
+            boolean b = putSession(USER_INFO, userinfo);
+            if (!b && session != null) {
+                session.setAttribute(USER_INFO, userinfo);
+                return true;
+            }
+            return b;
         } else {
             return false;
         }
-        return true;
     }
-
-    /*
-     * public static boolean login(String userid, String password) throws JxException { return login(userid, password, false); }
-     */
 
     /**
      * 获取当前session的国际化语言
@@ -329,7 +328,7 @@ public class JxSession {
         if (null != userInfo) {
             lang = userInfo.getLangcode();
         }
-        if (StrUtil.isNull(lang)){
+        if (StrUtil.isNull(lang)) {
             return "zh-CN";
         }
         return lang.replace("_", "-");
@@ -385,5 +384,25 @@ public class JxSession {
             }
         }
         return false;
+    }
+
+    /**
+     * 通过request 获得用户标识
+     * 
+     * @param request
+     * @return
+     */
+    public static String getUserid(HttpServletRequest request) {
+        if (request == null) {
+            return getUserId();
+        }
+        String jxsessionid = request.getParameter(JxSessionID.ID);
+        if (!StrUtil.isNull(jxsessionid)) {
+            String userid = JxSessionID.getUserId(jxsessionid);
+            if (!StrUtil.isNull(userid)) {
+                return userid;
+            }
+        }
+        return getUserId();
     }
 }

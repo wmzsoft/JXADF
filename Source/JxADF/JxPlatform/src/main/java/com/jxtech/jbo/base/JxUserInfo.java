@@ -1,12 +1,14 @@
 package com.jxtech.jbo.base;
 
 import java.io.Serializable;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.auth.PermissionIFace;
 import com.jxtech.jbo.util.JxException;
+import com.jxtech.util.StrUtil;
 
 /**
  * 
@@ -28,9 +30,9 @@ public class JxUserInfo implements Serializable {
     private JboIFace department;// 部门信息,Pub_department
     private JboIFace user;// 用户信息，Pub_user
     // maximo信息
-    private String tenantnum;//租户信息
-    private String orgid;//组织标识
-    private String siteid;//地点标识
+    private String tenantnum;// 租户信息
+    private String orgid;// 组织标识
+    private String siteid;// 地点标识
     private String langcode;
 
     private Map<String, String> metadata;// 用户元数据。
@@ -64,6 +66,9 @@ public class JxUserInfo implements Serializable {
     }
 
     public String getLangcode() {
+        if (StrUtil.isNull(langcode)) {
+            langcode = Locale.getDefault().getLanguage();
+        }
         return langcode;
     }
 

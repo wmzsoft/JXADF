@@ -2,10 +2,13 @@ package com.jxtech.app.jxlogin;
 
 import java.util.Map;
 
+import com.jxtech.app.usermetadata.UserMetadataSetIFace;
+import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.AuthenticateFactory;
 import com.jxtech.jbo.auth.AuthenticateIFace;
 import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.base.JxUserInfo;
+import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.StrUtil;
 import org.slf4j.Logger;
@@ -62,9 +65,14 @@ public class JxLoginImpl implements JxLogin {
         } else if (params != null) {
             Object lang = params.get(JxUserInfo.LANG_CODE);
             if (lang != null) {
-                String code = (String)lang;
+                String code = (String) lang;
                 code = code.replace('-', '_');
                 userinfo.setLangcode(code);
+                // 保存Longcode
+                JboSetIFace ju = JboUtil.getJboSet("UserMetadata");
+                if (ju instanceof UserMetadataSetIFace) {
+                    ((UserMetadataSetIFace) ju).saveUserMetadata(JxUserInfo.LANG_CODE, code);
+                }
             }
         }
         // 加载登录之后的操作

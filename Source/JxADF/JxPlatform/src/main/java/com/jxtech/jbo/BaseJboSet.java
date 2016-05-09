@@ -4,7 +4,6 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -88,8 +87,8 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     // 查询标识
     private long queryFlag = 0;
-    
-    //保存Session，在有些线程中取不到，就直接在这里取了。
+
+    // 保存Session，在有些线程中取不到，就直接在这里取了。
     private HttpSession session;
 
     /**
@@ -749,14 +748,14 @@ public abstract class BaseJboSet implements JboSetIFace {
             dqInfo.setQuickSearchCause("");
             return;
         }
+        String sv = searchValue.toLowerCase().trim();
         StringBuilder sb = new StringBuilder();
         Map<String, JxAttribute> attrs = this.getJxAttributes();
-        Iterator<String> keyIte = attrs.keySet().iterator();
-        String sv = searchValue.toLowerCase().trim();
-        while (keyIte.hasNext()) {
-            String key = keyIte.next().toString();
-            if (key.indexOf(".") < 0) {
-                if (attrs.get(key).isNumOrDateTime()) {
+        for (Map.Entry<String, JxAttribute> entry : attrs.entrySet()) {
+            String key = entry.getKey();
+            if (key.indexOf('.') < 0) {
+                JxAttribute colu = entry.getValue();
+                if (colu.isNumOrDateTime() || !colu.isPersistent() || colu.isBoolean()) {
                     continue;
                 }
                 sb.append(" lower(").append(key).append(") like '%");
@@ -764,6 +763,7 @@ public abstract class BaseJboSet implements JboSetIFace {
                 sb.append("%' or ");
             }
         }
+
         if (sb.length() > 4) {
             String quickSql = sb.substring(0, sb.length() - 4);
             dqInfo.setQuickSearchQueryValue(searchValue);

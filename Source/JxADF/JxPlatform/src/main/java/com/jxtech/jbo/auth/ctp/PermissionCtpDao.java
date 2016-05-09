@@ -186,7 +186,7 @@ public class PermissionCtpDao implements AuthenticateIFace {
         LOG.info("加载部门信息失败：" + department);
         return null;
     }
-    
+
     @Override
     public JxUserInfo getUserInfo(String userid) throws JxException {
         JboIFace jbo = getUser(userid);
@@ -205,6 +205,9 @@ public class PermissionCtpDao implements AuthenticateIFace {
             return null;
         }
         JxUserInfo user = new JxUserInfo();
+        // 放入Session中。
+        JxSession.putSession(JxSession.USER_INFO, user);
+        // 设定值
         user.setDisplayname(jbo.getString("displayname"));
         user.setLoginid(jbo.getString("login_id"));
         user.setUserid(jbo.getString("user_id"));
@@ -217,12 +220,15 @@ public class PermissionCtpDao implements AuthenticateIFace {
         // 加载权限信息
         user.setPermission(getPermission(jbo.getString("user_id")));
         // 加载用户个性化数据
-        UserMetadataSetIFace umsi = (UserMetadataSetIFace) JboUtil.getJboSet("USERMETADATA");
-        if (umsi != null) {
-            umsi.loadUserMetadata();
+        JboSetIFace umsi = JboUtil.getJboSet("USERMETADATA");
+        if (umsi instanceof UserMetadataSetIFace) {
+            ((UserMetadataSetIFace) umsi).loadUserMetadata();
+            // 加载默认语言
+            Map<String, String> map = user.getMetadata();
+            if (map != null) {
+                user.setLangcode(map.get(JxUserInfo.LANG_CODE));
+            }
         }
-        // 放入Session中。
-        JxSession.putSession(JxSession.USER_INFO, user);
         return user;
     }
 

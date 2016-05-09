@@ -238,10 +238,7 @@ public class WebClientBean {
             throw new JxException(msg);
         }
         JboSetIFace js = JboUtil.getJboSet(jboname);
-        if (js != null) {
-            return js.delete(uids.split(","));
-        }
-        return false;
+        return js.delete(uids.split(","));
     }
 
     /**

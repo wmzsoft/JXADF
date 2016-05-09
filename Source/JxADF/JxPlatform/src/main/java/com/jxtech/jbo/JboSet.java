@@ -111,15 +111,15 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         }
         currentJbo = getJboInstance();
         String uidName = getUidName();
-        String where = uidName + " in (";
+        StringBuilder wc = new StringBuilder();
+        wc.append(uidName).append(" in (");
         for (int i = 0; i < ids.length; i++) {
-            where = where + " ?,";
+            wc.append(" ?,");
         }
-        where = StringUtils.removeEnd(where, ",");
-        where = where + " )";
+        StrUtil.deleteLastChar(wc).append(" )");
         DataQuery dq = DBFactory.getDataQuery(this.getDbtype(), getDataSourceName());
         DataQueryInfo qbe = this.getQueryInfo();
-        qbe.setWhereCause(where);
+        qbe.setWhereCause(wc.toString());
         qbe.setWhereParams(ids);
         List<Map<String, Object>> list = dq.queryAllPage(getJboname(), qbe);
         // List<JboIFace> data = new ArrayList<JboIFace>();

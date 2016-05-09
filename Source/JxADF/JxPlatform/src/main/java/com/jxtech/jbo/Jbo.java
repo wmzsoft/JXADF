@@ -226,12 +226,10 @@ public class Jbo extends BaseJbo implements JboIFace {
                 }
             }
             if (null != initMap) {// 页面转递过来初始化数据
-                Iterator<String> init = initMap.keySet().iterator();
-                while (init.hasNext()) {
-                    String key = init.next().toString();
-                    if (null != key) {
-                        String value = initMap.get(key);
-                        setObject(key, value);
+                for (Map.Entry<String, String> entry : initMap.entrySet()){
+                    String key = entry.getKey();
+                    if (key !=null){
+                        setObject(key,entry.getValue());
                     }
                 }
             }

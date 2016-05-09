@@ -537,7 +537,7 @@ public class DateUtil {
             d2 = now();
         }
         long dif = d1.getTime() - d2.getTime();
-        return (dif / (1000 * 60 * 60 * 24));
+        return (dif / (1000 * 60 * 60 * 24.0D));
     }
 
     /**
