@@ -16,9 +16,12 @@ function skinTo(url){
 	if (url==null || ""==url){
 		return;
 	}
-	WebClientBean.saveUserMetadata('HOMEPAGE',url);
-	window.location.href=contextPath+url;
-	$("#skins").hide();
+	WebClientBean.saveUserMetadata('HOMEPAGE',url,{
+	        callback: function (data) {
+                $("#skins").hide();
+	            window.location.href=contextPath+url;
+	        }
+	});
 }
 
 function setCurrentSkin() {

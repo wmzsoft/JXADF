@@ -10,6 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import java.io.IOException;
 /**
  * 
@@ -55,6 +57,10 @@ public class JxSingleSignOutFilter extends AbstractConfigurationFilter {
             handler.recordSession(request);
         } else if (handler.isLogoutRequest(request)) {
             handler.destroySession(request);
+            HttpSession session = request.getSession(false);
+            if (session !=null){
+                session.invalidate();
+            }
             // Do not continue up filter chain
             return;
         } else {

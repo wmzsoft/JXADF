@@ -709,16 +709,12 @@ public class WebClientBean {
      * @throws JxException
      */
     public JboIFace getJbo(String appNameType, String jboname, String jboKey, String jboUid, boolean setCurrentJbo, String relationship) throws JxException {
-
+        App currentApp = JxSession.getApp();
         // FIXME:需要确认是否需要这个判断
-        if ("LOOKUP".equalsIgnoreCase(JxSession.getApp().getAppType())) {
+        if (currentApp != null && "LOOKUP".equalsIgnoreCase(currentApp.getAppType())) {
             return null;
         }
-
-        App currentApp;
-        if (StrUtil.isNull(appNameType)) {
-            currentApp = JxSession.getApp();
-        } else {
+        if (!StrUtil.isNull(appNameType)) {
             currentApp = JxSession.getApp(appNameType);
         }
 

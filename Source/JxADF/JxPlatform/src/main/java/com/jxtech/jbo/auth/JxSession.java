@@ -112,13 +112,13 @@ public class JxSession {
     }
 
     public static HttpSession getSession() {
-        WebContext ctx = WebContextFactory.get();
-        if (ctx != null) {
-            return ctx.getSession();
-        }
         HttpServletRequest request = getRequest();
         if (request != null) {
             return request.getSession();
+        }
+        WebContext ctx = WebContextFactory.get();
+        if (ctx != null) {
+            return ctx.getSession();
         }
         return null;
     }

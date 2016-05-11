@@ -31,7 +31,7 @@ public class LanguageFactory {
      */
     public static LanguageIface getLanguage(Bundle bundle) {
         if (bundle == null) {
-            if (languagePackages.size() > 0) {
+            if (!languagePackages.isEmpty()) {
                 Bundle mybundle = languagePackages.values().iterator().next();
                 return getLanguage(mybundle, DEFAULT_IMPL_LANGUAGE);
             }

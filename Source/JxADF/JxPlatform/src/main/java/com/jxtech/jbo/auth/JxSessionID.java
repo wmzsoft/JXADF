@@ -18,7 +18,7 @@ public class JxSessionID {
     public static final String ID = "jxsessionid";
     public static String MYKEY = null;
     private static long sessiontime = 0;// 限时2小时
-    private static Map<String, Date> users = new HashMap<String, Date>();// 将生成的KEY的时间保存起来，超时无效
+    private static Map<String, String[]> users = new HashMap<String, String[]>();// 将生成的KEY\时间保存起来，超时无效
 
     /**
      * 通过SessionID解析用户名
@@ -30,19 +30,19 @@ public class JxSessionID {
         if (StrUtil.isNull(sessionid)) {
             return null;
         }
-        String[] sid = sessionid.split(";");
-        if (sid.length == 2) {
-            String gid = genId(sid[1]);
-            if (sessionid.equals(gid)) {
-                // 检查一下生成时间，是否超期
-                Date gd = users.get(sid[1]);
-                if (gd == null) {
-                    return null;
-                } else if (DateUtil.subDays(new Date(), gd) > getSessiontime()) {
-                    users.remove(sid[1]);
+        long now = (new Date()).getTime();
+        long st = getSessiontime();
+        for (Map.Entry<String, String[]> entry : users.entrySet()) {
+            String[] val = entry.getValue();
+            if (sessionid.equals(val[0])) {
+                long delta = now - Long.parseLong(val[1]);
+                if (delta < st) {
+                    return entry.getKey();
+                } else {
+                    // 超时，移出
+                    users.remove(entry.getKey());
                     return null;
                 }
-                return sid[1];
             }
         }
         return null;
@@ -58,9 +58,20 @@ public class JxSessionID {
         if (StrUtil.isNull(userId)) {
             return null;
         }
+        String[] sessions = users.get(userId);
+        long now = (new Date()).getTime();
+        if (sessions != null) {
+            long delta = now - Long.parseLong(sessions[1]);
+            // 如果10分钟之内，不需要重新生成ID了。
+            if (delta < getSessiontime() && delta < 600000) {
+                return sessions[0];
+            }
+        }
         String key = StrUtil.contact(userId, ".", getKey());
-        users.put(userId, new Date());// 记录时间
-        return StrUtil.contact(StrUtil.md5(key), ";", userId);
+        String md5 = StrUtil.md5(key);
+        String[] ticket = new String[] { md5, String.valueOf(now) };
+        users.put(userId, ticket);// 记录时间
+        return md5;
     }
 
     /**
@@ -69,10 +80,7 @@ public class JxSessionID {
      * @return
      */
     public static String getKey() {
-        if (MYKEY == null) {
-            MYKEY = String.valueOf(DateUtil.datetimeToLong(new Date()) + Math.random() + Math.round(1000.1D));
-        }
-        return MYKEY;
+        return String.valueOf(DateUtil.datetimeToLong(new Date()) + Math.random() + Math.round(1000.1D));
     }
 
     /**

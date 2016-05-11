@@ -310,6 +310,9 @@ public class TableTag extends JxBaseUITag {
             } else if (myapp != null) {
                 if (!"MAINLIST".equalsIgnoreCase(myapp.getAppType())) {
                     jboset = myapp.findJboSet(null, null, loadType);
+                    if (!StrUtil.isNull(jboname) && !jboname.equalsIgnoreCase(jboset.getJboname())){
+                        jboset = JboUtil.getJboSet(jboname);
+                    }
                 }
             }
             if (jboset == null) {
@@ -399,13 +402,13 @@ public class TableTag extends JxBaseUITag {
                 table.setUidName(jboset.getUidName());
                 table.setCount(count);
                 table.setPagecount(pagecount);
+                JxTable jt = jboset.getJxTable();
+                if (jt != null) {
+                    jt.setTableModle(table);
+                }
             }
             table.setJboset(jboset);
             table.setReadonly(readonly);
-            JxTable jt = jboset.getJxTable();
-            if (jt != null) {
-                jt.setTableModle(table);
-            }
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
         }

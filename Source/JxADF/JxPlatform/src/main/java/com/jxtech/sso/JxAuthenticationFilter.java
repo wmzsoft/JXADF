@@ -4,6 +4,7 @@ import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.auth.JxSessionID;
 import com.jxtech.jbo.auth.PermissionFactory;
 import com.jxtech.jbo.auth.PermissionIFace;
+import com.jxtech.jbo.base.JxUserInfo;
 import com.jxtech.util.StrUtil;
 
 import org.jasig.cas.client.authentication.DefaultGatewayResolverImpl;
@@ -73,9 +74,14 @@ public class JxAuthenticationFilter extends AbstractCasFilter {
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
         final HttpSession session = request.getSession(false);
-        if (session.getAttribute(JxSession.USER_INFO)!=null) {
-            filterChain.doFilter(servletRequest, servletResponse);// 如果已经登录，就不必了吧，到下一个滤镜吧
-            return;
+        if (session != null) {
+            Object val = session.getAttribute(JxSession.USER_INFO);
+            if (val instanceof JxUserInfo) {
+                if (!StrUtil.isNull(((JxUserInfo) val).getUserid())) {
+                    filterChain.doFilter(servletRequest, servletResponse);// 如果已经登录，就不必了吧，到下一个滤镜吧
+                    return;
+                }
+            }
         }
         final HttpServletResponse response = (HttpServletResponse) servletResponse;
         // by wmzsoft.201301.27 以下5行
@@ -107,7 +113,7 @@ public class JxAuthenticationFilter extends AbstractCasFilter {
         String ssoUserId = JxSessionID.getUserId(jxsessionid);// 得到登录名称
         if (!StrUtil.isNull(ssoUserId)) {
             // 准备内部登录
-            boolean isLogin = JxSession.loginBySsoUser(ssoUserId,session);
+            boolean isLogin = JxSession.loginBySsoUser(ssoUserId, session);
             if (isLogin) {
                 // 如果登录成功，则不需要跳转到登录页面了。
                 filterChain.doFilter(request, response);
