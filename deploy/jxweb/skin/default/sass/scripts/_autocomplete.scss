@@ -1,0 +1,10 @@
+//override search autocomplete
+.ui-menu.ui-autocomplete .ui-menu-item a {
+    color: #5d5a5a;
+    line-height: 2em;
+    &.ui-state-focus{
+        margin: 0;
+        color: #3486ca;
+        font-weight: bold;
+    }
+}

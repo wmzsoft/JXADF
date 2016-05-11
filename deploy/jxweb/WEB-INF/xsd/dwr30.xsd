@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema
+    targetNamespace="http://directwebremoting.org/schema/dwr30"
+    xmlns="http://www.w3.org/2001/XMLSchema"
+    xmlns:dwr="http://directwebremoting.org/schema/dwr30">
+
+  <annotation>
+    <documentation>This is the schema for dwr.xml in DWR version 3.0</documentation>
+  </annotation>
+
+  <element name="dwr" type="dwr:dwr">
+    <annotation>
+      <documentation>Top level conviguration element</documentation>
+    </annotation>
+  </element>
+  <complexType name="dwr">
+    <sequence>
+      <element ref="dwr:init" maxOccurs="1" minOccurs="0"></element>
+      <element ref="dwr:allow" maxOccurs="1" minOccurs="0"></element>
+      <element ref="dwr:signatures" maxOccurs="1" minOccurs="0"></element>
+    </sequence>
+  </complexType>
+
+  <element name="init" type="dwr:init">
+    <annotation>
+      <documentation>A list of all the classes to configure as part of dwr at startup time</documentation>
+    </annotation>
+  </element>
+  <complexType name="init">
+    <sequence maxOccurs="unbounded" minOccurs="0">
+      <choice>
+        <element ref="dwr:creator" maxOccurs="unbounded" minOccurs="0"></element>
+        <element ref="dwr:converter" maxOccurs="unbounded" minOccurs="0"></element>
+      </choice>
+    </sequence>
+  </complexType>
+
+  <element name="creator" type="dwr:creator">
+    <annotation>
+      <documentation>Define a new method of creating objects for use by Javascript. We don't just allow access to any object and some may need special code to get a reference to them</documentation>
+    </annotation>
+  </element>
+  <complexType name="creator">
+    <!-- In the DTD I could say that id was an id - i.e. unique. how do i do that here? -->
+    <attribute name="id" type="string">
+      <annotation>
+        <documentation>The unique name by which create elements refer to us</documentation>
+      </annotation>
+    </attribute>
+    <attribute name="class" type="string">
+      <annotation>
+        <documentation>The fully qualified name of a class that implements Creator</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <element name="converter" type="dwr:converter">
+    <annotation>
+      <documentation>Define a new way of converting between javascript objects and java objects. Many classes can have default conversion mechanisms but some require more custom conversion</documentation>
+    </annotation>
+  </element>
+  <complexType name="converter">
+    <!-- In the DTD I could say that id was an id - i.e. unique. how do i do that here? -->
+    <attribute name="id" type="string">
+      <annotation>
+        <documentation>The unique name by which convert elements refer to us</documentation>
+      </annotation>
+    </attribute>
+    <attribute name="class" type="string">
+      <annotation>
+        <documentation>The fully qualified name of a class that implements Creator</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <element name="allow" type="dwr:allow">
+    <annotation>
+      <documentation>Security: we must define which classes we are allowed to access because a free-for-all will be very dangerous</documentation>
+    </annotation>
+  </element>
+  <complexType name="allow">
+    <sequence maxOccurs="unbounded" minOccurs="0">
+      <choice>
+        <element ref="dwr:create" maxOccurs="unbounded" minOccurs="0"></element>
+        <element ref="dwr:convert" maxOccurs="unbounded" minOccurs="0"></element>
+        <element ref="dwr:filter" maxOccurs="unbounded" minOccurs="0"></element>
+      </choice>
+    </sequence>
+  </complexType>
+
+  <element name="create" type="dwr:create">
+    <annotation>
+      <documentation>Allow the creation of a class, and give it a name in javascript land. A reference to a creator is required as are some parameters specific to each creator that define the objects it allows creation of. It would be nice to make the creator and IDREF rather than a CDATA, since it refers to an element defined elsewhere, however we allow multiple dwr.xml files and we might refer to one in another file.</documentation>
+    </annotation>
+  </element>
+  <complexType name="create">
+    <sequence maxOccurs="unbounded" minOccurs="0">
+      <choice>
+        <element ref="dwr:param" maxOccurs="unbounded" minOccurs="0"></element>
+        <element ref="dwr:include" maxOccurs="unbounded" minOccurs="0"></element>
+        <element ref="dwr:exclude" maxOccurs="unbounded" minOccurs="0"></element>
+        <element ref="dwr:auth" maxOccurs="unbounded" minOccurs="0"></element>
+        <element ref="dwr:filter" maxOccurs="unbounded" minOccurs="0"></element>
+      </choice>
+    </sequence>
+    <attribute name="creator" type="string">
+      <annotation>
+        <documentation>The id of the creator to use</documentation>
+      </annotation>
+    </attribute>
+    <attribute name="javascript" type="string" use="optional">
+      <annotation>
+        <documentation>The name of the object to export to the browser</documentation>
+      </annotation>
+    </attribute>
+    <attribute name="scope">
+      <annotation>
+        <documentation>The scope of the created variable. The default is page.</documentation>
+      </annotation>
+      <simpleType>
+        <restriction base="string">
+          <enumeration value="application"></enumeration>
+          <enumeration value="session"></enumeration>
+          <enumeration value="script"></enumeration>
+          <enumeration value="request"></enumeration>
+          <enumeration value="page"></enumeration>
+        </restriction>
+      </simpleType>
+    </attribute>
+  </complexType>
+
+  <element name="param" type="dwr:param">
+    <annotation>
+      <documentation>Some elements (currently only create although there is no hard reason why convert elements should not be the same) need customization in ways that we can't predict now, and this seems like the only way to do it.</documentation>
+    </annotation>
+  </element>
+  <complexType name="param">
+    <attribute name="name" type="string">
+      <annotation>
+        <documentation>The name that must have meaning in the context of the parent element</documentation>
+      </annotation>
+    </attribute>
+    <attribute name="value" type="string">
+      <annotation>
+        <documentation>The value to assign to this parameter</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <element name="include" type="dwr:include">
+    <annotation>
+      <documentation>A creator can allow and disallow access to the methods of the class that it contains. A Creator should specify EITHER a list of include elements (which implies that the default policy is denial) OR a list of exclude elements (which implies that the default policy is to allow access)</documentation>
+    </annotation>
+  </element>
+  <complexType name="include">
+    <attribute name="method" type="string">
+      <annotation>
+        <documentation>The method to include in the list of methods allowed by the creator</documentation>
+      </annotation>
+    </attribute>
+    <attribute name="role" type="string">
+      <annotation>
+        <documentation>The optional role attribute</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <element name="exclude" type="dwr:exclude">
+    <annotation>
+      <documentation>A creator can allow and disallow access to the methods of the class that it contains. A Creator should specify EITHER a list of include elements (which implies that the default policy is denial) OR a list of exclude elements (which implies that the default policy is to allow access)</documentation>
+    </annotation>
+  </element>
+  <complexType name="exclude">
+    <attribute name="method" type="string">
+      <annotation>
+        <documentation>The method to exclude from the list of methods allowed by the creator</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <element name="auth" type="dwr:auth">
+    <annotation>
+      <documentation>The auth element allows you to specify that the user of a given method must be authenticated using J2EE security and authorized under a certain role.</documentation>
+    </annotation>
+  </element>
+  <complexType name="auth">
+    <attribute name="method" type="string">
+      <annotation>
+        <documentation>The method to add role requirements to</documentation>
+      </annotation>
+    </attribute>
+    <attribute name="role" type="string">
+      <annotation>
+        <documentation>The J2EE role required to execute the given method</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <element name="convert" type="dwr:convert">
+    <annotation>
+       <documentation>Allow conversion of a class between Java and Javascript. A convert element uses a previously defined converter and gives a class match pattern (which can end with *) to define the classes it allows conversion of. It would be nice to make the converter and IDREF rather than a CDATA, since it refers to an element defined elsewhere, however we allow multiple dwr.xml files and we might refer to one in another file.</documentation>
+    </annotation>
+  </element>
+  <complexType name="convert">
+    <sequence>
+      <element ref="dwr:param" maxOccurs="unbounded" minOccurs="0"></element>
+    </sequence>
+    <attribute name="converter" type="string">
+      <annotation>
+        <documentation>The id of the converter to use</documentation>
+      </annotation>
+    </attribute>
+    <attribute name="match" type="string">
+      <annotation>
+        <documentation>
+          A class name to match for conversion
+        </documentation>
+      </annotation>
+    </attribute>
+    <attribute name="javascript" type="string">
+      <annotation>
+        <documentation>
+          The optional classname for the parameter
+        </documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <element name="filter" type="dwr:filter">
+    <annotation>
+      <documentation>A filter is a way to insert procesing tasks at various points during the processing of an Ajax call. See org.directwebremoting.AjaxFilter</documentation>
+    </annotation>
+  </element>
+  <complexType name="filter">
+    <sequence>
+      <element ref="dwr:param" maxOccurs="unbounded" minOccurs="0"></element>
+    </sequence>
+    <attribute name="class" type="string">
+      <annotation>
+        <documentation>The class name to use to filter requests</documentation>
+      </annotation>
+    </attribute>
+  </complexType>
+
+  <element name="signatures" type="string">
+    <annotation>
+      <documentation>If we are marshalling to collections, we need to be able to specify extra type information to converters that are unable to tell from reflection what to do. This element contains some Java method definitions</documentation>
+    </annotation>
+  </element>
+
+</schema>

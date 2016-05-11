@@ -1,0 +1,74 @@
+@charset "utf-8";
+
+/*开关式checkbox*/
+.slide-switch{
+    $switch-height:24px;
+    $switch-width:50px;
+    height: $switch-height;
+    line-height: $switch-height;
+    $switch-indicator-width:20px;
+    $switch-indicator-height:20px;
+    $switch-indicator-disabled-width:30px;
+    $spacing-with-border:1px;
+    $spacing-without-border:2px;
+    input{
+        position: fixed;
+        left: -9999px;
+        top: -9999px;
+    }
+    label{
+        position: relative;
+        display: inline-block;
+        width: $switch-width;
+        height: $switch-height;
+        border-radius:$switch-height;
+        box-sizing: border-box;
+        border: 1px solid #c9c9c9;
+        border\0:0 none;
+        vertical-align: middle;
+        cursor: pointer;
+        background:#fff;
+        @extend %tag_checkbox_slide_switch_off;
+        @include transition(background linear 0.2s);
+        &.open{
+            border: 0 none;
+            background: #1da5eb;
+            @extend %tag_checkbox_slide_switch_on;
+            span{
+                left: $switch-width - $switch-indicator-width - $spacing-without-border;
+                top:$spacing-without-border;
+            }
+            &.disabled{
+                span{
+                    left: $switch-width - $switch-indicator-disabled-width - $spacing-with-border;
+                    left\0: $switch-width - $switch-indicator-disabled-width - $spacing-without-border;
+                }
+            }
+        }
+        &.disabled{
+            background: #c9c9c9;
+            @extend %tag_checkbox_slide_switch_disabled;
+            cursor:not-allowed;
+            span{
+                @extend %tag_checkbox_slide_switch_indicator_disabled;
+                width: $switch-indicator-disabled-width;
+            }
+        }
+    }
+    span{
+        background: #fff;
+        @extend %tag_checkbox_slide_switch_indicator;
+        box-sizing: border-box;
+        position: absolute;
+        border:1px solid #c9c9c9;
+        border\0:0 none;
+        width: $switch-indicator-width;
+        height: $switch-indicator-height;
+        top: $spacing-with-border;
+        top\0: $spacing-without-border;
+        left: $spacing-with-border;
+        left\0:$spacing-without-border;
+        border-radius: $switch-indicator-height;
+        @include transition(left,background linear 0.2s);
+    }
+}

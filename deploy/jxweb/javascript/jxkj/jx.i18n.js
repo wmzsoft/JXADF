@@ -1,0 +1,1 @@
+function loadLanguage(n){var a;a=n&&n.length>0?n.slice(0,2):$.i18n.browserLang(),$.i18n.properties({name:"lang",path:"/jxweb/i18n/",mode:"both",language:a,cache:!1,encoding:"UTF-8",callback:function(){initUILang(a)}})}function getLangString(n){var a=$.i18n.prop(n);return a=="["+n+"]"&&parent!=window&&(a=parent.$.i18n.prop(n)),a}function getI18n(n){return osgiI18n[n]}

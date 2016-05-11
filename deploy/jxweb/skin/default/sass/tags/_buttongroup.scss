@@ -1,0 +1,36 @@
+@charset "utf-8";
+$item-height:28px;
+.toolbar_btn {
+    background: url(../images/pushbutton/toolbar_btn.png) repeat-x;
+    color: #000;
+    font-size: 12px;
+    height: $item-height;
+    line-height: $item-height;
+    padding: 0 15px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 2px;
+    cursor: pointer;
+    margin: 5px 5px 5px 0;
+    &:hover{
+        background: url(../images/pushbutton/toolbar_btn_hover.png) repeat-x;
+        color: #fff;
+        border: 1px solid #0e6fa6;
+    }
+    &[disabled="disabled"]{
+        border: 1px dashed #ccc;
+        color: #ccc;
+        cursor: not-allowed;
+        &:hover{
+            background: url(../images/pushbutton/toolbar_btn.png) repeat-x;
+        }
+    }
+}
+
+
+.toolbar_right {
+    text-align: right;
+    padding-bottom: 5px;
+}
+
+//todo 该按钮下的图标需要sprite化

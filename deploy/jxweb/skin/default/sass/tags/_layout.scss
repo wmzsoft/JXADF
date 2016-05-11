@@ -1,0 +1,42 @@
+.ui-layout-container{
+    &.panel{
+        box-sizing: border-box;
+        height: 100% !important;
+        .ui-layout-pane{
+            border: 0 none;
+            padding: 0;
+            &.scrollable{
+                overflow: auto;
+            }
+            &.unScrollable{
+                overflow: hidden;
+            }
+        }
+    }
+    &.row{
+        box-sizing: border-box;
+        height: 100% !important;
+        .ui-layout-row{
+            height: 100%;
+            &:before,&:after{
+                display: table;
+                content:"";
+                clear: both;
+            }
+        }
+        .ui-layout-col{
+            float:left;
+            height: 100%;
+            overflow-x:hidden;
+            overflow-y: auto;
+        }
+        @for $i from 1 through 12 {
+            .ui-layout-col-flex-#{$i} {
+                width: $i/12 * 100%;
+            }
+        }
+    }
+    .ui-layout-resizer,.ui-layout-resizer:hover{
+        background: #fff;
+    }
+}

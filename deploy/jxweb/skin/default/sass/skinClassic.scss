@@ -1,0 +1,9 @@
+@charset "utf-8";
+//用于经典皮肤的容器页
+@import "_global/scss_header";
+@import "skin/overwrite_jquery_layout";
+@import "_global/actions";
+@import "skin/header";
+@import "_global/menu";
+@import "scripts/jxmenu";
+@import "scripts/autocomplete";

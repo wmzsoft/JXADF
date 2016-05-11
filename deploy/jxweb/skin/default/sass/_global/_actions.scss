@@ -1,0 +1,138 @@
+@charset "utf-8";
+//主页面皮肤下拉列表公共样式
+$head-height: 56px !default;
+$line-height: 22px !default;
+$icon-size: $line-height !default;
+$action-font-size: 12px !default;;
+%page_home_skin_actions{
+    .action_skin,
+    .action_exit,
+    .action_home,
+    .action_language{
+        display: inline-block;
+        font-size: $action-font-size;
+        height: $icon-size;
+        line-height: $icon-size;
+        &:before{
+            content:"";
+            display: inline-block;
+            height: $icon-size;
+            line-height: $icon-size;
+            width: $icon-size;
+            margin-right: 3px;
+            vertical-align: top;
+            @include renderSpriteImage();
+        }
+    }
+    .action_skin:before {
+        @extend %page_home_action_skin;
+    }
+
+    .action_exit:before {
+        @extend %page_home_action_exit;
+    }
+
+    .action_home:before {
+        @extend %page_home_action_home;
+    }
+    .action_language:before{
+        @extend %page_home_action_language;
+    }
+}
+
+.skins {
+    $arrow-width: 20px;
+    $arrow-height: 14px;
+    $skin-left: 15px;
+    width: 140px;
+    top: $line-height;
+    padding-top: $arrow-height;
+    position: absolute;
+    left: -$skin-left;
+    display: none;
+    z-index: 9;
+    .skins-cont {
+        position: relative;
+        border: 1px solid #ccc;
+        background: #fff;
+        padding: 15px 8px 5px 8px;
+    }
+    .skins-cont-top {
+        position: absolute;
+        z-index: 2;
+        width: $arrow-width;
+        height: $arrow-height;
+        top: -$arrow-height;
+        left: $skin-left + 10; //让箭头指向图标的中间
+        @include renderSpriteImage();
+        @extend %page_home_skin_arrow;
+    }
+    .skins-list {
+        li {
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            background: #e6eef2;
+            margin-bottom: 10px;
+            list-style-type: none;
+
+            &:hover {
+                border-color: #fa0;
+                span {
+                    background-color: #fa0;
+                }
+            }
+        }
+        div {
+            position: relative;
+            width: 120px;
+            height: 88px;
+            @include renderSpriteImage();
+
+            &.active {
+                span {
+                    background-color: #ffaa00;
+                    padding-right: $icon-size;
+                    &:after {
+                        position: absolute;
+                        right: 0;
+                        width: $icon-size;
+                        height: $icon-size;
+                        content:"";
+                        @include renderSpriteImage();
+                        @extend %page_home_skin_item_selected;
+                    }
+                }
+            }
+        }
+        span {
+            position: absolute;
+            right: 2px;
+            bottom: 3px;
+            background: #8d9294;
+            height: $line-height;
+            line-height: $line-height;
+            padding: 0 10px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+
+        .skin-simple {
+            @extend %page_home_skin_simple;
+        }
+        .skin-classics {
+            @extend %page_home_skin_classic;
+        }
+        .skin-tabs {
+            @extend %page_home_skin_tabs;
+        }
+        .skin-mobile {
+            @extend %page_home_skin_mobile;
+        }
+        .skin-patrol {
+            @extend %page_home_skin_patrol;
+        }
+        .skin-dynamic-patrol {
+            @extend %page_home_skin_dynamic_patrol;
+        }
+    }
+}

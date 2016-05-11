@@ -1,0 +1,211 @@
+@charset "utf-8";
+#dashboards {
+    .ui-tabs-panel {
+        padding: 0 10px;
+    }
+    .sDashboard {
+        > li {
+            float: none;
+            padding: 10px;
+            margin: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .ui-sortable-placeholder {
+            width: 100% !important;
+            border: 0 none !important;
+            box-sizing: border-box;
+            background: none;
+            &:after {
+                content: "";
+                background-color: #fcefa1;
+                border: 1px dotted black;
+                display: block;
+                margin: -1px 0 0 -1px;
+                width: 100%;
+                height: 100%;
+            }
+        }
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+        &.no-permission {
+            .sDashboard-icon {
+                display: none !important;
+            }
+        }
+    }
+    .layout-a-column {
+        .dashboard-column-0 {
+            padding: 0;
+            display: block;
+            width: 100%;
+        }
+        .dashboard-column-1,
+        .dashboard-column-2 {
+            display: none;
+        }
+    }
+    .layout-aa-column {
+        .dashboard-column-0,
+        .dashboard-column-1 {
+            padding: 0;
+            width: 50%;
+            float: left;
+        }
+        .dashboard-column-2 {
+            display: none;
+        }
+    }
+    .layout-ab-column {
+        .dashboard-column-0 {
+            padding: 0;
+            width: 35%;
+            float: left;
+        }
+        .dashboard-column-1 {
+            padding: 0;
+            width: 65%;
+            float: left;
+        }
+        .dashboard-column-2 {
+            display: none;
+        }
+    }
+
+    .layout-ba-column {
+        .dashboard-column-0 {
+            padding: 0;
+            width: 65%;
+            float: left;
+        }
+        .dashboard-column-1 {
+            padding: 0;
+            width: 35%;
+            float: left;
+        }
+        .dashboard-column-2 {
+            display: none;
+        }
+    }
+    .layout-aaa-column {
+        .dashboard-column-0,
+        .dashboard-column-1,
+        .dashboard-column-2 {
+            padding: 0;
+            width: 33%;
+            float: left;
+        }
+    }
+
+    .empty {
+        .sDashboardWidgetHeader {
+            display: none;
+        }
+        .sDashboardWidgetContent {
+            height: 100px !important;
+            line-height: 100px;
+            padding: 0;
+            overflow: hidden;
+            border: 1px solid #d7d7d7;
+            cursor: pointer;
+            color: #666;
+            background: #fafafa;
+        }
+    }
+
+    .sDashboardWidget {
+        margin: 0;
+        border: 0 none;
+        &:hover {
+            .sDashboard-icon {
+                display: block;
+            }
+        }
+    }
+    .sDashboardWidgetHeader {
+        margin: 0;
+        padding: 0 0 0 10px;
+        border: 0 none;
+        background: #5caad1;
+        color: #fff;
+        font-size: 12px;
+        height: 36px;
+        line-height: 36px;
+    }
+
+    .sDashboard-icon {
+        height: 36px;
+        width: 44px;
+        margin: 0;
+        display: none;
+        @include renderSpriteImage;
+        &.sDashboard-circle-plus-icon {
+            @extend %script_dashboard_icon_circle_plus;
+        }
+        &.sDashboard-edit-icon {
+            @extend %script_dashboard_icon_edit;
+        }
+        &.sDashboard-circle-del-icon {
+            @extend %script_dashboard_icon_circle_del;
+            &:hover {
+                background-color: #d44027;
+            }
+        }
+        &.sDashboard-circle-minus-icon {
+            @extend %script_dashboard_icon_circle_minus;
+        }
+        &.sDashboard-refresh-icon {
+            @extend %script_dashboard_icon_refresh;
+        }
+        &.sDashboard-circle-remove-icon {
+            width: 48px;
+            @extend %script_dashboard_icon_circle_remove;
+            &:hover {
+                background-color: #d44027;
+            }
+        }
+        &:hover {
+            background-color: #389ed1;
+        }
+    }
+    .sDashboardWidgetContent {
+        padding: 5px;
+        height: auto !important;
+        border: 1px solid #d7d7d7;
+        border-top-width: 0;
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    .chart .sDashboardWidgetContent {
+        height: 300px !important;
+    }
+    .sDashboardWidgetContainerMaximized {
+        margin-left: -400px;
+        margin-top: -240px;
+        .sDashboardWidgetContent.sDashboardWidgetContentMaximized {
+            height: 100% !important;
+            background: #fff;
+        }
+        .sDashboard-icon {
+            display: block;
+            &.sDashboard-circle-del-icon {
+                display: none;
+            }
+        }
+    }
+    .dashboard-plugin-required {
+        background: getAbsoluteBackgroundImage("dashboard/plugin-required.png") center center no-repeat;
+        height: 250px;
+        span {
+            display: none;
+        }
+    }
+}
+
+#__echarts_download_wrap__ img {
+    max-width: 100%;
+}

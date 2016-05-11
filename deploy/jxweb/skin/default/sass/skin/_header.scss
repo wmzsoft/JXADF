@@ -1,0 +1,94 @@
+@charset "utf-8";
+$head-height: 56px;
+$line-height: 22px;
+$icon-size: $line-height;
+#headerBg {
+    background: url(../images/home/headerBg.png) no-repeat;
+    position: relative;
+    height: $head-height;
+    .headerLogo {
+        position: absolute;
+        top: 0;
+        left: 20px;
+        width: 300px;
+        height: 49px;
+        background: url(../images/home/logo.png) no-repeat;
+    }
+    .date {
+        position: absolute;
+        height: $line-height;
+        line-height: $line-height;
+        top: ($head-height - $line-height)/2;
+        left: 40%;
+        color: #fff;
+        p {
+            font-size: 12px;
+            span {
+                margin-left: 85px;
+            }
+        }
+        .appMsg{
+            color: #ff0;
+            font-weight: 700;
+        }
+    }
+    .headerAction {
+        position: absolute;
+        top: ($head-height - $line-height)/2;
+        height: $line-height;
+        right: 50px;
+        color: #fff;
+        white-space: nowrap;
+        .action {
+            padding-left: 10px;
+            position: relative;
+            cursor: pointer;
+            display: inline-block;
+            a {
+                color: #fff;
+                margin-left: 5px;
+                text-decoration: none;
+            }
+            @extend %page_home_skin_actions;
+        }
+    }
+
+    .skin-header {
+        position: absolute;
+        right: 50px;
+        top: 40px;
+        overflow: hidden;
+        ul{
+            list-style: none;
+        }
+        li {
+            width: 14px;
+            height: 14px;
+            margin-left: 3px;
+            cursor: pointer;
+            float: left;
+            &.on{
+                @include renderSpriteImage;
+                @extend %page_home_skin_theme_on;
+            }
+            &.skin-blue{
+                background-color:#0a6bba;
+            }
+            &.skin-green{
+                background-color: #36d900;
+            }
+            &.skin-yellow{
+                background-color: #ff9326;
+            }
+            &.skin-red{
+                background-color: #ff2626;
+            }
+        }
+    }
+}
+
+.header-bottom {
+    width: 100%;
+    height: 3px;
+    background: #c7f0fc;
+}

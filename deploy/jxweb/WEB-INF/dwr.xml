@@ -1,0 +1,35 @@
+﻿<!DOCTYPE dwr PUBLIC
+    "-//GetAhead Limited//DTD Direct Web Remoting 3.0//EN"
+    "http://directwebremoting.org/schema/dwr30.dtd">
+
+<!-- 
+	暂时没有使用
+-->
+<dwr>
+	<init>
+		<converter id="jbo" class="com.jxtech.dwr.convert.JboConverter" />
+		<converter id="jboset" class="com.jxtech.dwr.convert.JboSetConverter" />
+	</init>
+	<!-- without allow, DWR isn't allowed to do anything -->
+	<allow>
+		<convert converter="jbo" match="com.jxtech.jbo.JboIFace">
+			<param name="include"
+				value="attachmentCount,children,datas,getString,deleteChildren,jboname,uidValue,readonly" />
+		</convert>
+		<convert converter="jboset" match="com.jxtech.jbo.JboSetIFace">
+			<param name="include" value="jboname,jbolist,jbo,appname,jxTable" />
+		</convert>
+		<convert converter="bean" match="com.jxtech.jbo.base.JxTable">
+			<param name="include" value="tableModle" />
+		</convert>
+		<convert converter="exception" match="com.jxtech.jbo.util.JxException" />
+		<convert converter="bean" match="java.lang.Object" />
+        <create creator="new" javascript="WebClientBean">
+            <param name="class" value="com.jxtech.dwr.WebClientBean" />
+        </create>
+	</allow>
+
+
+	<!-- you may need to tell DWR about method signatures -->
+
+</dwr>

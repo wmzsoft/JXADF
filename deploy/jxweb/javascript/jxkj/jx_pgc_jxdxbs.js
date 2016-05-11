@@ -1,0 +1,1 @@
+function getUrlParamVal(a){var l=location.search.match(new RegExp("[?&]"+a+"=([^&]+)","i"));return null==l||l.length<1?"":l[1]}function setDefVal(a,l){""==a.val()&&a.val(l)}

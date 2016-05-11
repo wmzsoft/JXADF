@@ -1,0 +1,18 @@
+table {
+    .select2-container {
+        margin: 5px 0;
+    }
+}
+
+.select2-container--default.select2-container--disabled {
+    .select2-selection--single{
+        background: transparent !important;
+        border: 0 none;
+    }
+    .selection,.select2-selection{
+        outline: none;
+    }
+    .select2-selection__arrow{
+        display: none;
+    }
+}

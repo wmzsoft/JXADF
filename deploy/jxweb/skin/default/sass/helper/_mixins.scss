@@ -1,0 +1,102 @@
+@import "variables";
+@import "functions";
+@mixin renderSpriteImage(){
+    background-image: url($base_sprite_path);
+    background-repeat: no-repeat;
+}
+
+@mixin blockRender($selector){
+    #{$selector}{
+        @content;
+    }
+}
+
+@mixin generateSpriteIcon($name,$isPlaceholder:false,$x:0,$y:0,$width:0,$height:0){
+    @if($isPlaceholder){
+        $name: "%#{$name}";
+    }@else{
+        $name: ".#{$name}";
+    }
+    @include blockRender($name){
+        @if($width != 0){
+            width: numberConvertToPixelUnit($width);
+        }
+        @if($height != 0){
+            height:numberConvertToPixelUnit($height);
+        }
+        background-position: numberConvertToPixelUnit($x) numberConvertToPixelUnit($y);
+    }
+}
+
+@mixin generateSpriteIconWithSource($name,$isPlaceholder,$x:0,$y:0,$width:0,$height:0){
+    @if($isPlaceholder){
+        $name: "%#{$name}";
+    }@else{
+        $name: ".#{$name}";
+    }
+    @include blockRender($name){
+        @if($width != 0){
+            width: numberConvertToPixelUnit($width);
+        }
+        @if($height != 0){
+            height:numberConvertToPixelUnit($height);
+        }
+        background:url($base_sprite_path) numberConvertToPixelUnit($x) numberConvertToPixelUnit($y) no-repeat;
+    }
+}
+
+@mixin generateIE8SpriteIconWithSource($name,$isPlaceholder,$x:0,$y:0,$width:0,$height:0){
+    @if($isPlaceholder){
+        $name: "%#{$name}";
+    }@else{
+        $name: ".#{$name}";
+    }
+    @include blockRender($name){
+        @if($width != 0){
+            width\0: numberConvertToPixelUnit($width);
+        }
+        @if($height != 0){
+            height\0:numberConvertToPixelUnit($height);
+        }
+        background\0:url($base_sprite_path) numberConvertToPixelUnit($x) numberConvertToPixelUnit($y) no-repeat !important;
+    }
+}
+
+@mixin generateSpriteIconHoverByParents($name,$isPlaceholder,$x,$y,$step:50,$width:0,$height:0){
+    @if($isPlaceholder){
+        $name: "%#{$name}";
+    }@else{
+        $name: ".#{$name}";
+    }
+    @include blockRender($name){
+        @if($width != 0){
+            width: numberConvertToPixelUnit($width);
+        }
+        @if($height != 0){
+            height:numberConvertToPixelUnit($height);
+        }
+        background-position: numberConvertToPixelUnit($x) numberConvertToPixelUnit($y);
+    }
+    @include blockRender("#{$name}_hover"){
+        background-position: numberConvertToPixelUnit($x) numberConvertToPixelUnit($y - $step);
+    }
+}
+@mixin generateSpriteIconHoverBySelf($name,$isPlaceholder,$x,$y,$step:50,$width:0,$height:0){
+    @if($isPlaceholder){
+        $name: "%#{$name}";
+    }@else{
+        $name: ".#{$name}";
+    }
+    @include blockRender($name){
+        @if($width != 0){
+            width: numberConvertToPixelUnit($width);
+        }
+        @if($height != 0){
+            height:numberConvertToPixelUnit($height);
+        }
+        background-position: numberConvertToPixelUnit($x) numberConvertToPixelUnit($y);
+        &:hover{
+            background-position: numberConvertToPixelUnit($x) numberConvertToPixelUnit($y - $step);
+        }
+    }
+}

@@ -1,0 +1,79 @@
+@charset "utf-8";
+@import "../helper/mixins";
+//命名规则
+//#{type}_#{type-name}_#{icon-identity}
+//type包括page,tag,script
+
+//首页右上角菜单栏
+@include generateSpriteIcon("page_home_action_exit", true, 0, 0);
+@include generateSpriteIcon("page_home_action_home", true, -50, 0);
+@include generateSpriteIcon("page_home_action_skin", true, -100, 0);
+@include generateSpriteIcon("page_home_action_language",true,-550,-350);
+@include generateSpriteIcon("page_home_skin_arrow",true,-150,0);
+@include generateSpriteIcon("page_home_skin_theme_on",true,-700,0);
+//首页右上角菜单栏下拉皮肤选择
+@include generateSpriteIcon("page_home_skin_simple",true,0,-50);
+@include generateSpriteIcon("page_home_skin_classic",true,-150,-50);
+@include generateSpriteIcon("page_home_skin_tabs",true,-300,-50);
+@include generateSpriteIcon("page_home_skin_mobile",true,-450,-50);
+@include generateSpriteIcon("page_home_skin_patrol",true,-300,-50);
+@include generateSpriteIcon("page_home_skin_dynamic_patrol",true,-300,-50);
+@include generateSpriteIcon("page_home_skin_item_selected",true,-200,0);
+//首页重写layout样式
+@include generateSpriteIcon("page_home_override_layout_resizer",true,-250,0);
+@include generateSpriteIcon("page_Home_override_layout_west_close",true,-300,0);
+@include generateSpriteIcon("page_Home_override_layout_west_open",true,-350,0);
+//jxmenu
+@include generateSpriteIcon("script_jxmenu_search_corner",true,-400,0);
+@include generateSpriteIcon("script_jxmenu_search_visitBtn",true,-450,0);
+@include generateSpriteIcon("script_jxmenu_search_input_bg",true,-500,0);
+//jxmenu item-icons
+
+@include generateSpriteIconHoverByParents("script_jxmenu_item_icon_dashboard",true,-50,-150);//平台-面板
+@include generateSpriteIconHoverByParents("script_jxmenu_item_icon_baseinfo",true,-100,-150);//平台-基础信息
+@include generateSpriteIconHoverByParents("script_jxmenu_item_icon_system",true,-150,-150);//平台-系统与资源
+@include generateSpriteIconHoverByParents("script_jxmenu_item_icon_pm",true,-200,-150);//平台-项目管理
+@include generateSpriteIconHoverByParents("script_jxmenu_item_icon_proloan",true,-250,-150);//平台-额度审批管理
+@include generateSpriteIconHoverByParents("script_jxmenu_item_icon_cccadj",true,-300,-150);//平台-变更管理
+@include generateSpriteIconHoverByParents("script_jxmenu_item_icon_activation",true,-350,-150);//平台-额度激活管理
+@include generateSpriteIconHoverByParents("script_jxmenu_item_icon_makeinvent",true,-400,-150);//平台-盘库管理
+@include generateSpriteIconHoverByParents("script_jxmenu_item_icon_dealerstat",true,-450,-150);//平台-经销商状态管理
+@include generateSpriteIconHoverByParents("script_jxmenu_item_icon_regiinfo",true,-500,-150);//平台-资料登记管理
+@include generateSpriteIconHoverByParents("script_jxmenu_item_icon_dealinfmai",true,-550,-150);//平台-报表中心
+//page login
+@include generateSpriteIcon("page_login_error",true,0,-350);
+@include generateSpriteIconHoverBySelf("page_login_button",true,-50,-350);
+//tag appbar
+@include generateSpriteIconHoverBySelf("tag_appbar_menu_list_toggle_button",true,-200,-350);
+
+//tag checkbox
+@include generateIE8SpriteIconWithSource("tag_checkbox_slide_switch_off",true,-350,-350);
+@include generateIE8SpriteIconWithSource("tag_checkbox_slide_switch_on",true,-450,-350);
+@include generateIE8SpriteIconWithSource("tag_checkbox_slide_switch_disabled",true,-400,-350);
+@include generateIE8SpriteIconWithSource("tag_checkbox_slide_switch_indicator",true,-350,-400);
+@include generateIE8SpriteIconWithSource("tag_checkbox_slide_switch_indicator_disabled",true,-400,-400);
+
+//script dashboard
+@include generateSpriteIcon("script_dashboard_icon_circle_plus",true,0,-450);
+@include generateSpriteIcon("script_dashboard_icon_edit",true,-50,-450);
+@include generateSpriteIcon("script_dashboard_icon_circle_del",true,-100,-450);
+@include generateSpriteIcon("script_dashboard_icon_circle_minus",true,-150,-450);
+@include generateSpriteIcon("script_dashboard_icon_refresh",true,-200,-450);
+@include generateSpriteIcon("script_dashboard_icon_circle_remove",true,-250,-450);
+
+//script datepicker
+@include generateSpriteIconWithSource("script_datepicker_icon_next",true,-300,-450);
+@include generateSpriteIconWithSource("script_datepicker_icon_prev",true,-350,-450);
+
+//table paginate
+@include generateSpriteIconWithSource("tag_table_list_paginate_icon_first",true,-400,-450);
+@include generateSpriteIconWithSource("tag_table_list_paginate_icon_pre",true,-450,-450);
+@include generateSpriteIconWithSource("tag_table_list_paginate_icon_next",true,-500,-450);
+@include generateSpriteIconWithSource("tag_table_list_paginate_icon_last",true,-550,-450);
+
+//table expand
+@include generateSpriteIcon("tag_table_list_expand_button",true,-450,-400);
+@include generateSpriteIcon("tag_table_list_expand_expanded_button",true,-500,-400);
+
+//script dialog
+@include generateSpriteIconWithSource("script_dialog_icon_close",true,-500,-350);

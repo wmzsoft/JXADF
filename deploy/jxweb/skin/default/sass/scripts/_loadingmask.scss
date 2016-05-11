@@ -1,0 +1,28 @@
+.loading-mask{
+    &.empty-loading-mask{
+        padding:10px 0;
+        text-align: center;
+        .loading{
+            background: getAbsoluteBackgroundImage("loading-white.gif") no-repeat;
+            width: 42px;
+            height: 42px;
+            display: inline-block;
+        }
+    }
+    &.float-loading-mask{
+        position: absolute;
+        left: 50%;
+        top: 10px;
+        width: 32px;
+        height: 32px;
+        .loading{
+            position: absolute;
+            left: -50%;
+            top: 20px;
+            background: getAbsoluteBackgroundImage("loading-white.gif") no-repeat;
+            width: 42px;
+            height: 42px;
+            display: inline-block;
+        }
+    }
+}

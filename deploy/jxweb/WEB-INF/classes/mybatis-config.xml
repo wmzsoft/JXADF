@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+    PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+    "jxtech://file/jxtech.web.realpath/WEB-INF/xsd/mybatis-3-config.dtd">
+
+<configuration>
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="JNDI">
+				<property name="data_source" value="jdbc/CTDataSource" />
+				<property name="initial_context" value="java:/comp/env" />
+			</dataSource>
+		</environment>
+	</environments>
+</configuration>

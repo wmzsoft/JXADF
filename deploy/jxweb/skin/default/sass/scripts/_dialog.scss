@@ -1,0 +1,56 @@
+@charset "utf-8";
+.ui-dialog {
+    z-index: 1051;
+    .dialog{
+        padding: 7px 0;
+        box-sizing: border-box;
+        overflow: visible;
+
+    }
+    .ui-dialog-titlebar {
+        background: url(../images/home/ui-bg_highlight-soft.png) repeat-x;
+    }
+
+    .ui-dialog-titlebar-close {
+        outline: none !important;
+        overflow: hidden; //防止text-indent的属性导致界面出现竖线。
+        margin-top:-10px;
+        right: 5px;
+        .ui-icon-closethick {
+            @extend %script_dialog_icon_close;
+            width: 19px;
+            height: 19px;
+
+        }
+        &.ui-state-hover .ui-icon-closethick{
+            background-color: #e00b0b;
+        }
+    }
+    .ui-dialog-buttonpane button {
+        @include border-radius(2px);
+    }
+
+    .dialog_waitting {
+        background: url("../images/dialog_loading.gif") no-repeat;
+        width: 100px;
+        height: 100px;
+        margin: 0 auto;
+    }
+    .ui-state-active{
+        border: 0 none;
+        background: none;
+    }
+}
+
+.ui-widget-overlay {
+    z-index: 1050;
+}
+
+.dialog_center_point {
+    width: 1px;
+    height: 1px;
+    visibility: hidden;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+}

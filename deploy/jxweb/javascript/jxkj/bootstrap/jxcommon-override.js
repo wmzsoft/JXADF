@@ -1,0 +1,1 @@
+function bindTableEvent(){}function selectTableTr(){}
