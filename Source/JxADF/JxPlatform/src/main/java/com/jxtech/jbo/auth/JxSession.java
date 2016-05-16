@@ -1,5 +1,6 @@
 package com.jxtech.jbo.auth;
 
+import java.util.Locale;
 import java.util.Set;
 
 import com.jxtech.jbo.App;
@@ -329,7 +330,8 @@ public class JxSession {
             lang = userInfo.getLangcode();
         }
         if (StrUtil.isNull(lang)) {
-            return "zh-CN";
+            Locale local = Locale.getDefault();
+            return StrUtil.contact(local.getLanguage(), "-", local.getCountry());
         }
         return lang.replace("_", "-");
     }
