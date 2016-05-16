@@ -1,1 +1,67 @@
-Flotr.addType("points",{options:{show:!1,radius:3,lineWidth:2,fill:!0,fillColor:"#FFFFFF",fillOpacity:1,hitRadius:null},draw:function(l){var t=l.context,i=(l.lineWidth,l.shadowSize);t.save(),i>0&&(t.lineWidth=i/2,t.strokeStyle="rgba(0,0,0,0.1)",this.plot(l,i/2+t.lineWidth/2),t.strokeStyle="rgba(0,0,0,0.2)",this.plot(l,t.lineWidth/2)),t.lineWidth=l.lineWidth,t.strokeStyle=l.color,l.fill&&(t.fillStyle=l.fillStyle),this.plot(l),t.restore()},plot:function(l,t){var i,e,o,a=l.data,h=l.context,r=l.xScale,n=l.yScale;for(i=a.length-1;i>-1;--i)o=a[i][1],null!==o&&(e=r(a[i][0]),o=n(o),0>e||e>l.width||0>o||o>l.height||(h.beginPath(),t?h.arc(e,o+t,l.radius,0,Math.PI,!1):(h.arc(e,o,l.radius,0,2*Math.PI,!0),l.fill&&h.fill()),h.stroke(),h.closePath()))}});
+/** Points **/
+Flotr.addType('points', {
+  options: {
+    show: false,           // => setting to true will show points, false will hide
+    radius: 3,             // => point radius (pixels)
+    lineWidth: 2,          // => line width in pixels
+    fill: true,            // => true to fill the points with a color, false for (transparent) no fill
+    fillColor: '#FFFFFF',  // => fill color.  Null to use series color.
+    fillOpacity: 1,        // => opacity of color inside the points
+    hitRadius: null        // => override for points hit radius
+  },
+
+  draw : function (options) {
+    var
+      context     = options.context,
+      lineWidth   = options.lineWidth,
+      shadowSize  = options.shadowSize;
+
+    context.save();
+
+    if (shadowSize > 0) {
+      context.lineWidth = shadowSize / 2;
+      
+      context.strokeStyle = 'rgba(0,0,0,0.1)';
+      this.plot(options, shadowSize / 2 + context.lineWidth / 2);
+
+      context.strokeStyle = 'rgba(0,0,0,0.2)';
+      this.plot(options, context.lineWidth / 2);
+    }
+
+    context.lineWidth = options.lineWidth;
+    context.strokeStyle = options.color;
+    if (options.fill) context.fillStyle = options.fillStyle;
+
+    this.plot(options);
+    context.restore();
+  },
+
+  plot : function (options, offset) {
+    var
+      data    = options.data,
+      context = options.context,
+      xScale  = options.xScale,
+      yScale  = options.yScale,
+      i, x, y;
+      
+    for (i = data.length - 1; i > -1; --i) {
+      y = data[i][1];
+      if (y === null) continue;
+
+      x = xScale(data[i][0]);
+      y = yScale(y);
+
+      if (x < 0 || x > options.width || y < 0 || y > options.height) continue;
+      
+      context.beginPath();
+      if (offset) {
+        context.arc(x, y + offset, options.radius, 0, Math.PI, false);
+      } else {
+        context.arc(x, y, options.radius, 0, 2 * Math.PI, true);
+        if (options.fill) context.fill();
+      }
+      context.stroke();
+      context.closePath();
+    }
+  }
+});

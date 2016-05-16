@@ -1,1 +1,97 @@
-.title{display:block;background:url(../images/home/tittle.png) repeat-x;color:#fff;height:28px;line-height:28px;text-align:left;padding-left:15px;border-top:1px #4379d5 solid;border-left:1px #4379d5 solid;border-top-left-radius:3px;border-top-right-radius:3px;margin-top:5px}.ui-dialog-titlebar{background:url(../images/home/ui-bg_highlight-soft.png) repeat-x}.ui-widget-content .ui-state-highlight{background:#f0f0f0;border:1px solid #cecece}.ui-dialog-titlebar-close .ui-icon-closethick{background:url(../images/javascript/ui-icons_close.png) no-repeat;margin-top:-13px;margin-left:-13px;width:19px;height:19px}.ui-state-hover .ui-icon-closethick{background:url(../images/javascript/ui-icons_close_hover.png) no-repeat}.ui-state-active,.ui-widget-content .ui-state-active,.ui-widget-header .ui-state-active{background:0 0}.ui-dialog .ui-dialog-buttonpane button{border-radius:2px}.userView{vertical-align:middle}.ui-widget-overlay{z-index:1050}.ui-dialog{z-index:1051}.plugin-input-text-helper-view{position:absolute;left:-9999px;top:-9999px;white-space:nowrap;z-index:1000;background:#fff;padding:5px 2px}.loading-mask.empty-loading-mask{padding:10px 0;text-align:center}.loading-mask.empty-loading-mask .loading{background:url(../images/loading-white.gif) no-repeat;width:42px;height:42px;display:inline-block}.loading-mask.float-loading-mask{position:absolute;left:50%;top:10px;width:32px;height:32px}.loading-mask.float-loading-mask .loading{position:absolute;left:-50%;top:20px;background:url(../images/loading-white.gif) no-repeat;width:42px;height:42px;display:inline-block}
+/*此样式是覆盖  JxPlatform\开发库\源代码\framework\JxPlatform\jxweb\javascript 下面的样式*/
+.title {
+    display: block;
+    background: url(../images/home/tittle.png) repeat-x;
+    color: #fff;
+    height: 28px;
+    line-height: 28px;
+    text-align: left;
+    padding-left: 15px;
+    border-top: 1px #4379d5 solid;
+    border-left: 1px #4379d5 solid;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    margin-top: 5px;
+
+}
+
+.ui-dialog-titlebar {
+    background: url(../images/home/ui-bg_highlight-soft.png) repeat-x;
+}
+
+.ui-widget-content .ui-state-highlight {
+    background: #f0f0f0;
+    border: 1px #cecece solid;
+}
+
+.ui-dialog-titlebar-close .ui-icon-closethick {
+    background: url(../images/javascript/ui-icons_close.png) no-repeat;
+    margin-top: -13px;
+    margin-left: -13px;
+    width: 19px;
+    height: 19px;
+}
+
+.ui-state-hover .ui-icon-closethick {
+    background: url(../images/javascript/ui-icons_close_hover.png) no-repeat;
+}
+
+.ui-state-active,
+.ui-widget-content .ui-state-active,
+.ui-widget-header .ui-state-active {
+    background: none;
+}
+
+.ui-dialog .ui-dialog-buttonpane button {
+    border-radius: 2px;
+}
+
+.userView {
+    vertical-align: middle;
+}
+
+.ui-widget-overlay {
+    z-index: 1050;
+}
+
+.ui-dialog {
+    z-index: 1051;
+}
+
+.plugin-input-text-helper-view{
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    white-space: nowrap;
+    z-index: 1000;
+    background: #fff;
+    padding: 5px 2px;
+}
+
+.loading-mask.empty-loading-mask{
+    padding:10px 0;
+    text-align: center;
+}
+.loading-mask.empty-loading-mask .loading{
+    background: url("../images/loading-white.gif") no-repeat;
+    width: 42px;
+    height: 42px;
+    display: inline-block;
+}
+
+.loading-mask.float-loading-mask{
+    position: absolute;
+    left: 50%;
+    top: 10px;
+    width: 32px;
+    height: 32px;
+}
+.loading-mask.float-loading-mask .loading{
+    position: absolute;
+    left: -50%;
+    top: 20px;
+    background: url("../images/loading-white.gif") no-repeat;
+    width: 42px;
+    height: 42px;
+    display: inline-block;
+}

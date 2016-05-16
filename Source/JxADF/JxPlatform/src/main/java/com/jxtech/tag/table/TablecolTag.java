@@ -145,6 +145,9 @@ public class TablecolTag extends JxBaseUITag {
                         col.setJxattribute(jxattribute);
                         boolean rq = StrUtil.isTrue(required, false);
                         jboset.setRequired(dataattribute, rq);
+                        if (StrUtil.isNull(label)) {
+                            col.setLabel(jxattribute.getTitle());
+                        }
                     }
                 } catch (Exception e) {
                     LOG.error(e.getMessage(), e);

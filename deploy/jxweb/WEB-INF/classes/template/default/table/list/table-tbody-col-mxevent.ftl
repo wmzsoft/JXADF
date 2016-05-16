@@ -37,7 +37,7 @@ $author:wmzsoft@gmail.com
             <#if ((colDataValue?length) > ml) >
                 <#t>${colDataValue?substring(0,ml)}...<#t>
             <#elseif ((colDataValue?length) < 1) >
-                <#t>${parameters.tagbundle['tablecol.wf.nostart']}<#t>
+                <#t>${parameters.tagbundle['tablecol.wf.nostart']!}<#t>
             <#else>
                 <#t>${colDataValue!''}<#t>
             </#if>

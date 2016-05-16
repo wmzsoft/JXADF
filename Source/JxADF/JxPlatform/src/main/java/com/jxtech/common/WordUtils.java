@@ -234,7 +234,7 @@ public class WordUtils {
      * @return boolean true-查找到并选中该文本，false-未查找到文本
      */
     public boolean find(String findText){
-        if(findText == null || findText.equals("")){
+        if(findText == null || "".equals(findText)){
             return false;
         }
         // 从selection所在位置开始查询
@@ -272,11 +272,11 @@ public class WordUtils {
      */
     public void headerView(){
         //取得活动窗体对象
-        Dispatch ActiveWindow = word.getProperty( "ActiveWindow").toDispatch();
+        Dispatch activeWindow = word.getProperty( "ActiveWindow").toDispatch();
         //取得活动窗格对象
-        Dispatch ActivePane = Dispatch.get(ActiveWindow, "ActivePane").toDispatch();
+        Dispatch activePane = Dispatch.get(activeWindow, "ActivePane").toDispatch();
         //取得视窗对象
-        Dispatch view = Dispatch.get(ActivePane, "View").toDispatch();
+        Dispatch view = Dispatch.get(activePane, "View").toDispatch();
         Dispatch.put(view, "SeekView", "9");
     }
 
@@ -285,11 +285,11 @@ public class WordUtils {
      */
     public void footerView(){
         //取得活动窗体对象
-        Dispatch ActiveWindow = word.getProperty( "ActiveWindow").toDispatch();
+        Dispatch activeWindow = word.getProperty( "ActiveWindow").toDispatch();
         //取得活动窗格对象
-        Dispatch ActivePane = Dispatch.get(ActiveWindow, "ActivePane").toDispatch();
+        Dispatch activePane = Dispatch.get(activeWindow, "ActivePane").toDispatch();
         //取得视窗对象
-        Dispatch view = Dispatch.get(ActivePane, "View").toDispatch();
+        Dispatch view = Dispatch.get(activePane, "View").toDispatch();
         Dispatch.put(view, "SeekView", "10");
     }
 
@@ -298,11 +298,11 @@ public class WordUtils {
      */
     public void pageView(){
         //取得活动窗体对象
-        Dispatch ActiveWindow = word.getProperty( "ActiveWindow").toDispatch();
+        Dispatch activeWindow = word.getProperty( "ActiveWindow").toDispatch();
         //取得活动窗格对象
-        Dispatch ActivePane = Dispatch.get(ActiveWindow, "ActivePane").toDispatch();
+        Dispatch activePane = Dispatch.get(activeWindow, "ActivePane").toDispatch();
         //取得视窗对象
-        Dispatch view = Dispatch.get(ActivePane, "View").toDispatch();
+        Dispatch view = Dispatch.get(activePane, "View").toDispatch();
         Dispatch.put(view, "SeekView", new Variant(0));//普通视图
     }
     private void logError(int a,int max,String newText) throws JxException{
@@ -358,11 +358,11 @@ public class WordUtils {
     public void replaceAllText(String findText, String newText, String fontName, int size){
         /****插入页眉页脚*****/
         //取得活动窗体对象
-        Dispatch ActiveWindow = word.getProperty( "ActiveWindow").toDispatch();
+        Dispatch activeWindow = word.getProperty( "ActiveWindow").toDispatch();
         //取得活动窗格对象
-        Dispatch ActivePane = Dispatch.get(ActiveWindow, "ActivePane").toDispatch();
+        Dispatch activePane = Dispatch.get(activeWindow, "ActivePane").toDispatch();
         //取得视窗对象
-        Dispatch view = Dispatch.get(ActivePane, "View").toDispatch();
+        Dispatch view = Dispatch.get(activePane, "View").toDispatch();
         /****设置页眉*****/
         Dispatch.put(view, "SeekView", "9");
         while (find(findText)){

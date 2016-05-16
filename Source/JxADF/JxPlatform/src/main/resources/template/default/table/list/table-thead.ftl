@@ -14,8 +14,8 @@ $author:wmzsoft@gmail.com
     <tr class="fix-width-row" style="height: 0;visibility:hidden;"><#t>
         <#if (parameters.selectmode??)>
             <#if (parameters.selectmode != "NONE")>
-                <td style="height: 0;border-top-width: 0;border-bottom-width: 0;"
-                    class="table_head_${parameters.selectmode?lower_case}"></td>
+                <td style="height: 0;border-top-width: 0;border-bottom-width: 0;" <#t>
+                    class="table_head_${parameters.selectmode?lower_case}"></td> <#t>
             </#if>
         </#if>
         <#list parameters.columns as col>
@@ -47,36 +47,31 @@ $author:wmzsoft@gmail.com
     </td><#t>
 </tr>
 </#if>
-
-
 <#-- 整个表格的列头信息 -->
 <#if ((parameters.visibleHead!true)==true)>
 <tr>
-
-<#-- 是否可以扩展子表格 -->
+	<#-- 是否可以扩展子表格 -->
     <#if (parameters.expandtype??)>
-        <th class="table_head_expand"></th>
+        <th class="table_head_expand"></th><#t>
     </#if>
-
-<#-- 选择列 -->
+	<#-- 选择列 -->
     <#if (parameters.selectmode??)>
         <#if (parameters.selectmode != "NONE")>
             <th class="table_head_${parameters.selectmode?lower_case}">
                 <#if (parameters.selectmode == "MULTIPLE")>
-                    <input type="checkbox" name="allbox"
+                    <input type="checkbox" name="allbox" <#t>
                            onClick="ckPageSelectHandler(this,'ck_${parameters.id}');"/> <#t>
                 <#elseif (parameters.selectmode == "SINGLE")>
-                ${parameters.tagbundle['table-thead.choose']} <#t>
+                ${parameters.tagbundle['table-thead.choose']!} <#t>
                 </#if>
             </th>
         </#if>
     </#if>
-
-<#-- 具体定义的各个列头 -->
+	<#-- 具体定义的各个列头 -->
     <#list parameters.columns as col>
         <#if ((col.parameters.visible!true)==true)>
             <#if ((col.parameters.visibleHead!true)==true)>
-            <th <#rt> <#-- Begin TH.54 -->
+            <th <#rt> <#-- Begin -->
                 <#if (col.parameters.width??)>
                     <#lt> width="${col.parameters.width}" <#rt>
                 </#if>
@@ -90,27 +85,8 @@ $author:wmzsoft@gmail.com
                         <#lt> onclick="pageSort(this,event)" class="table_thsort"<#rt/>
                     </#if>
                 </#if>
-                <#lt> nowrap="true"><#rt> <#-- End TH.54 -->
-
-                <#assign mytitle=col.parameters.label!''>
-            <#--国际化-->
-                <#if (parameters.appBundle?? && parameters.appBundle.containsKey('${col.dataattribute!}'))>
-                    <#assign mytitle = parameters.appBundle.getString('${col.dataattribute!}')>
-                </#if>
-                <#if (mytitle=='') && col.parameters.jxattribute??>
-                    <#assign mytitle=col.parameters.jxattribute.title!''>
-                </#if>
-                <#if (mytitle=='') >
-                    <#if (col.dataattribute??) && (parameters.jboset??) && (parameters.jboset.jxAttributes??)>
-                        <#if parameters.jboset.jxAttributes[col.dataattribute!]??>
-                            <#assign mytitle=parameters.jboset.jxAttributes[col.dataattribute!].title!''>
-                        </#if>
-                    </#if>
-                </#if>
-                <#if (mytitle=='') >
-                    <#assign mytitle=col.dataattribute!'未知标题'>
-                </#if>
-                <#t>${mytitle}<#t>
+                <#lt> nowrap="true"><#rt> <#-- End TH -->
+                <#t>${col.parameters.label!''}<#t>
                 <#if (col.parameters.note??)>
                     <#lt><br/>${col.parameters.note}<#rt>
                 </#if>
@@ -135,8 +111,7 @@ $author:wmzsoft@gmail.com
             </#if>
         </#if>
     </#list>
-</tr>
-
+</tr><#t>
 </#if>
 <#--快速过滤-->
 <#if (parameters.jboset?? && parameters.filterable?? && !isVisibleHeadDefined)>

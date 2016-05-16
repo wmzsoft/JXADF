@@ -20,8 +20,8 @@ public class MiscTool {
 
     public static final String TOMCAT = "tomcat";
     public static final String WEBLOGIC = "weblogic";
-    public static HashMap<String, String> WLSAttr = null;
-    public static String IP;
+    private static HashMap<String, String> WLSAttr = null;
+    private static String ip;
 
     public static String getAppServer() {
         if (isTomcat())
@@ -49,23 +49,23 @@ public class MiscTool {
                 for (ObjectName o : names) {
                     String protocol = (String) mBeanServer.getAttribute(o, "protocol");
                     port = (Integer) mBeanServer.getAttribute(o, "port");
-                    if (protocol.equals("HTTP/1.1")) {
+                    if ("HTTP/1.1".equals(protocol)) {
                         break;
                     }
                 }
-                String ipnet = getIPAddress();
+                ip = getIPAddress();
                 res.put("name", TOMCAT);
-                res.put("ip", ipnet);
+                res.put("ip", ip);
                 res.put("port", String.valueOf(port));
-                res.put("defaultUrl", "http://" + ipnet + ":" + port);
-                res.put("ipnet", ipnet);
+                res.put("defaultUrl", "http://" + ip + ":" + port);
+                res.put("ipnet", ip);
                 return res;
             } else if (isWebLogic()) {
                 InitialContext ctxt = new InitialContext();
                 MBeanServer connection = (MBeanServer) ctxt.lookup("java:comp/env/jmx/runtime");
                 ObjectName rs = new ObjectName("com.bea:Name=RuntimeService,Type=weblogic.management.mbeanservers.runtime.RuntimeServiceMBean");
                 ObjectName serverRt = (ObjectName) connection.getAttribute(rs, "ServerRuntime");
-                String ip = (String) connection.getAttribute(serverRt, "AdminServerHost");
+                ip = (String) connection.getAttribute(serverRt, "AdminServerHost");
                 Integer port = (Integer) connection.getAttribute(serverRt, "AdminServerListenPort");
                 String defaultUrl = (String) connection.getAttribute(serverRt, "DefaultURL");
                 String ipnet = getIPAddress();
@@ -75,8 +75,9 @@ public class MiscTool {
                 res.put("defaultUrl", defaultUrl);
                 res.put("ipnet", ipnet);
                 WLSAttr = res;
-            } else
+            } else {
                 throw new RuntimeException("不能识别当前应用服务器！");
+            }
             return res;
         } catch (Exception ex) {
             log.info("检查" + getAppServer() + "地址失败:" + ex.getMessage());
@@ -137,4 +138,7 @@ public class MiscTool {
         }
     }
 
+    public static String getIp() {
+        return ip;
+    }
 }

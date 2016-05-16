@@ -1,1 +1,146 @@
-Flotr.addType("radar",{options:{show:!1,lineWidth:2,fill:!0,fillOpacity:.4,radiusRatio:.9,sensibility:2},draw:function(t){var i=t.context,a=t.shadowSize;i.save(),i.translate(t.width/2,t.height/2),i.lineWidth=t.lineWidth,i.fillStyle="rgba(0,0,0,0.05)",i.strokeStyle="rgba(0,0,0,0.05)",this.plot(t,a/2),i.strokeStyle="rgba(0,0,0,0.1)",this.plot(t,a/4),i.strokeStyle=t.color,i.fillStyle=t.fillStyle,this.plot(t),i.restore()},plot:function(t,i){var a,e,h=t.data,s=t.context,r=Math.min(t.height,t.width)*t.radiusRatio/2,n=2*Math.PI/h.length,o=-Math.PI/2;for(i=i||0,s.beginPath(),a=0;a<h.length;++a)e=h[a][1]/this.max,s[0===a?"moveTo":"lineTo"](Math.cos(a*n+o)*r*e+i,Math.sin(a*n+o)*r*e+i);s.closePath(),t.fill&&s.fill(),s.stroke()},getGeometry:function(t,i){var a=Math.min(i.height,i.width)*i.radiusRatio/2,e=2*Math.PI/i.data.length,h=-Math.PI/2,s=t[1]/this.max;return{x:Math.cos(t[0]*e+h)*a*s+i.width/2,y:Math.sin(t[0]*e+h)*a*s+i.height/2}},hit:function(t){for(var i,a,e,h,s=t.args,r=s[0],n=s[1],o=r.relX,l=r.relY,d=0;d<n.series.length;d++)for(var f=n.series[d],g=f.data,M=g.length;M--;)if(a=this.getGeometry(g[M],t),e=a.x-o,h=a.y-l,i=Math.sqrt(e*e+h*h),i<2*t.sensibility)return n.x=g[M][0],n.y=g[M][1],n.index=M,n.seriesIndex=d,n},drawHit:function(t){var i=2*Math.PI/t.data.length,a=-Math.PI/2,e=Math.min(t.height,t.width)*t.radiusRatio/2,h=t.args.series,s=h.points.hitRadius||h.points.radius||h.mouse.radius,r=t.context;r.translate(t.width/2,t.height/2);var n=t.args.index,o=t.data[n][1]/this.max,l=Math.cos(n*i+a)*e*o,d=Math.sin(n*i+a)*e*o;r.beginPath(),r.arc(l,d,s,0,2*Math.PI,!0),r.closePath(),r.stroke()},clearHit:function(t){var i=2*Math.PI/t.data.length,a=-Math.PI/2,e=Math.min(t.height,t.width)*t.radiusRatio/2,h=t.context,s=t.args.series,r=s.points?s.points.lineWidth:1;offset=(s.points.hitRadius||s.points.radius||s.mouse.radius)+r,h.translate(t.width/2,t.height/2);var n=t.args.index,o=t.data[n][1]/this.max,l=Math.cos(n*i+a)*e*o,d=Math.sin(n*i+a)*e*o;h.clearRect(l-offset,d-offset,2*offset,2*offset)},extendYRange:function(t){this.max=Math.max(t.max,this.max||-Number.MAX_VALUE)}});
+/** Radar **/
+Flotr.addType('radar', {
+  options: {
+    show: false,           // => setting to true will show radar chart, false will hide
+    lineWidth: 2,          // => line width in pixels
+    fill: true,            // => true to fill the area from the line to the x axis, false for (transparent) no fill
+    fillOpacity: 0.4,      // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+    radiusRatio: 0.90,      // => ratio of the radar, against the plot size
+    sensibility: 2         // => the lower this number, the more precise you have to aim to show a value.
+  },
+  draw : function (options) {
+    var
+      context = options.context,
+      shadowSize = options.shadowSize;
+
+    context.save();
+    context.translate(options.width / 2, options.height / 2);
+    context.lineWidth = options.lineWidth;
+    
+    // Shadow
+    context.fillStyle = 'rgba(0,0,0,0.05)';
+    context.strokeStyle = 'rgba(0,0,0,0.05)';
+    this.plot(options, shadowSize / 2);
+    context.strokeStyle = 'rgba(0,0,0,0.1)';
+    this.plot(options, shadowSize / 4);
+
+    // Chart
+    context.strokeStyle = options.color;
+    context.fillStyle = options.fillStyle;
+    this.plot(options);
+    
+    context.restore();
+  },
+  plot : function (options, offset) {
+    var
+      data    = options.data,
+      context = options.context,
+      radius  = Math.min(options.height, options.width) * options.radiusRatio / 2,
+      step    = 2 * Math.PI / data.length,
+      angle   = -Math.PI / 2,
+      i, ratio;
+
+    offset = offset || 0;
+
+    context.beginPath();
+    for (i = 0; i < data.length; ++i) {
+      ratio = data[i][1] / this.max;
+
+      context[i === 0 ? 'moveTo' : 'lineTo'](
+        Math.cos(i * step + angle) * radius * ratio + offset,
+        Math.sin(i * step + angle) * radius * ratio + offset
+      );
+    }
+    context.closePath();
+    if (options.fill) context.fill();
+    context.stroke();
+  },
+  getGeometry : function (point, options) {
+    var
+      radius  = Math.min(options.height, options.width) * options.radiusRatio / 2,
+      step    = 2 * Math.PI / options.data.length,
+      angle   = -Math.PI / 2,
+      ratio = point[1] / this.max;
+
+    return {
+      x : (Math.cos(point[0] * step + angle) * radius * ratio) + options.width / 2,
+      y : (Math.sin(point[0] * step + angle) * radius * ratio) + options.height / 2
+    };
+  },
+  hit : function (options) {
+    var
+      args = options.args,
+      mouse = args[0],
+      n = args[1],
+      relX = mouse.relX,
+      relY = mouse.relY,
+      distance,
+      geometry,
+      dx, dy;
+
+      for (var i = 0; i < n.series.length; i++) {
+        var serie = n.series[i];
+        var data = serie.data;
+
+        for (var j = data.length; j--;) {
+          geometry = this.getGeometry(data[j], options);
+
+          dx = geometry.x - relX;
+          dy = geometry.y - relY;
+          distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance <  options.sensibility*2) {
+            n.x = data[j][0];
+            n.y = data[j][1];
+            n.index = j;
+            n.seriesIndex = i;
+            return n;
+          }
+        }
+      }
+    },
+  drawHit : function (options) {
+    var step = 2 * Math.PI / options.data.length;
+    var angle   = -Math.PI / 2;
+    var radius  = Math.min(options.height, options.width) * options.radiusRatio / 2;
+
+    var s = options.args.series;
+    var point_radius = s.points.hitRadius || s.points.radius || s.mouse.radius;
+
+    var context = options.context;
+
+    context.translate(options.width / 2, options.height / 2);
+
+    var j = options.args.index;
+    var ratio = options.data[j][1] / this.max;
+    var x = Math.cos(j * step + angle) * radius * ratio;
+    var y = Math.sin(j * step + angle) * radius * ratio;
+    context.beginPath();
+    context.arc(x, y, point_radius , 0, 2 * Math.PI, true);
+    context.closePath();
+    context.stroke();
+  },
+  clearHit : function (options) {
+    var step = 2 * Math.PI / options.data.length;
+    var angle   = -Math.PI / 2;
+    var radius  = Math.min(options.height, options.width) * options.radiusRatio / 2;
+
+    var context = options.context;
+
+    var
+        s = options.args.series,
+        lw = (s.points ? s.points.lineWidth : 1);
+        offset = (s.points.hitRadius || s.points.radius || s.mouse.radius) + lw;
+
+    context.translate(options.width / 2, options.height / 2);
+
+    var j = options.args.index;
+    var ratio = options.data[j][1] / this.max;
+    var x = Math.cos(j * step + angle) * radius * ratio;
+    var y = Math.sin(j * step + angle) * radius * ratio;
+    context.clearRect(x-offset,y-offset,offset*2,offset*2);
+  },
+  extendYRange : function (axis, data) {
+    this.max = Math.max(axis.max, this.max || -Number.MAX_VALUE);
+  }
+});

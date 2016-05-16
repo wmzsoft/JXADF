@@ -1,1 +1,503 @@
-!function(e,t,n){"undefined"!=typeof module?module.exports=n(e,t):"function"==typeof define&&"object"==typeof define.amd?define(n):t[e]=n(e,t)}("bean",this,function(e,t){var n=window,r=t[e],o=/over|out/,a=/[^\.]*(?=\..*)\.|.*/,i=/\..*/,u="addEventListener",s="attachEvent",c="removeEventListener",l="detachEvent",p=document||{},f=p.documentElement||{},h=f[u],d=h?u:s,g=Array.prototype.slice,m=/click|mouse|menu|drag|drop/i,v=/^touch|^gesture/i,y={one:1},b=function(e,t,n){for(n=0;n<t.length;n++)e[t[n]]=1;return e}({},("click dblclick mouseup mousedown contextmenu mousewheel DOMMouseScroll mouseover mouseout mousemove selectstart selectend keydown keypress keyup orientationchange focus blur change reset select submit load unload beforeunload resize move DOMContentLoaded readystatechange error abort scroll "+(h?"show input invalid touchstart touchmove touchend touchcancel gesturestart gesturechange gestureend message readystatechange pageshow pagehide popstate hashchange offline online afterprint beforeprint dragstart dragenter dragover dragleave drag drop dragend loadstart progress suspend emptied stalled loadmetadata loadeddata canplay canplaythrough playing waiting seeking seeked ended durationchange timeupdate play pause ratechange volumechange cuechange checking noupdate downloading cached updateready obsolete ":"")).split(" ")),w=function(){function e(e,t){for(;null!==(t=t.parentNode);)if(t===e)return!0;return!1}function t(t){var n=t.relatedTarget;return n?n!==this&&"xul"!==n.prefix&&!/document/.test(this.toString())&&!e(this,n):null===n}return{mouseenter:{base:"mouseover",condition:t},mouseleave:{base:"mouseout",condition:t},mousewheel:{base:/Firefox/.test(navigator.userAgent)?"DOMMouseScroll":"mousewheel"}}}(),E=function(){var e="altKey attrChange attrName bubbles cancelable ctrlKey currentTarget detail eventPhase getModifierState isTrusted metaKey relatedNode relatedTarget shiftKey srcElement target timeStamp type view which".split(" "),t=e.concat("button buttons clientX clientY dataTransfer fromElement offsetX offsetY pageX pageY screenX screenY toElement".split(" ")),n=e.concat("char charCode key keyCode".split(" ")),r=e.concat("touches targetTouches changedTouches scale rotation".split(" ")),a="preventDefault",i=function(e){return function(){e[a]?e[a]():e.returnValue=!1}},u="stopPropagation",s=function(e){return function(){e[u]?e[u]():e.cancelBubble=!0}},c=function(e){return function(){e[a](),e[u](),e.stopped=!0}},l=function(e,t,n){var r,o;for(r=n.length;r--;)o=n[r],!(o in t)&&o in e&&(t[o]=e[o])};return function(h,d){var g={originalEvent:h,isNative:d};if(!h)return g;var y,b=h.type,w=h.target||h.srcElement;return g[a]=i(h),g[u]=s(h),g.stop=c(g),g.target=w&&3===w.nodeType?w.parentNode:w,d&&(-1!==b.indexOf("key")?(y=n,g.keyCode=h.which||h.keyCode):m.test(b)?(y=t,g.rightClick=3===h.which||2===h.button,g.pos={x:0,y:0},h.pageX||h.pageY?(g.clientX=h.pageX,g.clientY=h.pageY):(h.clientX||h.clientY)&&(g.clientX=h.clientX+p.body.scrollLeft+f.scrollLeft,g.clientY=h.clientY+p.body.scrollTop+f.scrollTop),o.test(b)&&(g.relatedTarget=h.relatedTarget||h[("mouseover"===b?"from":"to")+"Element"])):v.test(b)&&(y=r),l(h,g,y||e)),g}}(),T=function(e,t){return h||t||e!==p&&e!==n?e:f},k=function(){function e(e,t,n,r,o){this.element=e,this.type=t,this.handler=n,this.original=r,this.namespaces=o,this.custom=w[t],this.isNative=b[t]&&e[d],this.eventType=h||this.isNative?t:"propertychange",this.customType=!h&&!this.isNative&&t,this.target=T(e,this.isNative),this.eventSupport=this.target[d]}return e.prototype={inNamespaces:function(e){var t,n;if(!e)return!0;if(!this.namespaces)return!1;for(t=e.length;t--;)for(n=this.namespaces.length;n--;)if(e[t]===this.namespaces[n])return!0;return!1},matches:function(e,t,n){return!(this.element!==e||t&&this.original!==t||n&&this.handler!==n)}},e}(),N=function(){var e={},t=function(n,r,o,a,i){if(r&&"*"!==r){var u,s=0,c=e["$"+r],l="*"===n;if(!c)return;for(u=c.length;u>s;s++)if((l||c[s].matches(n,o,a))&&!i(c[s],c,s,r))return}else for(var p in e)"$"===p.charAt(0)&&t(n,p.substr(1),o,a,i)},n=function(t,n,r){var o,a=e["$"+n];if(a)for(o=a.length;o--;)if(a[o].matches(t,r,null))return!0;return!1},r=function(e,n,r){var o=[];return t(e,n,r,null,function(e){return o.push(e)}),o},o=function(t){return(e["$"+t.type]||(e["$"+t.type]=[])).push(t),t},a=function(n){t(n.element,n.type,null,n.handler,function(t,n,r){return n.splice(r,1),0===n.length&&delete e["$"+t.type],!1})},i=function(){var t,n=[];for(t in e)"$"===t.charAt(0)&&(n=n.concat(e[t]));return n};return{has:n,get:r,put:o,del:a,entries:i}}(),C=h?function(e,t,n,r){e[r?u:c](t,n,!1)}:function(e,t,n,r,o){o&&r&&null===e["_on"+o]&&(e["_on"+o]=0),e[r?s:l]("on"+t,n)},X=function(e,t,r){return function(o){return o=E(o||((this.ownerDocument||this.document||this).parentWindow||n).event,!0),t.apply(e,[o].concat(r))}},Y=function(e,t,r,o,a,i){return function(u){(o?o.apply(this,arguments):h?!0:u&&u.propertyName==="_on"+r||!u)&&(u&&(u=E(u||((this.ownerDocument||this.document||this).parentWindow||n).event,i)),t.apply(e,!u||a&&0!==a.length?g.call(arguments,u?0:1).concat(a):arguments))}},x=function(e,t,n,r,o){return function(){e(t,n,o),r.apply(this,arguments)}},O=function(e,t,n,r){var o,a,u,s=t&&t.replace(i,""),c=N.get(e,s,n);for(o=0,a=c.length;a>o;o++)c[o].inNamespaces(r)&&((u=c[o]).eventSupport&&C(u.target,u.eventType,u.handler,!1,u.type),N.del(u))},S=function(e,t,n,r,o){var u,s=t.replace(i,""),c=t.replace(a,"").split(".");return N.has(e,s,n)?e:("unload"===s&&(n=x(O,e,s,n,r)),w[s]&&(w[s].condition&&(n=Y(e,n,s,w[s].condition,!0)),s=w[s].base||s),u=N.put(new k(e,s,n,r,c[0]&&c)),u.handler=u.isNative?X(e,u.handler,o):Y(e,u.handler,s,!1,o,!1),void(u.eventSupport&&C(u.target,u.eventType,u.handler,!0,u.customType)))},M=function(e,t,n){return function(r){var o,a,i="string"==typeof e?n(e,this):e;for(o=r.target;o&&o!==this;o=o.parentNode)for(a=i.length;a--;)if(i[a]===o)return t.apply(o,arguments)}},$=function(e,t,n){var r,o,u,s,c=O,l=t&&"string"==typeof t;if(l&&t.indexOf(" ")>0){for(t=t.split(" "),s=t.length;s--;)$(e,t[s],n);return e}if(o=l&&t.replace(i,""),o&&w[o]&&(o=w[o].type),!t||l)(u=l&&t.replace(a,""))&&(u=u.split(".")),c(e,o,n,u);else if("function"==typeof t)c(e,null,t);else for(r in t)t.hasOwnProperty(r)&&$(e,r,t[r]);return e},D=function(e,t,n,r,o){var a,i,u,s,c=n,l=n&&"string"==typeof n;if(t&&!n&&"object"==typeof t)for(a in t)t.hasOwnProperty(a)&&D.apply(this,[e,a,t[a]]);else for(s=arguments.length>3?g.call(arguments,3):[],i=(l?n:t).split(" "),l&&(n=M(t,c=r,o))&&(s=g.call(s,1)),this===y&&(n=x($,e,t,n,c)),u=i.length;u--;)S(e,i[u],n,c,s);return e},L=function(){return D.apply(y,arguments)},A=h?function(e,t,r){var o=p.createEvent(e?"HTMLEvents":"UIEvents");o[e?"initEvent":"initUIEvent"](t,!0,!0,n,1),r.dispatchEvent(o)}:function(e,t,n){n=T(n,e),e?n.fireEvent("on"+t,p.createEventObject()):n["_on"+t]++},K=function(e,t,n){var r,o,u,s,c,l=t.split(" ");for(r=l.length;r--;)if(t=l[r].replace(i,""),(s=l[r].replace(a,""))&&(s=s.split(".")),s||n||!e[d])for(c=N.get(e,t),n=[!1].concat(n),o=0,u=c.length;u>o;o++)c[o].inNamespaces(s)&&c[o].handler.apply(e,n);else A(b[t],t,e);return e},P=function(e,t,n){for(var r=0,o=N.get(t,n),a=o.length;a>r;r++)o[r].original&&D(e,o[r].type,o[r].original);return e},_={add:D,one:L,remove:$,clone:P,fire:K,noConflict:function(){return t[e]=r,this}};if(n[s]){var j=function(){var e,t=N.entries();for(e in t)t[e].type&&"unload"!==t[e].type&&$(t[e].element,t[e].type);n[l]("onunload",j),n.CollectGarbage&&n.CollectGarbage()};n[s]("onunload",j)}return _});
+/*!
+  * bean.js - copyright Jacob Thornton 2011
+  * https://github.com/fat/bean
+  * MIT License
+  * special thanks to:
+  * dean edwards: http://dean.edwards.name/
+  * dperini: https://github.com/dperini/nwevents
+  * the entire mootools team: github.com/mootools/mootools-core
+  */
+/*global module:true, define:true*/
+!function (name, context, definition) {
+  if (typeof module !== 'undefined') module.exports = definition(name, context);
+  else if (typeof define === 'function' && typeof define.amd  === 'object') define(definition);
+  else context[name] = definition(name, context);
+}('bean', this, function (name, context) {
+  var win = window
+    , old = context[name]
+    , overOut = /over|out/
+    , namespaceRegex = /[^\.]*(?=\..*)\.|.*/
+    , nameRegex = /\..*/
+    , addEvent = 'addEventListener'
+    , attachEvent = 'attachEvent'
+    , removeEvent = 'removeEventListener'
+    , detachEvent = 'detachEvent'
+    , doc = document || {}
+    , root = doc.documentElement || {}
+    , W3C_MODEL = root[addEvent]
+    , eventSupport = W3C_MODEL ? addEvent : attachEvent
+    , slice = Array.prototype.slice
+    , mouseTypeRegex = /click|mouse|menu|drag|drop/i
+    , touchTypeRegex = /^touch|^gesture/i
+    , ONE = { one: 1 } // singleton for quick matching making add() do one()
+
+    , nativeEvents = (function (hash, events, i) {
+        for (i = 0; i < events.length; i++)
+          hash[events[i]] = 1
+        return hash
+      })({}, (
+          'click dblclick mouseup mousedown contextmenu ' +                  // mouse buttons
+          'mousewheel DOMMouseScroll ' +                                     // mouse wheel
+          'mouseover mouseout mousemove selectstart selectend ' +            // mouse movement
+          'keydown keypress keyup ' +                                        // keyboard
+          'orientationchange ' +                                             // mobile
+          'focus blur change reset select submit ' +                         // form elements
+          'load unload beforeunload resize move DOMContentLoaded readystatechange ' + // window
+          'error abort scroll ' +                                            // misc
+          (W3C_MODEL ? // element.fireEvent('onXYZ'... is not forgiving if we try to fire an event
+                       // that doesn't actually exist, so make sure we only do these on newer browsers
+            'show ' +                                                          // mouse buttons
+            'input invalid ' +                                                 // form elements
+            'touchstart touchmove touchend touchcancel ' +                     // touch
+            'gesturestart gesturechange gestureend ' +                         // gesture
+            'message readystatechange pageshow pagehide popstate ' +           // window
+            'hashchange offline online ' +                                     // window
+            'afterprint beforeprint ' +                                        // printing
+            'dragstart dragenter dragover dragleave drag drop dragend ' +      // dnd
+            'loadstart progress suspend emptied stalled loadmetadata ' +       // media
+            'loadeddata canplay canplaythrough playing waiting seeking ' +     // media
+            'seeked ended durationchange timeupdate play pause ratechange ' +  // media
+            'volumechange cuechange ' +                                        // media
+            'checking noupdate downloading cached updateready obsolete ' +     // appcache
+            '' : '')
+        ).split(' ')
+      )
+
+    , customEvents = (function () {
+        function isDescendant(parent, node) {
+          while ((node = node.parentNode) !== null) {
+            if (node === parent) return true
+          }
+          return false
+        }
+
+        function check(event) {
+          var related = event.relatedTarget
+          if (!related) return related === null
+          return (related !== this && related.prefix !== 'xul' && !/document/.test(this.toString()) && !isDescendant(this, related))
+        }
+
+        return {
+            mouseenter: { base: 'mouseover', condition: check }
+          , mouseleave: { base: 'mouseout', condition: check }
+          , mousewheel: { base: /Firefox/.test(navigator.userAgent) ? 'DOMMouseScroll' : 'mousewheel' }
+        }
+      })()
+
+    , fixEvent = (function () {
+        var commonProps = 'altKey attrChange attrName bubbles cancelable ctrlKey currentTarget detail eventPhase getModifierState isTrusted metaKey relatedNode relatedTarget shiftKey srcElement target timeStamp type view which'.split(' ')
+          , mouseProps = commonProps.concat('button buttons clientX clientY dataTransfer fromElement offsetX offsetY pageX pageY screenX screenY toElement'.split(' '))
+          , keyProps = commonProps.concat('char charCode key keyCode'.split(' '))
+          , touchProps = commonProps.concat('touches targetTouches changedTouches scale rotation'.split(' '))
+          , preventDefault = 'preventDefault'
+          , createPreventDefault = function (event) {
+              return function () {
+                if (event[preventDefault])
+                  event[preventDefault]()
+                else
+                  event.returnValue = false
+              }
+            }
+          , stopPropagation = 'stopPropagation'
+          , createStopPropagation = function (event) {
+              return function () {
+                if (event[stopPropagation])
+                  event[stopPropagation]()
+                else
+                  event.cancelBubble = true
+              }
+            }
+          , createStop = function (synEvent) {
+              return function () {
+                synEvent[preventDefault]()
+                synEvent[stopPropagation]()
+                synEvent.stopped = true
+              }
+            }
+          , copyProps = function (event, result, props) {
+              var i, p
+              for (i = props.length; i--;) {
+                p = props[i]
+                if (!(p in result) && p in event) result[p] = event[p]
+              }
+            }
+
+        return function (event, isNative) {
+          var result = { originalEvent: event, isNative: isNative }
+          if (!event)
+            return result
+
+          var props
+            , type = event.type
+            , target = event.target || event.srcElement
+
+          result[preventDefault] = createPreventDefault(event)
+          result[stopPropagation] = createStopPropagation(event)
+          result.stop = createStop(result)
+          result.target = target && target.nodeType === 3 ? target.parentNode : target
+
+          if (isNative) { // we only need basic augmentation on custom events, the rest is too expensive
+            if (type.indexOf('key') !== -1) {
+              props = keyProps
+              result.keyCode = event.which || event.keyCode
+            } else if (mouseTypeRegex.test(type)) {
+              props = mouseProps
+              result.rightClick = event.which === 3 || event.button === 2
+              result.pos = { x: 0, y: 0 }
+              if (event.pageX || event.pageY) {
+                result.clientX = event.pageX
+                result.clientY = event.pageY
+              } else if (event.clientX || event.clientY) {
+                result.clientX = event.clientX + doc.body.scrollLeft + root.scrollLeft
+                result.clientY = event.clientY + doc.body.scrollTop + root.scrollTop
+              }
+              if (overOut.test(type))
+                result.relatedTarget = event.relatedTarget || event[(type === 'mouseover' ? 'from' : 'to') + 'Element']
+            } else if (touchTypeRegex.test(type)) {
+              props = touchProps
+            }
+            copyProps(event, result, props || commonProps)
+          }
+          return result
+        }
+      })()
+
+      // if we're in old IE we can't do onpropertychange on doc or win so we use doc.documentElement for both
+    , targetElement = function (element, isNative) {
+        return !W3C_MODEL && !isNative && (element === doc || element === win) ? root : element
+      }
+
+      // we use one of these per listener, of any type
+    , RegEntry = (function () {
+        function entry(element, type, handler, original, namespaces) {
+          this.element = element
+          this.type = type
+          this.handler = handler
+          this.original = original
+          this.namespaces = namespaces
+          this.custom = customEvents[type]
+          this.isNative = nativeEvents[type] && element[eventSupport]
+          this.eventType = W3C_MODEL || this.isNative ? type : 'propertychange'
+          this.customType = !W3C_MODEL && !this.isNative && type
+          this.target = targetElement(element, this.isNative)
+          this.eventSupport = this.target[eventSupport]
+        }
+
+        entry.prototype = {
+            // given a list of namespaces, is our entry in any of them?
+            inNamespaces: function (checkNamespaces) {
+              var i, j
+              if (!checkNamespaces)
+                return true
+              if (!this.namespaces)
+                return false
+              for (i = checkNamespaces.length; i--;) {
+                for (j = this.namespaces.length; j--;) {
+                  if (checkNamespaces[i] === this.namespaces[j])
+                    return true
+                }
+              }
+              return false
+            }
+
+            // match by element, original fn (opt), handler fn (opt)
+          , matches: function (checkElement, checkOriginal, checkHandler) {
+              return this.element === checkElement &&
+                (!checkOriginal || this.original === checkOriginal) &&
+                (!checkHandler || this.handler === checkHandler)
+            }
+        }
+
+        return entry
+      })()
+
+    , registry = (function () {
+        // our map stores arrays by event type, just because it's better than storing
+        // everything in a single array. uses '$' as a prefix for the keys for safety
+        var map = {}
+
+          // generic functional search of our registry for matching listeners,
+          // `fn` returns false to break out of the loop
+          , forAll = function (element, type, original, handler, fn) {
+              if (!type || type === '*') {
+                // search the whole registry
+                for (var t in map) {
+                  if (t.charAt(0) === '$')
+                    forAll(element, t.substr(1), original, handler, fn)
+                }
+              } else {
+                var i = 0, l, list = map['$' + type], all = element === '*'
+                if (!list)
+                  return
+                for (l = list.length; i < l; i++) {
+                  if (all || list[i].matches(element, original, handler))
+                    if (!fn(list[i], list, i, type))
+                      return
+                }
+              }
+            }
+
+          , has = function (element, type, original) {
+              // we're not using forAll here simply because it's a bit slower and this
+              // needs to be fast
+              var i, list = map['$' + type]
+              if (list) {
+                for (i = list.length; i--;) {
+                  if (list[i].matches(element, original, null))
+                    return true
+                }
+              }
+              return false
+            }
+
+          , get = function (element, type, original) {
+              var entries = []
+              forAll(element, type, original, null, function (entry) { return entries.push(entry) })
+              return entries
+            }
+
+          , put = function (entry) {
+              (map['$' + entry.type] || (map['$' + entry.type] = [])).push(entry)
+              return entry
+            }
+
+          , del = function (entry) {
+              forAll(entry.element, entry.type, null, entry.handler, function (entry, list, i) {
+                list.splice(i, 1)
+                if (list.length === 0)
+                  delete map['$' + entry.type]
+                return false
+              })
+            }
+
+            // dump all entries, used for onunload
+          , entries = function () {
+              var t, entries = []
+              for (t in map) {
+                if (t.charAt(0) === '$')
+                  entries = entries.concat(map[t])
+              }
+              return entries
+            }
+
+        return { has: has, get: get, put: put, del: del, entries: entries }
+      })()
+
+      // add and remove listeners to DOM elements
+    , listener = W3C_MODEL ? function (element, type, fn, add) {
+        element[add ? addEvent : removeEvent](type, fn, false)
+      } : function (element, type, fn, add, custom) {
+        if (custom && add && element['_on' + custom] === null)
+          element['_on' + custom] = 0
+        element[add ? attachEvent : detachEvent]('on' + type, fn)
+      }
+
+    , nativeHandler = function (element, fn, args) {
+        return function (event) {
+          event = fixEvent(event || ((this.ownerDocument || this.document || this).parentWindow || win).event, true)
+          return fn.apply(element, [event].concat(args))
+        }
+      }
+
+    , customHandler = function (element, fn, type, condition, args, isNative) {
+        return function (event) {
+          if (condition ? condition.apply(this, arguments) : W3C_MODEL ? true : event && event.propertyName === '_on' + type || !event) {
+            if (event)
+              event = fixEvent(event || ((this.ownerDocument || this.document || this).parentWindow || win).event, isNative)
+            fn.apply(element, event && (!args || args.length === 0) ? arguments : slice.call(arguments, event ? 0 : 1).concat(args))
+          }
+        }
+      }
+
+    , once = function (rm, element, type, fn, originalFn) {
+        // wrap the handler in a handler that does a remove as well
+        return function () {
+          rm(element, type, originalFn)
+          fn.apply(this, arguments)
+        }
+      }
+
+    , removeListener = function (element, orgType, handler, namespaces) {
+        var i, l, entry
+          , type = (orgType && orgType.replace(nameRegex, ''))
+          , handlers = registry.get(element, type, handler)
+
+        for (i = 0, l = handlers.length; i < l; i++) {
+          if (handlers[i].inNamespaces(namespaces)) {
+            if ((entry = handlers[i]).eventSupport)
+              listener(entry.target, entry.eventType, entry.handler, false, entry.type)
+            // TODO: this is problematic, we have a registry.get() and registry.del() that
+            // both do registry searches so we waste cycles doing this. Needs to be rolled into
+            // a single registry.forAll(fn) that removes while finding, but the catch is that
+            // we'll be splicing the arrays that we're iterating over. Needs extra tests to
+            // make sure we don't screw it up. @rvagg
+            registry.del(entry)
+          }
+        }
+      }
+
+    , addListener = function (element, orgType, fn, originalFn, args) {
+        var entry
+          , type = orgType.replace(nameRegex, '')
+          , namespaces = orgType.replace(namespaceRegex, '').split('.')
+
+        if (registry.has(element, type, fn))
+          return element // no dupe
+        if (type === 'unload')
+          fn = once(removeListener, element, type, fn, originalFn) // self clean-up
+        if (customEvents[type]) {
+          if (customEvents[type].condition)
+            fn = customHandler(element, fn, type, customEvents[type].condition, true)
+          type = customEvents[type].base || type
+        }
+        entry = registry.put(new RegEntry(element, type, fn, originalFn, namespaces[0] && namespaces))
+        entry.handler = entry.isNative ?
+          nativeHandler(element, entry.handler, args) :
+          customHandler(element, entry.handler, type, false, args, false)
+        if (entry.eventSupport)
+          listener(entry.target, entry.eventType, entry.handler, true, entry.customType)
+      }
+
+    , del = function (selector, fn, $) {
+        return function (e) {
+          var target, i, array = typeof selector === 'string' ? $(selector, this) : selector
+          for (target = e.target; target && target !== this; target = target.parentNode) {
+            for (i = array.length; i--;) {
+              if (array[i] === target) {
+                return fn.apply(target, arguments)
+              }
+            }
+          }
+        }
+      }
+
+    , remove = function (element, typeSpec, fn) {
+        var k, m, type, namespaces, i
+          , rm = removeListener
+          , isString = typeSpec && typeof typeSpec === 'string'
+
+        if (isString && typeSpec.indexOf(' ') > 0) {
+          // remove(el, 't1 t2 t3', fn) or remove(el, 't1 t2 t3')
+          typeSpec = typeSpec.split(' ')
+          for (i = typeSpec.length; i--;)
+            remove(element, typeSpec[i], fn)
+          return element
+        }
+        type = isString && typeSpec.replace(nameRegex, '')
+        if (type && customEvents[type])
+          type = customEvents[type].type
+        if (!typeSpec || isString) {
+          // remove(el) or remove(el, t1.ns) or remove(el, .ns) or remove(el, .ns1.ns2.ns3)
+          if (namespaces = isString && typeSpec.replace(namespaceRegex, ''))
+            namespaces = namespaces.split('.')
+          rm(element, type, fn, namespaces)
+        } else if (typeof typeSpec === 'function') {
+          // remove(el, fn)
+          rm(element, null, typeSpec)
+        } else {
+          // remove(el, { t1: fn1, t2, fn2 })
+          for (k in typeSpec) {
+            if (typeSpec.hasOwnProperty(k))
+              remove(element, k, typeSpec[k])
+          }
+        }
+        return element
+      }
+
+    , add = function (element, events, fn, delfn, $) {
+        var type, types, i, args
+          , originalFn = fn
+          , isDel = fn && typeof fn === 'string'
+
+        if (events && !fn && typeof events === 'object') {
+          for (type in events) {
+            if (events.hasOwnProperty(type))
+              add.apply(this, [ element, type, events[type] ])
+          }
+        } else {
+          args = arguments.length > 3 ? slice.call(arguments, 3) : []
+          types = (isDel ? fn : events).split(' ')
+          isDel && (fn = del(events, (originalFn = delfn), $)) && (args = slice.call(args, 1))
+          // special case for one()
+          this === ONE && (fn = once(remove, element, events, fn, originalFn))
+          for (i = types.length; i--;) addListener(element, types[i], fn, originalFn, args)
+        }
+        return element
+      }
+
+    , one = function () {
+        return add.apply(ONE, arguments)
+      }
+
+    , fireListener = W3C_MODEL ? function (isNative, type, element) {
+        var evt = doc.createEvent(isNative ? 'HTMLEvents' : 'UIEvents')
+        evt[isNative ? 'initEvent' : 'initUIEvent'](type, true, true, win, 1)
+        element.dispatchEvent(evt)
+      } : function (isNative, type, element) {
+        element = targetElement(element, isNative)
+        // if not-native then we're using onpropertychange so we just increment a custom property
+        isNative ? element.fireEvent('on' + type, doc.createEventObject()) : element['_on' + type]++
+      }
+
+    , fire = function (element, type, args) {
+        var i, j, l, names, handlers
+          , types = type.split(' ')
+
+        for (i = types.length; i--;) {
+          type = types[i].replace(nameRegex, '')
+          if (names = types[i].replace(namespaceRegex, ''))
+            names = names.split('.')
+          if (!names && !args && element[eventSupport]) {
+            fireListener(nativeEvents[type], type, element)
+          } else {
+            // non-native event, either because of a namespace, arguments or a non DOM element
+            // iterate over all listeners and manually 'fire'
+            handlers = registry.get(element, type)
+            args = [false].concat(args)
+            for (j = 0, l = handlers.length; j < l; j++) {
+              if (handlers[j].inNamespaces(names))
+                handlers[j].handler.apply(element, args)
+            }
+          }
+        }
+        return element
+      }
+
+    , clone = function (element, from, type) {
+        var i = 0
+          , handlers = registry.get(from, type)
+          , l = handlers.length
+
+        for (;i < l; i++)
+          handlers[i].original && add(element, handlers[i].type, handlers[i].original)
+        return element
+      }
+
+    , bean = {
+          add: add
+        , one: one
+        , remove: remove
+        , clone: clone
+        , fire: fire
+        , noConflict: function () {
+            context[name] = old
+            return this
+          }
+      }
+
+  if (win[attachEvent]) {
+    // for IE, clean up on unload to avoid leaks
+    var cleanup = function () {
+      var i, entries = registry.entries()
+      for (i in entries) {
+        if (entries[i].type && entries[i].type !== 'unload')
+          remove(entries[i].element, entries[i].type)
+      }
+      win[detachEvent]('onunload', cleanup)
+      win.CollectGarbage && win.CollectGarbage()
+    }
+    win[attachEvent]('onunload', cleanup)
+  }
+
+  return bean
+});

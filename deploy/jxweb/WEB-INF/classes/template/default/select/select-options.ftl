@@ -114,7 +114,7 @@ $author:wmzsoft@gmail.com
             </#list>
         </#if>
         <#if (aSelected==0)>
-            <option value="" selected>${parameters.tagbundle['select.options']}</option><#t>
+            <option value="" selected>${parameters.tagbundle['select.options']!}</option><#t>
         </#if>
     </#if>
     </select></span><#t>

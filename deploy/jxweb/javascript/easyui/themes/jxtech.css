@@ -1,1 +1,25 @@
-.icon-drag{background:url(icons/drag.png) center center no-repeat}.icon-default{background:url(icons/default.png) center center no-repeat}.icon-put{background:url(icons/basket_put.png) center center no-repeat}.icon-down-project{background:url(icons/downproject.png) center center no-repeat}.icon-imp-project{background:url(icons/impproject.png) center center no-repeat}.tableform tr th{text-align:right;font-weight:400}
+
+.icon-drag{
+	background:url('icons/drag.png') no-repeat center center;
+}
+.icon-default{
+	background:url('icons/default.png') no-repeat center center;
+}
+.icon-put{
+	background:url('icons/basket_put.png') no-repeat center center;
+}
+.icon-down-project{
+	background:url('icons/downproject.png') no-repeat center center;
+}
+
+.icon-imp-project{
+	background:url('icons/impproject.png') no-repeat center center;
+}
+.tableform{
+    
+}
+
+.tableform tr th{
+    text-align: right;
+    font-weight: normal;
+}

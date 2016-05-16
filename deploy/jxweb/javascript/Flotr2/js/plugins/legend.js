@@ -1,1 +1,193 @@
-!function(){var t=Flotr.DOM,e=Flotr._;Flotr.addPlugin("legend",{options:{show:!0,noColumns:1,labelFormatter:function(t){return t},labelBoxBorderColor:"#CCCCCC",labelBoxWidth:14,labelBoxHeight:10,labelBoxMargin:5,container:null,position:"nw",margin:5,backgroundColor:"#F0F0F0",backgroundOpacity:.85},callbacks:{"flotr:afterinit":function(){this.legend.insertLegend()},"flotr:destroy":function(){var e=this.legend.markup;e&&(this.legend.markup=null,t.remove(e))}},insertLegend:function(){if(this.options.legend.show){var o,l,r,i=this.series,a=this.plotOffset,n=this.options,s=n.legend,d=[],h=!1,c=this.ctx,b=e.filter(i,function(t){return t.label&&!t.hide}).length,g=s.position,f=s.margin,p=s.backgroundOpacity;if(b){var x=s.labelBoxWidth,u=s.labelBoxHeight,m=s.labelBoxMargin,C=a.left+f,v=a.top+f,B=0,k={size:1.1*n.fontSize,color:n.grid.color};for(o=i.length-1;o>-1;--o)i[o].label&&!i[o].hide&&(l=s.labelFormatter(i[o].label),B=Math.max(B,this._text.measureText(l,k).width));var y=Math.round(x+3*m+B),F=Math.round(b*(m+u)+m);if(p||0===p||(p=.1),n.HtmlText||!this.textEnabled||s.container){for(o=0;o<i.length;++o)if(i[o].label&&!i[o].hide){o%s.noColumns===0&&(d.push(h?"</tr><tr>":"<tr>"),h=!0);var w=i[o],A=s.labelBoxWidth,M=s.labelBoxHeight;l=s.labelFormatter(w.label),r="background-color:"+(w.bars&&w.bars.show&&w.bars.fillColor&&w.bars.fill?w.bars.fillColor:w.color)+";",d.push('<td class="flotr-legend-color-box">','<div style="border:1px solid ',s.labelBoxBorderColor,';padding:1px">','<div style="width:',A-1,"px;height:",M-1,"px;border:1px solid ",i[o].color,'">','<div style="width:',A,"px;height:",M,"px;",r,'"></div>',"</div>","</div>","</td>",'<td class="flotr-legend-label">',l,"</td>")}if(h&&d.push("</tr>"),d.length>0){var H='<table style="font-size:smaller;color:'+n.grid.color+'">'+d.join("")+"</table>";if(s.container)H=t.node(H),this.legend.markup=H,t.insert(s.container,H);else{var S={position:"absolute",zIndex:"2",border:"1px solid "+s.labelBoxBorderColor};"n"==g.charAt(0)?(S.top=f+a.top+"px",S.bottom="auto"):"c"==g.charAt(0)?(S.top=f+(this.plotHeight-F)/2+"px",S.bottom="auto"):"s"==g.charAt(0)&&(S.bottom=f+a.bottom+"px",S.top="auto"),"e"==g.charAt(1)?(S.right=f+a.right+"px",S.left="auto"):"w"==g.charAt(1)&&(S.left=f+a.left+"px",S.right="auto");var z=t.create("div");if(z.className="flotr-legend",t.setStyles(z,S),t.insert(z,H),t.insert(this.el,z),!p)return;var W=s.backgroundColor||n.grid.backgroundColor||"#ffffff";e.extend(S,t.size(z),{backgroundColor:W,zIndex:"",border:""}),S.width+="px",S.height+="px",z=t.create("div"),z.className="flotr-legend-bg",t.setStyles(z,S),t.opacity(z,p),t.insert(z," "),t.insert(this.el,z)}}}else{"s"==g.charAt(0)&&(v=a.top+this.plotHeight-(f+F)),"c"==g.charAt(0)&&(v=a.top+this.plotHeight/2-(f+F/2)),"e"==g.charAt(1)&&(C=a.left+this.plotWidth-(f+y)),r=this.processColor(s.backgroundColor,{opacity:p}),c.fillStyle=r,c.fillRect(C,v,y,F),c.strokeStyle=s.labelBoxBorderColor,c.strokeRect(Flotr.toPixel(C),Flotr.toPixel(v),y,F);var O=C+m,R=v+m;for(o=0;o<i.length;o++)i[o].label&&!i[o].hide&&(l=s.labelFormatter(i[o].label),c.fillStyle=i[o].color,c.fillRect(O,R,x-1,u-1),c.strokeStyle=s.labelBoxBorderColor,c.lineWidth=1,c.strokeRect(Math.ceil(O)-1.5,Math.ceil(R)-1.5,x+2,u+2),Flotr.drawText(c,l,O+x+m,R+u,k),R+=u+m)}}}}})}();
+(function () {
+
+var
+  D = Flotr.DOM,
+  _ = Flotr._;
+
+Flotr.addPlugin('legend', {
+  options: {
+    show: true,            // => setting to true will show the legend, hide otherwise
+    noColumns: 1,          // => number of colums in legend table // @todo: doesn't work for HtmlText = false
+    labelFormatter: function(v){return v;}, // => fn: string -> string
+    labelBoxBorderColor: '#CCCCCC', // => border color for the little label boxes
+    labelBoxWidth: 14,
+    labelBoxHeight: 10,
+    labelBoxMargin: 5,
+    container: null,       // => container (as jQuery object) to put legend in, null means default on top of graph
+    position: 'nw',        // => position of default legend container within plot
+    margin: 5,             // => distance from grid edge to default legend container within plot
+    backgroundColor: '#F0F0F0', // => Legend background color.
+    backgroundOpacity: 0.85// => set to 0 to avoid background, set to 1 for a solid background
+  },
+  callbacks: {
+    'flotr:afterinit': function() {
+      this.legend.insertLegend();
+    },
+    'flotr:destroy': function() {
+      var markup = this.legend.markup;
+      if (markup) {
+        this.legend.markup = null;
+        D.remove(markup);
+      }
+    }
+  },
+  /**
+   * Adds a legend div to the canvas container or draws it on the canvas.
+   */
+  insertLegend: function(){
+
+    if(!this.options.legend.show)
+      return;
+
+    var series      = this.series,
+      plotOffset    = this.plotOffset,
+      options       = this.options,
+      legend        = options.legend,
+      fragments     = [],
+      rowStarted    = false, 
+      ctx           = this.ctx,
+      itemCount     = _.filter(series, function(s) {return (s.label && !s.hide);}).length,
+      p             = legend.position, 
+      m             = legend.margin,
+      opacity       = legend.backgroundOpacity,
+      i, label, color;
+
+    if (itemCount) {
+
+      var lbw = legend.labelBoxWidth,
+          lbh = legend.labelBoxHeight,
+          lbm = legend.labelBoxMargin,
+          offsetX = plotOffset.left + m,
+          offsetY = plotOffset.top + m,
+          labelMaxWidth = 0,
+          style = {
+            size: options.fontSize*1.1,
+            color: options.grid.color
+          };
+
+      // We calculate the labels' max width
+      for(i = series.length - 1; i > -1; --i){
+        if(!series[i].label || series[i].hide) continue;
+        label = legend.labelFormatter(series[i].label);
+        labelMaxWidth = Math.max(labelMaxWidth, this._text.measureText(label, style).width);
+      }
+
+      var legendWidth  = Math.round(lbw + lbm*3 + labelMaxWidth),
+          legendHeight = Math.round(itemCount*(lbm+lbh) + lbm);
+
+      // Default Opacity
+      if (!opacity && opacity !== 0) {
+        opacity = 0.1;
+      }
+
+      if (!options.HtmlText && this.textEnabled && !legend.container) {
+        
+        if(p.charAt(0) == 's') offsetY = plotOffset.top + this.plotHeight - (m + legendHeight);
+        if(p.charAt(0) == 'c') offsetY = plotOffset.top + (this.plotHeight/2) - (m + (legendHeight/2));
+        if(p.charAt(1) == 'e') offsetX = plotOffset.left + this.plotWidth - (m + legendWidth);
+        
+        // Legend box
+        color = this.processColor(legend.backgroundColor, { opacity : opacity });
+
+        ctx.fillStyle = color;
+        ctx.fillRect(offsetX, offsetY, legendWidth, legendHeight);
+        ctx.strokeStyle = legend.labelBoxBorderColor;
+        ctx.strokeRect(Flotr.toPixel(offsetX), Flotr.toPixel(offsetY), legendWidth, legendHeight);
+        
+        // Legend labels
+        var x = offsetX + lbm;
+        var y = offsetY + lbm;
+        for(i = 0; i < series.length; i++){
+          if(!series[i].label || series[i].hide) continue;
+          label = legend.labelFormatter(series[i].label);
+          
+          ctx.fillStyle = series[i].color;
+          ctx.fillRect(x, y, lbw-1, lbh-1);
+          
+          ctx.strokeStyle = legend.labelBoxBorderColor;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(Math.ceil(x)-1.5, Math.ceil(y)-1.5, lbw+2, lbh+2);
+          
+          // Legend text
+          Flotr.drawText(ctx, label, x + lbw + lbm, y + lbh, style);
+          
+          y += lbh + lbm;
+        }
+      }
+      else {
+        for(i = 0; i < series.length; ++i){
+          if(!series[i].label || series[i].hide) continue;
+          
+          if(i % legend.noColumns === 0){
+            fragments.push(rowStarted ? '</tr><tr>' : '<tr>');
+            rowStarted = true;
+          }
+
+          var s = series[i],
+            boxWidth = legend.labelBoxWidth,
+            boxHeight = legend.labelBoxHeight;
+
+          label = legend.labelFormatter(s.label);
+          color = 'background-color:' + ((s.bars && s.bars.show && s.bars.fillColor && s.bars.fill) ? s.bars.fillColor : s.color) + ';';
+          
+          fragments.push(
+            '<td class="flotr-legend-color-box">',
+              '<div style="border:1px solid ', legend.labelBoxBorderColor, ';padding:1px">',
+                '<div style="width:', (boxWidth-1), 'px;height:', (boxHeight-1), 'px;border:1px solid ', series[i].color, '">', // Border
+                  '<div style="width:', boxWidth, 'px;height:', boxHeight, 'px;', color, '"></div>', // Background
+                '</div>',
+              '</div>',
+            '</td>',
+            '<td class="flotr-legend-label">', label, '</td>'
+          );
+        }
+        if(rowStarted) fragments.push('</tr>');
+          
+        if(fragments.length > 0){
+          var table = '<table style="font-size:smaller;color:' + options.grid.color + '">' + fragments.join('') + '</table>';
+          if(legend.container){
+            table = D.node(table);
+            this.legend.markup = table;
+            D.insert(legend.container, table);
+          }
+          else {
+            var styles = {position: 'absolute', 'zIndex': '2', 'border' : '1px solid ' + legend.labelBoxBorderColor};
+
+                 if(p.charAt(0) == 'n') { styles.top = (m + plotOffset.top) + 'px'; styles.bottom = 'auto'; }
+            else if(p.charAt(0) == 'c') { styles.top = (m + (this.plotHeight - legendHeight) / 2) + 'px'; styles.bottom = 'auto'; }
+            else if(p.charAt(0) == 's') { styles.bottom = (m + plotOffset.bottom) + 'px'; styles.top = 'auto'; }
+                 if(p.charAt(1) == 'e') { styles.right = (m + plotOffset.right) + 'px'; styles.left = 'auto'; }
+            else if(p.charAt(1) == 'w') { styles.left = (m + plotOffset.left) + 'px'; styles.right = 'auto'; }
+
+            var div = D.create('div'), size;
+            div.className = 'flotr-legend';
+            D.setStyles(div, styles);
+            D.insert(div, table);
+            D.insert(this.el, div);
+            
+            if (!opacity) return;
+
+            var c = legend.backgroundColor || options.grid.backgroundColor || '#ffffff';
+
+            _.extend(styles, D.size(div), {
+              'backgroundColor': c,
+              'zIndex' : '',
+              'border' : ''
+            });
+            styles.width += 'px';
+            styles.height += 'px';
+
+             // Put in the transparent background separately to avoid blended labels and
+            div = D.create('div');
+            div.className = 'flotr-legend-bg';
+            D.setStyles(div, styles);
+            D.opacity(div, opacity);
+            D.insert(div, ' ');
+            D.insert(this.el, div);
+          }
+        }
+      }
+    }
+  }
+});
+})();

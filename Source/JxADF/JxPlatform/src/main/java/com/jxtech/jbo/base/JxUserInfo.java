@@ -67,7 +67,8 @@ public class JxUserInfo implements Serializable {
 
     public String getLangcode() {
         if (StrUtil.isNull(langcode)) {
-            langcode = Locale.getDefault().getLanguage();
+            Locale loc = Locale.getDefault();
+            langcode = StrUtil.contact(loc.getLanguage(), "_", loc.getCountry());
         }
         return langcode;
     }

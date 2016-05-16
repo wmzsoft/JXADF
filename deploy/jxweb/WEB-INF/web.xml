@@ -2,11 +2,11 @@
 <web-app xmlns="http://java.sun.com/xml/ns/j2ee"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.4"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-
     <context-param>
         <param-name>TemplatePath</param-name>
         <param-value>/</param-value>
     </context-param>
+    <!--  com.jxtech.common.JxContextLoaderListener 中读取 -->
     <context-param>
         <param-name>osgi.config.properties</param-name>
         <param-value>/WEB-INF/conf/osgi.config.properties</param-value>
@@ -15,13 +15,13 @@
     <listener>
         <listener-class>com.jxtech.common.JxContextLoaderListener</listener-class>
     </listener>
-	<listener>
-		<listener-class>org.apache.struts2.osgi.StrutsOsgiListener</listener-class>
-	</listener>
-	<listener>
-		<listener-class>org.apache.struts2.dispatcher.ng.listener.StrutsListener</listener-class>
-	</listener>	
-	<listener>
+    <listener>
+        <listener-class>org.apache.struts2.osgi.StrutsOsgiListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.apache.struts2.dispatcher.ng.listener.StrutsListener</listener-class>
+    </listener>
+    <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
     <listener>
@@ -33,7 +33,7 @@
 
     <filter>
         <filter-name>struts2-prepare</filter-name>
-        <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareFilter</filter-class>   
+        <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsPrepareFilter</filter-class>
     </filter>
     <filter>
         <filter-name>authFilter</filter-name>
@@ -41,7 +41,7 @@
     </filter>
     <filter>
         <filter-name>struts2-execute</filter-name>
-        <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsExecuteFilter</filter-class>  
+        <filter-class>org.apache.struts2.dispatcher.ng.filter.StrutsExecuteFilter</filter-class>
     </filter>
     <filter-mapping>
         <filter-name>struts2-prepare</filter-name>
@@ -55,20 +55,20 @@
         <filter-name>struts2-execute</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    
+
 
     <servlet>
-		 <servlet-name>JspSupportServlet</servlet-name>
-		 <servlet-class>org.apache.struts2.views.JspSupportServlet</servlet-class>
-		 <load-on-startup>1</load-on-startup>
+        <servlet-name>JspSupportServlet</servlet-name>
+        <servlet-class>org.apache.struts2.views.JspSupportServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
     </servlet>
- 
+
     <servlet>
         <servlet-name>dwr</servlet-name>
         <servlet-class>org.directwebremoting.spring.DwrSpringServlet</servlet-class>
         <init-param>
             <param-name>debug</param-name>
-            <param-value>true</param-value>
+            <param-value>false</param-value>
         </init-param>
         <init-param>
             <param-name>allowGetForSafariButMakeForgeryEasier</param-name>
@@ -98,8 +98,7 @@
     </servlet>
     <servlet>
         <servlet-name>fileDownload</servlet-name>
-        <servlet-class>com.jxtech.app.attachment.FiledownServlet
-        </servlet-class>
+        <servlet-class>com.jxtech.app.attachment.FiledownServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>fileUpload</servlet-name>
@@ -110,39 +109,6 @@
         <url-pattern>/filedown</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>exportFile</servlet-name>
-        <servlet-class>com.jxtech.servlet.ExportServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MppUpload</servlet-name>
-        <servlet-class>com.jxtech.app.attachment.MppupDBServlet</servlet-class>
-    </servlet><servlet>
-    <servlet-name>ImpFile</servlet-name>
-        <servlet-class>com.jxtech.app.attachment.ImportFileServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MppDownload</servlet-name>
-        <servlet-class>com.jxtech.app.attachment.MppdownDBServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>exportFile</servlet-name>
-        <url-pattern>/export</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ImpFile</servlet-name>
-        <url-pattern>/impfile/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MppUpload</servlet-name>
-        <url-pattern>/mppup/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MppDownload</servlet-name>
-        <url-pattern>/mppdown/*</url-pattern>
-    </servlet-mapping>
-    
     <mime-mapping>
         <extension>doc</extension>
         <mime-type>application/msword</mime-type>
@@ -156,6 +122,10 @@
         <mime-type>application/vnd.ms-excel</mime-type>
     </mime-mapping>
     <mime-mapping>
+        <extension>mpp</extension>
+        <mime-type>application/vnd.ms-project</mime-type>
+    </mime-mapping>
+    <mime-mapping>
         <extension>xml</extension>
         <mime-type>text/xml</mime-type>
     </mime-mapping>
@@ -167,13 +137,10 @@
         <extension>zip</extension>
         <mime-type>application/zip</mime-type>
     </mime-mapping>
-    
+
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-    <icon>
-        <small-icon>/skin/default/images/app_small.png</small-icon>
-        <large-icon>/skin/default/images/app_large.png</large-icon>
-    </icon>
-    <description>健新科技OSGI云</description>    
+
+    <description>健新科技</description>
 </web-app>

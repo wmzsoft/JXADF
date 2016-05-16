@@ -25,7 +25,7 @@ public class LayoutTag extends JxBaseUITag {
     private List<LayoutPanel> panels = new ArrayList<LayoutPanel>();
     private List<LayoutRow> rows = new ArrayList<LayoutRow>();
     private List<LayoutCol> cols = new ArrayList<LayoutCol>();
-    //size
+    // size
     private String minWidth;
     private String minHeight;
     private String width;
@@ -69,29 +69,51 @@ public class LayoutTag extends JxBaseUITag {
         return panels;
     }
 
-    public List<LayoutRow> getRows(){ return rows;}
+    public List<LayoutRow> getRows() {
+        return rows;
+    }
 
-    public List<LayoutCol> getCols(){ return cols;}
+    public List<LayoutCol> getCols() {
+        return cols;
+    }
 
     public void setPanels(List<LayoutPanel> panels) {
         this.panels = panels;
     }
 
-    public void setMinWidth(String minWidth) { this.minWidth = minWidth;}
+    public void setMinWidth(String minWidth) {
+        this.minWidth = minWidth;
+    }
 
-    public void setMinHeight(String minHeight) { this.minHeight = minHeight;}
+    public void setMinHeight(String minHeight) {
+        this.minHeight = minHeight;
+    }
 
-    public void setWidth(String width) { this.width = width;}
+    public void setWidth(String width) {
+        this.width = width;
+    }
 
-    public void setHeight(String height){ this.height = height;}
+    public void setHeight(String height) {
+        this.height = height;
+    }
 
-    public void setMaxWidth(String maxWidth) { this.maxWidth = maxWidth;}
+    public void setMaxWidth(String maxWidth) {
+        this.maxWidth = maxWidth;
+    }
 
-    public void setMaxHeight(String maxHeight) { this.maxHeight = maxHeight;}
+    public void setMaxHeight(String maxHeight) {
+        this.maxHeight = maxHeight;
+    }
 
-    public void setEnableLayout(String enableLayout) { this.enableLayout = enableLayout;}
+    public void setEnableLayout(String enableLayout) {
+        this.enableLayout = enableLayout;
+    }
 
-    public void setStorable(String storable) { this.storable = storable;}
+    public void setStorable(String storable) {
+        this.storable = storable;
+    }
 
-    public void setDisplayMode(String displayMode){ this.displayMode = displayMode;}
+    public void setDisplayMode(String displayMode) {
+        this.displayMode = displayMode;
+    }
 }

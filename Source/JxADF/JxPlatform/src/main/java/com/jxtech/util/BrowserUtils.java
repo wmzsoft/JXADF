@@ -74,11 +74,11 @@ public class BrowserUtils {
      * @return
      */
     public static boolean isPhone(HttpServletRequest request) {
-        String userAgent = request.getHeader("USER-AGENT").toLowerCase();
+        String userAgent = request.getHeader("USER-AGENT");
         if (null == userAgent) {
             return false;
         }
-        Matcher matcherPhone = phonePat.matcher(userAgent);
+        Matcher matcherPhone = phonePat.matcher(userAgent.toLowerCase());
         return matcherPhone.find();
     }
 

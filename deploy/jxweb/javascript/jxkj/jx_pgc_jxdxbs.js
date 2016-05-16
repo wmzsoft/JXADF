@@ -1,1 +1,1 @@
-function getUrlParamVal(a){var l=location.search.match(new RegExp("[?&]"+a+"=([^&]+)","i"));return null==l||l.length<1?"":l[1]}function setDefVal(a,l){""==a.val()&&a.val(l)}
+function getUrlParamVal(b){var a=location.search.match(new RegExp("[?&]"+b+"=([^&]+)","i"));if(a==null||a.length<1){return""}return a[1]}function setDefVal(b,a){if(b.val()==""){b.val(a)}};

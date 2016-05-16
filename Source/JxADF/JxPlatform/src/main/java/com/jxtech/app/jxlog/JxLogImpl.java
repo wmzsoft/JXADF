@@ -41,7 +41,7 @@ public class JxLogImpl implements JxLog {
     }
 
     protected String getMessage(String message, String action, String uid) throws JxException {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         if (app != null) {
             buf.append("\r\napp=" + app);
         }

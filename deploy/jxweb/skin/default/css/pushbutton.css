@@ -1,1 +1,107 @@
-.pushbutton{background:url(../images/pushbutton/toolbar_btn.png) repeat-x;color:#000;font-size:12px;height:28px;line-height:28px;padding:0 15px;display:inline-block;border:1px solid #ccc;border-radius:2px;cursor:pointer;margin:5px 5px 5px 0}.pushbutton:hover{background:url(../images/pushbutton/toolbar_btn_hover.png) repeat-x;color:#fff;border:1px solid #0e6fa6}.table_head_td_right .pushbutton{margin-top:0;line-height:0}.head_right .pushbutton{margin:0}.pushbutton[disabled=disabled]{border:1px dashed #ccc;color:#ccc}.pushbutton[disabled=disabled]:hover{background:url(../images/pushbutton/toolbar_btn.png) repeat-x;border:1px dashed #ccc;color:#ccc;cursor:not-allowed}.head_right .btn_href{margin:0}.button-silver,.mybutton{background:url(../images/pushbutton/toolbar_btn.png) repeat-x;color:#000;border:1px solid #ccc;height:28px;text-align:center;cursor:pointer;border-radius:2px;padding:0 15px}.mybutton{height:30px}.button-silver:hover,.mybutton:hover{background:url(../images/pushbutton/toolbar_btn_hover.png) repeat-x;color:#fff;border:1px solid #0e6fa6}.table-content a:hover{color:#fa6400}.table-content input.btn_href{height:30px}.remoteAction{background:#43c01d;border:1px solid #3b9a10;color:#fff;border-radius:2px;height:26px;line-height:26px;padding:0 15px;cursor:pointer;display:inline-block}.remoteAction-Clicked{background:url(../images/pushbutton/toolbar_btn.png) repeat-x;border:1px solid #ccc;color:#ccc;cursor:not-allowed}.remoteAction-active{background:0 0;cursor:default;border:none;color:#666}
+﻿/*******************************************
+* 样式表
+*******************************************/
+/* 修改样式，添加背景图片以及鼠标移动后的变化样式 */
+.pushbutton {
+    background: url(../images/pushbutton/toolbar_btn.png) repeat-x;
+    color: #000;
+    font-size: 12px;
+    height: 28px;
+    line-height: 28px;
+    padding: 0 15px;
+    display: inline-block;
+    border: 1px #ccc solid;
+    border-radius: 2px;
+    cursor: pointer;
+    margin: 5px 5px 5px 0;
+}
+
+.pushbutton:hover {
+    background: url(../images/pushbutton/toolbar_btn_hover.png) repeat-x;
+    color: #fff;
+    border: 1px #0e6fa6 solid;
+}
+
+.table_head_td_right .pushbutton {
+    margin-top: 0;
+    line-height: 0;
+}
+
+.head_right .pushbutton {
+    margin: 0;
+}
+
+.pushbutton[disabled="disabled"] {
+    border: 1px #ccc dashed;
+    color: #ccc;
+}
+
+.pushbutton[disabled="disabled"]:hover {
+    background: url(../images/pushbutton/toolbar_btn.png) repeat-x;
+    border: 1px #ccc dashed;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.head_right .btn_href {
+    margin: 0;
+}
+
+/*插件控制台start*/
+
+.button-silver, .mybutton {
+    background: url(../images/pushbutton/toolbar_btn.png) repeat-x;
+    color: #000;
+    border: 1px #ccc solid;
+    height: 28px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 2px;
+    padding: 0 15px;
+}
+
+.mybutton {
+    height: 30px;
+}
+
+.button-silver:hover, .mybutton:hover {
+    background: url(../images/pushbutton/toolbar_btn_hover.png) repeat-x;
+    color: #fff;
+    border: 1px #0e6fa6 solid;
+}
+
+.table-content a:hover {
+    color: #fa6400;
+}
+
+.table-content input.btn_href {
+    height: 30px;
+}
+
+.remoteAction {
+    background: #43c01d;
+    border: 1px #3b9a10 solid;
+    color: #fff;
+    border-radius: 2px;
+    height: 26px;
+    line-height: 26px;
+    padding: 0 15px;
+    cursor: pointer;
+    display: inline-block;
+}
+
+.remoteAction-Clicked {
+    background: url(../images/pushbutton/toolbar_btn.png) repeat-x;
+    border: 1px #ccc solid;
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.remoteAction-active {
+    background: none;
+    cursor: default;
+    border: none;
+    color: #666;
+}
+
+/*插件控制台end*/

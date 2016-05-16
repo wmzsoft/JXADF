@@ -68,8 +68,6 @@ public class AuthFilter implements Filter {
                         String lang = request.getParameter("locale");
                         if (lang != null) {
                             userInfo.setLangcode(lang);
-                        } else if (StrUtil.isNull(userInfo.getLangcode())) {
-                            userInfo.setLangcode("zh_CN");
                         }
                         // 设定IP、机器名等信息
                         userInfo.setLoginIp(getIpAddr(req));

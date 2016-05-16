@@ -62,21 +62,39 @@ public class LayoutPanelTag extends JxBaseUITag {
         return super.doStartTag();
     }
 
-    public void setRegion(String region) { this.region = region; }
+    public void setRegion(String region) {
+        this.region = region;
+    }
 
-    public void setSize(String size ){ this.size = size;}
+    public void setSize(String size) {
+        this.size = size;
+    }
 
-    public void setMinSize(String minSize){ this.minSize = minSize;}
+    public void setMinSize(String minSize) {
+        this.minSize = minSize;
+    }
 
-    public void setMaxSize(String maxSize){this.maxSize = maxSize;}
+    public void setMaxSize(String maxSize) {
+        this.maxSize = maxSize;
+    }
 
-    public void setSpace(String space){ this.space = space;}
+    public void setSpace(String space) {
+        this.space = space;
+    }
 
-    public void setClosable(String closable){ this.closable = closable;}
+    public void setClosable(String closable) {
+        this.closable = closable;
+    }
 
-    public void setResizable(String resizable){ this.resizable = resizable;}
+    public void setResizable(String resizable) {
+        this.resizable = resizable;
+    }
 
-    public void setStatus(String status){ this.status = status;}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-    public void setScrollable(String scrollable){ this.scrollable = scrollable; }
+    public void setScrollable(String scrollable) {
+        this.scrollable = scrollable;
+    }
 }

@@ -12,9 +12,9 @@ $author:wmzsoft@gmail.com
 <#elseif (parameters.dynamicAttributes.label??)>
     ${parameters.dynamicAttributes.label}<#t/>
 <#elseif (parameters.columnAttribute??)>
-    ${parameters.columnAttribute.title!(parameters.tagbundle['label.null'])}<#t>
+    ${parameters.columnAttribute.title!(parameters.tagbundle['label.null']!)}<#t>
 <#elseif (parameters.jxattribute??)>
-    ${parameters.jxattribute.title!(parameters.tagbundle['label.null'])}<#t>
+    ${parameters.jxattribute.title!(parameters.tagbundle['label.null']!)}<#t>
 <#else>
-    ${parameters.dataattribute!(parameters.tagbundle['label.null'])}<#t>
+    ${parameters.dataattribute!(parameters.tagbundle['label.null']!)}<#t>
 </#if>

@@ -1,1 +1,292 @@
-Flotr.addType("lines",{options:{show:!1,lineWidth:2,fill:!1,fillBorder:!1,fillColor:null,fillOpacity:.4,steps:!1,stacked:!1},stack:{values:[]},draw:function(e){var l,t=e.context,i=e.lineWidth,n=e.shadowSize;t.save(),t.lineJoin="round",n&&(t.lineWidth=n/2,l=i/2+t.lineWidth/2,t.strokeStyle="rgba(0,0,0,0.1)",this.plot(e,l+n/2,!1),t.strokeStyle="rgba(0,0,0,0.2)",this.plot(e,l,!1)),t.lineWidth=i,t.strokeStyle=e.color,this.plot(e,0,!0),t.restore()},plot:function(e,l,t){function i(){!l&&e.fill&&T&&(n=x(T[0]),d.fillStyle=e.fillStyle,d.lineTo(a,p),d.lineTo(n,p),d.lineTo(n,v(T[1])),d.fill(),e.fillBorder&&d.stroke())}var n,a,o,s,r,h,c,d=e.context,u=e.width,f=e.height,x=e.xScale,v=e.yScale,S=e.data,g=e.stacked?this.stack:!1,y=S.length-1,m=null,k=null,p=v(0),T=null;if(!(1>y)){for(d.beginPath(),c=0;y>c;++c)null!==S[c][1]&&null!==S[c+1][1]?(n=x(S[c][0]),a=x(S[c+1][0]),null===T&&(T=S[c]),g?(r=g.values[S[c][0]]||0,h=g.values[S[c+1][0]]||g.values[S[c][0]]||0,o=v(S[c][1]+r),s=v(S[c+1][1]+h),t&&(S[c].y0=r,g.values[S[c][0]]=S[c][1]+r,c==y-1&&(S[c+1].y0=h,g.values[S[c+1][0]]=S[c+1][1]+h))):(o=v(S[c][1]),s=v(S[c+1][1])),o>f&&s>f||0>o&&0>s||0>n&&0>a||n>u&&a>u||((m!=n||k!=o+l)&&d.moveTo(n,o+l),m=a,k=s+l,e.steps?(d.lineTo(m+l/2,o+l),d.lineTo(m+l/2,k)):d.lineTo(m,k))):e.fill&&c>0&&null!==S[c][1]&&(d.stroke(),i(),T=null,d.closePath(),d.beginPath());(!e.fill||e.fill&&!e.fillBorder)&&d.stroke(),i(),d.closePath()}},extendYRange:function(e,l,t,i){var n=e.options;if(t.stacked&&(!n.max&&0!==n.max||!n.min&&0!==n.min)){var a,o,s=e.max,r=e.min,h=i.positiveSums||{},c=i.negativeSums||{};for(o=0;o<l.length;o++)a=l[o][0]+"",l[o][1]>0?(h[a]=(h[a]||0)+l[o][1],s=Math.max(s,h[a])):(c[a]=(c[a]||0)+l[o][1],r=Math.min(r,c[a]));i.negativeSums=c,i.positiveSums=h,e.max=s,e.min=r}t.steps&&(this.hit=function(e){var l,t=e.data,i=e.args,n=e.yScale,a=i[0],o=t.length,s=i[1],r=e.xInverse(a.relX),h=a.relY;for(l=0;o-1>l;l++)if(r>=t[l][0]&&r<=t[l+1][0]){Math.abs(n(t[l][1])-h)<8&&(s.x=t[l][0],s.y=t[l][1],s.index=l,s.seriesIndex=e.index);break}},this.drawHit=function(e){var l,t=e.context,i=e.args,n=e.data,a=e.xScale,o=i.index,s=a(i.x),r=e.yScale(i.y);n.length-1>o&&(l=e.xScale(n[o+1][0]),t.save(),t.strokeStyle=e.color,t.lineWidth=e.lineWidth,t.beginPath(),t.moveTo(s,r),t.lineTo(l,r),t.stroke(),t.closePath(),t.restore())},this.clearHit=function(e){var l,t=e.context,i=e.args,n=e.data,a=e.xScale,o=e.lineWidth,s=i.index,r=a(i.x),h=e.yScale(i.y);n.length-1>s&&(l=e.xScale(n[s+1][0]),t.clearRect(r-o,h-o,l-r+2*o,2*o))})}});
+/** Lines **/
+Flotr.addType('lines', {
+  options: {
+    show: false,           // => setting to true will show lines, false will hide
+    lineWidth: 2,          // => line width in pixels
+    fill: false,           // => true to fill the area from the line to the x axis, false for (transparent) no fill
+    fillBorder: false,     // => draw a border around the fill
+    fillColor: null,       // => fill color
+    fillOpacity: 0.4,      // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+    steps: false,          // => draw steps
+    stacked: false         // => setting to true will show stacked lines, false will show normal lines
+  },
+
+  stack : {
+    values : []
+  },
+
+  /**
+   * Draws lines series in the canvas element.
+   * @param {Object} options
+   */
+  draw : function (options) {
+
+    var
+      context     = options.context,
+      lineWidth   = options.lineWidth,
+      shadowSize  = options.shadowSize,
+      offset;
+
+    context.save();
+    context.lineJoin = 'round';
+
+    if (shadowSize) {
+
+      context.lineWidth = shadowSize / 2;
+      offset = lineWidth / 2 + context.lineWidth / 2;
+      
+      // @TODO do this instead with a linear gradient
+      context.strokeStyle = "rgba(0,0,0,0.1)";
+      this.plot(options, offset + shadowSize / 2, false);
+
+      context.strokeStyle = "rgba(0,0,0,0.2)";
+      this.plot(options, offset, false);
+    }
+
+    context.lineWidth = lineWidth;
+    context.strokeStyle = options.color;
+
+    this.plot(options, 0, true);
+
+    context.restore();
+  },
+
+  plot : function (options, shadowOffset, incStack) {
+
+    var
+      context   = options.context,
+      width     = options.width, 
+      height    = options.height,
+      xScale    = options.xScale,
+      yScale    = options.yScale,
+      data      = options.data, 
+      stack     = options.stacked ? this.stack : false,
+      length    = data.length - 1,
+      prevx     = null,
+      prevy     = null,
+      zero      = yScale(0),
+      start     = null,
+      x1, x2, y1, y2, stack1, stack2, i;
+      
+    if (length < 1) return;
+
+    context.beginPath();
+
+    for (i = 0; i < length; ++i) {
+
+      // To allow empty values
+      if (data[i][1] === null || data[i+1][1] === null) {
+        if (options.fill) {
+          if (i > 0 && data[i][1] !== null) {
+            context.stroke();
+            fill();
+            start = null;
+            context.closePath();
+            context.beginPath();
+          }
+        }
+        continue;
+      }
+
+      // Zero is infinity for log scales
+      // TODO handle zero for logarithmic
+      // if (xa.options.scaling === 'logarithmic' && (data[i][0] <= 0 || data[i+1][0] <= 0)) continue;
+      // if (ya.options.scaling === 'logarithmic' && (data[i][1] <= 0 || data[i+1][1] <= 0)) continue;
+      
+      x1 = xScale(data[i][0]);
+      x2 = xScale(data[i+1][0]);
+
+      if (start === null) start = data[i];
+      
+      if (stack) {
+        stack1 = stack.values[data[i][0]] || 0;
+        stack2 = stack.values[data[i+1][0]] || stack.values[data[i][0]] || 0;
+        y1 = yScale(data[i][1] + stack1);
+        y2 = yScale(data[i+1][1] + stack2);
+        if (incStack) {
+          data[i].y0 = stack1;
+          stack.values[data[i][0]] = data[i][1] + stack1;
+          if (i == length-1) {
+            data[i+1].y0 = stack2;
+            stack.values[data[i+1][0]] = data[i+1][1] + stack2;
+          }
+        }
+      } else {
+        y1 = yScale(data[i][1]);
+        y2 = yScale(data[i+1][1]);
+      }
+
+      if (
+        (y1 > height && y2 > height) ||
+        (y1 < 0 && y2 < 0) ||
+        (x1 < 0 && x2 < 0) ||
+        (x1 > width && x2 > width)
+      ) continue;
+
+      if ((prevx != x1) || (prevy != y1 + shadowOffset)) {
+        context.moveTo(x1, y1 + shadowOffset);
+      }
+      
+      prevx = x2;
+      prevy = y2 + shadowOffset;
+      if (options.steps) {
+        context.lineTo(prevx + shadowOffset / 2, y1 + shadowOffset);
+        context.lineTo(prevx + shadowOffset / 2, prevy);
+      } else {
+        context.lineTo(prevx, prevy);
+      }
+    }
+    
+    if (!options.fill || options.fill && !options.fillBorder) context.stroke();
+
+    fill();
+
+    function fill () {
+      // TODO stacked lines
+      if(!shadowOffset && options.fill && start){
+        x1 = xScale(start[0]);
+        context.fillStyle = options.fillStyle;
+        context.lineTo(x2, zero);
+        context.lineTo(x1, zero);
+        context.lineTo(x1, yScale(start[1]));
+        context.fill();
+        if (options.fillBorder) {
+          context.stroke();
+        }
+      }
+    }
+
+    context.closePath();
+  },
+
+  // Perform any pre-render precalculations (this should be run on data first)
+  // - Pie chart total for calculating measures
+  // - Stacks for lines and bars
+  // precalculate : function () {
+  // }
+  //
+  //
+  // Get any bounds after pre calculation (axis can fetch this if does not have explicit min/max)
+  // getBounds : function () {
+  // }
+  // getMin : function () {
+  // }
+  // getMax : function () {
+  // }
+  //
+  //
+  // Padding around rendered elements
+  // getPadding : function () {
+  // }
+
+  extendYRange : function (axis, data, options, lines) {
+
+    var o = axis.options;
+
+    // If stacked and auto-min
+    if (options.stacked && ((!o.max && o.max !== 0) || (!o.min && o.min !== 0))) {
+
+      var
+        newmax = axis.max,
+        newmin = axis.min,
+        positiveSums = lines.positiveSums || {},
+        negativeSums = lines.negativeSums || {},
+        x, j;
+
+      for (j = 0; j < data.length; j++) {
+
+        x = data[j][0] + '';
+
+        // Positive
+        if (data[j][1] > 0) {
+          positiveSums[x] = (positiveSums[x] || 0) + data[j][1];
+          newmax = Math.max(newmax, positiveSums[x]);
+        }
+
+        // Negative
+        else {
+          negativeSums[x] = (negativeSums[x] || 0) + data[j][1];
+          newmin = Math.min(newmin, negativeSums[x]);
+        }
+      }
+
+      lines.negativeSums = negativeSums;
+      lines.positiveSums = positiveSums;
+
+      axis.max = newmax;
+      axis.min = newmin;
+    }
+
+    if (options.steps) {
+
+      this.hit = function (options) {
+        var
+          data = options.data,
+          args = options.args,
+          yScale = options.yScale,
+          mouse = args[0],
+          length = data.length,
+          n = args[1],
+          x = options.xInverse(mouse.relX),
+          relY = mouse.relY,
+          i;
+
+        for (i = 0; i < length - 1; i++) {
+          if (x >= data[i][0] && x <= data[i+1][0]) {
+            if (Math.abs(yScale(data[i][1]) - relY) < 8) {
+              n.x = data[i][0];
+              n.y = data[i][1];
+              n.index = i;
+              n.seriesIndex = options.index;
+            }
+            break;
+          }
+        }
+      };
+
+      this.drawHit = function (options) {
+        var
+          context = options.context,
+          args    = options.args,
+          data    = options.data,
+          xScale  = options.xScale,
+          index   = args.index,
+          x       = xScale(args.x),
+          y       = options.yScale(args.y),
+          x2;
+
+        if (data.length - 1 > index) {
+          x2 = options.xScale(data[index + 1][0]);
+          context.save();
+          context.strokeStyle = options.color;
+          context.lineWidth = options.lineWidth;
+          context.beginPath();
+          context.moveTo(x, y);
+          context.lineTo(x2, y);
+          context.stroke();
+          context.closePath();
+          context.restore();
+        }
+      };
+
+      this.clearHit = function (options) {
+        var
+          context = options.context,
+          args    = options.args,
+          data    = options.data,
+          xScale  = options.xScale,
+          width   = options.lineWidth,
+          index   = args.index,
+          x       = xScale(args.x),
+          y       = options.yScale(args.y),
+          x2;
+
+        if (data.length - 1 > index) {
+          x2 = options.xScale(data[index + 1][0]);
+          context.clearRect(x - width, y - width, x2 - x + 2 * width, 2 * width);
+        }
+      };
+    }
+  }
+
+});

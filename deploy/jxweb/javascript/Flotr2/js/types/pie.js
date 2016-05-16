@@ -1,1 +1,214 @@
-!function(){Flotr._;Flotr.defaultPieLabelFormatter=function(t,e){return(100*e/t).toFixed(2)+"%"},Flotr.addType("pie",{options:{show:!1,lineWidth:1,fill:!0,fillColor:null,fillOpacity:.6,explode:6,sizeRatio:.6,startAngle:Math.PI/4,labelFormatter:Flotr.defaultPieLabelFormatter,pie3D:!1,pie3DviewAngle:Math.PI/2*.8,pie3DspliceThickness:20,epsilon:.1},draw:function(t){var e,i,l,s=t.data,a=t.context,o=t.lineWidth,r=t.shadowSize,n=t.sizeRatio,h=t.height,d=t.width,c=t.explode,x=t.color,f=t.fill,p=t.fillStyle,g=Math.min(d,h)*n/2,u=s[0][1],M=[],v=1,y=2*Math.PI*u/this.total,b=this.startAngle||2*Math.PI*t.startAngle,F=b+y,S=b+y/2,w=t.labelFormatter(this.total,u),m=c+g+4,P=Math.cos(S)*m,I=Math.sin(S)*m,A=0>P?"right":"left",T=I>0?"top":"bottom";if(a.save(),a.translate(d/2,h/2),a.scale(1,v),i=Math.cos(S)*c,l=Math.sin(S)*c,r>0&&(this.plotSlice(i+r,l+r,g,b,F,a),f&&(a.fillStyle="rgba(0,0,0,0.1)",a.fill())),this.plotSlice(i,l,g,b,F,a),f&&(a.fillStyle=p,a.fill()),a.lineWidth=o,a.strokeStyle=x,a.stroke(),e={size:1.2*t.fontSize,color:t.fontColor,weight:1.5},w&&(t.htmlText||!t.textEnabled?(divStyle="position:absolute;"+T+":"+(h/2+("top"===T?I:-I))+"px;",divStyle+=A+":"+(d/2+("right"===A?-P:P))+"px;",M.push('<div style="',divStyle,'" class="flotr-grid-label">',w,"</div>")):(e.textAlign=A,e.textBaseline=T,Flotr.drawText(a,w,P,I,e))),t.htmlText||!t.textEnabled){var D=Flotr.DOM.node('<div style="color:'+t.fontColor+'" class="flotr-labels"></div>');Flotr.DOM.insert(D,M.join("")),Flotr.DOM.insert(t.element,D)}a.restore(),this.startAngle=F,this.slices=this.slices||[],this.slices.push({radius:g,x:i,y:l,explode:c,start:b,end:F})},plotSlice:function(t,e,i,l,s,a){a.beginPath(),a.moveTo(t,e),a.arc(t,e,i,l,s,!1),a.lineTo(t,e),a.closePath()},hit:function(t){var e=t.data[0],i=t.args,l=t.index,s=i[0],a=i[1],o=this.slices[l],r=s.relX-t.width/2,n=s.relY-t.height/2,h=Math.sqrt(r*r+n*n),d=Math.atan(n/r),c=2*Math.PI,x=o.explode||t.explode,f=o.start%c,p=o.end%c,g=t.epsilon;0>r?d+=Math.PI:r>0&&0>n&&(d+=c),h<o.radius+x&&h>x&&(d>f&&p>d||f>p&&(p>d||d>f)||f===p&&(o.start===o.end&&Math.abs(d-f)<g||o.start!==o.end&&Math.abs(d-f)>g))&&(a.x=e[0],a.y=e[1],a.sAngle=f,a.eAngle=p,a.index=0,a.seriesIndex=l,a.fraction=e[1]/this.total)},drawHit:function(t){var e=t.context,i=this.slices[t.args.seriesIndex];e.save(),e.translate(t.width/2,t.height/2),this.plotSlice(i.x,i.y,i.radius,i.start,i.end,e),e.stroke(),e.restore()},clearHit:function(t){var e=t.context,i=this.slices[t.args.seriesIndex],l=2*t.lineWidth,s=i.radius+l;e.save(),e.translate(t.width/2,t.height/2),e.clearRect(i.x-s,i.y-s,2*s+l,2*s+l),e.restore()},extendYRange:function(t,e){this.total=(this.total||0)+e[0][1]}})}();
+/**
+ * Pie
+ *
+ * Formats the pies labels.
+ * @param {Object} slice - Slice object
+ * @return {String} Formatted pie label string
+ */
+(function () {
+
+var
+  _ = Flotr._;
+
+Flotr.defaultPieLabelFormatter = function (total, value) {
+  return (100 * value / total).toFixed(2)+'%';
+};
+
+Flotr.addType('pie', {
+  options: {
+    show: false,           // => setting to true will show bars, false will hide
+    lineWidth: 1,          // => in pixels
+    fill: true,            // => true to fill the area from the line to the x axis, false for (transparent) no fill
+    fillColor: null,       // => fill color
+    fillOpacity: 0.6,      // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+    explode: 6,            // => the number of pixels the splices will be far from the center
+    sizeRatio: 0.6,        // => the size ratio of the pie relative to the plot 
+    startAngle: Math.PI/4, // => the first slice start angle
+    labelFormatter: Flotr.defaultPieLabelFormatter,
+    pie3D: false,          // => whether to draw the pie in 3 dimenstions or not (ineffective) 
+    pie3DviewAngle: (Math.PI/2 * 0.8),
+    pie3DspliceThickness: 20,
+    epsilon: 0.1           // => how close do you have to get to hit empty slice
+  },
+
+  draw : function (options) {
+
+    // TODO 3D charts what?
+    var
+      data          = options.data,
+      context       = options.context,
+      lineWidth     = options.lineWidth,
+      shadowSize    = options.shadowSize,
+      sizeRatio     = options.sizeRatio,
+      height        = options.height,
+      width         = options.width,
+      explode       = options.explode,
+      color         = options.color,
+      fill          = options.fill,
+      fillStyle     = options.fillStyle,
+      radius        = Math.min(width, height) * sizeRatio / 2,
+      value         = data[0][1],
+      html          = [],
+      vScale        = 1,//Math.cos(series.pie.viewAngle);
+      measure       = Math.PI * 2 * value / this.total,
+      startAngle    = this.startAngle || (2 * Math.PI * options.startAngle), // TODO: this initial startAngle is already in radians (fixing will be test-unstable)
+      endAngle      = startAngle + measure,
+      bisection     = startAngle + measure / 2,
+      label         = options.labelFormatter(this.total, value),
+      //plotTickness  = Math.sin(series.pie.viewAngle)*series.pie.spliceThickness / vScale;
+      explodeCoeff  = explode + radius + 4,
+      distX         = Math.cos(bisection) * explodeCoeff,
+      distY         = Math.sin(bisection) * explodeCoeff,
+      textAlign     = distX < 0 ? 'right' : 'left',
+      textBaseline  = distY > 0 ? 'top' : 'bottom',
+      style,
+      x, y;
+    
+    context.save();
+    context.translate(width / 2, height / 2);
+    context.scale(1, vScale);
+
+    x = Math.cos(bisection) * explode;
+    y = Math.sin(bisection) * explode;
+
+    // Shadows
+    if (shadowSize > 0) {
+      this.plotSlice(x + shadowSize, y + shadowSize, radius, startAngle, endAngle, context);
+      if (fill) {
+        context.fillStyle = 'rgba(0,0,0,0.1)';
+        context.fill();
+      }
+    }
+
+    this.plotSlice(x, y, radius, startAngle, endAngle, context);
+    if (fill) {
+      context.fillStyle = fillStyle;
+      context.fill();
+    }
+    context.lineWidth = lineWidth;
+    context.strokeStyle = color;
+    context.stroke();
+
+    style = {
+      size : options.fontSize * 1.2,
+      color : options.fontColor,
+      weight : 1.5
+    };
+
+    if (label) {
+      if (options.htmlText || !options.textEnabled) {
+        divStyle = 'position:absolute;' + textBaseline + ':' + (height / 2 + (textBaseline === 'top' ? distY : -distY)) + 'px;';
+        divStyle += textAlign + ':' + (width / 2 + (textAlign === 'right' ? -distX : distX)) + 'px;';
+        html.push('<div style="', divStyle, '" class="flotr-grid-label">', label, '</div>');
+      }
+      else {
+        style.textAlign = textAlign;
+        style.textBaseline = textBaseline;
+        Flotr.drawText(context, label, distX, distY, style);
+      }
+    }
+    
+    if (options.htmlText || !options.textEnabled) {
+      var div = Flotr.DOM.node('<div style="color:' + options.fontColor + '" class="flotr-labels"></div>');
+      Flotr.DOM.insert(div, html.join(''));
+      Flotr.DOM.insert(options.element, div);
+    }
+    
+    context.restore();
+
+    // New start angle
+    this.startAngle = endAngle;
+    this.slices = this.slices || [];
+    this.slices.push({
+      radius : radius,
+      x : x,
+      y : y,
+      explode : explode,
+      start : startAngle,
+      end : endAngle
+    });
+  },
+  plotSlice : function (x, y, radius, startAngle, endAngle, context) {
+    context.beginPath();
+    context.moveTo(x, y);
+    context.arc(x, y, radius, startAngle, endAngle, false);
+    context.lineTo(x, y);
+    context.closePath();
+  },
+  hit : function (options) {
+
+    var
+      data      = options.data[0],
+      args      = options.args,
+      index     = options.index,
+      mouse     = args[0],
+      n         = args[1],
+      slice     = this.slices[index],
+      x         = mouse.relX - options.width / 2,
+      y         = mouse.relY - options.height / 2,
+      r         = Math.sqrt(x * x + y * y),
+      theta     = Math.atan(y / x),
+      circle    = Math.PI * 2,
+      explode   = slice.explode || options.explode,
+      start     = slice.start % circle,
+      end       = slice.end % circle,
+      epsilon   = options.epsilon;
+
+    if (x < 0) {
+      theta += Math.PI;
+    } else if (x > 0 && y < 0) {
+      theta += circle;
+    }
+
+    if (r < slice.radius + explode && r > explode) {
+      if (
+          (theta > start && theta < end) || // Normal Slice
+          (start > end && (theta < end || theta > start)) || // First slice
+          // TODO: Document the two cases at the end:
+          (start === end && ((slice.start === slice.end && Math.abs(theta - start) < epsilon) || (slice.start !== slice.end && Math.abs(theta-start) > epsilon)))
+         ) {
+          
+          // TODO Decouple this from hit plugin (chart shouldn't know what n means)
+         n.x = data[0];
+         n.y = data[1];
+         n.sAngle = start;
+         n.eAngle = end;
+         n.index = 0;
+         n.seriesIndex = index;
+         n.fraction = data[1] / this.total;
+      }
+    }
+  },
+  drawHit: function (options) {
+    var
+      context = options.context,
+      slice = this.slices[options.args.seriesIndex];
+
+    context.save();
+    context.translate(options.width / 2, options.height / 2);
+    this.plotSlice(slice.x, slice.y, slice.radius, slice.start, slice.end, context);
+    context.stroke();
+    context.restore();
+  },
+  clearHit : function (options) {
+    var
+      context = options.context,
+      slice = this.slices[options.args.seriesIndex],
+      padding = 2 * options.lineWidth,
+      radius = slice.radius + padding;
+
+    context.save();
+    context.translate(options.width / 2, options.height / 2);
+    context.clearRect(
+      slice.x - radius,
+      slice.y - radius,
+      2 * radius + padding,
+      2 * radius + padding 
+    );
+    context.restore();
+  },
+  extendYRange : function (axis, data) {
+    this.total = (this.total || 0) + data[0][1];
+  }
+});
+})();

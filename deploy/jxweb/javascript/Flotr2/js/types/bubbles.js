@@ -1,1 +1,124 @@
-Flotr.addType("bubbles",{options:{show:!1,lineWidth:2,fill:!0,fillOpacity:.4,baseRadius:2},draw:function(t){var e=t.context,i=t.shadowSize;e.save(),e.lineWidth=t.lineWidth,e.fillStyle="rgba(0,0,0,0.05)",e.strokeStyle="rgba(0,0,0,0.05)",this.plot(t,i/2),e.strokeStyle="rgba(0,0,0,0.1)",this.plot(t,i/4),e.strokeStyle=t.color,e.fillStyle=t.fillStyle,this.plot(t),e.restore()},plot:function(t,e){var i,l,r=t.data,a=t.context;for(e=e||0,l=0;l<r.length;++l)i=this.getGeometry(r[l],t),a.beginPath(),a.arc(i.x+e,i.y+e,i.z,0,2*Math.PI,!0),a.stroke(),t.fill&&a.fill(),a.closePath()},getGeometry:function(t,e){return{x:e.xScale(t[0]),y:e.yScale(t[1]),z:t[2]*e.baseRadius}},hit:function(t){var e,l,r,a,o=t.data,s=t.args,n=s[0],h=s[1],y=n.relX,c=n.relY;for(h.best=h.best||Number.MAX_VALUE,i=o.length;i--;)l=this.getGeometry(o[i],t),r=l.x-y,a=l.y-c,e=Math.sqrt(r*r+a*a),e<l.z&&l.z<h.best&&(h.x=o[i][0],h.y=o[i][1],h.index=i,h.seriesIndex=t.index,h.best=l.z)},drawHit:function(t){var e=t.context,i=this.getGeometry(t.data[t.args.index],t);e.save(),e.lineWidth=t.lineWidth,e.fillStyle=t.fillStyle,e.strokeStyle=t.color,e.beginPath(),e.arc(i.x,i.y,i.z,0,2*Math.PI,!0),e.fill(),e.stroke(),e.closePath(),e.restore()},clearHit:function(t){var e=t.context,i=this.getGeometry(t.data[t.args.index],t),l=i.z+t.lineWidth;e.save(),e.clearRect(i.x-l,i.y-l,2*l,2*l),e.restore()}});
+/** Bubbles **/
+Flotr.addType('bubbles', {
+  options: {
+    show: false,      // => setting to true will show radar chart, false will hide
+    lineWidth: 2,     // => line width in pixels
+    fill: true,       // => true to fill the area from the line to the x axis, false for (transparent) no fill
+    fillOpacity: 0.4, // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+    baseRadius: 2     // => ratio of the radar, against the plot size
+  },
+  draw : function (options) {
+    var
+      context     = options.context,
+      shadowSize  = options.shadowSize;
+
+    context.save();
+    context.lineWidth = options.lineWidth;
+    
+    // Shadows
+    context.fillStyle = 'rgba(0,0,0,0.05)';
+    context.strokeStyle = 'rgba(0,0,0,0.05)';
+    this.plot(options, shadowSize / 2);
+    context.strokeStyle = 'rgba(0,0,0,0.1)';
+    this.plot(options, shadowSize / 4);
+
+    // Chart
+    context.strokeStyle = options.color;
+    context.fillStyle = options.fillStyle;
+    this.plot(options);
+    
+    context.restore();
+  },
+  plot : function (options, offset) {
+
+    var
+      data    = options.data,
+      context = options.context,
+      geometry,
+      i, x, y, z;
+
+    offset = offset || 0;
+    
+    for (i = 0; i < data.length; ++i){
+
+      geometry = this.getGeometry(data[i], options);
+
+      context.beginPath();
+      context.arc(geometry.x + offset, geometry.y + offset, geometry.z, 0, 2 * Math.PI, true);
+      context.stroke();
+      if (options.fill) context.fill();
+      context.closePath();
+    }
+  },
+  getGeometry : function (point, options) {
+    return {
+      x : options.xScale(point[0]),
+      y : options.yScale(point[1]),
+      z : point[2] * options.baseRadius
+    };
+  },
+  hit : function (options) {
+    var
+      data = options.data,
+      args = options.args,
+      mouse = args[0],
+      n = args[1],
+      relX = mouse.relX,
+      relY = mouse.relY,
+      distance,
+      geometry,
+      dx, dy;
+
+    n.best = n.best || Number.MAX_VALUE;
+
+    for (i = data.length; i--;) {
+      geometry = this.getGeometry(data[i], options);
+
+      dx = geometry.x - relX;
+      dy = geometry.y - relY;
+      distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < geometry.z && geometry.z < n.best) {
+        n.x = data[i][0];
+        n.y = data[i][1];
+        n.index = i;
+        n.seriesIndex = options.index;
+        n.best = geometry.z;
+      }
+    }
+  },
+  drawHit : function (options) {
+
+    var
+      context = options.context,
+      geometry = this.getGeometry(options.data[options.args.index], options);
+
+    context.save();
+    context.lineWidth = options.lineWidth;
+    context.fillStyle = options.fillStyle;
+    context.strokeStyle = options.color;
+    context.beginPath();
+    context.arc(geometry.x, geometry.y, geometry.z, 0, 2 * Math.PI, true);
+    context.fill();
+    context.stroke();
+    context.closePath();
+    context.restore();
+  },
+  clearHit : function (options) {
+
+    var
+      context = options.context,
+      geometry = this.getGeometry(options.data[options.args.index], options),
+      offset = geometry.z + options.lineWidth;
+
+    context.save();
+    context.clearRect(
+      geometry.x - offset, 
+      geometry.y - offset,
+      2 * offset,
+      2 * offset
+    );
+    context.restore();
+  }
+  // TODO Add a hit calculation method (like pie)
+});

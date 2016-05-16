@@ -1,1 +1,84 @@
-!function(){var t=Flotr.DOM;Flotr.addPlugin("crosshair",{options:{mode:null,color:"#FF0000",hideCursor:!0},callbacks:{"flotr:mousemove":function(t,o){this.options.crosshair.mode&&(this.crosshair.clearCrosshair(),this.crosshair.drawCrosshair(o))}},drawCrosshair:function(o){var r=this.octx,s=this.options.crosshair,e=this.plotOffset,i=e.left+Math.round(o.relX)+.5,l=e.top+Math.round(o.relY)+.5;return o.relX<0||o.relY<0||o.relX>this.plotWidth||o.relY>this.plotHeight?(this.el.style.cursor=null,void t.removeClass(this.el,"flotr-crosshair")):(s.hideCursor&&(this.el.style.cursor="none",t.addClass(this.el,"flotr-crosshair")),r.save(),r.strokeStyle=s.color,r.lineWidth=1,r.beginPath(),-1!=s.mode.indexOf("x")&&(r.moveTo(i,e.top),r.lineTo(i,e.top+this.plotHeight)),-1!=s.mode.indexOf("y")&&(r.moveTo(e.left,l),r.lineTo(e.left+this.plotWidth,l)),r.stroke(),void r.restore())},clearCrosshair:function(){var t=this.plotOffset,o=this.lastMousePos,r=this.octx;o&&(r.clearRect(Math.round(o.relX)+t.left,t.top,1,this.plotHeight+1),r.clearRect(t.left,Math.round(o.relY)+t.top,this.plotWidth+1,1))}})}();
+(function () {
+
+var D = Flotr.DOM;
+
+Flotr.addPlugin('crosshair', {
+  options: {
+    mode: null,            // => one of null, 'x', 'y' or 'xy'
+    color: '#FF0000',      // => crosshair color
+    hideCursor: true       // => hide the cursor when the crosshair is shown
+  },
+  callbacks: {
+    'flotr:mousemove': function(e, pos) {
+      if (this.options.crosshair.mode) {
+        this.crosshair.clearCrosshair();
+        this.crosshair.drawCrosshair(pos);
+      }
+    }
+  },
+  /**   
+   * Draws the selection box.
+   */
+  drawCrosshair: function(pos) {
+    var octx = this.octx,
+      options = this.options.crosshair,
+      plotOffset = this.plotOffset,
+      x = plotOffset.left + Math.round(pos.relX) + 0.5,
+      y = plotOffset.top + Math.round(pos.relY) + 0.5;
+    
+    if (pos.relX < 0 || pos.relY < 0 || pos.relX > this.plotWidth || pos.relY > this.plotHeight) {
+      this.el.style.cursor = null;
+      D.removeClass(this.el, 'flotr-crosshair');
+      return; 
+    }
+    
+    if (options.hideCursor) {
+      this.el.style.cursor = 'none';
+      D.addClass(this.el, 'flotr-crosshair');
+    }
+    
+    octx.save();
+    octx.strokeStyle = options.color;
+    octx.lineWidth = 1;
+    octx.beginPath();
+    
+    if (options.mode.indexOf('x') != -1) {
+      octx.moveTo(x, plotOffset.top);
+      octx.lineTo(x, plotOffset.top + this.plotHeight);
+    }
+    
+    if (options.mode.indexOf('y') != -1) {
+      octx.moveTo(plotOffset.left, y);
+      octx.lineTo(plotOffset.left + this.plotWidth, y);
+    }
+    
+    octx.stroke();
+    octx.restore();
+  },
+  /**
+   * Removes the selection box from the overlay canvas.
+   */
+  clearCrosshair: function() {
+
+    var
+      plotOffset = this.plotOffset,
+      position = this.lastMousePos,
+      context = this.octx;
+
+    if (position) {
+      context.clearRect(
+        Math.round(position.relX) + plotOffset.left,
+        plotOffset.top,
+        1,
+        this.plotHeight + 1
+      );
+      context.clearRect(
+        plotOffset.left,
+        Math.round(position.relY) + plotOffset.top,
+        this.plotWidth + 1,
+        1
+      );    
+    }
+  }
+});
+})();

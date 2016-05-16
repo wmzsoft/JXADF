@@ -273,16 +273,16 @@ public class StrUtil {
         if (obj == null) {
             return "";
         }
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < obj.length; i++) {
             if (obj[i] == null) {
                 sb.append("null,");
                 continue;
             }
             try {
-                sb.append((String) obj[i] + ",");
+                sb.append((String) obj[i]).append(",");
             } catch (Exception e) {
-                sb.append(obj[i].toString() + ",");
+                sb.append(obj[i].toString()).append(",");
             }
         }
         return sb.toString();
@@ -510,11 +510,11 @@ public class StrUtil {
         Map<String, Object> map = new HashMap<String, Object>();
         // 最外层解析
         JSONObject json = JSONObject.fromObject(jsonStr);
-        for (Object entry :json.entrySet()){
-            Map.Entry<?,?> en = (Map.Entry<?,?>)entry;
+        for (Object entry : json.entrySet()) {
+            Map.Entry<?, ?> en = (Map.Entry<?, ?>) entry;
             Object v = en.getValue();
             Object k = en.getKey();
-            if (v instanceof JSONArray){
+            if (v instanceof JSONArray) {
                 List<Map<String, Object>> list = new ArrayList<Map<String, Object>>();
                 Iterator<JSONObject> it = ((JSONArray) v).iterator();
                 while (it.hasNext()) {
@@ -627,6 +627,7 @@ public class StrUtil {
                 break;
             default:
                 sb.append(c);
+                break;
             }
         }
         return sb.toString();

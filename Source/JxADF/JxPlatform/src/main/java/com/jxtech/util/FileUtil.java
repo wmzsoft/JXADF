@@ -24,7 +24,7 @@ import java.util.Enumeration;
  * @date 2013.08
  */
 public class FileUtil {
-    private static Logger LOG = LoggerFactory.getLogger(FileUtil.class);
+    private static final Logger LOG = LoggerFactory.getLogger(FileUtil.class);
 
     /**
      * 获得文件的MD5码
@@ -63,6 +63,7 @@ public class FileUtil {
             try {
                 digestInputStream.close();
             } catch (Exception e) {
+                LOG.error(e.getMessage());
             }
         }
 
@@ -192,7 +193,7 @@ public class FileUtil {
         if (StrUtil.isNull(FilePath)) {
             return "";
         }
-        return FilePath.substring(FilePath.lastIndexOf(".") + 1);
+        return FilePath.substring(FilePath.lastIndexOf('.') + 1);
     }
 
     /**
@@ -290,7 +291,7 @@ public class FileUtil {
         }
         StringBuilder srcfile = new StringBuilder();
         if (!StrUtil.isNull(path)) {
-            srcfile.append(path.trim()).append("/");
+            srcfile.append(path.trim()).append('/');
         }
         if (file != null) {
             srcfile.append(file.trim());
@@ -302,10 +303,10 @@ public class FileUtil {
             StringBuilder newpath = new StringBuilder();// 新文件的路径
             boolean flag = false;
             if ("".equals(pathfile[0].trim())) {
-                newpath.append("/");
+                newpath.append('/');
                 flag = true;
             } else if (len > 1) {
-                newpath.append(pathfile[0]).append("/");
+                newpath.append(pathfile[0]).append('/');
                 flag = !"..".equals(pathfile[0].trim());
             }
             int pos = 1;
@@ -325,7 +326,7 @@ public class FileUtil {
                 } else if (".".equals(pathfile[i])) {
                     continue;
                 } else {
-                    newpath.append(pathfile[i]).append("/");
+                    newpath.append(pathfile[i]).append('/');
                     if (!flag) {
                         flag = !"..".equals(pathfile[i].trim());
                     }
@@ -344,7 +345,7 @@ public class FileUtil {
                 }
             }
             if (b) {
-                newpath.append(pathfile[len - 1]).append("/");
+                newpath.append(pathfile[len - 1]).append('/');
                 pf[0] = newpath.toString();
                 pf[1] = null;
             } else {

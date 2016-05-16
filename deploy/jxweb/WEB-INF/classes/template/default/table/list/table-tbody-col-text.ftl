@@ -1,6 +1,6 @@
 <#if (col_index == 0 && parameters.rootparent??)>
 <span class="treeclose" treeStatus="close" onclick="openTreeTable(this,event)"
-      title="${parameters.tagbundle['table-thead.expend.title']}" parent="root"></span><#t>
+      title="${parameters.tagbundle['table-thead.expend.title']!}" parent="root"></span><#t>
 </#if>
 <#if (col.dataattribute??) && ( (parameters.inputmode!'')=='EDIT') && (!jbo.readonly) && (!jbo.isReadonly(col.dataattribute!'')) && ((col.dataattribute!'')?index_of('.')<0) && ((col.dataattribute!'') != (jbo.getUidName()!'')) && (jbo.getJxAttribute(col.dataattribute)??)>
     <#assign inputValue = colDataValue>

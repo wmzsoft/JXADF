@@ -1,1 +1,65 @@
-!function(e){e.effects.effect.drop=function(t,o){var i,s=e(this),f=["position","top","bottom","left","right","opacity","height","width"],c=e.effects.setMode(s,t.mode||"hide"),p="show"===c,r=t.direction||"left",n="up"===r||"down"===r?"top":"left",a="up"===r||"left"===r?"pos":"neg",d={opacity:p?1:0};e.effects.save(s,f),s.show(),e.effects.createWrapper(s),i=t.distance||s["top"===n?"outerHeight":"outerWidth"](!0)/2,p&&s.css("opacity",0).css(n,"pos"===a?-i:i),d[n]=(p?"pos"===a?"+=":"-=":"pos"===a?"-=":"+=")+i,s.animate(d,{queue:!1,duration:t.duration,easing:t.easing,complete:function(){"hide"===c&&s.hide(),e.effects.restore(s,f),e.effects.removeWrapper(s),o()}})}}(jQuery);
+/*!
+ * jQuery UI Effects Drop 1.10.3
+ * http://jqueryui.com
+ *
+ * Copyright 2013 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/drop-effect/
+ *
+ * Depends:
+ *	jquery.ui.effect.js
+ */
+(function( $, undefined ) {
+
+$.effects.effect.drop = function( o, done ) {
+
+	var el = $( this ),
+		props = [ "position", "top", "bottom", "left", "right", "opacity", "height", "width" ],
+		mode = $.effects.setMode( el, o.mode || "hide" ),
+		show = mode === "show",
+		direction = o.direction || "left",
+		ref = ( direction === "up" || direction === "down" ) ? "top" : "left",
+		motion = ( direction === "up" || direction === "left" ) ? "pos" : "neg",
+		animation = {
+			opacity: show ? 1 : 0
+		},
+		distance;
+
+	// Adjust
+	$.effects.save( el, props );
+	el.show();
+	$.effects.createWrapper( el );
+
+	distance = o.distance || el[ ref === "top" ? "outerHeight": "outerWidth" ]( true ) / 2;
+
+	if ( show ) {
+		el
+			.css( "opacity", 0 )
+			.css( ref, motion === "pos" ? -distance : distance );
+	}
+
+	// Animation
+	animation[ ref ] = ( show ?
+		( motion === "pos" ? "+=" : "-=" ) :
+		( motion === "pos" ? "-=" : "+=" ) ) +
+		distance;
+
+	// Animate
+	el.animate( animation, {
+		queue: false,
+		duration: o.duration,
+		easing: o.easing,
+		complete: function() {
+			if ( mode === "hide" ) {
+				el.hide();
+			}
+			$.effects.restore( el, props );
+			$.effects.removeWrapper( el );
+			done();
+		}
+	});
+};
+
+})(jQuery);

@@ -1,1 +1,208 @@
-!function(){var t=Flotr.EventAdapter,e=Flotr._;Flotr.addPlugin("graphGrid",{callbacks:{"flotr:beforedraw":function(){this.graphGrid.drawGrid()},"flotr:afterdraw":function(){this.graphGrid.drawOutline()}},drawGrid:function(){function i(t){for(s=0;s<t.length;++s){var i=t[s].v/n.max;for(l=0;k>=l;++l)h[0===l?"moveTo":"lineTo"](Math.cos(l*T+M)*v*i,Math.sin(l*T+M)*v*i)}}function o(t,i){e.each(e.pluck(t,"v"),function(t){t<=n.min||t>=n.max||(t==n.min||t==n.max)&&c.outlineWidth||i(Math.floor(n.d2p(t))+h.lineWidth/2)})}function r(t){h.moveTo(t,0),h.lineTo(t,m)}function a(t){h.moveTo(0,t),h.lineTo(x,t)}var n,s,l,h=this.ctx,f=this.options,c=f.grid,d=c.verticalLines,p=c.horizontalLines,u=c.minorVerticalLines,g=c.minorHorizontalLines,m=this.plotHeight,x=this.plotWidth;if((d||u||p||g)&&t.fire(this.el,"flotr:beforegrid",[this.axes.x,this.axes.y,f,this]),h.save(),h.lineWidth=1,h.strokeStyle=c.tickColor,c.circular){h.translate(this.plotOffset.left+x/2,this.plotOffset.top+m/2);var v=Math.min(m,x)*f.radar.radiusRatio/2,k=this.axes.x.ticks.length,T=2*(Math.PI/k),M=-Math.PI/2;h.beginPath(),n=this.axes.y,p&&i(n.ticks),g&&i(n.minorTicks),d&&e.times(k,function(t){h.moveTo(0,0),h.lineTo(Math.cos(t*T+M)*v,Math.sin(t*T+M)*v)}),h.stroke()}else h.translate(this.plotOffset.left,this.plotOffset.top),c.backgroundColor&&(h.fillStyle=this.processColor(c.backgroundColor,{x1:0,y1:0,x2:x,y2:m}),h.fillRect(0,0,x,m)),h.beginPath(),n=this.axes.x,d&&o(n.ticks,r),u&&o(n.minorTicks,r),n=this.axes.y,p&&o(n.ticks,a),g&&o(n.minorTicks,a),h.stroke();h.restore(),(d||u||p||g)&&t.fire(this.el,"flotr:aftergrid",[this.axes.x,this.axes.y,f,this])},drawOutline:function(){var t,e,o,r,a=this,n=a.options,s=n.grid,l=s.outline,h=a.ctx,f=s.backgroundImage,c=a.plotOffset,d=c.left,p=c.top,u=a.plotWidth,g=a.plotHeight;if(s.outlineWidth){if(h.save(),s.circular){h.translate(d+u/2,p+g/2);var m=Math.min(g,u)*n.radar.radiusRatio/2,x=this.axes.x.ticks.length,v=2*(Math.PI/x),k=-Math.PI/2;for(h.beginPath(),h.lineWidth=s.outlineWidth,h.strokeStyle=s.color,h.lineJoin="round",i=0;x>=i;++i)h[0===i?"moveTo":"lineTo"](Math.cos(i*v+k)*m,Math.sin(i*v+k)*m);h.stroke()}else{h.translate(d,p);var T=s.outlineWidth,M=.5-T+(T+1)%2/2,b="lineTo",O="moveTo";h.lineWidth=T,h.strokeStyle=s.color,h.lineJoin="miter",h.beginPath(),h.moveTo(M,M),u-=T/2%1,g+=T/2,h[-1!==l.indexOf("n")?b:O](u,M),h[-1!==l.indexOf("e")?b:O](u,g),h[-1!==l.indexOf("s")?b:O](M,g),h[-1!==l.indexOf("w")?b:O](M,M),h.stroke(),h.closePath()}h.restore(),f&&(e=f.src||f,o=(parseInt(f.left,10)||0)+c.left,r=(parseInt(f.top,10)||0)+c.top,t=new Image,t.onload=function(){h.save(),f.alpha&&(h.globalAlpha=f.alpha),h.globalCompositeOperation="destination-over",h.drawImage(t,0,0,t.width,t.height,o,r,u,g),h.restore()},t.src=e)}}})}();
+(function () {
+
+var E = Flotr.EventAdapter,
+    _ = Flotr._;
+
+Flotr.addPlugin('graphGrid', {
+
+  callbacks: {
+    'flotr:beforedraw' : function () {
+      this.graphGrid.drawGrid();
+    },
+    'flotr:afterdraw' : function () {
+      this.graphGrid.drawOutline();
+    }
+  },
+
+  drawGrid: function(){
+
+    var
+      ctx = this.ctx,
+      options = this.options,
+      grid = options.grid,
+      verticalLines = grid.verticalLines,
+      horizontalLines = grid.horizontalLines,
+      minorVerticalLines = grid.minorVerticalLines,
+      minorHorizontalLines = grid.minorHorizontalLines,
+      plotHeight = this.plotHeight,
+      plotWidth = this.plotWidth,
+      a, v, i, j;
+        
+    if(verticalLines || minorVerticalLines || 
+           horizontalLines || minorHorizontalLines){
+      E.fire(this.el, 'flotr:beforegrid', [this.axes.x, this.axes.y, options, this]);
+    }
+    ctx.save();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = grid.tickColor;
+    
+    function circularHorizontalTicks (ticks) {
+      for(i = 0; i < ticks.length; ++i){
+        var ratio = ticks[i].v / a.max;
+        for(j = 0; j <= sides; ++j){
+          ctx[j === 0 ? 'moveTo' : 'lineTo'](
+            Math.cos(j*coeff+angle)*radius*ratio,
+            Math.sin(j*coeff+angle)*radius*ratio
+          );
+        }
+      }
+    }
+    function drawGridLines (ticks, callback) {
+      _.each(_.pluck(ticks, 'v'), function(v){
+        // Don't show lines on upper and lower bounds.
+        if ((v <= a.min || v >= a.max) || 
+            (v == a.min || v == a.max) && grid.outlineWidth)
+          return;
+        callback(Math.floor(a.d2p(v)) + ctx.lineWidth/2);
+      });
+    }
+    function drawVerticalLines (x) {
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, plotHeight);
+    }
+    function drawHorizontalLines (y) {
+      ctx.moveTo(0, y);
+      ctx.lineTo(plotWidth, y);
+    }
+
+    if (grid.circular) {
+      ctx.translate(this.plotOffset.left+plotWidth/2, this.plotOffset.top+plotHeight/2);
+      var radius = Math.min(plotHeight, plotWidth)*options.radar.radiusRatio/2,
+          sides = this.axes.x.ticks.length,
+          coeff = 2*(Math.PI/sides),
+          angle = -Math.PI/2;
+      
+      // Draw grid lines in vertical direction.
+      ctx.beginPath();
+      
+      a = this.axes.y;
+
+      if(horizontalLines){
+        circularHorizontalTicks(a.ticks);
+      }
+      if(minorHorizontalLines){
+        circularHorizontalTicks(a.minorTicks);
+      }
+      
+      if(verticalLines){
+        _.times(sides, function(i){
+          ctx.moveTo(0, 0);
+          ctx.lineTo(Math.cos(i*coeff+angle)*radius, Math.sin(i*coeff+angle)*radius);
+        });
+      }
+      ctx.stroke();
+    }
+    else {
+      ctx.translate(this.plotOffset.left, this.plotOffset.top);
+  
+      // Draw grid background, if present in options.
+      if(grid.backgroundColor){
+        ctx.fillStyle = this.processColor(grid.backgroundColor, {x1: 0, y1: 0, x2: plotWidth, y2: plotHeight});
+        ctx.fillRect(0, 0, plotWidth, plotHeight);
+      }
+      
+      ctx.beginPath();
+
+      a = this.axes.x;
+      if (verticalLines)        drawGridLines(a.ticks, drawVerticalLines);
+      if (minorVerticalLines)   drawGridLines(a.minorTicks, drawVerticalLines);
+
+      a = this.axes.y;
+      if (horizontalLines)      drawGridLines(a.ticks, drawHorizontalLines);
+      if (minorHorizontalLines) drawGridLines(a.minorTicks, drawHorizontalLines);
+
+      ctx.stroke();
+    }
+    
+    ctx.restore();
+    if(verticalLines || minorVerticalLines ||
+       horizontalLines || minorHorizontalLines){
+      E.fire(this.el, 'flotr:aftergrid', [this.axes.x, this.axes.y, options, this]);
+    }
+  }, 
+
+  drawOutline: function(){
+    var
+      that = this,
+      options = that.options,
+      grid = options.grid,
+      outline = grid.outline,
+      ctx = that.ctx,
+      backgroundImage = grid.backgroundImage,
+      plotOffset = that.plotOffset,
+      leftOffset = plotOffset.left,
+      topOffset = plotOffset.top,
+      plotWidth = that.plotWidth,
+      plotHeight = that.plotHeight,
+      v, img, src, left, top, globalAlpha;
+    
+    if (!grid.outlineWidth) return;
+    
+    ctx.save();
+    
+    if (grid.circular) {
+      ctx.translate(leftOffset + plotWidth / 2, topOffset + plotHeight / 2);
+      var radius = Math.min(plotHeight, plotWidth) * options.radar.radiusRatio / 2,
+          sides = this.axes.x.ticks.length,
+          coeff = 2*(Math.PI/sides),
+          angle = -Math.PI/2;
+      
+      // Draw axis/grid border.
+      ctx.beginPath();
+      ctx.lineWidth = grid.outlineWidth;
+      ctx.strokeStyle = grid.color;
+      ctx.lineJoin = 'round';
+      
+      for(i = 0; i <= sides; ++i){
+        ctx[i === 0 ? 'moveTo' : 'lineTo'](Math.cos(i*coeff+angle)*radius, Math.sin(i*coeff+angle)*radius);
+      }
+      //ctx.arc(0, 0, radius, 0, Math.PI*2, true);
+
+      ctx.stroke();
+    }
+    else {
+      ctx.translate(leftOffset, topOffset);
+      
+      // Draw axis/grid border.
+      var lw = grid.outlineWidth,
+          orig = 0.5-lw+((lw+1)%2/2),
+          lineTo = 'lineTo',
+          moveTo = 'moveTo';
+      ctx.lineWidth = lw;
+      ctx.strokeStyle = grid.color;
+      ctx.lineJoin = 'miter';
+      ctx.beginPath();
+      ctx.moveTo(orig, orig);
+      plotWidth = plotWidth - (lw / 2) % 1;
+      plotHeight = plotHeight + lw / 2;
+      ctx[outline.indexOf('n') !== -1 ? lineTo : moveTo](plotWidth, orig);
+      ctx[outline.indexOf('e') !== -1 ? lineTo : moveTo](plotWidth, plotHeight);
+      ctx[outline.indexOf('s') !== -1 ? lineTo : moveTo](orig, plotHeight);
+      ctx[outline.indexOf('w') !== -1 ? lineTo : moveTo](orig, orig);
+      ctx.stroke();
+      ctx.closePath();
+    }
+    
+    ctx.restore();
+
+    if (backgroundImage) {
+
+      src = backgroundImage.src || backgroundImage;
+      left = (parseInt(backgroundImage.left, 10) || 0) + plotOffset.left;
+      top = (parseInt(backgroundImage.top, 10) || 0) + plotOffset.top;
+      img = new Image();
+
+      img.onload = function() {
+        ctx.save();
+        if (backgroundImage.alpha) ctx.globalAlpha = backgroundImage.alpha;
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.drawImage(img, 0, 0, img.width, img.height, left, top, plotWidth, plotHeight);
+        ctx.restore();
+      };
+
+      img.src = src;
+    }
+  }
+});
+
+})();

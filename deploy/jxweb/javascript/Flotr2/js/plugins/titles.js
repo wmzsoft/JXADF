@@ -1,1 +1,177 @@
-!function(){var t=Flotr.DOM;Flotr.addPlugin("titles",{callbacks:{"flotr:afterdraw":function(){this.titles.drawTitles()}},drawTitles:function(){var i,e=this.options,l=e.grid.labelMargin,s=this.ctx,o=this.axes;if(!e.HtmlText&&this.textEnabled){var p={size:e.fontSize,color:e.grid.color,textAlign:"center"};e.subtitle&&Flotr.drawText(s,e.subtitle,this.plotOffset.left+this.plotWidth/2,this.titleHeight+this.subtitleHeight-2,p),p.weight=1.5,p.size*=1.5,e.title&&Flotr.drawText(s,e.title,this.plotOffset.left+this.plotWidth/2,this.titleHeight-2,p),p.weight=1.8,p.size*=.8,o.x.options.title&&o.x.used&&(p.textAlign=o.x.options.titleAlign||"center",p.textBaseline="top",p.angle=Flotr.toRad(o.x.options.titleAngle),p=Flotr.getBestTextAlign(p.angle,p),Flotr.drawText(s,o.x.options.title,this.plotOffset.left+this.plotWidth/2,this.plotOffset.top+o.x.maxLabel.height+this.plotHeight+2*l,p)),o.x2.options.title&&o.x2.used&&(p.textAlign=o.x2.options.titleAlign||"center",p.textBaseline="bottom",p.angle=Flotr.toRad(o.x2.options.titleAngle),p=Flotr.getBestTextAlign(p.angle,p),Flotr.drawText(s,o.x2.options.title,this.plotOffset.left+this.plotWidth/2,this.plotOffset.top-o.x2.maxLabel.height-2*l,p)),o.y.options.title&&o.y.used&&(p.textAlign=o.y.options.titleAlign||"right",p.textBaseline="middle",p.angle=Flotr.toRad(o.y.options.titleAngle),p=Flotr.getBestTextAlign(p.angle,p),Flotr.drawText(s,o.y.options.title,this.plotOffset.left-o.y.maxLabel.width-2*l,this.plotOffset.top+this.plotHeight/2,p)),o.y2.options.title&&o.y2.used&&(p.textAlign=o.y2.options.titleAlign||"left",p.textBaseline="middle",p.angle=Flotr.toRad(o.y2.options.titleAngle),p=Flotr.getBestTextAlign(p.angle,p),Flotr.drawText(s,o.y2.options.title,this.plotOffset.left+this.plotWidth+o.y2.maxLabel.width+2*l,this.plotOffset.top+this.plotHeight/2,p))}else{i=[],e.title&&i.push('<div style="position:absolute;top:0;left:',this.plotOffset.left,"px;font-size:1em;font-weight:bold;text-align:center;width:",this.plotWidth,'px;" class="flotr-title">',e.title,"</div>"),e.subtitle&&i.push('<div style="position:absolute;top:',this.titleHeight,"px;left:",this.plotOffset.left,"px;font-size:smaller;text-align:center;width:",this.plotWidth,'px;" class="flotr-subtitle">',e.subtitle,"</div>"),i.push("</div>"),i.push('<div class="flotr-axis-title" style="font-weight:bold;">'),o.x.options.title&&o.x.used&&i.push('<div style="position:absolute;top:',this.plotOffset.top+this.plotHeight+e.grid.labelMargin+o.x.titleSize.height,"px;left:",this.plotOffset.left,"px;width:",this.plotWidth,"px;text-align:",o.x.options.titleAlign,';" class="flotr-axis-title flotr-axis-title-x1">',o.x.options.title,"</div>"),o.x2.options.title&&o.x2.used&&i.push('<div style="position:absolute;top:0;left:',this.plotOffset.left,"px;width:",this.plotWidth,"px;text-align:",o.x2.options.titleAlign,';" class="flotr-axis-title flotr-axis-title-x2">',o.x2.options.title,"</div>"),o.y.options.title&&o.y.used&&i.push('<div style="position:absolute;top:',this.plotOffset.top+this.plotHeight/2-o.y.titleSize.height/2,"px;left:0;text-align:",o.y.options.titleAlign,';" class="flotr-axis-title flotr-axis-title-y1">',o.y.options.title,"</div>"),o.y2.options.title&&o.y2.used&&i.push('<div style="position:absolute;top:',this.plotOffset.top+this.plotHeight/2-o.y.titleSize.height/2,"px;right:0;text-align:",o.y2.options.titleAlign,';" class="flotr-axis-title flotr-axis-title-y2">',o.y2.options.title,"</div>"),i=i.join("");var n=t.create("div");t.setStyles({color:e.grid.color}),n.className="flotr-titles",t.insert(this.el,n),t.insert(n,i)}}})}();
+(function () {
+
+var D = Flotr.DOM;
+
+Flotr.addPlugin('titles', {
+  callbacks: {
+    'flotr:afterdraw': function() {
+      this.titles.drawTitles();
+    }
+  },
+  /**
+   * Draws the title and the subtitle
+   */
+  drawTitles : function () {
+    var html,
+        options = this.options,
+        margin = options.grid.labelMargin,
+        ctx = this.ctx,
+        a = this.axes;
+    
+    if (!options.HtmlText && this.textEnabled) {
+      var style = {
+        size: options.fontSize,
+        color: options.grid.color,
+        textAlign: 'center'
+      };
+      
+      // Add subtitle
+      if (options.subtitle){
+        Flotr.drawText(
+          ctx, options.subtitle,
+          this.plotOffset.left + this.plotWidth/2, 
+          this.titleHeight + this.subtitleHeight - 2,
+          style
+        );
+      }
+      
+      style.weight = 1.5;
+      style.size *= 1.5;
+      
+      // Add title
+      if (options.title){
+        Flotr.drawText(
+          ctx, options.title,
+          this.plotOffset.left + this.plotWidth/2, 
+          this.titleHeight - 2,
+          style
+        );
+      }
+      
+      style.weight = 1.8;
+      style.size *= 0.8;
+      
+      // Add x axis title
+      if (a.x.options.title && a.x.used){
+        style.textAlign = a.x.options.titleAlign || 'center';
+        style.textBaseline = 'top';
+        style.angle = Flotr.toRad(a.x.options.titleAngle);
+        style = Flotr.getBestTextAlign(style.angle, style);
+        Flotr.drawText(
+          ctx, a.x.options.title,
+          this.plotOffset.left + this.plotWidth/2, 
+          this.plotOffset.top + a.x.maxLabel.height + this.plotHeight + 2 * margin,
+          style
+        );
+      }
+      
+      // Add x2 axis title
+      if (a.x2.options.title && a.x2.used){
+        style.textAlign = a.x2.options.titleAlign || 'center';
+        style.textBaseline = 'bottom';
+        style.angle = Flotr.toRad(a.x2.options.titleAngle);
+        style = Flotr.getBestTextAlign(style.angle, style);
+        Flotr.drawText(
+          ctx, a.x2.options.title,
+          this.plotOffset.left + this.plotWidth/2, 
+          this.plotOffset.top - a.x2.maxLabel.height - 2 * margin,
+          style
+        );
+      }
+      
+      // Add y axis title
+      if (a.y.options.title && a.y.used){
+        style.textAlign = a.y.options.titleAlign || 'right';
+        style.textBaseline = 'middle';
+        style.angle = Flotr.toRad(a.y.options.titleAngle);
+        style = Flotr.getBestTextAlign(style.angle, style);
+        Flotr.drawText(
+          ctx, a.y.options.title,
+          this.plotOffset.left - a.y.maxLabel.width - 2 * margin, 
+          this.plotOffset.top + this.plotHeight / 2,
+          style
+        );
+      }
+      
+      // Add y2 axis title
+      if (a.y2.options.title && a.y2.used){
+        style.textAlign = a.y2.options.titleAlign || 'left';
+        style.textBaseline = 'middle';
+        style.angle = Flotr.toRad(a.y2.options.titleAngle);
+        style = Flotr.getBestTextAlign(style.angle, style);
+        Flotr.drawText(
+          ctx, a.y2.options.title,
+          this.plotOffset.left + this.plotWidth + a.y2.maxLabel.width + 2 * margin, 
+          this.plotOffset.top + this.plotHeight / 2,
+          style
+        );
+      }
+    } 
+    else {
+      html = [];
+      
+      // Add title
+      if (options.title)
+        html.push(
+          '<div style="position:absolute;top:0;left:', 
+          this.plotOffset.left, 'px;font-size:1em;font-weight:bold;text-align:center;width:',
+          this.plotWidth,'px;" class="flotr-title">', options.title, '</div>'
+        );
+      
+      // Add subtitle
+      if (options.subtitle)
+        html.push(
+          '<div style="position:absolute;top:', this.titleHeight, 'px;left:', 
+          this.plotOffset.left, 'px;font-size:smaller;text-align:center;width:',
+          this.plotWidth, 'px;" class="flotr-subtitle">', options.subtitle, '</div>'
+        );
+
+      html.push('</div>');
+      
+      html.push('<div class="flotr-axis-title" style="font-weight:bold;">');
+      
+      // Add x axis title
+      if (a.x.options.title && a.x.used)
+        html.push(
+          '<div style="position:absolute;top:', 
+          (this.plotOffset.top + this.plotHeight + options.grid.labelMargin + a.x.titleSize.height), 
+          'px;left:', this.plotOffset.left, 'px;width:', this.plotWidth, 
+          'px;text-align:', a.x.options.titleAlign, ';" class="flotr-axis-title flotr-axis-title-x1">', a.x.options.title, '</div>'
+        );
+      
+      // Add x2 axis title
+      if (a.x2.options.title && a.x2.used)
+        html.push(
+          '<div style="position:absolute;top:0;left:', this.plotOffset.left, 'px;width:', 
+          this.plotWidth, 'px;text-align:', a.x2.options.titleAlign, ';" class="flotr-axis-title flotr-axis-title-x2">', a.x2.options.title, '</div>'
+        );
+      
+      // Add y axis title
+      if (a.y.options.title && a.y.used)
+        html.push(
+          '<div style="position:absolute;top:', 
+          (this.plotOffset.top + this.plotHeight/2 - a.y.titleSize.height/2), 
+          'px;left:0;text-align:', a.y.options.titleAlign, ';" class="flotr-axis-title flotr-axis-title-y1">', a.y.options.title, '</div>'
+        );
+      
+      // Add y2 axis title
+      if (a.y2.options.title && a.y2.used)
+        html.push(
+          '<div style="position:absolute;top:', 
+          (this.plotOffset.top + this.plotHeight/2 - a.y.titleSize.height/2), 
+          'px;right:0;text-align:', a.y2.options.titleAlign, ';" class="flotr-axis-title flotr-axis-title-y2">', a.y2.options.title, '</div>'
+        );
+      
+      html = html.join('');
+
+      var div = D.create('div');
+      D.setStyles({
+        color: options.grid.color 
+      });
+      div.className = 'flotr-titles';
+      D.insert(this.el, div);
+      D.insert(div, html);
+    }
+  }
+});
+})();

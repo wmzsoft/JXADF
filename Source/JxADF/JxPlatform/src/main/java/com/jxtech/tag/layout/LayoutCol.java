@@ -36,8 +36,10 @@ public class LayoutCol extends JxBaseUIBean {
     @Override
     public void evaluateParams() {
         super.evaluateParams();
-        addParameter("flex",findString(flex));
+        addParameter("flex", findString(flex));
     }
 
-    public void setFlex(String flex){ this.flex = flex; }
+    public void setFlex(String flex) {
+        this.flex = flex;
+    }
 }

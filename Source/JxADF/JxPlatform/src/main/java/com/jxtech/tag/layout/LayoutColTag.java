@@ -44,6 +44,8 @@ public class LayoutColTag extends JxBaseUITag {
         return super.doStartTag();
     }
 
-    public void setFlex(String flex){ this.flex = flex;}
+    public void setFlex(String flex) {
+        this.flex = flex;
+    }
 
 }

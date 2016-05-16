@@ -35,7 +35,7 @@ public class FiledownDBServlet extends HttpServlet {
         } catch (JxException e1) {
             LOG.error(e1.getMessage(),e1);
         }
-        StringBuffer msg = new StringBuffer();
+        StringBuilder msg = new StringBuilder();
         if (asi != null) {
             try {
                 JboIFace jbo = asi.queryJbo(id);
@@ -68,6 +68,7 @@ public class FiledownDBServlet extends HttpServlet {
                                     os.close();
                                 }
                             } catch (Exception ex) {
+                                LOG.error(ex.getMessage());
                             }
                         }
                     } else {

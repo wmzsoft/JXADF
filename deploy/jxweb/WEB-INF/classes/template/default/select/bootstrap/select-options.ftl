@@ -72,7 +72,7 @@ $author:wmzsoft@gmail.com
             <option value="${parameters.selected}" selected><#t>
             ${parameters.selectedDisplay!''}</option><#t>
         <#else>
-            <option value="" selected>${parameters.tagbundle['select.options']}</option><#t>
+            <option value="" selected>${parameters.tagbundle['select.options']!}</option><#t>
         </#if>        
     <#else>    
         <#-- 结束Select标签,开始Options标签 -->
@@ -113,7 +113,7 @@ $author:wmzsoft@gmail.com
             </#list>
         </#if>
         <#if (aSelected==0)>
-            <option value="" selected>${parameters.tagbundle['select.options']}</option><#t>
+            <option value="" selected>${parameters.tagbundle['select.options']!}</option><#t>
         </#if>
     </#if>        
     </select></span><#t>

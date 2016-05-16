@@ -1,1 +1,64 @@
-!function(e){e.effects.effect.slide=function(t,o){var i,s=e(this),f=["position","top","bottom","left","right","width","height"],r=e.effects.setMode(s,t.mode||"show"),c="show"===r,n=t.direction||"left",d="up"===n||"down"===n?"top":"left",a="up"===n||"left"===n,h={};e.effects.save(s,f),s.show(),i=t.distance||s["top"===d?"outerHeight":"outerWidth"](!0),e.effects.createWrapper(s).css({overflow:"hidden"}),c&&s.css(d,a?isNaN(i)?"-"+i:-i:i),h[d]=(c?a?"+=":"-=":a?"-=":"+=")+i,s.animate(h,{queue:!1,duration:t.duration,easing:t.easing,complete:function(){"hide"===r&&s.hide(),e.effects.restore(s,f),e.effects.removeWrapper(s),o()}})}}(jQuery);
+/*!
+ * jQuery UI Effects Slide 1.10.3
+ * http://jqueryui.com
+ *
+ * Copyright 2013 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/slide-effect/
+ *
+ * Depends:
+ *	jquery.ui.effect.js
+ */
+(function( $, undefined ) {
+
+$.effects.effect.slide = function( o, done ) {
+
+	// Create element
+	var el = $( this ),
+		props = [ "position", "top", "bottom", "left", "right", "width", "height" ],
+		mode = $.effects.setMode( el, o.mode || "show" ),
+		show = mode === "show",
+		direction = o.direction || "left",
+		ref = (direction === "up" || direction === "down") ? "top" : "left",
+		positiveMotion = (direction === "up" || direction === "left"),
+		distance,
+		animation = {};
+
+	// Adjust
+	$.effects.save( el, props );
+	el.show();
+	distance = o.distance || el[ ref === "top" ? "outerHeight" : "outerWidth" ]( true );
+
+	$.effects.createWrapper( el ).css({
+		overflow: "hidden"
+	});
+
+	if ( show ) {
+		el.css( ref, positiveMotion ? (isNaN(distance) ? "-" + distance : -distance) : distance );
+	}
+
+	// Animation
+	animation[ ref ] = ( show ?
+		( positiveMotion ? "+=" : "-=") :
+		( positiveMotion ? "-=" : "+=")) +
+		distance;
+
+	// Animate
+	el.animate( animation, {
+		queue: false,
+		duration: o.duration,
+		easing: o.easing,
+		complete: function() {
+			if ( mode === "hide" ) {
+				el.hide();
+			}
+			$.effects.restore( el, props );
+			$.effects.removeWrapper( el );
+			done();
+		}
+	});
+};
+
+})(jQuery);

@@ -1,1 +1,1 @@
-function bindTableEvent(){}function selectTableTr(){}
+function bindTableEvent(a){}function selectTableTr(a,b){};

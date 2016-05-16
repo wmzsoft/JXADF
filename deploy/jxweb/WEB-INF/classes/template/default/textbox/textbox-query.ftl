@@ -50,7 +50,7 @@ $author:wmzsoft@gmail.com
 	<#if (parameters.columnAttribute.maxType??)>
 		<#if ((parameters.columnAttribute.numOrDateTime!false)==true)>
 			<#assign dateid=(parameters.id)+"_1">
-			&nbsp;&nbsp;${parameters.tagbundle['textbox-query.date_to']}&nbsp;&nbsp;<#t/>
+			&nbsp;&nbsp;${parameters.tagbundle['textbox-query.date_to']!}&nbsp;&nbsp;<#t/>
 			<input type="text" class="${icss!'form_td_100'}"<#rt>
 			 	<#lt> dataattribute="${parameters.dataattribute}" <#rt>
 				<#lt> id="${parameters.id!'x'}_1" <#rt/>

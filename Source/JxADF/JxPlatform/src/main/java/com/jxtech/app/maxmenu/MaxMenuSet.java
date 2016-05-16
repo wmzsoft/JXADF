@@ -108,7 +108,7 @@ public class MaxMenuSet extends JboSet implements MaxMenuSetIFace {
     @Override
     public List<JboIFace> query(String shipname) throws JxException {
         List<JboIFace> superJboList = super.query(shipname);
-        if (!StrUtil.isNull(shipname) && shipname.equalsIgnoreCase("PUB_ROLE_MAXMENU_ALL")) {
+        if (!StrUtil.isNull(shipname) && "PUB_ROLE_MAXMENU_ALL".equalsIgnoreCase(shipname)) {
             JboIFace parent = getParent();
             if (null != parent) {
                 JboSetIFace roleOperationSet = parent.getRelationJboSet("PUB_ROLE_OPERATIONROLE_IDP", JxConstant.READ_RELOAD);

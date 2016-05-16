@@ -1,1 +1,24 @@
-.combobox-group,.combobox-item{font-size:12px;padding:3px 0 3px 3px}.combobox-item-disabled{opacity:.5;filter:alpha(opacity=50)}.combobox-gitem{padding-left:10px}.combobox-group{font-weight:700}.combobox-item-hover{background-color:#e2e2e2;color:#000}.combobox-item-selected{background-color:#0092DC;color:#fff}
+.combobox-item,
+.combobox-group {
+  font-size: 12px;
+  padding: 3px;
+  padding-right: 0px;
+}
+.combobox-item-disabled {
+  opacity: 0.5;
+  filter: alpha(opacity=50);
+}
+.combobox-gitem {
+  padding-left: 10px;
+}
+.combobox-group {
+  font-weight: bold;
+}
+.combobox-item-hover {
+  background-color: #e2e2e2;
+  color: #000000;
+}
+.combobox-item-selected {
+  background-color: #0092DC;
+  color: #fff;
+}

@@ -1,1 +1,367 @@
-!function(e){var i=function(e,i,t){"string"==typeof t.isHidden&&(t.isHidden=a.eqs(t.isHidden,"true")),t.isHidden=!!t.isHidden,h.initHideForExCheck(e,t)},t=function(){},d=function(e,i){i.showNodes=function(i,t){c.showNodes(e,i,t)},i.showNode=function(i,t){i&&c.showNodes(e,[i],t)},i.hideNodes=function(i,t){c.hideNodes(e,i,t)},i.hideNode=function(i,t){i&&c.hideNodes(e,[i],t)};var t=i.checkNode;t&&(i.checkNode=function(e){e&&e.isHidden||t.apply(i,arguments)})},o={initHideForExCheck:function(e,i){i.isHidden&&e.check&&e.check.enable&&("undefined"==typeof i._nocheck&&(i._nocheck=!!i.nocheck,i.nocheck=!0),i.check_Child_State=-1,c.repairParentChkClassWithSelf&&c.repairParentChkClassWithSelf(e,i))},initShowForExCheck:function(e,i){if(!i.isHidden&&e.check&&e.check.enable){if("undefined"!=typeof i._nocheck&&(i.nocheck=i._nocheck,delete i._nocheck),c.setChkClass){var t=l(i,N.id.CHECK,e);c.setChkClass(e,t,i)}c.repairParentChkClassWithSelf&&c.repairParentChkClassWithSelf(e,i)}}},s={clearOldFirstNode:function(e,i){for(var t=i.getNextNode();t;){if(t.isFirstNode){t.isFirstNode=!1,c.setNodeLineIcos(e,t);break}if(t.isLastNode)break;t=t.getNextNode()}},clearOldLastNode:function(e,i){for(var t=i.getPreNode();t;){if(t.isLastNode){t.isLastNode=!1,c.setNodeLineIcos(e,t);break}if(t.isFirstNode)break;t=t.getPreNode()}},makeDOMNodeMainBefore:function(e,i,t){e.push("<li ",t.isHidden?"style='display:none;' ":"","id='",t.tId,"' class='",N.className.LEVEL,t.level,"' tabindex='0' hidefocus='true' treenode>")},showNode:function(e,i){i.isHidden=!1,h.initShowForExCheck(e,i),l(i,e).show()},showNodes:function(e,i,t){if(i&&0!=i.length){var d,o,s={};for(d=0,o=i.length;o>d;d++){var n=i[d];if(!s[n.parentTId]){var r=n.getParentNode();s[n.parentTId]=null===r?h.getRoot(e):n.getParentNode()}c.showNode(e,n,t)}for(var a in s){var N=s[a][e.data.key.children];c.setFirstNodeForShow(e,N),c.setLastNodeForShow(e,N)}}},hideNode:function(e,i){i.isHidden=!0,i.isFirstNode=!1,i.isLastNode=!1,h.initHideForExCheck(e,i),c.cancelPreSelectedNode(e,i),l(i,e).hide()},hideNodes:function(e,i,t){if(i&&0!=i.length){var d,o,s={};for(d=0,o=i.length;o>d;d++){var n=i[d];if((n.isFirstNode||n.isLastNode)&&!s[n.parentTId]){var r=n.getParentNode();s[n.parentTId]=null===r?h.getRoot(e):n.getParentNode()}c.hideNode(e,n,t)}for(var a in s){var N=s[a][e.data.key.children];c.setFirstNodeForHide(e,N),c.setLastNodeForHide(e,N)}}},setFirstNode:function(e,i){var t=e.data.key.children,d=i[t].length;d>0&&!i[t][0].isHidden?i[t][0].isFirstNode=!0:d>0&&c.setFirstNodeForHide(e,i[t])},setLastNode:function(e,i){var t=e.data.key.children,d=i[t].length;d>0&&!i[t][0].isHidden?i[t][d-1].isLastNode=!0:d>0&&c.setLastNodeForHide(e,i[t])},setFirstNodeForHide:function(e,i){var t,d,o;for(d=0,o=i.length;o>d&&(t=i[d],!t.isFirstNode);d++){if(!t.isHidden&&!t.isFirstNode){t.isFirstNode=!0,c.setNodeLineIcos(e,t);break}t=null}return t},setFirstNodeForShow:function(e,i){var t,d,o,s,n;for(d=0,o=i.length;o>d;d++){if(t=i[d],!s&&!t.isHidden&&t.isFirstNode){s=t;break}if(s||t.isHidden||t.isFirstNode){if(s&&t.isFirstNode){t.isFirstNode=!1,n=t,c.setNodeLineIcos(e,t);break}t=null}else t.isFirstNode=!0,s=t,c.setNodeLineIcos(e,t)}return{"new":s,old:n}},setLastNodeForHide:function(e,i){var t,d;for(d=i.length-1;d>=0&&(t=i[d],!t.isLastNode);d--){if(!t.isHidden&&!t.isLastNode){t.isLastNode=!0,c.setNodeLineIcos(e,t);break}t=null}return t},setLastNodeForShow:function(e,i){var t,d,o,s;for(d=i.length-1;d>=0;d--){if(t=i[d],!o&&!t.isHidden&&t.isLastNode){o=t;break}if(o||t.isHidden||t.isLastNode){if(o&&t.isLastNode){t.isLastNode=!1,s=t,c.setNodeLineIcos(e,t);break}t=null}else t.isLastNode=!0,o=t,c.setNodeLineIcos(e,t)}return{"new":o,old:s}}},n={view:s,data:o};e.extend(!0,e.fn.zTree._z,n);var r=e.fn.zTree,a=r._z.tools,N=r.consts,c=r._z.view,h=r._z.data,l=(r._z.event,a.$);h.addInitNode(i),h.addBeforeA(t),h.addZTreeTools(d);var f=h.initNode;h.tmpHideParent=-1,h.initNode=function(e,i,t,d,o,s){if(h.tmpHideParent!==d){h.tmpHideParent=null==d?-1:d;var n=d?d:h.getRoot(e),r=n[e.data.key.children];h.tmpHideFirstNode=c.setFirstNodeForHide(e,r),h.tmpHideLastNode=c.setLastNodeForHide(e,r),c.setNodeLineIcos(e,h.tmpHideFirstNode),c.setNodeLineIcos(e,h.tmpHideLastNode)}o=h.tmpHideFirstNode===t,s=h.tmpHideLastNode===t,f&&f.apply(h,arguments),s&&c.clearOldLastNode(e,t)};var u=h.makeChkFlag;u&&(h.makeChkFlag=function(e,i){i&&i.isHidden||u.apply(h,arguments)});var k=h.getTreeCheckedNodes;k&&(h.getTreeCheckedNodes=function(e,i){if(i&&i.length>0){var t=i[0].getParentNode();if(t&&t.isHidden)return[]}return k.apply(h,arguments)});var H=h.getTreeChangeCheckedNodes;H&&(h.getTreeChangeCheckedNodes=function(e,i){if(i&&i.length>0){var t=i[0].getParentNode();if(t&&t.isHidden)return[]}return H.apply(h,arguments)});var p=c.expandCollapseSonNode;p&&(c.expandCollapseSonNode=function(e,i){i&&i.isHidden||p.apply(c,arguments)});var F=c.setSonNodeCheckBox;F&&(c.setSonNodeCheckBox=function(e,i){i&&i.isHidden||F.apply(c,arguments)});var g=c.repairParentChkClassWithSelf;g&&(c.repairParentChkClassWithSelf=function(e,i){i&&i.isHidden||g.apply(c,arguments)})}(jQuery);
+/*
+ * JQuery zTree exHideNodes 3.5.14
+ * http://zTree.me/
+ *
+ * Copyright (c) 2010 Hunter.z
+ *
+ * Licensed same as jquery - MIT License
+ * http://www.opensource.org/licenses/mit-license.php
+ *
+ * email: hunter.z@263.net
+ * Date: 2013-06-28
+ */
+(function($){
+	//default init node of exLib
+	var _initNode = function(setting, level, n, parentNode, isFirstNode, isLastNode, openFlag) {
+		if (typeof n.isHidden == "string") n.isHidden = tools.eqs(n.isHidden, "true");
+		n.isHidden = !!n.isHidden;
+		data.initHideForExCheck(setting, n);
+	},
+	//add dom for check
+	_beforeA = function(setting, node, html) {},
+	//update zTreeObj, add method of exLib
+	_zTreeTools = function(setting, zTreeTools) {
+		zTreeTools.showNodes = function(nodes, options) {
+			view.showNodes(setting, nodes, options);
+		}
+		zTreeTools.showNode = function(node, options) {
+			if (!node) {
+				return;
+			}
+			view.showNodes(setting, [node], options);
+		}
+		zTreeTools.hideNodes = function(nodes, options) {
+			view.hideNodes(setting, nodes, options);
+		}
+		zTreeTools.hideNode = function(node, options) {
+			if (!node) {
+				return;
+			}
+			view.hideNodes(setting, [node], options);
+		}
+
+		var _checkNode = zTreeTools.checkNode;
+		if (_checkNode) {
+			zTreeTools.checkNode = function(node, checked, checkTypeFlag, callbackFlag) {
+				if (!!node && !!node.isHidden) {
+					return;
+				}
+				_checkNode.apply(zTreeTools, arguments);
+			}
+		}
+	},
+	//method of operate data
+	_data = {
+		initHideForExCheck: function(setting, n) {
+			if (n.isHidden && setting.check && setting.check.enable) {
+				if(typeof n._nocheck == "undefined") {
+					n._nocheck = !!n.nocheck
+					n.nocheck = true;
+				}
+				n.check_Child_State = -1;
+				if (view.repairParentChkClassWithSelf) {
+					view.repairParentChkClassWithSelf(setting, n);
+				}
+			}
+		},
+		initShowForExCheck: function(setting, n) {
+			if (!n.isHidden && setting.check && setting.check.enable) {
+				if(typeof n._nocheck != "undefined") {
+					n.nocheck = n._nocheck;
+					delete n._nocheck;
+				}
+				if (view.setChkClass) {
+					var checkObj = $$(n, consts.id.CHECK, setting);
+					view.setChkClass(setting, checkObj, n);
+				}
+				if (view.repairParentChkClassWithSelf) {
+					view.repairParentChkClassWithSelf(setting, n);
+				}
+			}
+		}
+	},
+	//method of operate ztree dom
+	_view = {
+		clearOldFirstNode: function(setting, node) {
+			var n = node.getNextNode();
+			while(!!n){
+				if (n.isFirstNode) {
+					n.isFirstNode = false;
+					view.setNodeLineIcos(setting, n);
+					break;
+				}
+				if (n.isLastNode) {
+					break;
+				}
+				n = n.getNextNode();
+			}
+		},
+		clearOldLastNode: function(setting, node) {
+			var n = node.getPreNode();
+			while(!!n){
+				if (n.isLastNode) {
+					n.isLastNode = false;
+					view.setNodeLineIcos(setting, n);
+					break;
+				}
+				if (n.isFirstNode) {
+					break;
+				}
+				n = n.getPreNode();
+			}
+		},
+		makeDOMNodeMainBefore: function(html, setting, node) {
+			html.push("<li ", (node.isHidden ? "style='display:none;' " : ""), "id='", node.tId, "' class='", consts.className.LEVEL, node.level,"' tabindex='0' hidefocus='true' treenode>");
+		},
+		showNode: function(setting, node, options) {
+			node.isHidden = false;
+			data.initShowForExCheck(setting, node);
+			$$(node, setting).show();
+		},
+		showNodes: function(setting, nodes, options) {
+			if (!nodes || nodes.length == 0) {
+				return;
+			}
+			var pList = {}, i, j;
+			for (i=0, j=nodes.length; i<j; i++) {
+				var n = nodes[i];
+				if (!pList[n.parentTId]) {
+					var pn = n.getParentNode();
+					pList[n.parentTId] = (pn === null) ? data.getRoot(setting) : n.getParentNode();
+				}
+				view.showNode(setting, n, options);
+			}
+			for (var tId in pList) {
+				var children = pList[tId][setting.data.key.children];
+				view.setFirstNodeForShow(setting, children);
+				view.setLastNodeForShow(setting, children);
+			}
+		},
+		hideNode: function(setting, node, options) {
+			node.isHidden = true;
+			node.isFirstNode = false;
+			node.isLastNode = false;
+			data.initHideForExCheck(setting, node);
+			view.cancelPreSelectedNode(setting, node);
+			$$(node, setting).hide();
+		},
+		hideNodes: function(setting, nodes, options) {
+			if (!nodes || nodes.length == 0) {
+				return;
+			}
+			var pList = {}, i, j;
+			for (i=0, j=nodes.length; i<j; i++) {
+				var n = nodes[i];
+				if ((n.isFirstNode || n.isLastNode) && !pList[n.parentTId]) {
+					var pn = n.getParentNode();
+					pList[n.parentTId] = (pn === null) ? data.getRoot(setting) : n.getParentNode();
+				}
+				view.hideNode(setting, n, options);
+			}
+			for (var tId in pList) {
+				var children = pList[tId][setting.data.key.children];
+				view.setFirstNodeForHide(setting, children);
+				view.setLastNodeForHide(setting, children);
+			}
+		},
+		setFirstNode: function(setting, parentNode) {
+			var childKey = setting.data.key.children, childLength = parentNode[childKey].length;
+			if (childLength > 0 && !parentNode[childKey][0].isHidden) {
+				parentNode[childKey][0].isFirstNode = true;
+			} else if (childLength > 0) {
+				view.setFirstNodeForHide(setting, parentNode[childKey]);
+			}
+		},
+		setLastNode: function(setting, parentNode) {
+			var childKey = setting.data.key.children, childLength = parentNode[childKey].length;
+			if (childLength > 0 && !parentNode[childKey][0].isHidden) {
+				parentNode[childKey][childLength - 1].isLastNode = true;
+			} else if (childLength > 0) {
+				view.setLastNodeForHide(setting, parentNode[childKey]);
+			}
+		},
+		setFirstNodeForHide: function(setting, nodes) {
+			var n,i,j;
+			for (i=0, j=nodes.length; i<j; i++) {
+				n = nodes[i];
+				if (n.isFirstNode) {
+					break;
+				}
+				if (!n.isHidden && !n.isFirstNode) {
+					n.isFirstNode = true;
+					view.setNodeLineIcos(setting, n);
+					break;
+				} else {
+					n = null;
+				}
+			}
+			return n;
+		},
+		setFirstNodeForShow: function(setting, nodes) {
+			var n,i,j, first, old;
+			for(i=0, j=nodes.length; i<j; i++) {
+				n = nodes[i];
+				if (!first && !n.isHidden && n.isFirstNode) {
+					first = n;
+					break;
+				} else if (!first && !n.isHidden && !n.isFirstNode) {
+					n.isFirstNode = true;
+					first = n;
+					view.setNodeLineIcos(setting, n);
+				} else if (first && n.isFirstNode) {
+					n.isFirstNode = false;
+					old = n;
+					view.setNodeLineIcos(setting, n);
+					break;
+				} else {
+					n = null;
+				}
+			}
+			return {"new":first, "old":old};
+		},
+		setLastNodeForHide: function(setting, nodes) {
+			var n,i;
+			for (i=nodes.length-1; i>=0; i--) {
+				n = nodes[i];
+				if (n.isLastNode) {
+					break;
+				}
+				if (!n.isHidden && !n.isLastNode) {
+					n.isLastNode = true;
+					view.setNodeLineIcos(setting, n);
+					break;
+				} else {
+					n = null;
+				}
+			}
+			return n;
+		},
+		setLastNodeForShow: function(setting, nodes) {
+			var n,i,j, last, old;
+			for (i=nodes.length-1; i>=0; i--) {
+				n = nodes[i];
+				if (!last && !n.isHidden && n.isLastNode) {
+					last = n;
+					break;
+				} else if (!last && !n.isHidden && !n.isLastNode) {
+					n.isLastNode = true;
+					last = n;
+					view.setNodeLineIcos(setting, n);
+				} else if (last && n.isLastNode) {
+					n.isLastNode = false;
+					old = n;
+					view.setNodeLineIcos(setting, n);
+					break;
+				} else {
+					n = null;
+				}
+			}
+			return {"new":last, "old":old};
+		}
+	},
+
+	_z = {
+		view: _view,
+		data: _data
+	};
+	$.extend(true, $.fn.zTree._z, _z);
+
+	var zt = $.fn.zTree,
+	tools = zt._z.tools,
+	consts = zt.consts,
+	view = zt._z.view,
+	data = zt._z.data,
+	event = zt._z.event,
+	$$ = tools.$;
+
+	data.addInitNode(_initNode);
+	data.addBeforeA(_beforeA);
+	data.addZTreeTools(_zTreeTools);
+
+//	Override method in core
+	var _dInitNode = data.initNode;
+	data.tmpHideParent = -1;
+	data.initNode = function(setting, level, node, parentNode, isFirstNode, isLastNode, openFlag) {
+		if (data.tmpHideParent !== parentNode) {
+			data.tmpHideParent = parentNode == null ? -1 : parentNode;
+			var tmpPNode = (parentNode) ? parentNode: data.getRoot(setting),
+			children = tmpPNode[setting.data.key.children];
+			data.tmpHideFirstNode = view.setFirstNodeForHide(setting, children);
+			data.tmpHideLastNode = view.setLastNodeForHide(setting, children);
+			view.setNodeLineIcos(setting, data.tmpHideFirstNode);
+			view.setNodeLineIcos(setting, data.tmpHideLastNode);
+		}
+		isFirstNode = (data.tmpHideFirstNode === node);
+		isLastNode = (data.tmpHideLastNode === node);
+		if (_dInitNode) _dInitNode.apply(data, arguments);
+		if (isLastNode) {
+			view.clearOldLastNode(setting, node);
+		}
+	}
+
+	var _makeChkFlag = data.makeChkFlag;
+	if (!!_makeChkFlag) {
+		data.makeChkFlag = function(setting, node) {
+			if (!!node && !!node.isHidden) {
+				return;
+			}
+			_makeChkFlag.apply(data, arguments);
+		}
+	}
+
+	var _getTreeCheckedNodes = data.getTreeCheckedNodes;
+	if (!!_getTreeCheckedNodes) {
+		data.getTreeCheckedNodes = function(setting, nodes, checked, results) {
+			if (!!nodes && nodes.length > 0) {
+				var p = nodes[0].getParentNode();
+				if (!!p && !!p.isHidden) {
+					return [];
+				}
+			}
+			return _getTreeCheckedNodes.apply(data, arguments);
+		}
+	}
+
+	var _getTreeChangeCheckedNodes = data.getTreeChangeCheckedNodes;
+	if (!!_getTreeChangeCheckedNodes) {
+		data.getTreeChangeCheckedNodes = function(setting, nodes, results) {
+			if (!!nodes && nodes.length > 0) {
+				var p = nodes[0].getParentNode();
+				if (!!p && !!p.isHidden) {
+					return [];
+				}
+			}
+			return _getTreeChangeCheckedNodes.apply(data, arguments);
+		}
+	}
+
+	var _expandCollapseSonNode = view.expandCollapseSonNode;
+	if (!!_expandCollapseSonNode) {
+		view.expandCollapseSonNode = function(setting, node, expandFlag, animateFlag, callback) {
+			if (!!node && !!node.isHidden) {
+				return;
+			}
+			_expandCollapseSonNode.apply(view, arguments);
+		}
+	}
+
+	var _setSonNodeCheckBox = view.setSonNodeCheckBox;
+	if (!!_setSonNodeCheckBox) {
+		view.setSonNodeCheckBox = function(setting, node, value, srcNode) {
+			if (!!node && !!node.isHidden) {
+				return;
+			}
+			_setSonNodeCheckBox.apply(view, arguments);
+		}
+	}
+
+	var _repairParentChkClassWithSelf = view.repairParentChkClassWithSelf;
+	if (!!_repairParentChkClassWithSelf) {
+		view.repairParentChkClassWithSelf = function(setting, node) {
+			if (!!node && !!node.isHidden) {
+				return;
+			}
+			_repairParentChkClassWithSelf.apply(view, arguments);
+		}
+	}
+})(jQuery);

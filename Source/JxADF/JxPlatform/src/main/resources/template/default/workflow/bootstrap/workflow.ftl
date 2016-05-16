@@ -54,16 +54,16 @@ $author:smellok
                 }
                 select = select + "\n</select></div>";
                 $("#userContent").append(select);
-                $("#s_${key}").select2({placeholder: '${parameters.tagbundle["select.pleaseselect"]}', allowClear: 'true'});
+                $("#s_${key}").select2({placeholder: '${parameters.tagbundle["select.pleaseselect"]!}', allowClear: 'true'});
             </#list>
             $("#pointuser").show();
         </#if>
     <#elseif (parameters.complete!'FALSE') == 'TRUE'>
-        $("#actionContent").append('${parameters.tagbundle["workflow.end"]}');
+        $("#actionContent").append('${parameters.tagbundle["workflow.end"]!}');
         $("#memotr").hide();
     <#else>
     	$("#actionstr").attr('class','panel panel-warning');
-        $("#actionContent").append('${parameters.tagbundle["workflow.nopermission"]}');
+        $("#actionContent").append('${parameters.tagbundle["workflow.nopermission"]!}');
         $("#memotr").hide();
     </#if>
 

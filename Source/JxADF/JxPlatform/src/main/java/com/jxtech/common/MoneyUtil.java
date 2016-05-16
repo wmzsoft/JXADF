@@ -5,17 +5,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by dcc on 12/25 0025.
- * 允许最多16位整数
+ * Created by dcc on 12/25 0025. 允许最多16位整数
  */
 public class MoneyUtil {
     private static final Logger LOG = LoggerFactory.getLogger(MoneyUtil.class);
     /** 大写数字 */
-    private static final String[] NUMBERS = { "零", "壹", "贰", "叁", "肆", "伍", "陆",
-            "柒", "捌", "玖" };
+    private static final String[] NUMBERS = { "零", "壹", "贰", "叁", "肆", "伍", "陆", "柒", "捌", "玖" };
     /** 整数部分的单位 */
-    private static final String[] IUNIT = { "元", "拾", "佰", "仟", "万", "拾", "佰",
-            "仟", "亿", "拾", "佰", "仟", "万", "拾", "佰", "仟" };
+    private static final String[] IUNIT = { "元", "拾", "佰", "仟", "万", "拾", "佰", "仟", "亿", "拾", "佰", "仟", "万", "拾", "佰", "仟" };
     /** 小数部分的单位 */
     private static final String[] DUNIT = { "角", "分", "厘" };
 
@@ -23,9 +20,9 @@ public class MoneyUtil {
      * 得到大写金额。
      */
     public static String toChinese(String str) {
-        try{
-            if(StrUtil.isNull(str)){
-                str="0";
+        try {
+            if (StrUtil.isNull(str)) {
+                str = "0";
             }
             str = str.replaceAll(",", "");// 去掉","
             String integerStr;// 整数部分数字
@@ -43,15 +40,15 @@ public class MoneyUtil {
                 decimalStr = "";
             }
             // integerStr去掉首0，不必去掉decimalStr的尾0(超出部分舍去)
-            if (!integerStr.equals("")) {
+            if (!"".equals(integerStr)) {
                 integerStr = Long.toString(Long.parseLong(integerStr));
-                if (integerStr.equals("0")) {
+                if ("0".equals(integerStr)) {
                     integerStr = "";
                 }
             }
-            //0.00
-            //"" ""
-            if( StrUtil.isNull(integerStr) && (StrUtil.isNull(decimalStr) || Long.valueOf(decimalStr)==0L)){
+            // 0.00
+            // "" ""
+            if (StrUtil.isNull(integerStr) && (StrUtil.isNull(decimalStr) || Long.valueOf(decimalStr) == 0L)) {
                 return (NUMBERS[0] + IUNIT[0]);
             }
             // overflow超出处理能力，直接返回
@@ -64,15 +61,14 @@ public class MoneyUtil {
             boolean isMust5 = isMust5(integerStr);// 设置万单位
             int[] decimals = toArray(decimalStr);// 小数部分数字
             int length = integers.length;
-            /*是零的返回零元*/
-            if(length ==0  && !isMust5 && decimals.length==0){
+            /* 是零的返回零元 */
+            if (length == 0 && !isMust5 && decimals.length == 0) {
                 return (NUMBERS[0] + IUNIT[0]);
-            }else{
+            } else {
                 return getChineseInteger(integers, isMust5) + getChineseDecimal(decimals);
             }
-        }catch (Exception e){
-            LOG.error("获取大写金额出错",false);
-            e.printStackTrace();
+        } catch (Exception e) {
+            LOG.error(e.getMessage() + "获取大写金额出错", e);
             return "";
         }
 
@@ -113,11 +109,9 @@ public class MoneyUtil {
                 if ((length - i) > 1 && integers[i + 1] != 0)
                     key += NUMBERS[0];
             }
-            chineseInteger.append(integers[i] == 0 ? key
-                    : (NUMBERS[integers[i]] + IUNIT[length - i - 1]));
+            chineseInteger.append(integers[i] == 0 ? key : (NUMBERS[integers[i]] + IUNIT[length - i - 1]));
         }
         return chineseInteger.toString();
-
 
     }
 
@@ -130,8 +124,7 @@ public class MoneyUtil {
             // 舍去3位小数之后的
             if (i == 3)
                 break;
-            chineseDecimal.append(decimals[i] == 0 ? ""
-                    : (NUMBERS[decimals[i]] + DUNIT[i]));
+            chineseDecimal.append(decimals[i] == 0 ? "" : (NUMBERS[decimals[i]] + DUNIT[i]));
         }
         return chineseDecimal.toString();
     }
@@ -154,6 +147,5 @@ public class MoneyUtil {
             return false;
         }
     }
-
 
 }

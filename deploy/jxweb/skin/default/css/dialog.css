@@ -1,1 +1,19 @@
-.dialog_waitting{background:url(../images/dialog_loading.gif) no-repeat;width:100px;height:100px;margin:0 auto}.dialog_center_point{width:1px;height:1px;visibility:hidden;position:fixed;left:50%;top:50%}.dialog.ui-dialog-content.ui-widget-content{overflow:visible}
+﻿.dialog_waitting {
+    background: url("../images/dialog_loading.gif") no-repeat;
+    width: 100px;
+    height: 100px;
+    margin:0 auto;
+}
+
+.dialog_center_point {
+    width: 1px;
+    height: 1px;
+    visibility: hidden;
+    position: fixed;
+    left: 50%;
+    top: 50%;
+}
+
+.dialog.ui-dialog-content.ui-widget-content {
+    overflow: visible;
+}

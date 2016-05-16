@@ -65,10 +65,7 @@ public class JxObjectDao {
             return (JxObject) obj;
         }
         Map<String, JxObject> map = query(objectname);
-        if (map != null) {
-            return map.get(objectname.toUpperCase());
-        }
-        return null;
+        return map.get(objectname.toUpperCase());
     }
 
     public static void reset() {

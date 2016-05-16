@@ -60,7 +60,7 @@ public class PermissionImpl extends Permission {
                     return true;
                 }
                 boolean flag;
-                if (appurl.startsWith("app.action?") || appurl.equalsIgnoreCase("app.action")) {
+                if (appurl.startsWith("app.action?") || "app.action".equalsIgnoreCase(appurl)) {
                     // 未使用插件的应用程序权限检查
                     flag = checkNoPluginPermission(appurl);
                 } else {
@@ -89,7 +89,7 @@ public class PermissionImpl extends Permission {
      */
     public boolean checkNoPluginPermission(String url) throws JxException {
         int pos = url.indexOf("app=");
-        int end = url.indexOf("&", pos);
+        int end = url.indexOf('&', pos);
         if (pos > 0) {
             String app = null;
             if (end > pos) {
@@ -119,7 +119,7 @@ public class PermissionImpl extends Permission {
             }
             JboIFace jbo = ms.getJboByUrl(url);// 处理一个插件中有多个应用的情况
             if (jbo == null) {
-                pos = url.lastIndexOf("/");
+                pos = url.lastIndexOf('/');
                 if (pos < 0) {
                     return true;
                 }

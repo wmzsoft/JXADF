@@ -13,10 +13,8 @@ $author:wmzsoft@gmail.com
     <#assign plabel=parameters.label>
 <#elseif (parameters.dynamicAttributes.label??)>
     <#assign plabel=parameters.dynamicAttributes.label>
-<#elseif (parameters.appBundle?? && parameters.appBundle.containsKey('${parameters.dataattribute}'))>
-	<#assign plabel=parameters.appBundle.getString('${parameters.dataattribute}')>
 <#elseif (parameters.columnAttribute??)>
-    <#assign plabel=parameters.columnAttribute.title!parameters.tagbundle['label.null']>
+    <#assign plabel=parameters.columnAttribute.title!parameters.tagbundle['label.null']!>
 </#if>
 <#if (((parameters.rows!1)?number) == 1)>
     <#if ((parameters.dataValue!'x')?lower_case)?starts_with("http://") || ((parameters.dataValue!'x')?lower_case)?starts_with("https://")>

@@ -1,1 +1,372 @@
-!function(e){function t(e,t,i){return e>t&&t+i>e}e.widget("ui.droppable",{version:"1.10.3",widgetEventPrefix:"drop",options:{accept:"*",activeClass:!1,addClasses:!0,greedy:!1,hoverClass:!1,scope:"default",tolerance:"intersect",activate:null,deactivate:null,drop:null,out:null,over:null},_create:function(){var t=this.options,i=t.accept;this.isover=!1,this.isout=!0,this.accept=e.isFunction(i)?i:function(e){return e.is(i)},this.proportions={width:this.element[0].offsetWidth,height:this.element[0].offsetHeight},e.ui.ddmanager.droppables[t.scope]=e.ui.ddmanager.droppables[t.scope]||[],e.ui.ddmanager.droppables[t.scope].push(this),t.addClasses&&this.element.addClass("ui-droppable")},_destroy:function(){for(var t=0,i=e.ui.ddmanager.droppables[this.options.scope];t<i.length;t++)i[t]===this&&i.splice(t,1);this.element.removeClass("ui-droppable ui-droppable-disabled")},_setOption:function(t,i){"accept"===t&&(this.accept=e.isFunction(i)?i:function(e){return e.is(i)}),e.Widget.prototype._setOption.apply(this,arguments)},_activate:function(t){var i=e.ui.ddmanager.current;this.options.activeClass&&this.element.addClass(this.options.activeClass),i&&this._trigger("activate",t,this.ui(i))},_deactivate:function(t){var i=e.ui.ddmanager.current;this.options.activeClass&&this.element.removeClass(this.options.activeClass),i&&this._trigger("deactivate",t,this.ui(i))},_over:function(t){var i=e.ui.ddmanager.current;i&&(i.currentItem||i.element)[0]!==this.element[0]&&this.accept.call(this.element[0],i.currentItem||i.element)&&(this.options.hoverClass&&this.element.addClass(this.options.hoverClass),this._trigger("over",t,this.ui(i)))},_out:function(t){var i=e.ui.ddmanager.current;i&&(i.currentItem||i.element)[0]!==this.element[0]&&this.accept.call(this.element[0],i.currentItem||i.element)&&(this.options.hoverClass&&this.element.removeClass(this.options.hoverClass),this._trigger("out",t,this.ui(i)))},_drop:function(t,i){var s=i||e.ui.ddmanager.current,o=!1;return s&&(s.currentItem||s.element)[0]!==this.element[0]?(this.element.find(":data(ui-droppable)").not(".ui-draggable-dragging").each(function(){var t=e.data(this,"ui-droppable");return t.options.greedy&&!t.options.disabled&&t.options.scope===s.options.scope&&t.accept.call(t.element[0],s.currentItem||s.element)&&e.ui.intersect(s,e.extend(t,{offset:t.element.offset()}),t.options.tolerance)?(o=!0,!1):void 0}),o?!1:this.accept.call(this.element[0],s.currentItem||s.element)?(this.options.activeClass&&this.element.removeClass(this.options.activeClass),this.options.hoverClass&&this.element.removeClass(this.options.hoverClass),this._trigger("drop",t,this.ui(s)),this.element):!1):!1},ui:function(e){return{draggable:e.currentItem||e.element,helper:e.helper,position:e.position,offset:e.positionAbs}}}),e.ui.intersect=function(e,i,s){if(!i.offset)return!1;var o,n,r=(e.positionAbs||e.position.absolute).left,a=r+e.helperProportions.width,l=(e.positionAbs||e.position.absolute).top,p=l+e.helperProportions.height,h=i.offset.left,c=h+i.proportions.width,d=i.offset.top,u=d+i.proportions.height;switch(s){case"fit":return r>=h&&c>=a&&l>=d&&u>=p;case"intersect":return h<r+e.helperProportions.width/2&&a-e.helperProportions.width/2<c&&d<l+e.helperProportions.height/2&&p-e.helperProportions.height/2<u;case"pointer":return o=(e.positionAbs||e.position.absolute).left+(e.clickOffset||e.offset.click).left,n=(e.positionAbs||e.position.absolute).top+(e.clickOffset||e.offset.click).top,t(n,d,i.proportions.height)&&t(o,h,i.proportions.width);case"touch":return(l>=d&&u>=l||p>=d&&u>=p||d>l&&p>u)&&(r>=h&&c>=r||a>=h&&c>=a||h>r&&a>c);default:return!1}},e.ui.ddmanager={current:null,droppables:{"default":[]},prepareOffsets:function(t,i){var s,o,n=e.ui.ddmanager.droppables[t.options.scope]||[],r=i?i.type:null,a=(t.currentItem||t.element).find(":data(ui-droppable)").addBack();e:for(s=0;s<n.length;s++)if(!(n[s].options.disabled||t&&!n[s].accept.call(n[s].element[0],t.currentItem||t.element))){for(o=0;o<a.length;o++)if(a[o]===n[s].element[0]){n[s].proportions.height=0;continue e}n[s].visible="none"!==n[s].element.css("display"),n[s].visible&&("mousedown"===r&&n[s]._activate.call(n[s],i),n[s].offset=n[s].element.offset(),n[s].proportions={width:n[s].element[0].offsetWidth,height:n[s].element[0].offsetHeight})}},drop:function(t,i){var s=!1;return e.each((e.ui.ddmanager.droppables[t.options.scope]||[]).slice(),function(){this.options&&(!this.options.disabled&&this.visible&&e.ui.intersect(t,this,this.options.tolerance)&&(s=this._drop.call(this,i)||s),!this.options.disabled&&this.visible&&this.accept.call(this.element[0],t.currentItem||t.element)&&(this.isout=!0,this.isover=!1,this._deactivate.call(this,i)))}),s},dragStart:function(t,i){t.element.parentsUntil("body").bind("scroll.droppable",function(){t.options.refreshPositions||e.ui.ddmanager.prepareOffsets(t,i)})},drag:function(t,i){t.options.refreshPositions&&e.ui.ddmanager.prepareOffsets(t,i),e.each(e.ui.ddmanager.droppables[t.options.scope]||[],function(){if(!this.options.disabled&&!this.greedyChild&&this.visible){var s,o,n,r=e.ui.intersect(t,this,this.options.tolerance),a=!r&&this.isover?"isout":r&&!this.isover?"isover":null;a&&(this.options.greedy&&(o=this.options.scope,n=this.element.parents(":data(ui-droppable)").filter(function(){return e.data(this,"ui-droppable").options.scope===o}),n.length&&(s=e.data(n[0],"ui-droppable"),s.greedyChild="isover"===a)),s&&"isover"===a&&(s.isover=!1,s.isout=!0,s._out.call(s,i)),this[a]=!0,this["isout"===a?"isover":"isout"]=!1,this["isover"===a?"_over":"_out"].call(this,i),s&&"isout"===a&&(s.isout=!1,s.isover=!0,s._over.call(s,i)))}})},dragStop:function(t,i){t.element.parentsUntil("body").unbind("scroll.droppable"),t.options.refreshPositions||e.ui.ddmanager.prepareOffsets(t,i)}}}(jQuery);
+/*!
+ * jQuery UI Droppable 1.10.3
+ * http://jqueryui.com
+ *
+ * Copyright 2013 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/droppable/
+ *
+ * Depends:
+ *	jquery.ui.core.js
+ *	jquery.ui.widget.js
+ *	jquery.ui.mouse.js
+ *	jquery.ui.draggable.js
+ */
+(function( $, undefined ) {
+
+function isOverAxis( x, reference, size ) {
+	return ( x > reference ) && ( x < ( reference + size ) );
+}
+
+$.widget("ui.droppable", {
+	version: "1.10.3",
+	widgetEventPrefix: "drop",
+	options: {
+		accept: "*",
+		activeClass: false,
+		addClasses: true,
+		greedy: false,
+		hoverClass: false,
+		scope: "default",
+		tolerance: "intersect",
+
+		// callbacks
+		activate: null,
+		deactivate: null,
+		drop: null,
+		out: null,
+		over: null
+	},
+	_create: function() {
+
+		var o = this.options,
+			accept = o.accept;
+
+		this.isover = false;
+		this.isout = true;
+
+		this.accept = $.isFunction(accept) ? accept : function(d) {
+			return d.is(accept);
+		};
+
+		//Store the droppable's proportions
+		this.proportions = { width: this.element[0].offsetWidth, height: this.element[0].offsetHeight };
+
+		// Add the reference and positions to the manager
+		$.ui.ddmanager.droppables[o.scope] = $.ui.ddmanager.droppables[o.scope] || [];
+		$.ui.ddmanager.droppables[o.scope].push(this);
+
+		(o.addClasses && this.element.addClass("ui-droppable"));
+
+	},
+
+	_destroy: function() {
+		var i = 0,
+			drop = $.ui.ddmanager.droppables[this.options.scope];
+
+		for ( ; i < drop.length; i++ ) {
+			if ( drop[i] === this ) {
+				drop.splice(i, 1);
+			}
+		}
+
+		this.element.removeClass("ui-droppable ui-droppable-disabled");
+	},
+
+	_setOption: function(key, value) {
+
+		if(key === "accept") {
+			this.accept = $.isFunction(value) ? value : function(d) {
+				return d.is(value);
+			};
+		}
+		$.Widget.prototype._setOption.apply(this, arguments);
+	},
+
+	_activate: function(event) {
+		var draggable = $.ui.ddmanager.current;
+		if(this.options.activeClass) {
+			this.element.addClass(this.options.activeClass);
+		}
+		if(draggable){
+			this._trigger("activate", event, this.ui(draggable));
+		}
+	},
+
+	_deactivate: function(event) {
+		var draggable = $.ui.ddmanager.current;
+		if(this.options.activeClass) {
+			this.element.removeClass(this.options.activeClass);
+		}
+		if(draggable){
+			this._trigger("deactivate", event, this.ui(draggable));
+		}
+	},
+
+	_over: function(event) {
+
+		var draggable = $.ui.ddmanager.current;
+
+		// Bail if draggable and droppable are same element
+		if (!draggable || (draggable.currentItem || draggable.element)[0] === this.element[0]) {
+			return;
+		}
+
+		if (this.accept.call(this.element[0],(draggable.currentItem || draggable.element))) {
+			if(this.options.hoverClass) {
+				this.element.addClass(this.options.hoverClass);
+			}
+			this._trigger("over", event, this.ui(draggable));
+		}
+
+	},
+
+	_out: function(event) {
+
+		var draggable = $.ui.ddmanager.current;
+
+		// Bail if draggable and droppable are same element
+		if (!draggable || (draggable.currentItem || draggable.element)[0] === this.element[0]) {
+			return;
+		}
+
+		if (this.accept.call(this.element[0],(draggable.currentItem || draggable.element))) {
+			if(this.options.hoverClass) {
+				this.element.removeClass(this.options.hoverClass);
+			}
+			this._trigger("out", event, this.ui(draggable));
+		}
+
+	},
+
+	_drop: function(event,custom) {
+
+		var draggable = custom || $.ui.ddmanager.current,
+			childrenIntersection = false;
+
+		// Bail if draggable and droppable are same element
+		if (!draggable || (draggable.currentItem || draggable.element)[0] === this.element[0]) {
+			return false;
+		}
+
+		this.element.find(":data(ui-droppable)").not(".ui-draggable-dragging").each(function() {
+			var inst = $.data(this, "ui-droppable");
+			if(
+				inst.options.greedy &&
+				!inst.options.disabled &&
+				inst.options.scope === draggable.options.scope &&
+				inst.accept.call(inst.element[0], (draggable.currentItem || draggable.element)) &&
+				$.ui.intersect(draggable, $.extend(inst, { offset: inst.element.offset() }), inst.options.tolerance)
+			) { childrenIntersection = true; return false; }
+		});
+		if(childrenIntersection) {
+			return false;
+		}
+
+		if(this.accept.call(this.element[0],(draggable.currentItem || draggable.element))) {
+			if(this.options.activeClass) {
+				this.element.removeClass(this.options.activeClass);
+			}
+			if(this.options.hoverClass) {
+				this.element.removeClass(this.options.hoverClass);
+			}
+			this._trigger("drop", event, this.ui(draggable));
+			return this.element;
+		}
+
+		return false;
+
+	},
+
+	ui: function(c) {
+		return {
+			draggable: (c.currentItem || c.element),
+			helper: c.helper,
+			position: c.position,
+			offset: c.positionAbs
+		};
+	}
+
+});
+
+$.ui.intersect = function(draggable, droppable, toleranceMode) {
+
+	if (!droppable.offset) {
+		return false;
+	}
+
+	var draggableLeft, draggableTop,
+		x1 = (draggable.positionAbs || draggable.position.absolute).left, x2 = x1 + draggable.helperProportions.width,
+		y1 = (draggable.positionAbs || draggable.position.absolute).top, y2 = y1 + draggable.helperProportions.height,
+		l = droppable.offset.left, r = l + droppable.proportions.width,
+		t = droppable.offset.top, b = t + droppable.proportions.height;
+
+	switch (toleranceMode) {
+		case "fit":
+			return (l <= x1 && x2 <= r && t <= y1 && y2 <= b);
+		case "intersect":
+			return (l < x1 + (draggable.helperProportions.width / 2) && // Right Half
+				x2 - (draggable.helperProportions.width / 2) < r && // Left Half
+				t < y1 + (draggable.helperProportions.height / 2) && // Bottom Half
+				y2 - (draggable.helperProportions.height / 2) < b ); // Top Half
+		case "pointer":
+			draggableLeft = ((draggable.positionAbs || draggable.position.absolute).left + (draggable.clickOffset || draggable.offset.click).left);
+			draggableTop = ((draggable.positionAbs || draggable.position.absolute).top + (draggable.clickOffset || draggable.offset.click).top);
+			return isOverAxis( draggableTop, t, droppable.proportions.height ) && isOverAxis( draggableLeft, l, droppable.proportions.width );
+		case "touch":
+			return (
+				(y1 >= t && y1 <= b) ||	// Top edge touching
+				(y2 >= t && y2 <= b) ||	// Bottom edge touching
+				(y1 < t && y2 > b)		// Surrounded vertically
+			) && (
+				(x1 >= l && x1 <= r) ||	// Left edge touching
+				(x2 >= l && x2 <= r) ||	// Right edge touching
+				(x1 < l && x2 > r)		// Surrounded horizontally
+			);
+		default:
+			return false;
+		}
+
+};
+
+/*
+	This manager tracks offsets of draggables and droppables
+*/
+$.ui.ddmanager = {
+	current: null,
+	droppables: { "default": [] },
+	prepareOffsets: function(t, event) {
+
+		var i, j,
+			m = $.ui.ddmanager.droppables[t.options.scope] || [],
+			type = event ? event.type : null, // workaround for #2317
+			list = (t.currentItem || t.element).find(":data(ui-droppable)").addBack();
+
+		droppablesLoop: for (i = 0; i < m.length; i++) {
+
+			//No disabled and non-accepted
+			if(m[i].options.disabled || (t && !m[i].accept.call(m[i].element[0],(t.currentItem || t.element)))) {
+				continue;
+			}
+
+			// Filter out elements in the current dragged item
+			for (j=0; j < list.length; j++) {
+				if(list[j] === m[i].element[0]) {
+					m[i].proportions.height = 0;
+					continue droppablesLoop;
+				}
+			}
+
+			m[i].visible = m[i].element.css("display") !== "none";
+			if(!m[i].visible) {
+				continue;
+			}
+
+			//Activate the droppable if used directly from draggables
+			if(type === "mousedown") {
+				m[i]._activate.call(m[i], event);
+			}
+
+			m[i].offset = m[i].element.offset();
+			m[i].proportions = { width: m[i].element[0].offsetWidth, height: m[i].element[0].offsetHeight };
+
+		}
+
+	},
+	drop: function(draggable, event) {
+
+		var dropped = false;
+		// Create a copy of the droppables in case the list changes during the drop (#9116)
+		$.each(($.ui.ddmanager.droppables[draggable.options.scope] || []).slice(), function() {
+
+			if(!this.options) {
+				return;
+			}
+			if (!this.options.disabled && this.visible && $.ui.intersect(draggable, this, this.options.tolerance)) {
+				dropped = this._drop.call(this, event) || dropped;
+			}
+
+			if (!this.options.disabled && this.visible && this.accept.call(this.element[0],(draggable.currentItem || draggable.element))) {
+				this.isout = true;
+				this.isover = false;
+				this._deactivate.call(this, event);
+			}
+
+		});
+		return dropped;
+
+	},
+	dragStart: function( draggable, event ) {
+		//Listen for scrolling so that if the dragging causes scrolling the position of the droppables can be recalculated (see #5003)
+		draggable.element.parentsUntil( "body" ).bind( "scroll.droppable", function() {
+			if( !draggable.options.refreshPositions ) {
+				$.ui.ddmanager.prepareOffsets( draggable, event );
+			}
+		});
+	},
+	drag: function(draggable, event) {
+
+		//If you have a highly dynamic page, you might try this option. It renders positions every time you move the mouse.
+		if(draggable.options.refreshPositions) {
+			$.ui.ddmanager.prepareOffsets(draggable, event);
+		}
+
+		//Run through all droppables and check their positions based on specific tolerance options
+		$.each($.ui.ddmanager.droppables[draggable.options.scope] || [], function() {
+
+			if(this.options.disabled || this.greedyChild || !this.visible) {
+				return;
+			}
+
+			var parentInstance, scope, parent,
+				intersects = $.ui.intersect(draggable, this, this.options.tolerance),
+				c = !intersects && this.isover ? "isout" : (intersects && !this.isover ? "isover" : null);
+			if(!c) {
+				return;
+			}
+
+			if (this.options.greedy) {
+				// find droppable parents with same scope
+				scope = this.options.scope;
+				parent = this.element.parents(":data(ui-droppable)").filter(function () {
+					return $.data(this, "ui-droppable").options.scope === scope;
+				});
+
+				if (parent.length) {
+					parentInstance = $.data(parent[0], "ui-droppable");
+					parentInstance.greedyChild = (c === "isover");
+				}
+			}
+
+			// we just moved into a greedy child
+			if (parentInstance && c === "isover") {
+				parentInstance.isover = false;
+				parentInstance.isout = true;
+				parentInstance._out.call(parentInstance, event);
+			}
+
+			this[c] = true;
+			this[c === "isout" ? "isover" : "isout"] = false;
+			this[c === "isover" ? "_over" : "_out"].call(this, event);
+
+			// we just moved out of a greedy child
+			if (parentInstance && c === "isout") {
+				parentInstance.isout = false;
+				parentInstance.isover = true;
+				parentInstance._over.call(parentInstance, event);
+			}
+		});
+
+	},
+	dragStop: function( draggable, event ) {
+		draggable.element.parentsUntil( "body" ).unbind( "scroll.droppable" );
+		//Call prepareOffsets one final time since IE does not fire return scroll events when overflow was caused by drag (see #5003)
+		if( !draggable.options.refreshPositions ) {
+			$.ui.ddmanager.prepareOffsets( draggable, event );
+		}
+	}
+};
+
+})(jQuery);

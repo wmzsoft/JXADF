@@ -4,7 +4,7 @@
     <!--搜索placeHolder-->
     <label class="placeholder" for="tableQuickSearchInput">
     <#if ("${quickSearchValue}" == "")>
-        ${parameters.tagbundle['QUICK_SEACH_PLACE_HOLDER']}
+        ${parameters.tagbundle['QUICK_SEACH_PLACE_HOLDER']!}
     </#if>
     </label>
     <!--搜索框-->

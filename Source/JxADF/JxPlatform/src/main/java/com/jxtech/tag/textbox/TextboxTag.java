@@ -160,7 +160,7 @@ public class TextboxTag extends JxBaseUITag {
         if (queryParam != null) {
             String key = null;
             if (cause != null) {
-                if ("query".equalsIgnoreCase(inputmode) && dataattribute.indexOf(".") > 0) {
+                if ("query".equalsIgnoreCase(inputmode) && dataattribute.indexOf('.') > 0) {
                     DataQueryInfo dataQueryInfo = new DataQueryInfo();
                     try {
                         key = dataQueryInfo.getRelationShipCauseCondition(jboName, dataattribute, cause);
@@ -175,7 +175,7 @@ public class TextboxTag extends JxBaseUITag {
                 }
             }
             if (cause2 != null) {
-                if ("query".equalsIgnoreCase(inputmode) && dataattribute.indexOf(".") > 0) {
+                if ("query".equalsIgnoreCase(inputmode) && dataattribute.indexOf('.') > 0) {
                     DataQueryInfo dataQueryInfo = new DataQueryInfo();
                     try {
                         key = dataQueryInfo.getRelationShipCauseCondition(jboName, dataattribute, cause2);

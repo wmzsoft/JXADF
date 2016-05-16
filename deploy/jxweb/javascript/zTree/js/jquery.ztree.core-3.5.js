@@ -1,1 +1,1672 @@
-!function($){var settings={},roots={},caches={},_consts={className:{BUTTON:"button",LEVEL:"level",ICO_LOADING:"ico_loading",SWITCH:"switch"},event:{NODECREATED:"ztree_nodeCreated",CLICK:"ztree_click",EXPAND:"ztree_expand",COLLAPSE:"ztree_collapse",ASYNC_SUCCESS:"ztree_async_success",ASYNC_ERROR:"ztree_async_error"},id:{A:"_a",ICON:"_ico",SPAN:"_span",SWITCH:"_switch",UL:"_ul"},line:{ROOT:"root",ROOTS:"roots",CENTER:"center",BOTTOM:"bottom",NOLINE:"noline",LINE:"line"},folder:{OPEN:"open",CLOSE:"close",DOCU:"docu"},node:{CURSELECTED:"curSelectedNode"}},_setting={treeId:"",treeObj:null,view:{addDiyDom:null,autoCancelSelected:!0,dblClickExpand:!0,expandSpeed:"fast",fontCss:{},nameIsHTML:!1,selectedMulti:!0,showIcon:!0,showLine:!0,showTitle:!0},data:{key:{children:"children",name:"name",title:"",url:"url"},simpleData:{enable:!1,idKey:"id",pIdKey:"pId",rootPId:null},keep:{parent:!1,leaf:!1}},async:{enable:!1,contentType:"application/x-www-form-urlencoded",type:"post",dataType:"text",url:"",autoParam:[],otherParam:[],dataFilter:null},callback:{beforeAsync:null,beforeClick:null,beforeDblClick:null,beforeRightClick:null,beforeMouseDown:null,beforeMouseUp:null,beforeExpand:null,beforeCollapse:null,beforeRemove:null,onAsyncError:null,onAsyncSuccess:null,onNodeCreated:null,onClick:null,onDblClick:null,onRightClick:null,onMouseDown:null,onMouseUp:null,onExpand:null,onCollapse:null,onRemove:null}},_initRoot=function(e){var t=data.getRoot(e);t||(t={},data.setRoot(e,t)),t[e.data.key.children]=[],t.expandTriggerFlag=!1,t.curSelectedList=[],t.noSelection=!0,t.createdNodes=[],t.zId=0,t._ver=(new Date).getTime()},_initCache=function(e){var t=data.getCache(e);t||(t={},data.setCache(e,t)),t.nodes=[],t.doms=[]},_bindEvent=function(e){var t=e.treeObj,n=consts.event;t.bind(n.NODECREATED,function(t,n,o){tools.apply(e.callback.onNodeCreated,[t,n,o])}),t.bind(n.CLICK,function(t,n,o,a,r){tools.apply(e.callback.onClick,[n,o,a,r])}),t.bind(n.EXPAND,function(t,n,o){tools.apply(e.callback.onExpand,[t,n,o])}),t.bind(n.COLLAPSE,function(t,n,o){tools.apply(e.callback.onCollapse,[t,n,o])}),t.bind(n.ASYNC_SUCCESS,function(t,n,o,a){tools.apply(e.callback.onAsyncSuccess,[t,n,o,a])}),t.bind(n.ASYNC_ERROR,function(t,n,o,a,r,i){tools.apply(e.callback.onAsyncError,[t,n,o,a,r,i])})},_unbindEvent=function(e){var t=e.treeObj,n=consts.event;t.unbind(n.NODECREATED).unbind(n.CLICK).unbind(n.EXPAND).unbind(n.COLLAPSE).unbind(n.ASYNC_SUCCESS).unbind(n.ASYNC_ERROR)},_eventProxy=function(e){var t=e.target,n=data.getSetting(e.data.treeId),o="",a=null,r="",i="",s=null,d=null,l=null;if(tools.eqs(e.type,"mousedown")?i="mousedown":tools.eqs(e.type,"mouseup")?i="mouseup":tools.eqs(e.type,"contextmenu")?i="contextmenu":tools.eqs(e.type,"click")?tools.eqs(t.tagName,"span")&&null!==t.getAttribute("treeNode"+consts.id.SWITCH)?(o=tools.getNodeMainDom(t).id,r="switchNode"):(l=tools.getMDom(n,t,[{tagName:"a",attrName:"treeNode"+consts.id.A}]),l&&(o=tools.getNodeMainDom(l).id,r="clickNode")):tools.eqs(e.type,"dblclick")&&(i="dblclick",l=tools.getMDom(n,t,[{tagName:"a",attrName:"treeNode"+consts.id.A}]),l&&(o=tools.getNodeMainDom(l).id,r="switchNode")),i.length>0&&0==o.length&&(l=tools.getMDom(n,t,[{tagName:"a",attrName:"treeNode"+consts.id.A}]),l&&(o=tools.getNodeMainDom(l).id)),o.length>0)switch(a=data.getNodeCache(n,o),r){case"switchNode":a.isParent&&(tools.eqs(e.type,"click")||tools.eqs(e.type,"dblclick")&&tools.apply(n.view.dblClickExpand,[n.treeId,a],n.view.dblClickExpand))?s=handler.onSwitchNode:r="";break;case"clickNode":s=handler.onClickNode}switch(i){case"mousedown":d=handler.onZTreeMousedown;break;case"mouseup":d=handler.onZTreeMouseup;break;case"dblclick":d=handler.onZTreeDblclick;break;case"contextmenu":d=handler.onZTreeContextmenu}var c={stop:!1,node:a,nodeEventType:r,nodeEventCallback:s,treeEventType:i,treeEventCallback:d};return c},_initNode=function(e,t,n,o,a,r){if(n){var i=data.getRoot(e),s=e.data.key.children;n.level=t,n.tId=e.treeId+"_"+ ++i.zId,n.parentTId=o?o.tId:null,n[s]&&n[s].length>0?("string"==typeof n.open&&(n.open=tools.eqs(n.open,"true")),n.open=!!n.open,n.isParent=!0,n.zAsync=!0):(n.open=!1,"string"==typeof n.isParent&&(n.isParent=tools.eqs(n.isParent,"true")),n.isParent=!!n.isParent,n.zAsync=!n.isParent),n.isFirstNode=a,n.isLastNode=r,n.getParentNode=function(){return data.getNodeCache(e,n.parentTId)},n.getPreNode=function(){return data.getPreNode(e,n)},n.getNextNode=function(){return data.getNextNode(e,n)},n.isAjaxing=!1,data.fixPIdKeyValue(e,n)}},_init={bind:[_bindEvent],unbind:[_unbindEvent],caches:[_initCache],nodes:[_initNode],proxys:[_eventProxy],roots:[_initRoot],beforeA:[],afterA:[],innerBeforeA:[],innerAfterA:[],zTreeTools:[]},data={addNodeCache:function(e,t){data.getCache(e).nodes[data.getNodeCacheId(t.tId)]=t},getNodeCacheId:function(e){return e.substring(e.lastIndexOf("_")+1)},addAfterA:function(e){_init.afterA.push(e)},addBeforeA:function(e){_init.beforeA.push(e)},addInnerAfterA:function(e){_init.innerAfterA.push(e)},addInnerBeforeA:function(e){_init.innerBeforeA.push(e)},addInitBind:function(e){_init.bind.push(e)},addInitUnBind:function(e){_init.unbind.push(e)},addInitCache:function(e){_init.caches.push(e)},addInitNode:function(e){_init.nodes.push(e)},addInitProxy:function(e,t){t?_init.proxys.splice(0,0,e):_init.proxys.push(e)},addInitRoot:function(e){_init.roots.push(e)},addNodesData:function(e,t,n){var o=e.data.key.children;t[o]||(t[o]=[]),t[o].length>0&&(t[o][t[o].length-1].isLastNode=!1,view.setNodeLineIcos(e,t[o][t[o].length-1])),t.isParent=!0,t[o]=t[o].concat(n)},addSelectedNode:function(e,t){var n=data.getRoot(e);data.isSelectedNode(e,t)||n.curSelectedList.push(t)},addCreatedNode:function(e,t){if(e.callback.onNodeCreated||e.view.addDiyDom){var n=data.getRoot(e);n.createdNodes.push(t)}},addZTreeTools:function(e){_init.zTreeTools.push(e)},exSetting:function(e){$.extend(!0,_setting,e)},fixPIdKeyValue:function(e,t){e.data.simpleData.enable&&(t[e.data.simpleData.pIdKey]=t.parentTId?t.getParentNode()[e.data.simpleData.idKey]:e.data.simpleData.rootPId)},getAfterA:function(){for(var e=0,t=_init.afterA.length;t>e;e++)_init.afterA[e].apply(this,arguments)},getBeforeA:function(){for(var e=0,t=_init.beforeA.length;t>e;e++)_init.beforeA[e].apply(this,arguments)},getInnerAfterA:function(){for(var e=0,t=_init.innerAfterA.length;t>e;e++)_init.innerAfterA[e].apply(this,arguments)},getInnerBeforeA:function(){for(var e=0,t=_init.innerBeforeA.length;t>e;e++)_init.innerBeforeA[e].apply(this,arguments)},getCache:function(e){return caches[e.treeId]},getNextNode:function(e,t){if(!t)return null;for(var n=e.data.key.children,o=t.parentTId?t.getParentNode():data.getRoot(e),a=0,r=o[n].length-1;r>=a;a++)if(o[n][a]===t)return a==r?null:o[n][a+1];return null},getNodeByParam:function(e,t,n,o){if(!t||!n)return null;for(var a=e.data.key.children,r=0,i=t.length;i>r;r++){if(t[r][n]==o)return t[r];var s=data.getNodeByParam(e,t[r][a],n,o);if(s)return s}return null},getNodeCache:function(e,t){if(!t)return null;var n=caches[e.treeId].nodes[data.getNodeCacheId(t)];return n?n:null},getNodeName:function(e,t){var n=e.data.key.name;return""+t[n]},getNodeTitle:function(e,t){var n=""===e.data.key.title?e.data.key.name:e.data.key.title;return""+t[n]},getNodes:function(e){return data.getRoot(e)[e.data.key.children]},getNodesByParam:function(e,t,n,o){if(!t||!n)return[];for(var a=e.data.key.children,r=[],i=0,s=t.length;s>i;i++)t[i][n]==o&&r.push(t[i]),r=r.concat(data.getNodesByParam(e,t[i][a],n,o));return r},getNodesByParamFuzzy:function(e,t,n,o){if(!t||!n)return[];var a=e.data.key.children,r=[];o=o.toLowerCase();for(var i=0,s=t.length;s>i;i++)"string"==typeof t[i][n]&&t[i][n].toLowerCase().indexOf(o)>-1&&r.push(t[i]),r=r.concat(data.getNodesByParamFuzzy(e,t[i][a],n,o));return r},getNodesByFilter:function(e,t,n,o,a){if(!t)return o?null:[];for(var r=e.data.key.children,i=o?null:[],s=0,d=t.length;d>s;s++){if(tools.apply(n,[t[s],a],!1)){if(o)return t[s];i.push(t[s])}var l=data.getNodesByFilter(e,t[s][r],n,o,a);if(o&&l)return l;i=o?l:i.concat(l)}return i},getPreNode:function(e,t){if(!t)return null;for(var n=e.data.key.children,o=t.parentTId?t.getParentNode():data.getRoot(e),a=0,r=o[n].length;r>a;a++)if(o[n][a]===t)return 0==a?null:o[n][a-1];return null},getRoot:function(e){return e?roots[e.treeId]:null},getRoots:function(){return roots},getSetting:function(e){return settings[e]},getSettings:function(){return settings},getZTreeTools:function(e){var t=this.getRoot(this.getSetting(e));return t?t.treeTools:null},initCache:function(){for(var e=0,t=_init.caches.length;t>e;e++)_init.caches[e].apply(this,arguments)},initNode:function(){for(var e=0,t=_init.nodes.length;t>e;e++)_init.nodes[e].apply(this,arguments)},initRoot:function(){for(var e=0,t=_init.roots.length;t>e;e++)_init.roots[e].apply(this,arguments)},isSelectedNode:function(e,t){for(var n=data.getRoot(e),o=0,a=n.curSelectedList.length;a>o;o++)if(t===n.curSelectedList[o])return!0;return!1},removeNodeCache:function(e,t){var n=e.data.key.children;if(t[n])for(var o=0,a=t[n].length;a>o;o++)arguments.callee(e,t[n][o]);data.getCache(e).nodes[data.getNodeCacheId(t.tId)]=null},removeSelectedNode:function(e,t){for(var n=data.getRoot(e),o=0,a=n.curSelectedList.length;a>o;o++)t!==n.curSelectedList[o]&&data.getNodeCache(e,n.curSelectedList[o].tId)||(n.curSelectedList.splice(o,1),o--,a--)},setCache:function(e,t){caches[e.treeId]=t},setRoot:function(e,t){roots[e.treeId]=t},setZTreeTools:function(){for(var e=0,t=_init.zTreeTools.length;t>e;e++)_init.zTreeTools[e].apply(this,arguments)},transformToArrayFormat:function(e,t){if(!t)return[];var n=e.data.key.children,o=[];if(tools.isArray(t))for(var a=0,r=t.length;r>a;a++)o.push(t[a]),t[a][n]&&(o=o.concat(data.transformToArrayFormat(e,t[a][n])));else o.push(t),t[n]&&(o=o.concat(data.transformToArrayFormat(e,t[n])));return o},transformTozTreeFormat:function(e,t){var n,o,a=e.data.simpleData.idKey,r=e.data.simpleData.pIdKey,i=e.data.key.children;if(!a||""==a||!t)return[];if(tools.isArray(t)){var s=[],d=[];for(n=0,o=t.length;o>n;n++)d[t[n][a]]=t[n];for(n=0,o=t.length;o>n;n++)d[t[n][r]]&&t[n][a]!=t[n][r]?(d[t[n][r]][i]||(d[t[n][r]][i]=[]),d[t[n][r]][i].push(t[n])):s.push(t[n]);return s}return[t]}},event={bindEvent:function(){for(var e=0,t=_init.bind.length;t>e;e++)_init.bind[e].apply(this,arguments)},unbindEvent:function(){for(var e=0,t=_init.unbind.length;t>e;e++)_init.unbind[e].apply(this,arguments)},bindTree:function(e){var t={treeId:e.treeId},n=e.treeObj;n.bind("selectstart",function(e){var t=e.originalEvent.srcElement.nodeName.toLowerCase();return"input"===t||"textarea"===t}).css({"-moz-user-select":"-moz-none"}),n.bind("click",t,event.proxy),n.bind("dblclick",t,event.proxy),n.bind("mouseover",t,event.proxy),n.bind("mouseout",t,event.proxy),n.bind("mousedown",t,event.proxy),n.bind("mouseup",t,event.proxy),n.bind("contextmenu",t,event.proxy)},unbindTree:function(e){var t=e.treeObj;t.unbind("click",event.proxy).unbind("dblclick",event.proxy).unbind("mouseover",event.proxy).unbind("mouseout",event.proxy).unbind("mousedown",event.proxy).unbind("mouseup",event.proxy).unbind("contextmenu",event.proxy)},doProxy:function(){for(var e=[],t=0,n=_init.proxys.length;n>t;t++){var o=_init.proxys[t].apply(this,arguments);if(e.push(o),o.stop)break}return e},proxy:function(e){var t=data.getSetting(e.data.treeId);if(!tools.uCanDo(t,e))return!0;for(var n=event.doProxy(e),o=!0,a=!1,r=0,i=n.length;i>r;r++){var s=n[r];s.nodeEventCallback&&(a=!0,o=s.nodeEventCallback.apply(s,[e,s.node])&&o),s.treeEventCallback&&(a=!0,o=s.treeEventCallback.apply(s,[e,s.node])&&o)}return o}},handler={onSwitchNode:function(e,t){var n=data.getSetting(e.data.treeId);if(t.open){if(0==tools.apply(n.callback.beforeCollapse,[n.treeId,t],!0))return!0;data.getRoot(n).expandTriggerFlag=!0,view.switchNode(n,t)}else{if(0==tools.apply(n.callback.beforeExpand,[n.treeId,t],!0))return!0;data.getRoot(n).expandTriggerFlag=!0,view.switchNode(n,t)}return!0},onClickNode:function(e,t){var n=data.getSetting(e.data.treeId),o=n.view.autoCancelSelected&&e.ctrlKey&&data.isSelectedNode(n,t)?0:n.view.autoCancelSelected&&e.ctrlKey&&n.view.selectedMulti?2:1;return 0==tools.apply(n.callback.beforeClick,[n.treeId,t,o],!0)?!0:(0===o?view.cancelPreSelectedNode(n,t):view.selectNode(n,t,2===o),n.treeObj.trigger(consts.event.CLICK,[e,n.treeId,t,o]),!0)},onZTreeMousedown:function(e,t){var n=data.getSetting(e.data.treeId);return tools.apply(n.callback.beforeMouseDown,[n.treeId,t],!0)&&tools.apply(n.callback.onMouseDown,[e,n.treeId,t]),!0},onZTreeMouseup:function(e,t){var n=data.getSetting(e.data.treeId);return tools.apply(n.callback.beforeMouseUp,[n.treeId,t],!0)&&tools.apply(n.callback.onMouseUp,[e,n.treeId,t]),!0},onZTreeDblclick:function(e,t){var n=data.getSetting(e.data.treeId);return tools.apply(n.callback.beforeDblClick,[n.treeId,t],!0)&&tools.apply(n.callback.onDblClick,[e,n.treeId,t]),!0},onZTreeContextmenu:function(e,t){var n=data.getSetting(e.data.treeId);return tools.apply(n.callback.beforeRightClick,[n.treeId,t],!0)&&tools.apply(n.callback.onRightClick,[e,n.treeId,t]),"function"!=typeof n.callback.onRightClick}},tools={apply:function(e,t,n){return"function"==typeof e?e.apply(zt,t?t:[]):n},canAsync:function(e,t){var n=e.data.key.children;return e.async.enable&&t&&t.isParent&&!(t.zAsync||t[n]&&t[n].length>0)},clone:function(e){if(null===e)return null;var t=tools.isArray(e)?[]:{};for(var n in e)t[n]=e[n]instanceof Date?new Date(e[n].getTime()):"object"==typeof e[n]?arguments.callee(e[n]):e[n];return t},eqs:function(e,t){return e.toLowerCase()===t.toLowerCase()},isArray:function(e){return"[object Array]"===Object.prototype.toString.apply(e)},$:function(e,t,n){return t&&"string"!=typeof t&&(n=t,t=""),"string"==typeof e?$(e,n?n.treeObj.get(0).ownerDocument:null):$("#"+e.tId+t,n?n.treeObj:null)},getMDom:function(e,t,n){if(!t)return null;for(;t&&t.id!==e.treeId;){for(var o=0,a=n.length;t.tagName&&a>o;o++)if(tools.eqs(t.tagName,n[o].tagName)&&null!==t.getAttribute(n[o].attrName))return t;t=t.parentNode}return null},getNodeMainDom:function(e){return $(e).parent("li").get(0)||$(e).parentsUntil("li").parent().get(0)},uCanDo:function(){return!0}},view={addNodes:function(e,t,n,o){if(!e.data.keep.leaf||!t||t.isParent)if(tools.isArray(n)||(n=[n]),e.data.simpleData.enable&&(n=data.transformTozTreeFormat(e,n)),t){var a=$$(t,consts.id.SWITCH,e),r=$$(t,consts.id.ICON,e),i=$$(t,consts.id.UL,e);t.open||(view.replaceSwitchClass(t,a,consts.folder.CLOSE),view.replaceIcoClass(t,r,consts.folder.CLOSE),t.open=!1,i.css({display:"none"})),data.addNodesData(e,t,n),view.createNodes(e,t.level+1,n,t),o||view.expandCollapseParentNode(e,t,!0)}else data.addNodesData(e,data.getRoot(e),n),view.createNodes(e,0,n,null)},appendNodes:function(e,t,n,o,a,r){if(!n)return[];for(var i=[],s=e.data.key.children,d=0,l=n.length;l>d;d++){var c=n[d];if(a){var u=o?o:data.getRoot(e),p=u[s],f=p.length==n.length&&0==d,g=d==n.length-1;data.initNode(e,t,c,o,f,g,r),data.addNodeCache(e,c)}var v=[];c[s]&&c[s].length>0&&(v=view.appendNodes(e,t+1,c[s],c,a,r&&c.open)),r&&(view.makeDOMNodeMainBefore(i,e,c),view.makeDOMNodeLine(i,e,c),data.getBeforeA(e,c,i),view.makeDOMNodeNameBefore(i,e,c),data.getInnerBeforeA(e,c,i),view.makeDOMNodeIcon(i,e,c),data.getInnerAfterA(e,c,i),view.makeDOMNodeNameAfter(i,e,c),data.getAfterA(e,c,i),c.isParent&&c.open&&view.makeUlHtml(e,c,i,v.join("")),view.makeDOMNodeMainAfter(i,e,c),data.addCreatedNode(e,c))}return i},appendParentULDom:function(e,t){var n=[],o=$$(t,e);!o.get(0)&&t.parentTId&&(view.appendParentULDom(e,t.getParentNode()),o=$$(t,e));var a=$$(t,consts.id.UL,e);a.get(0)&&a.remove();var r=e.data.key.children,i=view.appendNodes(e,t.level+1,t[r],t,!1,!0);view.makeUlHtml(e,t,n,i.join("")),o.append(n.join(""))},asyncNode:function(setting,node,isSilent,callback){var i,l;if(node&&!node.isParent)return tools.apply(callback),!1;if(node&&node.isAjaxing)return!1;if(0==tools.apply(setting.callback.beforeAsync,[setting.treeId,node],!0))return tools.apply(callback),!1;if(node){node.isAjaxing=!0;var icoObj=$$(node,consts.id.ICON,setting);icoObj.attr({style:"","class":consts.className.BUTTON+" "+consts.className.ICO_LOADING})}var tmpParam={};for(i=0,l=setting.async.autoParam.length;node&&l>i;i++){var pKey=setting.async.autoParam[i].split("="),spKey=pKey;pKey.length>1&&(spKey=pKey[1],pKey=pKey[0]),tmpParam[spKey]=node[pKey]}if(tools.isArray(setting.async.otherParam))for(i=0,l=setting.async.otherParam.length;l>i;i+=2)tmpParam[setting.async.otherParam[i]]=setting.async.otherParam[i+1];else for(var p in setting.async.otherParam)tmpParam[p]=setting.async.otherParam[p];var _tmpV=data.getRoot(setting)._ver;return $.ajax({contentType:setting.async.contentType,type:setting.async.type,url:tools.apply(setting.async.url,[setting.treeId,node],setting.async.url),data:tmpParam,dataType:setting.async.dataType,success:function(msg){if(_tmpV==data.getRoot(setting)._ver){var newNodes=[];try{newNodes=msg&&0!=msg.length?"string"==typeof msg?eval("("+msg+")"):msg:[]}catch(err){newNodes=msg}node&&(node.isAjaxing=null,node.zAsync=!0),view.setNodeLineIcos(setting,node),newNodes&&""!==newNodes?(newNodes=tools.apply(setting.async.dataFilter,[setting.treeId,node,newNodes],newNodes),view.addNodes(setting,node,newNodes?tools.clone(newNodes):[],!!isSilent)):view.addNodes(setting,node,[],!!isSilent),setting.treeObj.trigger(consts.event.ASYNC_SUCCESS,[setting.treeId,node,msg]),tools.apply(callback)}},error:function(e,t,n){_tmpV==data.getRoot(setting)._ver&&(node&&(node.isAjaxing=null),view.setNodeLineIcos(setting,node),setting.treeObj.trigger(consts.event.ASYNC_ERROR,[setting.treeId,node,e,t,n]))}}),!0},cancelPreSelectedNode:function(e,t){for(var n=data.getRoot(e).curSelectedList,o=0,a=n.length-1;a>=o;a--)if((!t||t===n[a])&&($$(n[a],consts.id.A,e).removeClass(consts.node.CURSELECTED),t)){data.removeSelectedNode(e,t);break}t||(data.getRoot(e).curSelectedList=[])},createNodeCallback:function(e){if(e.callback.onNodeCreated||e.view.addDiyDom)for(var t=data.getRoot(e);t.createdNodes.length>0;){var n=t.createdNodes.shift();tools.apply(e.view.addDiyDom,[e.treeId,n]),e.callback.onNodeCreated&&e.treeObj.trigger(consts.event.NODECREATED,[e.treeId,n])}},createNodes:function(e,t,n,o){if(n&&0!=n.length){var a=data.getRoot(e),r=e.data.key.children,i=!o||o.open||!!$$(o[r][0],e).get(0);a.createdNodes=[];var s=view.appendNodes(e,t,n,o,!0,i);if(o){var d=$$(o,consts.id.UL,e);d.get(0)&&d.append(s.join(""))}else e.treeObj.append(s.join(""));view.createNodeCallback(e)}},destroy:function(e){e&&(data.initCache(e),data.initRoot(e),event.unbindTree(e),event.unbindEvent(e),e.treeObj.empty())},expandCollapseNode:function(e,t,n,o,a){var r=data.getRoot(e),i=e.data.key.children;if(!t)return void tools.apply(a,[]);if(r.expandTriggerFlag){var s=a;a=function(){s&&s(),t.open?e.treeObj.trigger(consts.event.EXPAND,[e.treeId,t]):e.treeObj.trigger(consts.event.COLLAPSE,[e.treeId,t])},r.expandTriggerFlag=!1}if(!t.open&&t.isParent&&(!$$(t,consts.id.UL,e).get(0)||t[i]&&t[i].length>0&&!$$(t[i][0],e).get(0))&&(view.appendParentULDom(e,t),view.createNodeCallback(e)),t.open==n)return void tools.apply(a,[]);var d=$$(t,consts.id.UL,e),l=$$(t,consts.id.SWITCH,e),c=$$(t,consts.id.ICON,e);t.isParent?(t.open=!t.open,t.iconOpen&&t.iconClose&&c.attr("style",view.makeNodeIcoStyle(e,t)),t.open?(view.replaceSwitchClass(t,l,consts.folder.OPEN),view.replaceIcoClass(t,c,consts.folder.OPEN),0==o||""==e.view.expandSpeed?(d.show(),tools.apply(a,[])):t[i]&&t[i].length>0?d.slideDown(e.view.expandSpeed,a):(d.show(),tools.apply(a,[]))):(view.replaceSwitchClass(t,l,consts.folder.CLOSE),view.replaceIcoClass(t,c,consts.folder.CLOSE),0!=o&&""!=e.view.expandSpeed&&t[i]&&t[i].length>0?d.slideUp(e.view.expandSpeed,a):(d.hide(),tools.apply(a,[])))):tools.apply(a,[])},expandCollapseParentNode:function(e,t,n,o,a){if(t){if(!t.parentTId)return void view.expandCollapseNode(e,t,n,o,a);view.expandCollapseNode(e,t,n,o),t.parentTId&&view.expandCollapseParentNode(e,t.getParentNode(),n,o,a)}},expandCollapseSonNode:function(e,t,n,o,a){var r=data.getRoot(e),i=e.data.key.children,s=t?t[i]:r[i],d=t?!1:o,l=data.getRoot(e).expandTriggerFlag;if(data.getRoot(e).expandTriggerFlag=!1,s)for(var c=0,u=s.length;u>c;c++)s[c]&&view.expandCollapseSonNode(e,s[c],n,d);data.getRoot(e).expandTriggerFlag=l,view.expandCollapseNode(e,t,n,o,a)},makeDOMNodeIcon:function(e,t,n){var o=data.getNodeName(t,n),a=t.view.nameIsHTML?o:o.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");e.push("<span id='",n.tId,consts.id.ICON,"' title='' treeNode",consts.id.ICON," class='",view.makeNodeIcoClass(t,n),"' style='",view.makeNodeIcoStyle(t,n),"'></span><span id='",n.tId,consts.id.SPAN,"'>",a,"</span>")},makeDOMNodeLine:function(e,t,n){e.push("<span id='",n.tId,consts.id.SWITCH,"' title='' class='",view.makeNodeLineClass(t,n),"' treeNode",consts.id.SWITCH,"></span>")},makeDOMNodeMainAfter:function(e){e.push("</li>")},makeDOMNodeMainBefore:function(e,t,n){e.push("<li id='",n.tId,"' class='",consts.className.LEVEL,n.level,"' tabindex='0' hidefocus='true' treenode>")},makeDOMNodeNameAfter:function(e){e.push("</a>")},makeDOMNodeNameBefore:function(e,t,n){var o=data.getNodeTitle(t,n),a=view.makeNodeUrl(t,n),r=view.makeNodeFontCss(t,n),i=[];for(var s in r)i.push(s,":",r[s],";");e.push("<a id='",n.tId,consts.id.A,"' class='",consts.className.LEVEL,n.level,"' treeNode",consts.id.A,' onclick="',n.click||"",'" ',null!=a&&a.length>0?"href='"+a+"'":""," target='",view.makeNodeTarget(n),"' style='",i.join(""),"'"),tools.apply(t.view.showTitle,[t.treeId,n],t.view.showTitle)&&o&&e.push("title='",o.replace(/'/g,"&#39;").replace(/</g,"&lt;").replace(/>/g,"&gt;"),"'"),e.push(">")},makeNodeFontCss:function(e,t){var n=tools.apply(e.view.fontCss,[e.treeId,t],e.view.fontCss);return n&&"function"!=typeof n?n:{}},makeNodeIcoClass:function(e,t){var n=["ico"];return t.isAjaxing||(n[0]=(t.iconSkin?t.iconSkin+"_":"")+n[0],n.push(t.isParent?t.open?consts.folder.OPEN:consts.folder.CLOSE:consts.folder.DOCU)),consts.className.BUTTON+" "+n.join("_")},makeNodeIcoStyle:function(e,t){var n=[];if(!t.isAjaxing){var o=t.isParent&&t.iconOpen&&t.iconClose?t.open?t.iconOpen:t.iconClose:t.icon;o&&n.push("background:url(",o,") 0 0 no-repeat;"),0!=e.view.showIcon&&tools.apply(e.view.showIcon,[e.treeId,t],!0)||n.push("width:0px;height:0px;")}return n.join("")},makeNodeLineClass:function(e,t){var n=[];return n.push(e.view.showLine?0==t.level&&t.isFirstNode&&t.isLastNode?consts.line.ROOT:0==t.level&&t.isFirstNode?consts.line.ROOTS:t.isLastNode?consts.line.BOTTOM:consts.line.CENTER:consts.line.NOLINE),n.push(t.isParent?t.open?consts.folder.OPEN:consts.folder.CLOSE:consts.folder.DOCU),view.makeNodeLineClassEx(t)+n.join("_")},makeNodeLineClassEx:function(e){return consts.className.BUTTON+" "+consts.className.LEVEL+e.level+" "+consts.className.SWITCH+" "},makeNodeTarget:function(e){return e.target||"_blank"},makeNodeUrl:function(e,t){var n=e.data.key.url;return t[n]?t[n]:null},makeUlHtml:function(e,t,n,o){n.push("<ul id='",t.tId,consts.id.UL,"' class='",consts.className.LEVEL,t.level," ",view.makeUlLineClass(e,t),"' style='display:",t.open?"block":"none","'>"),n.push(o),n.push("</ul>")},makeUlLineClass:function(e,t){return e.view.showLine&&!t.isLastNode?consts.line.LINE:""},removeChildNodes:function(e,t){if(t){var n=e.data.key.children,o=t[n];if(o){for(var a=0,r=o.length;r>a;a++)data.removeNodeCache(e,o[a]);if(data.removeSelectedNode(e),delete t[n],e.data.keep.parent)$$(t,consts.id.UL,e).empty();else{t.isParent=!1,t.open=!1;var i=$$(t,consts.id.SWITCH,e),s=$$(t,consts.id.ICON,e);view.replaceSwitchClass(t,i,consts.folder.DOCU),view.replaceIcoClass(t,s,consts.folder.DOCU),$$(t,consts.id.UL,e).remove()}}}},setFirstNode:function(e,t){var n=e.data.key.children,o=t[n].length;o>0&&(t[n][0].isFirstNode=!0)},setLastNode:function(e,t){var n=e.data.key.children,o=t[n].length;o>0&&(t[n][o-1].isLastNode=!0)},removeNode:function(e,t){var n=data.getRoot(e),o=e.data.key.children,a=t.parentTId?t.getParentNode():n;if(t.isFirstNode=!1,t.isLastNode=!1,t.getPreNode=function(){return null},t.getNextNode=function(){return null},data.getNodeCache(e,t.tId)){$$(t,e).remove(),data.removeNodeCache(e,t),data.removeSelectedNode(e,t);for(var r=0,i=a[o].length;i>r;r++)if(a[o][r].tId==t.tId){a[o].splice(r,1);break}view.setFirstNode(e,a),view.setLastNode(e,a);var s,d,l,c=a[o].length;if(e.data.keep.parent||0!=c){if(e.view.showLine&&c>0){var u=a[o][c-1];if(s=$$(u,consts.id.UL,e),d=$$(u,consts.id.SWITCH,e),l=$$(u,consts.id.ICON,e),a==n)if(1==a[o].length)view.replaceSwitchClass(u,d,consts.line.ROOT);else{var p=$$(a[o][0],consts.id.SWITCH,e);view.replaceSwitchClass(a[o][0],p,consts.line.ROOTS),view.replaceSwitchClass(u,d,consts.line.BOTTOM)}else view.replaceSwitchClass(u,d,consts.line.BOTTOM);s.removeClass(consts.line.LINE)}}else a.isParent=!1,a.open=!1,s=$$(a,consts.id.UL,e),d=$$(a,consts.id.SWITCH,e),l=$$(a,consts.id.ICON,e),view.replaceSwitchClass(a,d,consts.folder.DOCU),view.replaceIcoClass(a,l,consts.folder.DOCU),s.css("display","none")}},replaceIcoClass:function(e,t,n){if(t&&!e.isAjaxing){var o=t.attr("class");if(void 0!=o){var a=o.split("_");switch(n){case consts.folder.OPEN:case consts.folder.CLOSE:case consts.folder.DOCU:a[a.length-1]=n}t.attr("class",a.join("_"))}}},replaceSwitchClass:function(e,t,n){if(t){var o=t.attr("class");if(void 0!=o){var a=o.split("_");switch(n){case consts.line.ROOT:case consts.line.ROOTS:case consts.line.CENTER:case consts.line.BOTTOM:case consts.line.NOLINE:a[0]=view.makeNodeLineClassEx(e)+n;break;case consts.folder.OPEN:case consts.folder.CLOSE:case consts.folder.DOCU:a[1]=n}t.attr("class",a.join("_")),n!==consts.folder.DOCU?t.removeAttr("disabled"):t.attr("disabled","disabled")}}},selectNode:function(e,t,n){n||view.cancelPreSelectedNode(e),$$(t,consts.id.A,e).addClass(consts.node.CURSELECTED),data.addSelectedNode(e,t)},setNodeFontCss:function(e,t){var n=$$(t,consts.id.A,e),o=view.makeNodeFontCss(e,t);o&&n.css(o)},setNodeLineIcos:function(e,t){if(t){var n=$$(t,consts.id.SWITCH,e),o=$$(t,consts.id.UL,e),a=$$(t,consts.id.ICON,e),r=view.makeUlLineClass(e,t);0==r.length?o.removeClass(consts.line.LINE):o.addClass(r),n.attr("class",view.makeNodeLineClass(e,t)),t.isParent?n.removeAttr("disabled"):n.attr("disabled","disabled"),a.removeAttr("style"),a.attr("style",view.makeNodeIcoStyle(e,t)),a.attr("class",view.makeNodeIcoClass(e,t))}},setNodeName:function(e,t){var n=data.getNodeTitle(e,t),o=$$(t,consts.id.SPAN,e);if(o.empty(),e.view.nameIsHTML?o.html(data.getNodeName(e,t)):o.text(data.getNodeName(e,t)),tools.apply(e.view.showTitle,[e.treeId,t],e.view.showTitle)){var a=$$(t,consts.id.A,e);a.attr("title",n?n:"")}},setNodeTarget:function(e,t){var n=$$(t,consts.id.A,e);n.attr("target",view.makeNodeTarget(t))},setNodeUrl:function(e,t){var n=$$(t,consts.id.A,e),o=view.makeNodeUrl(e,t);null==o||0==o.length?n.removeAttr("href"):n.attr("href",o)},switchNode:function(e,t){if(t.open||!tools.canAsync(e,t))view.expandCollapseNode(e,t,!t.open);else if(e.async.enable){if(!view.asyncNode(e,t))return void view.expandCollapseNode(e,t,!t.open)}else t&&view.expandCollapseNode(e,t,!t.open)}};$.fn.zTree={consts:_consts,_z:{tools:tools,view:view,event:event,data:data},getZTreeObj:function(e){var t=data.getZTreeTools(e);return t?t:null},destroy:function(e){if(e&&e.length>0)view.destroy(data.getSetting(e));else for(var t in settings)view.destroy(settings[t])},init:function(e,t,n){var o=tools.clone(_setting);$.extend(!0,o,t),o.treeId=e.attr("id"),o.treeObj=e,o.treeObj.empty(),settings[o.treeId]=o,"undefined"==typeof document.body.style.maxHeight&&(o.view.expandSpeed=""),data.initRoot(o);var a=data.getRoot(o),r=o.data.key.children;n=n?tools.clone(tools.isArray(n)?n:[n]):[],a[r]=o.data.simpleData.enable?data.transformTozTreeFormat(o,n):n,data.initCache(o),event.unbindTree(o),event.bindTree(o),event.unbindEvent(o),event.bindEvent(o);var i={setting:o,addNodes:function(e,t,n){function a(){view.addNodes(o,e,r,1==n)}if(!t)return null;if(e||(e=null),e&&!e.isParent&&o.data.keep.leaf)return null;var r=tools.clone(tools.isArray(t)?t:[t]);return tools.canAsync(o,e)?view.asyncNode(o,e,n,a):a(),r},cancelSelectedNode:function(e){view.cancelPreSelectedNode(o,e)},destroy:function(){view.destroy(o)},expandAll:function(e){return e=!!e,view.expandCollapseSonNode(o,null,e,!0),e},expandNode:function(e,t,n,a,r){if(!e||!e.isParent)return null;if(t!==!0&&t!==!1&&(t=!e.open),r=!!r,r&&t&&0==tools.apply(o.callback.beforeExpand,[o.treeId,e],!0))return null;if(r&&!t&&0==tools.apply(o.callback.beforeCollapse,[o.treeId,e],!0))return null;if(t&&e.parentTId&&view.expandCollapseParentNode(o,e.getParentNode(),t,!1),t===e.open&&!n)return null;if(data.getRoot(o).expandTriggerFlag=r,!tools.canAsync(o,e)&&n)view.expandCollapseSonNode(o,e,t,!0,function(){if(a!==!1)try{$$(e,o).focus().blur()}catch(t){}});else if(e.open=!t,view.switchNode(this.setting,e),a!==!1)try{$$(e,o).focus().blur()}catch(i){}return t},getNodes:function(){return data.getNodes(o)},getNodeByParam:function(e,t,n){return e?data.getNodeByParam(o,n?n[o.data.key.children]:data.getNodes(o),e,t):null},getNodeByTId:function(e){return data.getNodeCache(o,e)},getNodesByParam:function(e,t,n){return e?data.getNodesByParam(o,n?n[o.data.key.children]:data.getNodes(o),e,t):null},getNodesByParamFuzzy:function(e,t,n){return e?data.getNodesByParamFuzzy(o,n?n[o.data.key.children]:data.getNodes(o),e,t):null},getNodesByFilter:function(e,t,n,a){return t=!!t,e&&"function"==typeof e?data.getNodesByFilter(o,n?n[o.data.key.children]:data.getNodes(o),e,t,a):t?null:[]},getNodeIndex:function(e){if(!e)return null;for(var t=o.data.key.children,n=e.parentTId?e.getParentNode():data.getRoot(o),a=0,r=n[t].length;r>a;a++)if(n[t][a]==e)return a;return-1},getSelectedNodes:function(){for(var e=[],t=data.getRoot(o).curSelectedList,n=0,a=t.length;a>n;n++)e.push(t[n]);return e},isSelectedNode:function(e){return data.isSelectedNode(o,e)},reAsyncChildNodes:function(e,t,n){if(this.setting.async.enable){var a=!e;if(a&&(e=data.getRoot(o)),"refresh"==t){for(var r=this.setting.data.key.children,i=0,s=e[r]?e[r].length:0;s>i;i++)data.removeNodeCache(o,e[r][i]);if(data.removeSelectedNode(o),e[r]=[],a)this.setting.treeObj.empty();else{var d=$$(e,consts.id.UL,o);d.empty()}}view.asyncNode(this.setting,a?null:e,!!n)}},refresh:function(){this.setting.treeObj.empty();var e=data.getRoot(o),t=e[o.data.key.children];data.initRoot(o),e[o.data.key.children]=t,data.initCache(o),view.createNodes(o,0,e[o.data.key.children])},removeChildNodes:function(e){if(!e)return null;var t=o.data.key.children,n=e[t];return view.removeChildNodes(o,e),n?n:null},removeNode:function(e,t){e&&(t=!!t,t&&0==tools.apply(o.callback.beforeRemove,[o.treeId,e],!0)||(view.removeNode(o,e),t&&this.setting.treeObj.trigger(consts.event.REMOVE,[o.treeId,e])))},selectNode:function(e,t){if(e&&tools.uCanDo(o)){if(t=o.view.selectedMulti&&t,e.parentTId)view.expandCollapseParentNode(o,e.getParentNode(),!0,!1,function(){try{$$(e,o).focus().blur()}catch(t){}});else try{$$(e,o).focus().blur()}catch(n){}view.selectNode(o,e,t)}},transformTozTreeNodes:function(e){return data.transformTozTreeFormat(o,e)},transformToArray:function(e){return data.transformToArrayFormat(o,e)},updateNode:function(e){if(e){var t=$$(e,o);t.get(0)&&tools.uCanDo(o)&&(view.setNodeName(o,e),view.setNodeTarget(o,e),view.setNodeUrl(o,e),view.setNodeLineIcos(o,e),view.setNodeFontCss(o,e))}}};return a.treeTools=i,data.setZTreeTools(o,i),a[r]&&a[r].length>0?view.createNodes(o,0,a[r]):o.async.enable&&o.async.url&&""!==o.async.url&&view.asyncNode(o),i}};var zt=$.fn.zTree,$$=tools.$,consts=zt.consts}(jQuery);
+/*
+ * JQuery zTree core 3.5.14
+ * http://zTree.me/
+ *
+ * Copyright (c) 2010 Hunter.z
+ *
+ * Licensed same as jquery - MIT License
+ * http://www.opensource.org/licenses/mit-license.php
+ *
+ * email: hunter.z@263.net
+ * Date: 2013-06-28
+ */
+(function($){
+	var settings = {}, roots = {}, caches = {},
+	//default consts of core
+	_consts = {
+		className: {
+			BUTTON: "button",
+			LEVEL: "level",
+			ICO_LOADING: "ico_loading",
+			SWITCH: "switch"
+		},
+		event: {
+			NODECREATED: "ztree_nodeCreated",
+			CLICK: "ztree_click",
+			EXPAND: "ztree_expand",
+			COLLAPSE: "ztree_collapse",
+			ASYNC_SUCCESS: "ztree_async_success",
+			ASYNC_ERROR: "ztree_async_error"
+		},
+		id: {
+			A: "_a",
+			ICON: "_ico",
+			SPAN: "_span",
+			SWITCH: "_switch",
+			UL: "_ul"
+		},
+		line: {
+			ROOT: "root",
+			ROOTS: "roots",
+			CENTER: "center",
+			BOTTOM: "bottom",
+			NOLINE: "noline",
+			LINE: "line"
+		},
+		folder: {
+			OPEN: "open",
+			CLOSE: "close",
+			DOCU: "docu"
+		},
+		node: {
+			CURSELECTED: "curSelectedNode"
+		}
+	},
+	//default setting of core
+	_setting = {
+		treeId: "",
+		treeObj: null,
+		view: {
+			addDiyDom: null,
+			autoCancelSelected: true,
+			dblClickExpand: true,
+			expandSpeed: "fast",
+			fontCss: {},
+			nameIsHTML: false,
+			selectedMulti: true,
+			showIcon: true,
+			showLine: true,
+			showTitle: true
+		},
+		data: {
+			key: {
+				children: "children",
+				name: "name",
+				title: "",
+				url: "url"
+			},
+			simpleData: {
+				enable: false,
+				idKey: "id",
+				pIdKey: "pId",
+				rootPId: null
+			},
+			keep: {
+				parent: false,
+				leaf: false
+			}
+		},
+		async: {
+			enable: false,
+			contentType: "application/x-www-form-urlencoded",
+			type: "post",
+			dataType: "text",
+			url: "",
+			autoParam: [],
+			otherParam: [],
+			dataFilter: null
+		},
+		callback: {
+			beforeAsync:null,
+			beforeClick:null,
+			beforeDblClick:null,
+			beforeRightClick:null,
+			beforeMouseDown:null,
+			beforeMouseUp:null,
+			beforeExpand:null,
+			beforeCollapse:null,
+			beforeRemove:null,
+
+			onAsyncError:null,
+			onAsyncSuccess:null,
+			onNodeCreated:null,
+			onClick:null,
+			onDblClick:null,
+			onRightClick:null,
+			onMouseDown:null,
+			onMouseUp:null,
+			onExpand:null,
+			onCollapse:null,
+			onRemove:null
+		}
+	},
+	//default root of core
+	//zTree use root to save full data
+	_initRoot = function (setting) {
+		var r = data.getRoot(setting);
+		if (!r) {
+			r = {};
+			data.setRoot(setting, r);
+		}
+		r[setting.data.key.children] = [];
+		r.expandTriggerFlag = false;
+		r.curSelectedList = [];
+		r.noSelection = true;
+		r.createdNodes = [];
+		r.zId = 0;
+		r._ver = (new Date()).getTime();
+	},
+	//default cache of core
+	_initCache = function(setting) {
+		var c = data.getCache(setting);
+		if (!c) {
+			c = {};
+			data.setCache(setting, c);
+		}
+		c.nodes = [];
+		c.doms = [];
+	},
+	//default bindEvent of core
+	_bindEvent = function(setting) {
+		var o = setting.treeObj,
+		c = consts.event;
+		o.bind(c.NODECREATED, function (event, treeId, node) {
+			tools.apply(setting.callback.onNodeCreated, [event, treeId, node]);
+		});
+
+		o.bind(c.CLICK, function (event, srcEvent, treeId, node, clickFlag) {
+			tools.apply(setting.callback.onClick, [srcEvent, treeId, node, clickFlag]);
+		});
+
+		o.bind(c.EXPAND, function (event, treeId, node) {
+			tools.apply(setting.callback.onExpand, [event, treeId, node]);
+		});
+
+		o.bind(c.COLLAPSE, function (event, treeId, node) {
+			tools.apply(setting.callback.onCollapse, [event, treeId, node]);
+		});
+
+		o.bind(c.ASYNC_SUCCESS, function (event, treeId, node, msg) {
+			tools.apply(setting.callback.onAsyncSuccess, [event, treeId, node, msg]);
+		});
+
+		o.bind(c.ASYNC_ERROR, function (event, treeId, node, XMLHttpRequest, textStatus, errorThrown) {
+			tools.apply(setting.callback.onAsyncError, [event, treeId, node, XMLHttpRequest, textStatus, errorThrown]);
+		});
+	},
+	_unbindEvent = function(setting) {
+		var o = setting.treeObj,
+		c = consts.event;
+		o.unbind(c.NODECREATED)
+		.unbind(c.CLICK)
+		.unbind(c.EXPAND)
+		.unbind(c.COLLAPSE)
+		.unbind(c.ASYNC_SUCCESS)
+		.unbind(c.ASYNC_ERROR);
+	},
+	//default event proxy of core
+	_eventProxy = function(event) {
+		var target = event.target,
+		setting = data.getSetting(event.data.treeId),
+		tId = "", node = null,
+		nodeEventType = "", treeEventType = "",
+		nodeEventCallback = null, treeEventCallback = null,
+		tmp = null;
+
+		if (tools.eqs(event.type, "mousedown")) {
+			treeEventType = "mousedown";
+		} else if (tools.eqs(event.type, "mouseup")) {
+			treeEventType = "mouseup";
+		} else if (tools.eqs(event.type, "contextmenu")) {
+			treeEventType = "contextmenu";
+		} else if (tools.eqs(event.type, "click")) {
+			if (tools.eqs(target.tagName, "span") && target.getAttribute("treeNode"+ consts.id.SWITCH) !== null) {
+				tId = tools.getNodeMainDom(target).id;
+				nodeEventType = "switchNode";
+			} else {
+				tmp = tools.getMDom(setting, target, [{tagName:"a", attrName:"treeNode"+consts.id.A}]);
+				if (tmp) {
+					tId = tools.getNodeMainDom(tmp).id;
+					nodeEventType = "clickNode";
+				}
+			}
+		} else if (tools.eqs(event.type, "dblclick")) {
+			treeEventType = "dblclick";
+			tmp = tools.getMDom(setting, target, [{tagName:"a", attrName:"treeNode"+consts.id.A}]);
+			if (tmp) {
+				tId = tools.getNodeMainDom(tmp).id;
+				nodeEventType = "switchNode";
+			}
+		}
+		if (treeEventType.length > 0 && tId.length == 0) {
+			tmp = tools.getMDom(setting, target, [{tagName:"a", attrName:"treeNode"+consts.id.A}]);
+			if (tmp) {tId = tools.getNodeMainDom(tmp).id;}
+		}
+		// event to node
+		if (tId.length>0) {
+			node = data.getNodeCache(setting, tId);
+			switch (nodeEventType) {
+				case "switchNode" :
+					if (!node.isParent) {
+						nodeEventType = "";
+					} else if (tools.eqs(event.type, "click")
+						|| (tools.eqs(event.type, "dblclick") && tools.apply(setting.view.dblClickExpand, [setting.treeId, node], setting.view.dblClickExpand))) {
+						nodeEventCallback = handler.onSwitchNode;
+					} else {
+						nodeEventType = "";
+					}
+					break;
+				case "clickNode" :
+					nodeEventCallback = handler.onClickNode;
+					break;
+			}
+		}
+		// event to zTree
+		switch (treeEventType) {
+			case "mousedown" :
+				treeEventCallback = handler.onZTreeMousedown;
+				break;
+			case "mouseup" :
+				treeEventCallback = handler.onZTreeMouseup;
+				break;
+			case "dblclick" :
+				treeEventCallback = handler.onZTreeDblclick;
+				break;
+			case "contextmenu" :
+				treeEventCallback = handler.onZTreeContextmenu;
+				break;
+		}
+		var proxyResult = {
+			stop: false,
+			node: node,
+			nodeEventType: nodeEventType,
+			nodeEventCallback: nodeEventCallback,
+			treeEventType: treeEventType,
+			treeEventCallback: treeEventCallback
+		};
+		return proxyResult
+	},
+	//default init node of core
+	_initNode = function(setting, level, n, parentNode, isFirstNode, isLastNode, openFlag) {
+		if (!n) return;
+		var r = data.getRoot(setting),
+		childKey = setting.data.key.children;
+		n.level = level;
+		n.tId = setting.treeId + "_" + (++r.zId);
+		n.parentTId = parentNode ? parentNode.tId : null;
+		if (n[childKey] && n[childKey].length > 0) {
+			if (typeof n.open == "string") n.open = tools.eqs(n.open, "true");
+			n.open = !!n.open;
+			n.isParent = true;
+			n.zAsync = true;
+		} else {
+			n.open = false;
+			if (typeof n.isParent == "string") n.isParent = tools.eqs(n.isParent, "true");
+			n.isParent = !!n.isParent;
+			n.zAsync = !n.isParent;
+		}
+		n.isFirstNode = isFirstNode;
+		n.isLastNode = isLastNode;
+		n.getParentNode = function() {return data.getNodeCache(setting, n.parentTId);};
+		n.getPreNode = function() {return data.getPreNode(setting, n);};
+		n.getNextNode = function() {return data.getNextNode(setting, n);};
+		n.isAjaxing = false;
+		data.fixPIdKeyValue(setting, n);
+	},
+	_init = {
+		bind: [_bindEvent],
+		unbind: [_unbindEvent],
+		caches: [_initCache],
+		nodes: [_initNode],
+		proxys: [_eventProxy],
+		roots: [_initRoot],
+		beforeA: [],
+		afterA: [],
+		innerBeforeA: [],
+		innerAfterA: [],
+		zTreeTools: []
+	},
+	//method of operate data
+	data = {
+		addNodeCache: function(setting, node) {
+			data.getCache(setting).nodes[data.getNodeCacheId(node.tId)] = node;
+		},
+		getNodeCacheId: function(tId) {
+			return tId.substring(tId.lastIndexOf("_")+1);
+		},
+		addAfterA: function(afterA) {
+			_init.afterA.push(afterA);
+		},
+		addBeforeA: function(beforeA) {
+			_init.beforeA.push(beforeA);
+		},
+		addInnerAfterA: function(innerAfterA) {
+			_init.innerAfterA.push(innerAfterA);
+		},
+		addInnerBeforeA: function(innerBeforeA) {
+			_init.innerBeforeA.push(innerBeforeA);
+		},
+		addInitBind: function(bindEvent) {
+			_init.bind.push(bindEvent);
+		},
+		addInitUnBind: function(unbindEvent) {
+			_init.unbind.push(unbindEvent);
+		},
+		addInitCache: function(initCache) {
+			_init.caches.push(initCache);
+		},
+		addInitNode: function(initNode) {
+			_init.nodes.push(initNode);
+		},
+		addInitProxy: function(initProxy, isFirst) {
+			if (!!isFirst) {
+				_init.proxys.splice(0,0,initProxy);
+			} else {
+				_init.proxys.push(initProxy);
+			}
+		},
+		addInitRoot: function(initRoot) {
+			_init.roots.push(initRoot);
+		},
+		addNodesData: function(setting, parentNode, nodes) {
+			var childKey = setting.data.key.children;
+			if (!parentNode[childKey]) parentNode[childKey] = [];
+			if (parentNode[childKey].length > 0) {
+				parentNode[childKey][parentNode[childKey].length - 1].isLastNode = false;
+				view.setNodeLineIcos(setting, parentNode[childKey][parentNode[childKey].length - 1]);
+			}
+			parentNode.isParent = true;
+			parentNode[childKey] = parentNode[childKey].concat(nodes);
+		},
+		addSelectedNode: function(setting, node) {
+			var root = data.getRoot(setting);
+			if (!data.isSelectedNode(setting, node)) {
+				root.curSelectedList.push(node);
+			}
+		},
+		addCreatedNode: function(setting, node) {
+			if (!!setting.callback.onNodeCreated || !!setting.view.addDiyDom) {
+				var root = data.getRoot(setting);
+				root.createdNodes.push(node);
+			}
+		},
+		addZTreeTools: function(zTreeTools) {
+			_init.zTreeTools.push(zTreeTools);
+		},
+		exSetting: function(s) {
+			$.extend(true, _setting, s);
+		},
+		fixPIdKeyValue: function(setting, node) {
+			if (setting.data.simpleData.enable) {
+				node[setting.data.simpleData.pIdKey] = node.parentTId ? node.getParentNode()[setting.data.simpleData.idKey] : setting.data.simpleData.rootPId;
+			}
+		},
+		getAfterA: function(setting, node, array) {
+			for (var i=0, j=_init.afterA.length; i<j; i++) {
+				_init.afterA[i].apply(this, arguments);
+			}
+		},
+		getBeforeA: function(setting, node, array) {
+			for (var i=0, j=_init.beforeA.length; i<j; i++) {
+				_init.beforeA[i].apply(this, arguments);
+			}
+		},
+		getInnerAfterA: function(setting, node, array) {
+			for (var i=0, j=_init.innerAfterA.length; i<j; i++) {
+				_init.innerAfterA[i].apply(this, arguments);
+			}
+		},
+		getInnerBeforeA: function(setting, node, array) {
+			for (var i=0, j=_init.innerBeforeA.length; i<j; i++) {
+				_init.innerBeforeA[i].apply(this, arguments);
+			}
+		},
+		getCache: function(setting) {
+			return caches[setting.treeId];
+		},
+		getNextNode: function(setting, node) {
+			if (!node) return null;
+			var childKey = setting.data.key.children,
+			p = node.parentTId ? node.getParentNode() : data.getRoot(setting);
+			for (var i=0, l=p[childKey].length-1; i<=l; i++) {
+				if (p[childKey][i] === node) {
+					return (i==l ? null : p[childKey][i+1]);
+				}
+			}
+			return null;
+		},
+		getNodeByParam: function(setting, nodes, key, value) {
+			if (!nodes || !key) return null;
+			var childKey = setting.data.key.children;
+			for (var i = 0, l = nodes.length; i < l; i++) {
+				if (nodes[i][key] == value) {
+					return nodes[i];
+				}
+				var tmp = data.getNodeByParam(setting, nodes[i][childKey], key, value);
+				if (tmp) return tmp;
+			}
+			return null;
+		},
+		getNodeCache: function(setting, tId) {
+			if (!tId) return null;
+			var n = caches[setting.treeId].nodes[data.getNodeCacheId(tId)];
+			return n ? n : null;
+		},
+		getNodeName: function(setting, node) {
+			var nameKey = setting.data.key.name;
+			return "" + node[nameKey];
+		},
+		getNodeTitle: function(setting, node) {
+			var t = setting.data.key.title === "" ? setting.data.key.name : setting.data.key.title;
+			return "" + node[t];
+		},
+		getNodes: function(setting) {
+			return data.getRoot(setting)[setting.data.key.children];
+		},
+		getNodesByParam: function(setting, nodes, key, value) {
+			if (!nodes || !key) return [];
+			var childKey = setting.data.key.children,
+			result = [];
+			for (var i = 0, l = nodes.length; i < l; i++) {
+				if (nodes[i][key] == value) {
+					result.push(nodes[i]);
+				}
+				result = result.concat(data.getNodesByParam(setting, nodes[i][childKey], key, value));
+			}
+			return result;
+		},
+		getNodesByParamFuzzy: function(setting, nodes, key, value) {
+			if (!nodes || !key) return [];
+			var childKey = setting.data.key.children,
+			result = [];
+			value = value.toLowerCase();
+			for (var i = 0, l = nodes.length; i < l; i++) {
+				if (typeof nodes[i][key] == "string" && nodes[i][key].toLowerCase().indexOf(value)>-1) {
+					result.push(nodes[i]);
+				}
+				result = result.concat(data.getNodesByParamFuzzy(setting, nodes[i][childKey], key, value));
+			}
+			return result;
+		},
+		getNodesByFilter: function(setting, nodes, filter, isSingle, invokeParam) {
+			if (!nodes) return (isSingle ? null : []);
+			var childKey = setting.data.key.children,
+			result = isSingle ? null : [];
+			for (var i = 0, l = nodes.length; i < l; i++) {
+				if (tools.apply(filter, [nodes[i], invokeParam], false)) {
+					if (isSingle) {return nodes[i];}
+					result.push(nodes[i]);
+				}
+				var tmpResult = data.getNodesByFilter(setting, nodes[i][childKey], filter, isSingle, invokeParam);
+				if (isSingle && !!tmpResult) {return tmpResult;}
+				result = isSingle ? tmpResult : result.concat(tmpResult);
+			}
+			return result;
+		},
+		getPreNode: function(setting, node) {
+			if (!node) return null;
+			var childKey = setting.data.key.children,
+			p = node.parentTId ? node.getParentNode() : data.getRoot(setting);
+			for (var i=0, l=p[childKey].length; i<l; i++) {
+				if (p[childKey][i] === node) {
+					return (i==0 ? null : p[childKey][i-1]);
+				}
+			}
+			return null;
+		},
+		getRoot: function(setting) {
+			return setting ? roots[setting.treeId] : null;
+		},
+		getRoots: function() {
+			return roots;
+		},
+		getSetting: function(treeId) {
+			return settings[treeId];
+		},
+		getSettings: function() {
+			return settings;
+		},
+		getZTreeTools: function(treeId) {
+			var r = this.getRoot(this.getSetting(treeId));
+			return r ? r.treeTools : null;
+		},
+		initCache: function(setting) {
+			for (var i=0, j=_init.caches.length; i<j; i++) {
+				_init.caches[i].apply(this, arguments);
+			}
+		},
+		initNode: function(setting, level, node, parentNode, preNode, nextNode) {
+			for (var i=0, j=_init.nodes.length; i<j; i++) {
+				_init.nodes[i].apply(this, arguments);
+			}
+		},
+		initRoot: function(setting) {
+			for (var i=0, j=_init.roots.length; i<j; i++) {
+				_init.roots[i].apply(this, arguments);
+			}
+		},
+		isSelectedNode: function(setting, node) {
+			var root = data.getRoot(setting);
+			for (var i=0, j=root.curSelectedList.length; i<j; i++) {
+				if(node === root.curSelectedList[i]) return true;
+			}
+			return false;
+		},
+		removeNodeCache: function(setting, node) {
+			var childKey = setting.data.key.children;
+			if (node[childKey]) {
+				for (var i=0, l=node[childKey].length; i<l; i++) {
+					arguments.callee(setting, node[childKey][i]);
+				}
+			}
+			data.getCache(setting).nodes[data.getNodeCacheId(node.tId)] = null;
+		},
+		removeSelectedNode: function(setting, node) {
+			var root = data.getRoot(setting);
+			for (var i=0, j=root.curSelectedList.length; i<j; i++) {
+				if(node === root.curSelectedList[i] || !data.getNodeCache(setting, root.curSelectedList[i].tId)) {
+					root.curSelectedList.splice(i, 1);
+					i--;j--;
+				}
+			}
+		},
+		setCache: function(setting, cache) {
+			caches[setting.treeId] = cache;
+		},
+		setRoot: function(setting, root) {
+			roots[setting.treeId] = root;
+		},
+		setZTreeTools: function(setting, zTreeTools) {
+			for (var i=0, j=_init.zTreeTools.length; i<j; i++) {
+				_init.zTreeTools[i].apply(this, arguments);
+			}
+		},
+		transformToArrayFormat: function (setting, nodes) {
+			if (!nodes) return [];
+			var childKey = setting.data.key.children,
+			r = [];
+			if (tools.isArray(nodes)) {
+				for (var i=0, l=nodes.length; i<l; i++) {
+					r.push(nodes[i]);
+					if (nodes[i][childKey])
+						r = r.concat(data.transformToArrayFormat(setting, nodes[i][childKey]));
+				}
+			} else {
+				r.push(nodes);
+				if (nodes[childKey])
+					r = r.concat(data.transformToArrayFormat(setting, nodes[childKey]));
+			}
+			return r;
+		},
+		transformTozTreeFormat: function(setting, sNodes) {
+			var i,l,
+			key = setting.data.simpleData.idKey,
+			parentKey = setting.data.simpleData.pIdKey,
+			childKey = setting.data.key.children;
+			if (!key || key=="" || !sNodes) return [];
+
+			if (tools.isArray(sNodes)) {
+				var r = [];
+				var tmpMap = [];
+				for (i=0, l=sNodes.length; i<l; i++) {
+					tmpMap[sNodes[i][key]] = sNodes[i];
+				}
+				for (i=0, l=sNodes.length; i<l; i++) {
+					if (tmpMap[sNodes[i][parentKey]] && sNodes[i][key] != sNodes[i][parentKey]) {
+						if (!tmpMap[sNodes[i][parentKey]][childKey])
+							tmpMap[sNodes[i][parentKey]][childKey] = [];
+						tmpMap[sNodes[i][parentKey]][childKey].push(sNodes[i]);
+					} else {
+						r.push(sNodes[i]);
+					}
+				}
+				return r;
+			}else {
+				return [sNodes];
+			}
+		}
+	},
+	//method of event proxy
+	event = {
+		bindEvent: function(setting) {
+			for (var i=0, j=_init.bind.length; i<j; i++) {
+				_init.bind[i].apply(this, arguments);
+			}
+		},
+		unbindEvent: function(setting) {
+			for (var i=0, j=_init.unbind.length; i<j; i++) {
+				_init.unbind[i].apply(this, arguments);
+			}
+		},
+		bindTree: function(setting) {
+			var eventParam = {
+				treeId: setting.treeId
+			},
+			o = setting.treeObj;
+			// for can't select text
+			o.bind('selectstart', function(e){
+					var n = e.originalEvent.srcElement.nodeName.toLowerCase();
+					return (n === "input" || n === "textarea" );
+			}).css({
+				"-moz-user-select":"-moz-none"
+			});
+			o.bind('click', eventParam, event.proxy);
+			o.bind('dblclick', eventParam, event.proxy);
+			o.bind('mouseover', eventParam, event.proxy);
+			o.bind('mouseout', eventParam, event.proxy);
+			o.bind('mousedown', eventParam, event.proxy);
+			o.bind('mouseup', eventParam, event.proxy);
+			o.bind('contextmenu', eventParam, event.proxy);
+		},
+		unbindTree: function(setting) {
+			var o = setting.treeObj;
+			o.unbind('click', event.proxy)
+			.unbind('dblclick', event.proxy)
+			.unbind('mouseover', event.proxy)
+			.unbind('mouseout', event.proxy)
+			.unbind('mousedown', event.proxy)
+			.unbind('mouseup', event.proxy)
+			.unbind('contextmenu', event.proxy);
+		},
+		doProxy: function(e) {
+			var results = [];
+			for (var i=0, j=_init.proxys.length; i<j; i++) {
+				var proxyResult = _init.proxys[i].apply(this, arguments);
+				results.push(proxyResult);
+				if (proxyResult.stop) {
+					break;
+				}
+			}
+			return results;
+		},
+		proxy: function(e) {
+			var setting = data.getSetting(e.data.treeId);
+			if (!tools.uCanDo(setting, e)) return true;
+			var results = event.doProxy(e),
+			r = true, x = false;
+			for (var i=0, l=results.length; i<l; i++) {
+				var proxyResult = results[i];
+				if (proxyResult.nodeEventCallback) {
+					x = true;
+					r = proxyResult.nodeEventCallback.apply(proxyResult, [e, proxyResult.node]) && r;
+				}
+				if (proxyResult.treeEventCallback) {
+					x = true;
+					r = proxyResult.treeEventCallback.apply(proxyResult, [e, proxyResult.node]) && r;
+				}
+			}
+			return r;
+		}
+	},
+	//method of event handler
+	handler = {
+		onSwitchNode: function (event, node) {
+			var setting = data.getSetting(event.data.treeId);
+			if (node.open) {
+				if (tools.apply(setting.callback.beforeCollapse, [setting.treeId, node], true) == false) return true;
+				data.getRoot(setting).expandTriggerFlag = true;
+				view.switchNode(setting, node);
+			} else {
+				if (tools.apply(setting.callback.beforeExpand, [setting.treeId, node], true) == false) return true;
+				data.getRoot(setting).expandTriggerFlag = true;
+				view.switchNode(setting, node);
+			}
+			return true;
+		},
+		onClickNode: function (event, node) {
+			var setting = data.getSetting(event.data.treeId),
+			clickFlag = ( (setting.view.autoCancelSelected && event.ctrlKey) && data.isSelectedNode(setting, node)) ? 0 : (setting.view.autoCancelSelected && event.ctrlKey && setting.view.selectedMulti) ? 2 : 1;
+			if (tools.apply(setting.callback.beforeClick, [setting.treeId, node, clickFlag], true) == false) return true;
+			if (clickFlag === 0) {
+				view.cancelPreSelectedNode(setting, node);
+			} else {
+				view.selectNode(setting, node, clickFlag === 2);
+			}
+			setting.treeObj.trigger(consts.event.CLICK, [event, setting.treeId, node, clickFlag]);
+			return true;
+		},
+		onZTreeMousedown: function(event, node) {
+			var setting = data.getSetting(event.data.treeId);
+			if (tools.apply(setting.callback.beforeMouseDown, [setting.treeId, node], true)) {
+				tools.apply(setting.callback.onMouseDown, [event, setting.treeId, node]);
+			}
+			return true;
+		},
+		onZTreeMouseup: function(event, node) {
+			var setting = data.getSetting(event.data.treeId);
+			if (tools.apply(setting.callback.beforeMouseUp, [setting.treeId, node], true)) {
+				tools.apply(setting.callback.onMouseUp, [event, setting.treeId, node]);
+			}
+			return true;
+		},
+		onZTreeDblclick: function(event, node) {
+			var setting = data.getSetting(event.data.treeId);
+			if (tools.apply(setting.callback.beforeDblClick, [setting.treeId, node], true)) {
+				tools.apply(setting.callback.onDblClick, [event, setting.treeId, node]);
+			}
+			return true;
+		},
+		onZTreeContextmenu: function(event, node) {
+			var setting = data.getSetting(event.data.treeId);
+			if (tools.apply(setting.callback.beforeRightClick, [setting.treeId, node], true)) {
+				tools.apply(setting.callback.onRightClick, [event, setting.treeId, node]);
+			}
+			return (typeof setting.callback.onRightClick) != "function";
+		}
+	},
+	//method of tools for zTree
+	tools = {
+		apply: function(fun, param, defaultValue) {
+			if ((typeof fun) == "function") {
+				return fun.apply(zt, param?param:[]);
+			}
+			return defaultValue;
+		},
+		canAsync: function(setting, node) {
+			var childKey = setting.data.key.children;
+			return (setting.async.enable && node && node.isParent && !(node.zAsync || (node[childKey] && node[childKey].length > 0)));
+		},
+		clone: function (obj){
+			if (obj === null) return null;
+			var o = tools.isArray(obj) ? [] : {};
+			for(var i in obj){
+				o[i] = (obj[i] instanceof Date) ? new Date(obj[i].getTime()) : (typeof obj[i] === "object" ? arguments.callee(obj[i]) : obj[i]);
+			}
+			return o;
+		},
+		eqs: function(str1, str2) {
+			return str1.toLowerCase() === str2.toLowerCase();
+		},
+		isArray: function(arr) {
+			return Object.prototype.toString.apply(arr) === "[object Array]";
+		},
+		$: function(node, exp, setting) {
+			if (!!exp && typeof exp != "string") {
+				setting = exp;
+				exp = "";
+			}
+			if (typeof node == "string") {
+				return $(node, setting ? setting.treeObj.get(0).ownerDocument : null);
+			} else {
+				return $("#" + node.tId + exp, setting ? setting.treeObj : null);
+			}
+		},
+		getMDom: function (setting, curDom, targetExpr) {
+			if (!curDom) return null;
+			while (curDom && curDom.id !== setting.treeId) {
+				for (var i=0, l=targetExpr.length; curDom.tagName && i<l; i++) {
+					if (tools.eqs(curDom.tagName, targetExpr[i].tagName) && curDom.getAttribute(targetExpr[i].attrName) !== null) {
+						return curDom;
+					}
+				}
+				curDom = curDom.parentNode;
+			}
+			return null;
+		},
+		getNodeMainDom:function(target) {
+			return ($(target).parent("li").get(0) || $(target).parentsUntil("li").parent().get(0));
+		},
+		uCanDo: function(setting, e) {
+			return true;
+		}
+	},
+	//method of operate ztree dom
+	view = {
+		addNodes: function(setting, parentNode, newNodes, isSilent) {
+			if (setting.data.keep.leaf && parentNode && !parentNode.isParent) {
+				return;
+			}
+			if (!tools.isArray(newNodes)) {
+				newNodes = [newNodes];
+			}
+			if (setting.data.simpleData.enable) {
+				newNodes = data.transformTozTreeFormat(setting, newNodes);
+			}
+			if (parentNode) {
+				var target_switchObj = $$(parentNode, consts.id.SWITCH, setting),
+				target_icoObj = $$(parentNode, consts.id.ICON, setting),
+				target_ulObj = $$(parentNode, consts.id.UL, setting);
+
+				if (!parentNode.open) {
+					view.replaceSwitchClass(parentNode, target_switchObj, consts.folder.CLOSE);
+					view.replaceIcoClass(parentNode, target_icoObj, consts.folder.CLOSE);
+					parentNode.open = false;
+					target_ulObj.css({
+						"display": "none"
+					});
+				}
+
+				data.addNodesData(setting, parentNode, newNodes);
+				view.createNodes(setting, parentNode.level + 1, newNodes, parentNode);
+				if (!isSilent) {
+					view.expandCollapseParentNode(setting, parentNode, true);
+				}
+			} else {
+				data.addNodesData(setting, data.getRoot(setting), newNodes);
+				view.createNodes(setting, 0, newNodes, null);
+			}
+		},
+		appendNodes: function(setting, level, nodes, parentNode, initFlag, openFlag) {
+			if (!nodes) return [];
+			var html = [],
+			childKey = setting.data.key.children;
+			for (var i = 0, l = nodes.length; i < l; i++) {
+				var node = nodes[i];
+				if (initFlag) {
+					var tmpPNode = (parentNode) ? parentNode: data.getRoot(setting),
+					tmpPChild = tmpPNode[childKey],
+					isFirstNode = ((tmpPChild.length == nodes.length) && (i == 0)),
+					isLastNode = (i == (nodes.length - 1));
+					data.initNode(setting, level, node, parentNode, isFirstNode, isLastNode, openFlag);
+					data.addNodeCache(setting, node);
+				}
+
+				var childHtml = [];
+				if (node[childKey] && node[childKey].length > 0) {
+					//make child html first, because checkType
+					childHtml = view.appendNodes(setting, level + 1, node[childKey], node, initFlag, openFlag && node.open);
+				}
+				if (openFlag) {
+
+					view.makeDOMNodeMainBefore(html, setting, node);
+					view.makeDOMNodeLine(html, setting, node);
+					data.getBeforeA(setting, node, html);
+					view.makeDOMNodeNameBefore(html, setting, node);
+					data.getInnerBeforeA(setting, node, html);
+					view.makeDOMNodeIcon(html, setting, node);
+					data.getInnerAfterA(setting, node, html);
+					view.makeDOMNodeNameAfter(html, setting, node);
+					data.getAfterA(setting, node, html);
+					if (node.isParent && node.open) {
+						view.makeUlHtml(setting, node, html, childHtml.join(''));
+					}
+					view.makeDOMNodeMainAfter(html, setting, node);
+					data.addCreatedNode(setting, node);
+				}
+			}
+			return html;
+		},
+		appendParentULDom: function(setting, node) {
+			var html = [],
+			nObj = $$(node, setting);
+			if (!nObj.get(0) && !!node.parentTId) {
+				view.appendParentULDom(setting, node.getParentNode());
+				nObj = $$(node, setting);
+			}
+			var ulObj = $$(node, consts.id.UL, setting);
+			if (ulObj.get(0)) {
+				ulObj.remove();
+			}
+			var childKey = setting.data.key.children,
+			childHtml = view.appendNodes(setting, node.level+1, node[childKey], node, false, true);
+			view.makeUlHtml(setting, node, html, childHtml.join(''));
+			nObj.append(html.join(''));
+		},
+		asyncNode: function(setting, node, isSilent, callback) {
+			var i, l;
+			if (node && !node.isParent) {
+				tools.apply(callback);
+				return false;
+			} else if (node && node.isAjaxing) {
+				return false;
+			} else if (tools.apply(setting.callback.beforeAsync, [setting.treeId, node], true) == false) {
+				tools.apply(callback);
+				return false;
+			}
+			if (node) {
+				node.isAjaxing = true;
+				var icoObj = $$(node, consts.id.ICON, setting);
+				icoObj.attr({"style":"", "class":consts.className.BUTTON + " " + consts.className.ICO_LOADING});
+			}
+
+			var tmpParam = {};
+			for (i = 0, l = setting.async.autoParam.length; node && i < l; i++) {
+				var pKey = setting.async.autoParam[i].split("="), spKey = pKey;
+				if (pKey.length>1) {
+					spKey = pKey[1];
+					pKey = pKey[0];
+				}
+				tmpParam[spKey] = node[pKey];
+			}
+			if (tools.isArray(setting.async.otherParam)) {
+				for (i = 0, l = setting.async.otherParam.length; i < l; i += 2) {
+					tmpParam[setting.async.otherParam[i]] = setting.async.otherParam[i + 1];
+				}
+			} else {
+				for (var p in setting.async.otherParam) {
+					tmpParam[p] = setting.async.otherParam[p];
+				}
+			}
+
+			var _tmpV = data.getRoot(setting)._ver;
+			$.ajax({
+				contentType: setting.async.contentType,
+				type: setting.async.type,
+				url: tools.apply(setting.async.url, [setting.treeId, node], setting.async.url),
+				data: tmpParam,
+				dataType: setting.async.dataType,
+				success: function(msg) {
+					if (_tmpV != data.getRoot(setting)._ver) {
+						return;
+					}
+					var newNodes = [];
+					try {
+						if (!msg || msg.length == 0) {
+							newNodes = [];
+						} else if (typeof msg == "string") {
+							newNodes = eval("(" + msg + ")");
+						} else {
+							newNodes = msg;
+						}
+					} catch(err) {
+						newNodes = msg;
+					}
+
+					if (node) {
+						node.isAjaxing = null;
+						node.zAsync = true;
+					}
+					view.setNodeLineIcos(setting, node);
+					if (newNodes && newNodes !== "") {
+						newNodes = tools.apply(setting.async.dataFilter, [setting.treeId, node, newNodes], newNodes);
+						view.addNodes(setting, node, !!newNodes ? tools.clone(newNodes) : [], !!isSilent);
+					} else {
+						view.addNodes(setting, node, [], !!isSilent);
+					}
+					setting.treeObj.trigger(consts.event.ASYNC_SUCCESS, [setting.treeId, node, msg]);
+					tools.apply(callback);
+				},
+				error: function(XMLHttpRequest, textStatus, errorThrown) {
+					if (_tmpV != data.getRoot(setting)._ver) {
+						return;
+					}
+					if (node) node.isAjaxing = null;
+					view.setNodeLineIcos(setting, node);
+					setting.treeObj.trigger(consts.event.ASYNC_ERROR, [setting.treeId, node, XMLHttpRequest, textStatus, errorThrown]);
+				}
+			});
+			return true;
+		},
+		cancelPreSelectedNode: function (setting, node) {
+			var list = data.getRoot(setting).curSelectedList;
+			for (var i=0, j=list.length-1; j>=i; j--) {
+				if (!node || node === list[j]) {
+					$$(list[j], consts.id.A, setting).removeClass(consts.node.CURSELECTED);
+					if (node) {
+						data.removeSelectedNode(setting, node);
+						break;
+					}
+				}
+			}
+			if (!node) data.getRoot(setting).curSelectedList = [];
+		},
+		createNodeCallback: function(setting) {
+			if (!!setting.callback.onNodeCreated || !!setting.view.addDiyDom) {
+				var root = data.getRoot(setting);
+				while (root.createdNodes.length>0) {
+					var node = root.createdNodes.shift();
+					tools.apply(setting.view.addDiyDom, [setting.treeId, node]);
+					if (!!setting.callback.onNodeCreated) {
+						setting.treeObj.trigger(consts.event.NODECREATED, [setting.treeId, node]);
+					}
+				}
+			}
+		},
+		createNodes: function(setting, level, nodes, parentNode) {
+			if (!nodes || nodes.length == 0) return;
+			var root = data.getRoot(setting),
+			childKey = setting.data.key.children,
+			openFlag = !parentNode || parentNode.open || !!$$(parentNode[childKey][0], setting).get(0);
+			root.createdNodes = [];
+			var zTreeHtml = view.appendNodes(setting, level, nodes, parentNode, true, openFlag);
+			if (!parentNode) {
+				setting.treeObj.append(zTreeHtml.join(''));
+			} else {
+				var ulObj = $$(parentNode, consts.id.UL, setting);
+				if (ulObj.get(0)) {
+					ulObj.append(zTreeHtml.join(''));
+				}
+			}
+			view.createNodeCallback(setting);
+		},
+		destroy: function(setting) {
+			if (!setting) return;
+			data.initCache(setting);
+			data.initRoot(setting);
+			event.unbindTree(setting);
+			event.unbindEvent(setting);
+			setting.treeObj.empty();
+		},
+		expandCollapseNode: function(setting, node, expandFlag, animateFlag, callback) {
+			var root = data.getRoot(setting),
+			childKey = setting.data.key.children;
+			if (!node) {
+				tools.apply(callback, []);
+				return;
+			}
+			if (root.expandTriggerFlag) {
+				var _callback = callback;
+				callback = function(){
+					if (_callback) _callback();
+					if (node.open) {
+						setting.treeObj.trigger(consts.event.EXPAND, [setting.treeId, node]);
+					} else {
+						setting.treeObj.trigger(consts.event.COLLAPSE, [setting.treeId, node]);
+					}
+				};
+				root.expandTriggerFlag = false;
+			}
+			if (!node.open && node.isParent && ((!$$(node, consts.id.UL, setting).get(0)) || (node[childKey] && node[childKey].length>0 && !$$(node[childKey][0], setting).get(0)))) {
+				view.appendParentULDom(setting, node);
+				view.createNodeCallback(setting);
+			}
+			if (node.open == expandFlag) {
+				tools.apply(callback, []);
+				return;
+			}
+			var ulObj = $$(node, consts.id.UL, setting),
+			switchObj = $$(node, consts.id.SWITCH, setting),
+			icoObj = $$(node, consts.id.ICON, setting);
+
+			if (node.isParent) {
+				node.open = !node.open;
+				if (node.iconOpen && node.iconClose) {
+					icoObj.attr("style", view.makeNodeIcoStyle(setting, node));
+				}
+
+				if (node.open) {
+					view.replaceSwitchClass(node, switchObj, consts.folder.OPEN);
+					view.replaceIcoClass(node, icoObj, consts.folder.OPEN);
+					if (animateFlag == false || setting.view.expandSpeed == "") {
+						ulObj.show();
+						tools.apply(callback, []);
+					} else {
+						if (node[childKey] && node[childKey].length > 0) {
+							ulObj.slideDown(setting.view.expandSpeed, callback);
+						} else {
+							ulObj.show();
+							tools.apply(callback, []);
+						}
+					}
+				} else {
+					view.replaceSwitchClass(node, switchObj, consts.folder.CLOSE);
+					view.replaceIcoClass(node, icoObj, consts.folder.CLOSE);
+					if (animateFlag == false || setting.view.expandSpeed == "" || !(node[childKey] && node[childKey].length > 0)) {
+						ulObj.hide();
+						tools.apply(callback, []);
+					} else {
+						ulObj.slideUp(setting.view.expandSpeed, callback);
+					}
+				}
+			} else {
+				tools.apply(callback, []);
+			}
+		},
+		expandCollapseParentNode: function(setting, node, expandFlag, animateFlag, callback) {
+			if (!node) return;
+			if (!node.parentTId) {
+				view.expandCollapseNode(setting, node, expandFlag, animateFlag, callback);
+				return;
+			} else {
+				view.expandCollapseNode(setting, node, expandFlag, animateFlag);
+			}
+			if (node.parentTId) {
+				view.expandCollapseParentNode(setting, node.getParentNode(), expandFlag, animateFlag, callback);
+			}
+		},
+		expandCollapseSonNode: function(setting, node, expandFlag, animateFlag, callback) {
+			var root = data.getRoot(setting),
+			childKey = setting.data.key.children,
+			treeNodes = (node) ? node[childKey]: root[childKey],
+			selfAnimateSign = (node) ? false : animateFlag,
+			expandTriggerFlag = data.getRoot(setting).expandTriggerFlag;
+			data.getRoot(setting).expandTriggerFlag = false;
+			if (treeNodes) {
+				for (var i = 0, l = treeNodes.length; i < l; i++) {
+					if (treeNodes[i]) view.expandCollapseSonNode(setting, treeNodes[i], expandFlag, selfAnimateSign);
+				}
+			}
+			data.getRoot(setting).expandTriggerFlag = expandTriggerFlag;
+			view.expandCollapseNode(setting, node, expandFlag, animateFlag, callback );
+		},
+		makeDOMNodeIcon: function(html, setting, node) {
+			var nameStr = data.getNodeName(setting, node),
+			name = setting.view.nameIsHTML ? nameStr : nameStr.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+			html.push("<span id='", node.tId, consts.id.ICON,
+				"' title='' treeNode", consts.id.ICON," class='", view.makeNodeIcoClass(setting, node),
+				"' style='", view.makeNodeIcoStyle(setting, node), "'></span><span id='", node.tId, consts.id.SPAN,
+				"'>",name,"</span>");
+		},
+		makeDOMNodeLine: function(html, setting, node) {
+			html.push("<span id='", node.tId, consts.id.SWITCH,	"' title='' class='", view.makeNodeLineClass(setting, node), "' treeNode", consts.id.SWITCH,"></span>");
+		},
+		makeDOMNodeMainAfter: function(html, setting, node) {
+			html.push("</li>");
+		},
+		makeDOMNodeMainBefore: function(html, setting, node) {
+			html.push("<li id='", node.tId, "' class='", consts.className.LEVEL, node.level,"' tabindex='0' hidefocus='true' treenode>");
+		},
+		makeDOMNodeNameAfter: function(html, setting, node) {
+			html.push("</a>");
+		},
+		makeDOMNodeNameBefore: function(html, setting, node) {
+			var title = data.getNodeTitle(setting, node),
+			url = view.makeNodeUrl(setting, node),
+			fontcss = view.makeNodeFontCss(setting, node),
+			fontStyle = [];
+			for (var f in fontcss) {
+				fontStyle.push(f, ":", fontcss[f], ";");
+			}
+			html.push("<a id='", node.tId, consts.id.A, "' class='", consts.className.LEVEL, node.level,"' treeNode", consts.id.A," onclick=\"", (node.click || ''),
+				"\" ", ((url != null && url.length > 0) ? "href='" + url + "'" : ""), " target='",view.makeNodeTarget(node),"' style='", fontStyle.join(''),
+				"'");
+			if (tools.apply(setting.view.showTitle, [setting.treeId, node], setting.view.showTitle) && title) {html.push("title='", title.replace(/'/g,"&#39;").replace(/</g,'&lt;').replace(/>/g,'&gt;'),"'");}
+			html.push(">");
+		},
+		makeNodeFontCss: function(setting, node) {
+			var fontCss = tools.apply(setting.view.fontCss, [setting.treeId, node], setting.view.fontCss);
+			return (fontCss && ((typeof fontCss) != "function")) ? fontCss : {};
+		},
+		makeNodeIcoClass: function(setting, node) {
+			var icoCss = ["ico"];
+			if (!node.isAjaxing) {
+				icoCss[0] = (node.iconSkin ? node.iconSkin + "_" : "") + icoCss[0];
+				if (node.isParent) {
+					icoCss.push(node.open ? consts.folder.OPEN : consts.folder.CLOSE);
+				} else {
+					icoCss.push(consts.folder.DOCU);
+				}
+			}
+			return consts.className.BUTTON + " " + icoCss.join('_');
+		},
+		makeNodeIcoStyle: function(setting, node) {
+			var icoStyle = [];
+			if (!node.isAjaxing) {
+				var icon = (node.isParent && node.iconOpen && node.iconClose) ? (node.open ? node.iconOpen : node.iconClose) : node.icon;
+				if (icon) icoStyle.push("background:url(", icon, ") 0 0 no-repeat;");
+				if (setting.view.showIcon == false || !tools.apply(setting.view.showIcon, [setting.treeId, node], true)) {
+					icoStyle.push("width:0px;height:0px;");
+				}
+			}
+			return icoStyle.join('');
+		},
+		makeNodeLineClass: function(setting, node) {
+			var lineClass = [];
+			if (setting.view.showLine) {
+				if (node.level == 0 && node.isFirstNode && node.isLastNode) {
+					lineClass.push(consts.line.ROOT);
+				} else if (node.level == 0 && node.isFirstNode) {
+					lineClass.push(consts.line.ROOTS);
+				} else if (node.isLastNode) {
+					lineClass.push(consts.line.BOTTOM);
+				} else {
+					lineClass.push(consts.line.CENTER);
+				}
+			} else {
+				lineClass.push(consts.line.NOLINE);
+			}
+			if (node.isParent) {
+				lineClass.push(node.open ? consts.folder.OPEN : consts.folder.CLOSE);
+			} else {
+				lineClass.push(consts.folder.DOCU);
+			}
+			return view.makeNodeLineClassEx(node) + lineClass.join('_');
+		},
+		makeNodeLineClassEx: function(node) {
+			return consts.className.BUTTON + " " + consts.className.LEVEL + node.level + " " + consts.className.SWITCH + " ";
+		},
+		makeNodeTarget: function(node) {
+			return (node.target || "_blank");
+		},
+		makeNodeUrl: function(setting, node) {
+			var urlKey = setting.data.key.url;
+			return node[urlKey] ? node[urlKey] : null;
+		},
+		makeUlHtml: function(setting, node, html, content) {
+			html.push("<ul id='", node.tId, consts.id.UL, "' class='", consts.className.LEVEL, node.level, " ", view.makeUlLineClass(setting, node), "' style='display:", (node.open ? "block": "none"),"'>");
+			html.push(content);
+			html.push("</ul>");
+		},
+		makeUlLineClass: function(setting, node) {
+			return ((setting.view.showLine && !node.isLastNode) ? consts.line.LINE : "");
+		},
+		removeChildNodes: function(setting, node) {
+			if (!node) return;
+			var childKey = setting.data.key.children,
+			nodes = node[childKey];
+			if (!nodes) return;
+
+			for (var i = 0, l = nodes.length; i < l; i++) {
+				data.removeNodeCache(setting, nodes[i]);
+			}
+			data.removeSelectedNode(setting);
+			delete node[childKey];
+
+			if (!setting.data.keep.parent) {
+				node.isParent = false;
+				node.open = false;
+				var tmp_switchObj = $$(node, consts.id.SWITCH, setting),
+				tmp_icoObj = $$(node, consts.id.ICON, setting);
+				view.replaceSwitchClass(node, tmp_switchObj, consts.folder.DOCU);
+				view.replaceIcoClass(node, tmp_icoObj, consts.folder.DOCU);
+				$$(node, consts.id.UL, setting).remove();
+			} else {
+				$$(node, consts.id.UL, setting).empty();
+			}
+		},
+		setFirstNode: function(setting, parentNode) {
+			var childKey = setting.data.key.children, childLength = parentNode[childKey].length;
+			if ( childLength > 0) {
+				parentNode[childKey][0].isFirstNode = true;
+			}
+		},
+		setLastNode: function(setting, parentNode) {
+			var childKey = setting.data.key.children, childLength = parentNode[childKey].length;
+			if ( childLength > 0) {
+				parentNode[childKey][childLength - 1].isLastNode = true;
+			}
+		},
+		removeNode: function(setting, node) {
+			var root = data.getRoot(setting),
+			childKey = setting.data.key.children,
+			parentNode = (node.parentTId) ? node.getParentNode() : root;
+
+			node.isFirstNode = false;
+			node.isLastNode = false;
+			node.getPreNode = function() {return null;};
+			node.getNextNode = function() {return null;};
+
+			if (!data.getNodeCache(setting, node.tId)) {
+				return;
+			}
+
+			$$(node, setting).remove();
+			data.removeNodeCache(setting, node);
+			data.removeSelectedNode(setting, node);
+
+			for (var i = 0, l = parentNode[childKey].length; i < l; i++) {
+				if (parentNode[childKey][i].tId == node.tId) {
+					parentNode[childKey].splice(i, 1);
+					break;
+				}
+			}
+			view.setFirstNode(setting, parentNode);
+			view.setLastNode(setting, parentNode);
+
+			var tmp_ulObj,tmp_switchObj,tmp_icoObj,
+			childLength = parentNode[childKey].length;
+
+			//repair nodes old parent
+			if (!setting.data.keep.parent && childLength == 0) {
+				//old parentNode has no child nodes
+				parentNode.isParent = false;
+				parentNode.open = false;
+				tmp_ulObj = $$(parentNode, consts.id.UL, setting);
+				tmp_switchObj = $$(parentNode, consts.id.SWITCH, setting);
+				tmp_icoObj = $$(parentNode, consts.id.ICON, setting);
+				view.replaceSwitchClass(parentNode, tmp_switchObj, consts.folder.DOCU);
+				view.replaceIcoClass(parentNode, tmp_icoObj, consts.folder.DOCU);
+				tmp_ulObj.css("display", "none");
+
+			} else if (setting.view.showLine && childLength > 0) {
+				//old parentNode has child nodes
+				var newLast = parentNode[childKey][childLength - 1];
+				tmp_ulObj = $$(newLast, consts.id.UL, setting);
+				tmp_switchObj = $$(newLast, consts.id.SWITCH, setting);
+				tmp_icoObj = $$(newLast, consts.id.ICON, setting);
+				if (parentNode == root) {
+					if (parentNode[childKey].length == 1) {
+						//node was root, and ztree has only one root after move node
+						view.replaceSwitchClass(newLast, tmp_switchObj, consts.line.ROOT);
+					} else {
+						var tmp_first_switchObj = $$(parentNode[childKey][0], consts.id.SWITCH, setting);
+						view.replaceSwitchClass(parentNode[childKey][0], tmp_first_switchObj, consts.line.ROOTS);
+						view.replaceSwitchClass(newLast, tmp_switchObj, consts.line.BOTTOM);
+					}
+				} else {
+					view.replaceSwitchClass(newLast, tmp_switchObj, consts.line.BOTTOM);
+				}
+				tmp_ulObj.removeClass(consts.line.LINE);
+			}
+		},
+		replaceIcoClass: function(node, obj, newName) {
+			if (!obj || node.isAjaxing) return;
+			var tmpName = obj.attr("class");
+			if (tmpName == undefined) return;
+			var tmpList = tmpName.split("_");
+			switch (newName) {
+				case consts.folder.OPEN:
+				case consts.folder.CLOSE:
+				case consts.folder.DOCU:
+					tmpList[tmpList.length-1] = newName;
+					break;
+			}
+			obj.attr("class", tmpList.join("_"));
+		},
+		replaceSwitchClass: function(node, obj, newName) {
+			if (!obj) return;
+			var tmpName = obj.attr("class");
+			if (tmpName == undefined) return;
+			var tmpList = tmpName.split("_");
+			switch (newName) {
+				case consts.line.ROOT:
+				case consts.line.ROOTS:
+				case consts.line.CENTER:
+				case consts.line.BOTTOM:
+				case consts.line.NOLINE:
+					tmpList[0] = view.makeNodeLineClassEx(node) + newName;
+					break;
+				case consts.folder.OPEN:
+				case consts.folder.CLOSE:
+				case consts.folder.DOCU:
+					tmpList[1] = newName;
+					break;
+			}
+			obj.attr("class", tmpList.join("_"));
+			if (newName !== consts.folder.DOCU) {
+				obj.removeAttr("disabled");
+			} else {
+				obj.attr("disabled", "disabled");
+			}
+		},
+		selectNode: function(setting, node, addFlag) {
+			if (!addFlag) {
+				view.cancelPreSelectedNode(setting);
+			}
+			$$(node, consts.id.A, setting).addClass(consts.node.CURSELECTED);
+			data.addSelectedNode(setting, node);
+		},
+		setNodeFontCss: function(setting, treeNode) {
+			var aObj = $$(treeNode, consts.id.A, setting),
+			fontCss = view.makeNodeFontCss(setting, treeNode);
+			if (fontCss) {
+				aObj.css(fontCss);
+			}
+		},
+		setNodeLineIcos: function(setting, node) {
+			if (!node) return;
+			var switchObj = $$(node, consts.id.SWITCH, setting),
+			ulObj = $$(node, consts.id.UL, setting),
+			icoObj = $$(node, consts.id.ICON, setting),
+			ulLine = view.makeUlLineClass(setting, node);
+			if (ulLine.length==0) {
+				ulObj.removeClass(consts.line.LINE);
+			} else {
+				ulObj.addClass(ulLine);
+			}
+			switchObj.attr("class", view.makeNodeLineClass(setting, node));
+			if (node.isParent) {
+				switchObj.removeAttr("disabled");
+			} else {
+				switchObj.attr("disabled", "disabled");
+			}
+			icoObj.removeAttr("style");
+			icoObj.attr("style", view.makeNodeIcoStyle(setting, node));
+			icoObj.attr("class", view.makeNodeIcoClass(setting, node));
+		},
+		setNodeName: function(setting, node) {
+			var title = data.getNodeTitle(setting, node),
+			nObj = $$(node, consts.id.SPAN, setting);
+			nObj.empty();
+			if (setting.view.nameIsHTML) {
+				nObj.html(data.getNodeName(setting, node));
+			} else {
+				nObj.text(data.getNodeName(setting, node));
+			}
+			if (tools.apply(setting.view.showTitle, [setting.treeId, node], setting.view.showTitle)) {
+				var aObj = $$(node, consts.id.A, setting);
+				aObj.attr("title", !title ? "" : title);
+			}
+		},
+		setNodeTarget: function(setting, node) {
+			var aObj = $$(node, consts.id.A, setting);
+			aObj.attr("target", view.makeNodeTarget(node));
+		},
+		setNodeUrl: function(setting, node) {
+			var aObj = $$(node, consts.id.A, setting),
+			url = view.makeNodeUrl(setting, node);
+			if (url == null || url.length == 0) {
+				aObj.removeAttr("href");
+			} else {
+				aObj.attr("href", url);
+			}
+		},
+		switchNode: function(setting, node) {
+			if (node.open || !tools.canAsync(setting, node)) {
+				view.expandCollapseNode(setting, node, !node.open);
+			} else if (setting.async.enable) {
+				if (!view.asyncNode(setting, node)) {
+					view.expandCollapseNode(setting, node, !node.open);
+					return;
+				}
+			} else if (node) {
+				view.expandCollapseNode(setting, node, !node.open);
+			}
+		}
+	};
+	// zTree defind
+	$.fn.zTree = {
+		consts : _consts,
+		_z : {
+			tools: tools,
+			view: view,
+			event: event,
+			data: data
+		},
+		getZTreeObj: function(treeId) {
+			var o = data.getZTreeTools(treeId);
+			return o ? o : null;
+		},
+		destroy: function(treeId) {
+			if (!!treeId && treeId.length > 0) {
+				view.destroy(data.getSetting(treeId));
+			} else {
+				for(var s in settings) {
+					view.destroy(settings[s]);
+				}
+			}
+		},
+		init: function(obj, zSetting, zNodes) {
+			var setting = tools.clone(_setting);
+			$.extend(true, setting, zSetting);
+			setting.treeId = obj.attr("id");
+			setting.treeObj = obj;
+			setting.treeObj.empty();
+			settings[setting.treeId] = setting;
+			//For some older browser,(e.g., ie6)
+			if(typeof document.body.style.maxHeight === "undefined") {
+				setting.view.expandSpeed = "";
+			}
+			data.initRoot(setting);
+			var root = data.getRoot(setting),
+			childKey = setting.data.key.children;
+			zNodes = zNodes ? tools.clone(tools.isArray(zNodes)? zNodes : [zNodes]) : [];
+			if (setting.data.simpleData.enable) {
+				root[childKey] = data.transformTozTreeFormat(setting, zNodes);
+			} else {
+				root[childKey] = zNodes;
+			}
+
+			data.initCache(setting);
+			event.unbindTree(setting);
+			event.bindTree(setting);
+			event.unbindEvent(setting);
+			event.bindEvent(setting);
+
+			var zTreeTools = {
+				setting : setting,
+				addNodes : function(parentNode, newNodes, isSilent) {
+					if (!newNodes) return null;
+					if (!parentNode) parentNode = null;
+					if (parentNode && !parentNode.isParent && setting.data.keep.leaf) return null;
+					var xNewNodes = tools.clone(tools.isArray(newNodes)? newNodes: [newNodes]);
+					function addCallback() {
+						view.addNodes(setting, parentNode, xNewNodes, (isSilent==true));
+					}
+
+					if (tools.canAsync(setting, parentNode)) {
+						view.asyncNode(setting, parentNode, isSilent, addCallback);
+					} else {
+						addCallback();
+					}
+					return xNewNodes;
+				},
+				cancelSelectedNode : function(node) {
+					view.cancelPreSelectedNode(setting, node);
+				},
+				destroy : function() {
+					view.destroy(setting);
+				},
+				expandAll : function(expandFlag) {
+					expandFlag = !!expandFlag;
+					view.expandCollapseSonNode(setting, null, expandFlag, true);
+					return expandFlag;
+				},
+				expandNode : function(node, expandFlag, sonSign, focus, callbackFlag) {
+					if (!node || !node.isParent) return null;
+					if (expandFlag !== true && expandFlag !== false) {
+						expandFlag = !node.open;
+					}
+					callbackFlag = !!callbackFlag;
+
+					if (callbackFlag && expandFlag && (tools.apply(setting.callback.beforeExpand, [setting.treeId, node], true) == false)) {
+						return null;
+					} else if (callbackFlag && !expandFlag && (tools.apply(setting.callback.beforeCollapse, [setting.treeId, node], true) == false)) {
+						return null;
+					}
+					if (expandFlag && node.parentTId) {
+						view.expandCollapseParentNode(setting, node.getParentNode(), expandFlag, false);
+					}
+					if (expandFlag === node.open && !sonSign) {
+						return null;
+					}
+
+					data.getRoot(setting).expandTriggerFlag = callbackFlag;
+					if (!tools.canAsync(setting, node) && sonSign) {
+						view.expandCollapseSonNode(setting, node, expandFlag, true, function() {
+							if (focus !== false) {try{$$(node, setting).focus().blur();}catch(e){}}
+						});
+					} else {
+						node.open = !expandFlag;
+						view.switchNode(this.setting, node);
+						if (focus !== false) {try{$$(node, setting).focus().blur();}catch(e){}}
+					}
+					return expandFlag;
+				},
+				getNodes : function() {
+					return data.getNodes(setting);
+				},
+				getNodeByParam : function(key, value, parentNode) {
+					if (!key) return null;
+					return data.getNodeByParam(setting, parentNode?parentNode[setting.data.key.children]:data.getNodes(setting), key, value);
+				},
+				getNodeByTId : function(tId) {
+					return data.getNodeCache(setting, tId);
+				},
+				getNodesByParam : function(key, value, parentNode) {
+					if (!key) return null;
+					return data.getNodesByParam(setting, parentNode?parentNode[setting.data.key.children]:data.getNodes(setting), key, value);
+				},
+				getNodesByParamFuzzy : function(key, value, parentNode) {
+					if (!key) return null;
+					return data.getNodesByParamFuzzy(setting, parentNode?parentNode[setting.data.key.children]:data.getNodes(setting), key, value);
+				},
+				getNodesByFilter: function(filter, isSingle, parentNode, invokeParam) {
+					isSingle = !!isSingle;
+					if (!filter || (typeof filter != "function")) return (isSingle ? null : []);
+					return data.getNodesByFilter(setting, parentNode?parentNode[setting.data.key.children]:data.getNodes(setting), filter, isSingle, invokeParam);
+				},
+				getNodeIndex : function(node) {
+					if (!node) return null;
+					var childKey = setting.data.key.children,
+					parentNode = (node.parentTId) ? node.getParentNode() : data.getRoot(setting);
+					for (var i=0, l = parentNode[childKey].length; i < l; i++) {
+						if (parentNode[childKey][i] == node) return i;
+					}
+					return -1;
+				},
+				getSelectedNodes : function() {
+					var r = [], list = data.getRoot(setting).curSelectedList;
+					for (var i=0, l=list.length; i<l; i++) {
+						r.push(list[i]);
+					}
+					return r;
+				},
+				isSelectedNode : function(node) {
+					return data.isSelectedNode(setting, node);
+				},
+				reAsyncChildNodes : function(parentNode, reloadType, isSilent) {
+					if (!this.setting.async.enable) return;
+					var isRoot = !parentNode;
+					if (isRoot) {
+						parentNode = data.getRoot(setting);
+					}
+					if (reloadType=="refresh") {
+						var childKey = this.setting.data.key.children;
+						for (var i = 0, l = parentNode[childKey] ? parentNode[childKey].length : 0; i < l; i++) {
+							data.removeNodeCache(setting, parentNode[childKey][i]);
+						}
+						data.removeSelectedNode(setting);
+						parentNode[childKey] = [];
+						if (isRoot) {
+							this.setting.treeObj.empty();
+						} else {
+							var ulObj = $$(parentNode, consts.id.UL, setting);
+							ulObj.empty();
+						}
+					}
+					view.asyncNode(this.setting, isRoot? null:parentNode, !!isSilent);
+				},
+				refresh : function() {
+					this.setting.treeObj.empty();
+					var root = data.getRoot(setting),
+					nodes = root[setting.data.key.children]
+					data.initRoot(setting);
+					root[setting.data.key.children] = nodes
+					data.initCache(setting);
+					view.createNodes(setting, 0, root[setting.data.key.children]);
+				},
+				removeChildNodes : function(node) {
+					if (!node) return null;
+					var childKey = setting.data.key.children,
+					nodes = node[childKey];
+					view.removeChildNodes(setting, node);
+					return nodes ? nodes : null;
+				},
+				removeNode : function(node, callbackFlag) {
+					if (!node) return;
+					callbackFlag = !!callbackFlag;
+					if (callbackFlag && tools.apply(setting.callback.beforeRemove, [setting.treeId, node], true) == false) return;
+					view.removeNode(setting, node);
+					if (callbackFlag) {
+						this.setting.treeObj.trigger(consts.event.REMOVE, [setting.treeId, node]);
+					}
+				},
+				selectNode : function(node, addFlag) {
+					if (!node) return;
+					if (tools.uCanDo(setting)) {
+						addFlag = setting.view.selectedMulti && addFlag;
+						if (node.parentTId) {
+							view.expandCollapseParentNode(setting, node.getParentNode(), true, false, function() {
+								try{$$(node, setting).focus().blur();}catch(e){}
+							});
+						} else {
+							try{$$(node, setting).focus().blur();}catch(e){}
+						}
+						view.selectNode(setting, node, addFlag);
+					}
+				},
+				transformTozTreeNodes : function(simpleNodes) {
+					return data.transformTozTreeFormat(setting, simpleNodes);
+				},
+				transformToArray : function(nodes) {
+					return data.transformToArrayFormat(setting, nodes);
+				},
+				updateNode : function(node, checkTypeFlag) {
+					if (!node) return;
+					var nObj = $$(node, setting);
+					if (nObj.get(0) && tools.uCanDo(setting)) {
+						view.setNodeName(setting, node);
+						view.setNodeTarget(setting, node);
+						view.setNodeUrl(setting, node);
+						view.setNodeLineIcos(setting, node);
+						view.setNodeFontCss(setting, node);
+					}
+				}
+			}
+			root.treeTools = zTreeTools;
+			data.setZTreeTools(setting, zTreeTools);
+
+			if (root[childKey] && root[childKey].length > 0) {
+				view.createNodes(setting, 0, root[childKey]);
+			} else if (setting.async.enable && setting.async.url && setting.async.url !== '') {
+				view.asyncNode(setting);
+			}
+			return zTreeTools;
+		}
+	};
+
+	var zt = $.fn.zTree,
+	$$ = tools.$,
+	consts = zt.consts;
+})(jQuery);

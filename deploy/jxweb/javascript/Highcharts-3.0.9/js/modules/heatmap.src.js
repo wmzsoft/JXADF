@@ -1,1 +1,60 @@
-!function(t){var a=t.seriesTypes,e=t.each;a.heatmap=t.extendClass(a.map,{useMapGeometry:!1,pointArrayMap:["y","value"],init:function(){a.map.prototype.init.apply(this,arguments),this.pointRange=this.options.colsize||1},translate:function(){var t=this,a=t.options,i=t.xAxis,s=t.yAxis;t.generatePoints(),e(t.points,function(t){var e=(a.colsize||1)/2,n=(a.rowsize||1)/2,o=Math.round(i.len-i.translate(t.x-e,0,1,0,1)),r=Math.round(i.len-i.translate(t.x+e,0,1,0,1)),h=Math.round(s.translate(t.y-n,0,1,0,1)),p=Math.round(s.translate(t.y+n,0,1,0,1));t.plotY=1,t.shapeType="rect",t.shapeArgs={x:Math.min(o,r),y:Math.min(h,p),width:Math.abs(r-o),height:Math.abs(p-h)}}),t.pointRange=a.colsize||1,t.translateColors()},animate:function(){},getBox:function(){},getExtremes:function(){t.Series.prototype.getExtremes.call(this,this.valueData),this.valueMin=this.dataMin,this.valueMax=this.dataMax,t.Series.prototype.getExtremes.call(this)}})}(Highcharts);
+(function (H) {
+	var seriesTypes = H.seriesTypes,
+		each = H.each;
+	
+	seriesTypes.heatmap = H.extendClass(seriesTypes.map, {
+		useMapGeometry: false,
+		pointArrayMap: ['y', 'value'],
+		init: function () {
+			seriesTypes.map.prototype.init.apply(this, arguments);
+			this.pointRange = this.options.colsize || 1;
+			// TODO: similar logic for the Y axis
+		},
+		translate: function () {
+			var series = this,
+				options = series.options,
+				xAxis = series.xAxis,
+				yAxis = series.yAxis;
+
+			series.generatePoints();
+	
+			each(series.points, function (point) {
+				var xPad = (options.colsize || 1) / 2,
+					yPad = (options.rowsize || 1) / 2,
+					x1 = Math.round(xAxis.len - xAxis.translate(point.x - xPad, 0, 1, 0, 1)),
+					x2 = Math.round(xAxis.len - xAxis.translate(point.x + xPad, 0, 1, 0, 1)),
+					y1 = Math.round(yAxis.translate(point.y - yPad, 0, 1, 0, 1)),
+					y2 = Math.round(yAxis.translate(point.y + yPad, 0, 1, 0, 1));
+
+
+				point.plotY = 1; // Pass test in Column.drawPoints
+
+				point.shapeType = 'rect';
+				point.shapeArgs = {
+					x: Math.min(x1, x2),
+					y: Math.min(y1, y2),
+					width: Math.abs(x2 - x1),
+					height: Math.abs(y2 - y1)
+				};
+			});
+			
+			series.pointRange = options.colsize || 1;
+			series.translateColors();
+		},
+		
+		animate: function () {},
+		getBox: function () {},
+
+		getExtremes: function () {
+			// Get the extremes from the value data
+			H.Series.prototype.getExtremes.call(this, this.valueData);
+			this.valueMin = this.dataMin;
+			this.valueMax = this.dataMax;
+
+			// Get the extremes from the y data
+			H.Series.prototype.getExtremes.call(this);
+		}
+			
+	});
+	
+}(Highcharts));

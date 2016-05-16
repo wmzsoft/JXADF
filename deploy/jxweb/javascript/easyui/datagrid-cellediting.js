@@ -1,1 +1,458 @@
-!function(t){function e(e,i){var d=t(this),n=d.datagrid("cell"),a=d.datagrid("input",n);return a?void 0:(d.datagrid("gotoCell",i),!1)}function i(e,i){var d=t(this),n=d.datagrid("cell");if(n){var a=d.datagrid("input",n);return a?i?d.datagrid("validateRow",n.index)?d.datagrid("endEdit",n.index).datagrid("gotoCell",n):a.focus():d.datagrid("cancelEdit",n.index).datagrid("gotoCell",n):i&&d.datagrid("editCell",n),!1}}function d(){var e=t(this),i=e.datagrid("cell");if(i){var d=e.datagrid("input",i);return d?void 0:(e.datagrid("editCell",{index:i.index,field:i.field,value:""}),!1)}}function n(e){var i=t(e).datagrid("getPanel").find("td.datagrid-row-selected");return i.length?{index:parseInt(i.closest("tr.datagrid-row").attr("datagrid-row-index")),field:i.attr("field")}:null}function a(e,i){var d=t(e).datagrid("options"),n=d.finder.getTr(e,i.index).find('td[field="'+i.field+'"]');n.removeClass("datagrid-row-selected")}function l(e){var i=t(e).datagrid("getPanel");i.find("td.datagrid-row-selected").removeClass("datagrid-row-selected")}function r(e,i){var d=t(e).datagrid("options");d.singleSelect&&l(e);var n=d.finder.getTr(e,i.index).find('td[field="'+i.field+'"]');n.addClass("datagrid-row-selected")}function o(e){var i=[],d=t(e).datagrid("getPanel");return d.find("td.datagrid-row-selected").each(function(){var e=t(this);i.push({index:parseInt(e.closest("tr.datagrid-row").attr("datagrid-row-index")),field:e.attr("field")})}),i}function c(e,i){function d(t){var i=a.finder.getTr(e,t.index).find('td[field="'+t.field+'"]');if(i.length){n.datagrid("scrollTo",t.index),l(e),r(e,t);var d=n.data("datagrid").dc.body2,o=i.position().left;0>o?d._scrollLeft(d._scrollLeft()+o*(a.isRtl?-1:1)):o+i._outerWidth()>d.width()&&d._scrollLeft(d._scrollLeft()+(o+i._outerWidth()-d.width())*(a.isRtl?-1:1))}}var n=t(e),a=n.datagrid("options"),o=n.datagrid("getPanel").focus(),c=n.datagrid("cell");if(c){var g=n.datagrid("input",c);if(g)return void g.focus()}if("object"==typeof i)return void d(i);var f=o.find("td.datagrid-row-selected");if(f){var s=n.datagrid("getColumnFields",!0).concat(n.datagrid("getColumnFields")),u=f.attr("field"),C=f.closest("tr.datagrid-row"),v=parseInt(C.attr("datagrid-row-index")),h=t.inArray(u,s);if("up"==i&&v>0)v--;else if("down"==i&&v<n.datagrid("getRows").length-1)v++;else if("left"==i)for(var p=h-1;p>=0;){var x=n.datagrid("getColumnOption",s[p]);if(!x.hidden){h=p;break}p--}else if("right"==i)for(var p=h+1;p<=s.length-1;){var x=n.datagrid("getColumnOption",s[p]);if(!x.hidden){h=p;break}p++}u=s[h],d({index:v,field:u})}}function g(e,i){var d=t(e),n=d.datagrid("options"),a=d.datagrid("cell");if(a){var l=d.datagrid("input",a);if(l){if(a.index==i.index&&a.field==i.field)return d.datagrid("gotoCell",a),void l.focus();if(!d.datagrid("validateRow",a.index))return d.datagrid("gotoCell",a),void l.focus();d.datagrid("endEdit",a.index)}}if(0!=n.onBeforeCellEdit.call(e,i.index,i.field)){var r=d.datagrid("getColumnFields",!0).concat(d.datagrid("getColumnFields"));t.map(r,function(t){var e=d.datagrid("getColumnOption",t);e.editor1=e.editor,t!=i.field&&(e.editor=null)}),d.datagrid("beginEdit",i.index);var l=d.datagrid("input",i);l?(d.datagrid("gotoCell",i),l.focus(),n.onCellEdit.call(e,i.index,i.field,i.value)):(d.datagrid("cancelEdit",i.index),d.datagrid("gotoCell",i)),t.map(r,function(t){var e=d.datagrid("getColumnOption",t);e.editor=e.editor1})}}function f(e){var i=t(e),d=i.data("datagrid"),n=i.datagrid("getPanel"),o=d.options,c=d.dc;n.attr("tabindex",1).css("outline-style","none").unbind(".cellediting").bind("keydown.cellediting",function(t){var i=o.navHandler[t.keyCode];return i?i.call(e,t):void 0}),c.body1.add(c.body2).unbind(".cellediting").bind("click.cellediting",function(i){var d=t(i.target).closest(".datagrid-row");if(d.length&&d.parent().length){var n=t(i.target).closest("td[field]",d);if(n.length){var c=parseInt(d.attr("datagrid-row-index")),g=n.attr("field"),f={index:c,field:g};o.singleSelect?r(e,f):o.ctrlSelect?i.ctrlKey?n.hasClass("datagrid-row-selected")?a(e,f):r(e,f):(l(e),r(e,f)):n.hasClass("datagrid-row-selected")?a(e,f):r(e,f)}}}),o.isRtl="rtl"==i.datagrid("getPanel").css("direction").toLowerCase(),o.OldOnBeforeSelect=o.onBeforeSelect,o.onBeforeSelect=function(){return!1},i.datagrid("clearSelections")}function s(e){var i=t(e),d=i.data("datagrid"),n=i.datagrid("getPanel"),a=d.options;a.onBeforeSelect=a.OldOnBeforeSelect||a.onBeforeSelect,n.unbind(".cellediting").find("td.datagrid-row-selected").removeClass("datagrid-row-selected");var l=d.dc;l.body1.add(l.body2).unbind("cellediting")}function u(e){var i=t(e),d=i.datagrid("options"),n=i.datagrid("getPanel");n.attr("tabindex",1).css("outline-style","none").unbind(".cellediting").bind("keydown.cellediting",function(t){var i=d.navHandler[t.keyCode];return i?i.call(e,t):void 0}).bind("keypress.cellediting",function(t){return d.navHandler.keypress.call(e,t)}),n.panel("panel").unbind(".cellediting").bind("keydown.cellediting",function(t){t.stopPropagation()}).bind("keypress.cellediting",function(t){t.stopPropagation()}),d.isRtl="rtl"==i.datagrid("getPanel").css("direction").toLowerCase(),d.oldOnClickCell=d.onClickCell,d.oldOnDblClickCell=d.onDblClickCell,d.clickToEdit&&(d.onClickCell=function(e,i,n){t(this).datagrid("editCell",{index:e,field:i}),d.oldOnClickCell.call(this,e,i,n)}),d.dblclickToEdit&&(d.onDblClickCell=function(e,i,n){t(this).datagrid("editCell",{index:e,field:i}),d.oldOnDblClickCell.call(this,e,i,n)}),d.OldOnBeforeSelect=d.onBeforeSelect,d.onBeforeSelect=function(){return!1},i.datagrid("clearSelections")}function C(e){var i=t(e),d=i.datagrid("options");d.onClickCell=d.oldOnClickCell||d.onClickCell,d.onDblClickCell=d.oldOnDblClickCell||d.onDblClickCell,d.onBeforeSelect=d.OldOnBeforeSelect||d.onBeforeSelect,i.datagrid("getPanel").unbind(".cellediting").find("td.datagrid-row-selected").removeClass("datagrid-row-selected")}t.extend(t.fn.datagrid.defaults,{clickToEdit:!0,dblclickToEdit:!1,navHandler:{37:function(i){var d=t(this).datagrid("options");return e.call(this,i,d.isRtl?"right":"left")},39:function(i){var d=t(this).datagrid("options");return e.call(this,i,d.isRtl?"left":"right")},38:function(t){return e.call(this,t,"up")},40:function(t){return e.call(this,t,"down")},13:function(t){return i.call(this,t,!0)},27:function(t){return i.call(this,t,!1)},8:function(t){return d.call(this,t)},46:function(t){return d.call(this,t)},keypress:function(e){var i=t(this),d=i.datagrid("cell");if(d){var n=i.datagrid("input",d);if(!n){var a=t("<span></span>");a.html(String.fromCharCode(e.which));var l=a.text();if(a.remove(),l)return i.datagrid("editCell",{index:d.index,field:d.field,value:l}),!1}}}},onBeforeCellEdit:function(){},onCellEdit:function(e,i,d){var n=t(this).datagrid("input",{index:e,field:i});n&&void 0!=d&&n.val(d)}}),t.extend(t.fn.datagrid.methods,{editCell:function(t,e){return t.each(function(){g(this,e)})},isEditing:function(e,i){var d=t.data(e[0],"datagrid").options,n=d.finder.getTr(e[0],i);return n.length&&n.hasClass("datagrid-row-editing")},gotoCell:function(t,e){return t.each(function(){c(this,e)})},enableCellEditing:function(t){return t.each(function(){u(this)})},disableCellEditing:function(t){return t.each(function(){C(this)})},enableCellSelecting:function(t){return t.each(function(){f(this)})},disableCellSelecting:function(t){return t.each(function(){s(this)})},input:function(e,i){if(!i)return null;var d=e.datagrid("getEditor",i);if(d){var n=t(d.target);return n.hasClass("textbox-f")&&(n=n.textbox("textbox")),n}return null},cell:function(t){return n(t[0])},getSelectedCells:function(t){return o(t[0])}})}(jQuery);
+(function($){
+	$.extend($.fn.datagrid.defaults, {
+		clickToEdit: true,
+		dblclickToEdit: false,
+		navHandler: {
+			'37': function(e){
+				var opts = $(this).datagrid('options');
+				return navHandler.call(this, e, opts.isRtl?'right':'left');
+			},
+			'39': function(e){
+				var opts = $(this).datagrid('options');
+				return navHandler.call(this, e, opts.isRtl?'left':'right');
+			},
+			'38': function(e){
+				return navHandler.call(this, e, 'up');
+			},
+			'40': function(e){
+				return navHandler.call(this, e, 'down');
+			},
+			'13': function(e){
+				return doneHandler.call(this, e, true);
+			},
+			'27': function(e){
+				return doneHandler.call(this, e, false);
+			},
+			'8': function(e){
+				return clearHandler.call(this, e);
+			},
+			'46': function(e){
+				return clearHandler.call(this, e);
+			},
+			'keypress': function(e){
+				var dg = $(this);
+				var param = dg.datagrid('cell');	// current cell information
+				if (!param){return;}
+				var input = dg.datagrid('input', param);
+				if (!input){
+					var tmp = $('<span></span>');
+					tmp.html(String.fromCharCode(e.which));
+					var c = tmp.text();
+					tmp.remove();
+					if (c){
+						dg.datagrid('editCell', {
+							index: param.index,
+							field: param.field,
+							value: c
+						});
+						return false;						
+					}
+				}
+			}
+		},
+		onBeforeCellEdit: function(index, field){},
+		onCellEdit: function(index, field, value){
+			var input = $(this).datagrid('input', {index:index, field:field});
+			if (input){
+				if (value != undefined){
+					input.val(value);
+				}
+			}
+		}
+	});
+
+	function navHandler(e, dir){
+		var dg = $(this);
+		var param = dg.datagrid('cell');
+		var input = dg.datagrid('input', param);
+		if (!input){
+			dg.datagrid('gotoCell', dir);
+			return false;
+		}
+	}
+
+	function doneHandler(e, accepted){
+		var dg = $(this);
+		var param = dg.datagrid('cell');
+		if (!param){return;}
+		var input = dg.datagrid('input', param);
+		if (input){
+			if (accepted){
+				if (dg.datagrid('validateRow', param.index)){
+					dg.datagrid('endEdit', param.index).datagrid('gotoCell', param);
+				} else {
+					input.focus();
+				}
+			} else {
+				dg.datagrid('cancelEdit', param.index).datagrid('gotoCell', param);
+			}
+		} else if (accepted){
+			dg.datagrid('editCell', param);
+		}
+		return false;
+	}
+
+	function clearHandler(e){
+		var dg = $(this);
+		var param = dg.datagrid('cell');
+		if (!param){return;}
+		var input = dg.datagrid('input', param);
+		if (!input){
+			dg.datagrid('editCell', {
+				index: param.index,
+				field: param.field,
+				value: ''
+			});
+			return false;
+		}		
+	}
+
+	function getCurrCell(target){
+		var cell = $(target).datagrid('getPanel').find('td.datagrid-row-selected');
+		if (cell.length){
+			return {
+				index: parseInt(cell.closest('tr.datagrid-row').attr('datagrid-row-index')),
+				field: cell.attr('field')
+			};
+		} else {
+			return null;
+		}
+	}
+
+	function unselectCell(target, p){
+		var opts = $(target).datagrid('options');
+		var cell = opts.finder.getTr(target, p.index).find('td[field="'+p.field+'"]');
+		cell.removeClass('datagrid-row-selected');
+	}
+
+	function unselectAllCells(target){
+		var panel = $(target).datagrid('getPanel');
+		panel.find('td.datagrid-row-selected').removeClass('datagrid-row-selected');
+	}
+
+	function selectCell(target, p){
+		var opts = $(target).datagrid('options');
+		if (opts.singleSelect){
+			unselectAllCells(target);
+		}
+		var cell = opts.finder.getTr(target, p.index).find('td[field="'+p.field+'"]');
+		cell.addClass('datagrid-row-selected');
+	}
+
+	function getSelectedCells(target){
+		var cells = [];
+		var panel = $(target).datagrid('getPanel');
+		panel.find('td.datagrid-row-selected').each(function(){
+			var td = $(this);
+			cells.push({
+				index: parseInt(td.closest('tr.datagrid-row').attr('datagrid-row-index')),
+				field: td.attr('field')
+			});
+		});
+		return cells;
+	}
+
+	function gotoCell(target, p){
+		var dg = $(target);
+		var opts = dg.datagrid('options');
+		var panel = dg.datagrid('getPanel').focus();
+
+		var cparam = dg.datagrid('cell');
+		if (cparam){
+			var input = dg.datagrid('input', cparam);
+			if (input){
+				input.focus();
+				return;
+			}
+		}
+
+		if (typeof p == 'object'){
+			_go(p);
+			return;
+		}
+		var cell = panel.find('td.datagrid-row-selected');
+		if (!cell){return;}
+		var fields = dg.datagrid('getColumnFields',true).concat(dg.datagrid('getColumnFields'));
+		var field = cell.attr('field');
+		var tr = cell.closest('tr.datagrid-row');
+		var rowIndex = parseInt(tr.attr('datagrid-row-index'));
+		var colIndex = $.inArray(field, fields);
+
+		if (p == 'up' && rowIndex > 0){
+			rowIndex--;
+		} else if (p == 'down' && rowIndex < dg.datagrid('getRows').length-1){
+			rowIndex++;
+		} else if (p == 'left'){
+			var i = colIndex - 1;
+			while(i >= 0){
+				var col = dg.datagrid('getColumnOption', fields[i]);
+				if (!col.hidden){
+					colIndex = i;
+					break;
+				}
+				i--;
+			}
+		} else if (p == 'right'){
+			var i = colIndex + 1;
+			while(i <= fields.length-1){
+				var col = dg.datagrid('getColumnOption', fields[i]);
+				if (!col.hidden){
+					colIndex = i;
+					break;
+				}
+				i++;
+			}
+		}
+
+		field = fields[colIndex];
+
+		_go({index:rowIndex, field:field});
+
+		function _go(p){
+			var td = opts.finder.getTr(target, p.index).find('td[field="'+p.field+'"]');
+			if (td.length){
+				dg.datagrid('scrollTo', p.index);
+				unselectAllCells(target);
+				selectCell(target, p);
+				var body2 = dg.data('datagrid').dc.body2;
+				var left = td.position().left;
+				if (left < 0){
+					body2._scrollLeft(body2._scrollLeft() + left*(opts.isRtl?-1:1));
+				} else if (left+td._outerWidth()>body2.width()){
+					body2._scrollLeft(body2._scrollLeft() + (left+td._outerWidth()-body2.width())*(opts.isRtl?-1:1));
+				}
+			}
+		}
+	}
+
+	function editCell(target, param){
+		var dg = $(target);
+		var opts = dg.datagrid('options');
+
+		var cell = dg.datagrid('cell');
+		if (cell){
+			var input = dg.datagrid('input', cell);
+			if (input){
+				if (cell.index == param.index && cell.field == param.field){
+					dg.datagrid('gotoCell', cell);
+					input.focus();
+					return;
+				} else {
+					if (dg.datagrid('validateRow', cell.index)){
+						dg.datagrid('endEdit', cell.index);
+					} else {
+						dg.datagrid('gotoCell', cell);
+						input.focus();
+						return;
+					}
+				}
+			}
+		}
+
+		if (opts.onBeforeCellEdit.call(target, param.index, param.field) == false){
+			return;
+		}
+
+		var fields = dg.datagrid('getColumnFields',true).concat(dg.datagrid('getColumnFields'));
+		$.map(fields, function(field){
+			var col = dg.datagrid('getColumnOption', field);
+			col.editor1 = col.editor;
+			if (field != param.field){
+				col.editor = null;
+			}
+		});
+
+		// dg.datagrid('endEdit', param.index);
+		dg.datagrid('beginEdit', param.index);
+		var input = dg.datagrid('input', param);
+		if (input){
+			dg.datagrid('gotoCell', param);
+            input.focus();
+            opts.onCellEdit.call(target, param.index, param.field, param.value);
+		} else {
+			dg.datagrid('cancelEdit', param.index);
+			dg.datagrid('gotoCell', param);
+		}
+
+		$.map(fields, function(field){
+			var col = dg.datagrid('getColumnOption', field);
+			col.editor = col.editor1;
+		});
+	}
+
+	function enableCellSelecting(target){
+		var dg = $(target);
+		var state = dg.data('datagrid');
+		var panel = dg.datagrid('getPanel');
+		var opts = state.options;
+		var dc = state.dc;
+		panel.attr('tabindex',1).css('outline-style','none').unbind('.cellediting').bind('keydown.cellediting', function(e){
+			var h = opts.navHandler[e.keyCode];
+			if (h){
+				return h.call(target, e);
+			}
+		});
+		dc.body1.add(dc.body2).unbind('.cellediting').bind('click.cellediting', function(e){
+			var tr = $(e.target).closest('.datagrid-row');
+			if (tr.length && tr.parent().length){
+				var td = $(e.target).closest('td[field]', tr);
+				if (td.length){
+					var index = parseInt(tr.attr('datagrid-row-index'));
+					var field = td.attr('field');
+					var p = {
+						index: index,
+						field: field
+					};
+					if (opts.singleSelect){
+						selectCell(target, p);
+					} else {
+						if (opts.ctrlSelect){
+							if (e.ctrlKey){
+								if (td.hasClass('datagrid-row-selected')){
+									unselectCell(target, p);
+								} else {
+									selectCell(target, p);
+								}
+							} else {
+								unselectAllCells(target);
+								selectCell(target, p);
+							}
+						} else {
+							if (td.hasClass('datagrid-row-selected')){
+								unselectCell(target, p);
+							} else {
+								selectCell(target, p);
+							}
+						}
+					}
+				}
+			}
+		});
+
+		opts.isRtl = dg.datagrid('getPanel').css('direction').toLowerCase()=='rtl';
+		opts.OldOnBeforeSelect = opts.onBeforeSelect;
+		opts.onBeforeSelect = function(){
+			return false;
+		};
+		dg.datagrid('clearSelections');
+	}
+
+	function disableCellSelecting(target){
+		var dg = $(target);
+		var state = dg.data('datagrid');
+		var panel = dg.datagrid('getPanel');
+		var opts = state.options;
+		opts.onBeforeSelect = opts.OldOnBeforeSelect || opts.onBeforeSelect;
+		panel.unbind('.cellediting').find('td.datagrid-row-selected').removeClass('datagrid-row-selected');
+		var dc = state.dc;
+		dc.body1.add(dc.body2).unbind('cellediting');
+	}
+
+	function enableCellEditing(target){
+		var dg = $(target);
+		var opts = dg.datagrid('options');
+		var panel = dg.datagrid('getPanel');
+		panel.attr('tabindex',1).css('outline-style','none').unbind('.cellediting').bind('keydown.cellediting', function(e){
+			var h = opts.navHandler[e.keyCode];
+			if (h){
+				return h.call(target, e);
+			}
+		}).bind('keypress.cellediting', function(e){
+			return opts.navHandler['keypress'].call(target, e);
+		});
+		panel.panel('panel').unbind('.cellediting').bind('keydown.cellediting', function(e){
+			e.stopPropagation();
+		}).bind('keypress.cellediting', function(e){
+			e.stopPropagation();
+		});
+
+		opts.isRtl = dg.datagrid('getPanel').css('direction').toLowerCase()=='rtl';
+		opts.oldOnClickCell = opts.onClickCell;
+		opts.oldOnDblClickCell = opts.onDblClickCell;
+		if (opts.clickToEdit){
+			opts.onClickCell = function(index, field, value){
+				$(this).datagrid('editCell', {index:index,field:field});
+				opts.oldOnClickCell.call(this, index, field, value);
+			}
+		}
+		if (opts.dblclickToEdit){
+			opts.onDblClickCell = function(index, field, value){
+				$(this).datagrid('editCell', {index:index,field:field});
+				opts.oldOnDblClickCell.call(this, index, field, value);
+			}
+		}
+		opts.OldOnBeforeSelect = opts.onBeforeSelect;
+		opts.onBeforeSelect = function(){
+			return false;
+		};
+		dg.datagrid('clearSelections')
+	}
+
+	function disableCellEditing(target){
+		var dg = $(target);
+		var opts = dg.datagrid('options');
+		opts.onClickCell = opts.oldOnClickCell || opts.onClickCell;
+		opts.onDblClickCell = opts.oldOnDblClickCell || opts.onDblClickCell;
+		opts.onBeforeSelect = opts.OldOnBeforeSelect || opts.onBeforeSelect;
+		dg.datagrid('getPanel').unbind('.cellediting').find('td.datagrid-row-selected').removeClass('datagrid-row-selected');
+	}
+
+
+	$.extend($.fn.datagrid.methods, {
+		editCell: function(jq, param){
+			return jq.each(function(){
+				editCell(this, param);
+			});
+		},
+		isEditing: function(jq, index){
+			var opts = $.data(jq[0], 'datagrid').options;
+			var tr = opts.finder.getTr(jq[0], index);
+			return tr.length && tr.hasClass('datagrid-row-editing');
+		},
+		gotoCell: function(jq, param){
+			return jq.each(function(){
+				gotoCell(this, param);
+			});
+		},
+		enableCellEditing: function(jq){
+			return jq.each(function(){
+				enableCellEditing(this);
+			});
+		},
+		disableCellEditing: function(jq){
+			return jq.each(function(){
+				disableCellEditing(this);
+			});
+		},
+		enableCellSelecting: function(jq){
+			return jq.each(function(){
+				enableCellSelecting(this);
+			});
+		},
+		disableCellSelecting: function(jq){
+			return jq.each(function(){
+				disableCellSelecting(this);
+			});
+		},
+		input: function(jq, param){
+			if (!param){return null;}
+			var ed = jq.datagrid('getEditor', param);
+			if (ed){
+				var t = $(ed.target);
+				if (t.hasClass('textbox-f')){
+					t = t.textbox('textbox');
+				}
+				return t;
+			} else {
+				return null;
+			}
+		},
+		cell: function(jq){		// get current cell info {index,field}
+			return getCurrCell(jq[0]);
+		},
+		getSelectedCells: function(jq){
+			return getSelectedCells(jq[0]);
+		}
+	});
+
+})(jQuery);

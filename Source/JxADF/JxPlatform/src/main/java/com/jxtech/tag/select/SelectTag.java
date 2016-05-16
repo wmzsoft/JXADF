@@ -18,7 +18,9 @@ import com.jxtech.jbo.App;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.JxSession;
+import com.jxtech.jbo.base.JxAttribute;
 import com.jxtech.jbo.base.KeyValue;
+import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxConstant;
 import com.jxtech.jbo.util.JxException;
@@ -126,9 +128,9 @@ public class SelectTag extends JxBaseUITag {
                         }
                     }
                     if (!StrUtil.isNull(partialCause)) {
-                        if (partialCause.indexOf("?") < 0) {
+                        if (partialCause.indexOf('?') < 0) {
                             if (!StrUtil.isNull(mycause) && mycause.length() > 3) {
-                                mycause = "(" + mycause + ") AND (" + partialCause + ")";
+                                mycause = StrUtil.contact("(", mycause, ") AND (", partialCause, ")");
                             } else {
                                 mycause = partialCause;
                             }
@@ -141,8 +143,9 @@ public class SelectTag extends JxBaseUITag {
             }
             // 只有当不是ajax加载的情况下，才进行数据查询
             if (jboset != null && StrUtil.isNull(ajax) && StrUtil.isNull(partialCause)) {
-                jboset.getQueryInfo().setWhereCause(mycause);
-                jboset.getQueryInfo().setOrderby(orderby);
+                DataQueryInfo dqi = jboset.getQueryInfo();
+                dqi.setWhereCause(mycause);
+                dqi.setOrderby(orderby);
                 jboset.queryAll();
                 optionsCount = jboset.getJbolist().size();
             }
@@ -228,6 +231,12 @@ public class SelectTag extends JxBaseUITag {
                     }
                 }
             }
+            if (dataattribute != null && label == null && jboset != null) {
+                JxAttribute attr = jboset.getJxAttribute(dataattribute);
+                if (attr != null) {
+                    select.setLabel(attr.getTitle());
+                }
+            }
         } catch (JxException e) {
             LOG.error(e.getMessage());
         }
@@ -257,7 +266,6 @@ public class SelectTag extends JxBaseUITag {
                 }
             }
         }
-
         super.populateParams();
     }
 
@@ -287,7 +295,7 @@ public class SelectTag extends JxBaseUITag {
         if (!StrUtil.isNull(options)) {
             String[] opts = options.split(",");
             for (int i = 0; i < opts.length; i++) {
-                int pos = opts[i].indexOf(":");
+                int pos = opts[i].indexOf(':');
                 KeyValue kv = new KeyValue();
                 if (pos == 0) {
                     kv.setKey("null");

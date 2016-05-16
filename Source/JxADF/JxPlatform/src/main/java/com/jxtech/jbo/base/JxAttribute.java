@@ -94,24 +94,24 @@ public class JxAttribute implements Serializable {
 
     public boolean isNumeric() {
         switch (getTypeAsInt()) {
-            case JxFormat.INTEGER:
-            case JxFormat.SMALLINT:
-            case JxFormat.FLOAT:
-            case JxFormat.DECIMAL:
-            case JxFormat.DURATION:
-            case JxFormat.AMOUNT:
-            case JxFormat.BIGINT:
-            case JxFormat.NUMBER:
-                return true;
-            case 12:
-            case 13:
-            case 14:
-            case 15:
-            case 16:
-            case 17:
-            case 18:
-            default:
-                return false;
+        case JxFormat.INTEGER:
+        case JxFormat.SMALLINT:
+        case JxFormat.FLOAT:
+        case JxFormat.DECIMAL:
+        case JxFormat.DURATION:
+        case JxFormat.AMOUNT:
+        case JxFormat.BIGINT:
+        case JxFormat.NUMBER:
+            return true;
+        case 12:
+        case 13:
+        case 14:
+        case 15:
+        case 16:
+        case 17:
+        case 18:
+        default:
+            return false;
         }
     }
 
@@ -229,13 +229,13 @@ public class JxAttribute implements Serializable {
     public void setSearchType(String type) {
         this.searchType = type;
 
-        if (type.equalsIgnoreCase("EXACT")) {
+        if ("EXACT".equalsIgnoreCase(type)) {
             this.searchTypeAsInt = EXACTSEARCH;
-        } else if (type.equalsIgnoreCase("WILDCARD")) {
+        } else if ("WILDCARD".equalsIgnoreCase(type)) {
             this.searchTypeAsInt = WILDCARDSEARCH;
-        } else if (type.equalsIgnoreCase("TEXT")) {
+        } else if ("TEXT".equalsIgnoreCase(type)) {
             this.searchTypeAsInt = TEXTSEARCH;
-        } else if (type.equalsIgnoreCase("NONE")) {
+        } else if ("NONE".equalsIgnoreCase(type)) {
             this.searchTypeAsInt = NONESEARCH;
         } else {
             this.searchTypeAsInt = WILDCARDSEARCH;

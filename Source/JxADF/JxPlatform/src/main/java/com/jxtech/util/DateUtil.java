@@ -22,35 +22,35 @@ public class DateUtil {
 
     private static final Logger LOG = LoggerFactory.getLogger(DateUtil.class);
 
-    public static String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
-    public static String DATE_FORMAT = "yyyy-MM-dd";
-    public static String TIME_FORMAT = "HH:mm:ss";
-    public static String YYYY_MM_FORMAT = "yyyy-MM";
+    public static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String DATE_FORMAT = "yyyy-MM-dd";
+    public static final String TIME_FORMAT = "HH:mm:ss";
+    public static final String YYYY_MM_FORMAT = "yyyy-MM";
 
-    public static String DATE_PATTERN = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
+    public static final String DATE_PATTERN = "^((\\d{2}(([02468][048])|([13579][26]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])))))|(\\d{2}(([02468][1235679])|([13579][01345789]))[\\-\\/\\s]?((((0?[13578])|(1[02]))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(3[01])))|(((0?[469])|(11))[\\-\\/\\s]?((0?[1-9])|([1-2][0-9])|(30)))|(0?2[\\-\\/\\s]?((0?[1-9])|(1[0-9])|(2[0-8]))))))";
 
-    public static String YYYY_MM_DD = "^\\d{4}-\\d{1,2}\\-\\d{1,2}";
-    public static String YYYY_MM = "^\\d{4}-\\d{1,2}";
-    public static String YYYYsMsD = "^\\d{4}\\/\\d{1,2}\\/\\d{1,2}";
-    public static String YYYYMMDD = "^\\d{4}\\d{1,2}\\d{1,2}";
-    public static String YYYYMM = "^\\d{4}\\d{1,2}";
-    public static String YY_MM_DD = "^\\d{2}-\\d{1,2}\\-\\d{1,2}";
-    public static String YYsMsD = "^\\d{2}\\/\\d{1,2}\\/\\d{1,2}";
-    public static String YYMMDD = "^\\d{2}\\d{1,2}\\d{1,2}";
+    public static final String YYYY_MM_DD = "^\\d{4}-\\d{1,2}\\-\\d{1,2}";
+    public static final String YYYY_MM = "^\\d{4}-\\d{1,2}";
+    public static final String YYYYsMsD = "^\\d{4}\\/\\d{1,2}\\/\\d{1,2}";
+    public static final String YYYYMMDD = "^\\d{4}\\d{1,2}\\d{1,2}";
+    public static final String YYYYMM = "^\\d{4}\\d{1,2}";
+    public static final String YY_MM_DD = "^\\d{2}-\\d{1,2}\\-\\d{1,2}";
+    public static final String YYsMsD = "^\\d{2}\\/\\d{1,2}\\/\\d{1,2}";
+    public static final String YYMMDD = "^\\d{2}\\d{1,2}\\d{1,2}";
 
-    public static String YY_MM_DD_HH24_MI_SS = "^\\d{4}-\\d{1,2}\\-\\d{1,2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$";
-    public static String YY_MM_DD_HH24_MI = "^\\d{4}-\\d{1,2}\\-\\d{1,2}\\s\\d{1,2}:\\d{1,2}$";
-    public static String YY_MM_DD_HH24 = "^\\d{4}-\\d{1,2}\\-\\d{1,2}\\s\\d{1,2}$";
-    public static String YYYYsMsD_HH24_MI_SS = "^\\d{4}\\/\\d{1,2}\\/\\d{1,2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$";
-    public static String YYYYsMsD_HH24_MI = "^\\d{4}\\/\\d{1,2}\\/\\d{1,2}\\s\\d{1,2}:\\d{1,2}$";
-    public static String YYYYsMsD_HH24 = "^\\d{4}\\/\\d{1,2}\\/\\d{1,2}\\s\\d{1,2}$";
-    public static String YYYYMMDD_HH24_MI_SS = "^\\d{4}\\d{1,2}\\d{1,2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$";
-    public static String YYYYMMDD_HH24_MI = "^\\d{4}\\d{1,2}\\d{1,2}\\s\\d{1,2}:\\d{1,2}$";
-    public static String YYYYMMDD_HH24 = "^\\d{4}\\d{1,2}\\d{1,2}\\s\\d{1,2}$";
-    public static String HH24_MI_SS = "^\\d{1,2}:\\d{1,2}:\\d{1,2}$";
-    public static String HH24_MI = "^\\d{1,2}:\\d{1,2}$";
+    public static final String YY_MM_DD_HH24_MI_SS = "^\\d{4}-\\d{1,2}\\-\\d{1,2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$";
+    public static final String YY_MM_DD_HH24_MI = "^\\d{4}-\\d{1,2}\\-\\d{1,2}\\s\\d{1,2}:\\d{1,2}$";
+    public static final String YY_MM_DD_HH24 = "^\\d{4}-\\d{1,2}\\-\\d{1,2}\\s\\d{1,2}$";
+    public static final String YYYYsMsD_HH24_MI_SS = "^\\d{4}\\/\\d{1,2}\\/\\d{1,2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$";
+    public static final String YYYYsMsD_HH24_MI = "^\\d{4}\\/\\d{1,2}\\/\\d{1,2}\\s\\d{1,2}:\\d{1,2}$";
+    public static final String YYYYsMsD_HH24 = "^\\d{4}\\/\\d{1,2}\\/\\d{1,2}\\s\\d{1,2}$";
+    public static final String YYYYMMDD_HH24_MI_SS = "^\\d{4}\\d{1,2}\\d{1,2}\\s\\d{1,2}:\\d{1,2}:\\d{1,2}$";
+    public static final String YYYYMMDD_HH24_MI = "^\\d{4}\\d{1,2}\\d{1,2}\\s\\d{1,2}:\\d{1,2}$";
+    public static final String YYYYMMDD_HH24 = "^\\d{4}\\d{1,2}\\d{1,2}\\s\\d{1,2}$";
+    public static final String HH24_MI_SS = "^\\d{1,2}:\\d{1,2}:\\d{1,2}$";
+    public static final String HH24_MI = "^\\d{1,2}:\\d{1,2}$";
     // 正则表达式格式：2015-01-01T00:00:00 00:00
-    public static String UTC = "^\\d{4}-\\d{1,2}\\-\\d{1,2}T\\d{1,2}:\\d{1,2}:\\d{1,2}\\s\\d{1,2}:\\d{1,2}$";
+    public static final String UTC = "^\\d{4}-\\d{1,2}\\-\\d{1,2}T\\d{1,2}:\\d{1,2}:\\d{1,2}\\s\\d{1,2}:\\d{1,2}$";
 
     public static String dateToString(Object date, String format) {
         java.util.Date d = null;
@@ -125,6 +125,7 @@ public class DateUtil {
 
     /**
      * 将日期转换为mysql sql脚本，格式：str_to_date(date,'%Y-%m-%d')
+     * 
      * @param date
      * @return
      */
@@ -132,35 +133,38 @@ public class DateUtil {
         String ds = dateToString(date);
         return "str_to_date('" + ds + "','%Y-%m-%d')";
     }
-    
+
     /**
      * 将datetime转换为MySQL sql脚本，格式：str_to_date(date,'%Y-%m-%d %H:%i:%s')
+     * 
      * @param date
      * @return
      */
-    public static String mysqlToDateTime(Object date){
+    public static String mysqlToDateTime(Object date) {
         String ds = dateTimeToString(date);
-        return "str_to_date('" + ds + "','%Y-%m-%d %H:%i:%s')"; 
+        return "str_to_date('" + ds + "','%Y-%m-%d %H:%i:%s')";
     }
-    
+
     /**
      * 将日期转换为sqlserver 脚本，格式：cast(ds as date)
+     * 
      * @param date
      * @return
      */
-    public static String sqlserverToDate(Object date){
+    public static String sqlserverToDate(Object date) {
         String ds = dateToString(date);
-        return "cast('"+ds+"' as date)";
+        return "cast('" + ds + "' as date)";
     }
-    
+
     /**
      * 将datetime转换为sqlserver脚本，格式：cast(ds as datetime)
+     * 
      * @param date
      * @return
      */
-    public static String sqlserverToDateTime(Object date){
+    public static String sqlserverToDateTime(Object date) {
         String ds = dateTimeToString(date);
-        return "cast('"+ds+"' as datetime)";
+        return "cast('" + ds + "' as datetime)";
     }
 
     /**
@@ -317,7 +321,7 @@ public class DateUtil {
      * @return
      */
     public static java.sql.Timestamp sqlDateTimeAddDay(java.util.Date date, int day) {
-        long ms = day * 86400000;
+        long ms = day * 86400000L;
         return sqlDateTimeAdd(date, ms);
     }
 
@@ -781,9 +785,9 @@ public class DateUtil {
         if (day > 0) {
             sb.append(day).append(JxLangResourcesUtil.getString("dateUtil.day")).append(" ");
         }
-        int hour = (int) ((time - day * 24 * 60 * 60) / (60 * 60));
+        int hour = (int) ((time - day * 24 * 60 * 60L) / (60 * 60));
         sb.append(hour).append(JxLangResourcesUtil.getString("dateUtil.hour")).append(" ");
-        int min = (int) ((time - day * 24 * 60 * 60 - hour * 60 * 60) / 60);
+        int min = (int) ((time - day * 24 * 60 * 60L - hour * 60 * 60L) / 60);
         sb.append(min).append(JxLangResourcesUtil.getString("dateUtil.minutes"));
         return sb.toString();
     }

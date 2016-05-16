@@ -113,7 +113,7 @@ public class MessageBody {
     }
 
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("sender=" + sender);
         sb.append("\r\nreciver=" + reciver);
         sb.append("\r\ncc=" + cc);

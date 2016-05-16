@@ -1,1 +1,50 @@
-!function(e){e.effects.effect.highlight=function(o,c){var n=e(this),a=["backgroundImage","backgroundColor","opacity"],t=e.effects.setMode(n,o.mode||"show"),f={backgroundColor:n.css("backgroundColor")};"hide"===t&&(f.opacity=0),e.effects.save(n,a),n.show().css({backgroundImage:"none",backgroundColor:o.color||"#ffff99"}).animate(f,{queue:!1,duration:o.duration,easing:o.easing,complete:function(){"hide"===t&&n.hide(),e.effects.restore(n,a),c()}})}}(jQuery);
+/*!
+ * jQuery UI Effects Highlight 1.10.3
+ * http://jqueryui.com
+ *
+ * Copyright 2013 jQuery Foundation and other contributors
+ * Released under the MIT license.
+ * http://jquery.org/license
+ *
+ * http://api.jqueryui.com/highlight-effect/
+ *
+ * Depends:
+ *	jquery.ui.effect.js
+ */
+(function( $, undefined ) {
+
+$.effects.effect.highlight = function( o, done ) {
+	var elem = $( this ),
+		props = [ "backgroundImage", "backgroundColor", "opacity" ],
+		mode = $.effects.setMode( elem, o.mode || "show" ),
+		animation = {
+			backgroundColor: elem.css( "backgroundColor" )
+		};
+
+	if (mode === "hide") {
+		animation.opacity = 0;
+	}
+
+	$.effects.save( elem, props );
+
+	elem
+		.show()
+		.css({
+			backgroundImage: "none",
+			backgroundColor: o.color || "#ffff99"
+		})
+		.animate( animation, {
+			queue: false,
+			duration: o.duration,
+			easing: o.easing,
+			complete: function() {
+				if ( mode === "hide" ) {
+					elem.hide();
+				}
+				$.effects.restore( elem, props );
+				done();
+			}
+		});
+};
+
+})(jQuery);

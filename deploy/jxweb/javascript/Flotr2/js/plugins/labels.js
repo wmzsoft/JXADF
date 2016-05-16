@@ -1,1 +1,227 @@
-!function(){var t=Flotr.DOM;Flotr.addPlugin("labels",{callbacks:{"flotr:afterdraw":function(){this.labels.draw()}},draw:function(){function l(t,l,o){{var e,s=o?l.minorTicks:l.ticks,a=1===l.orientation;1===l.n}for(e={color:l.options.color||c.grid.color,angle:Flotr.toRad(l.options.labelsAngle),textBaseline:"middle"},f=0;f<s.length&&(o?l.options.showMinorLabels:l.options.showLabels);++f)i=s[f],i.label+="",i.label&&i.label.length&&(x=Math.cos(f*n+h)*r,y=Math.sin(f*n+h)*r,e.textAlign=a?Math.abs(x)<.1?"center":0>x?"right":"left":"left",Flotr.drawText(b,i.label,a?x:3,a?y:-(l.ticks[f].v/l.max)*(r-c.fontSize),e))}function o(t,l,o,e){function s(t){return t.options.showLabels&&t.used}function r(t,l,o,e){return t.plotOffset.left+(l?e:o?-c.grid.labelMargin:c.grid.labelMargin+t.plotWidth)}function a(t,l,o,e){return t.plotOffset.top+(l?c.grid.labelMargin:e)+(l&&o?t.plotHeight:0)}var n,h,p=1===l.orientation,d=1===l.n;for(n={color:l.options.color||c.grid.color,textAlign:o,textBaseline:e,angle:Flotr.toRad(l.options.labelsAngle)},n=Flotr.getBestTextAlign(n.angle,n),f=0;f<l.ticks.length&&s(l);++f)i=l.ticks[f],i.label&&i.label.length&&(h=l.d2p(i.v),0>h||h>(p?t.plotWidth:t.plotHeight)||(Flotr.drawText(b,i.label,r(t,p,d,h),a(t,p,d,h),n),p||d||(b.save(),b.strokeStyle=n.color,b.beginPath(),b.moveTo(t.plotOffset.left+t.plotWidth-8,t.plotOffset.top+l.d2p(i.v)),b.lineTo(t.plotOffset.left+t.plotWidth,t.plotOffset.top+l.d2p(i.v)),b.stroke(),b.restore())))}function e(t,l){var o,e,r=1===l.orientation,a=1===l.n,n="",h=t.plotOffset;if(r||a||(b.save(),b.strokeStyle=l.options.color||c.grid.color,b.beginPath()),l.options.showLabels&&(a?!0:l.used))for(f=0;f<l.ticks.length;++f)i=l.ticks[f],!i.label||!i.label.length||(r?h.left:h.top)+l.d2p(i.v)<0||(r?h.left:h.top)+l.d2p(i.v)>(r?t.canvasWidth:t.canvasHeight)||(e=h.top+(r?(a?1:-1)*(t.plotHeight+c.grid.labelMargin):l.d2p(i.v)-l.maxLabel.height/2),o=r?h.left+l.d2p(i.v)-s/2:0,n="",0===f?n=" first":f===l.ticks.length-1&&(n=" last"),n+=r?" flotr-grid-label-x":" flotr-grid-label-y",d+=['<div style="position:absolute; text-align:'+(r?"center":"right")+"; ","top:"+e+"px; ",(r||a?"left:":"right:")+o+"px; ","width:"+(r?s:(a?h.left:h.right)-c.grid.labelMargin)+"px; ",l.options.color?"color:"+l.options.color+"; ":" ",'" class="flotr-grid-label'+n+'">'+i.label+"</div>"].join(" "),r||a||(b.moveTo(h.left+t.plotWidth-8,h.top+l.d2p(i.v)),b.lineTo(h.left+t.plotWidth,h.top+l.d2p(i.v))))}{var i,s,r,a,n,h,p,f,d="",g=0,c=this.options,b=this.ctx,v=this.axes;({size:c.fontSize})}for(f=0;f<v.x.ticks.length;++f)v.x.ticks[f].label&&++g;s=this.plotWidth/g,c.grid.circular&&(b.save(),b.translate(this.plotOffset.left+this.plotWidth/2,this.plotOffset.top+this.plotHeight/2),r=this.plotHeight*c.radar.radiusRatio/2+c.fontSize,a=this.axes.x.ticks.length,n=2*(Math.PI/a),h=-Math.PI/2,l(this,v.x,!1),l(this,v.x,!0),l(this,v.y,!1),l(this,v.y,!0),b.restore()),!c.HtmlText&&this.textEnabled?(o(this,v.x,"center","top"),o(this,v.x2,"center","bottom"),o(this,v.y,"right","middle"),o(this,v.y2,"left","middle")):(v.x.options.showLabels||v.x2.options.showLabels||v.y.options.showLabels||v.y2.options.showLabels)&&!c.grid.circular&&(d="",e(this,v.x),e(this,v.x2),e(this,v.y),e(this,v.y2),b.stroke(),b.restore(),p=t.create("div"),t.setStyles(p,{fontSize:"smaller",color:c.grid.color}),p.className="flotr-labels",t.insert(this.el,p),t.insert(p,d))}})}();
+(function () {
+
+var D = Flotr.DOM;
+
+Flotr.addPlugin('labels', {
+
+  callbacks : {
+    'flotr:afterdraw' : function () {
+      this.labels.draw();
+    }
+  },
+
+  draw: function(){
+    // Construct fixed width label boxes, which can be styled easily.
+    var
+      axis, tick, left, top, xBoxWidth,
+      radius, sides, coeff, angle,
+      div, i, html = '',
+      noLabels = 0,
+      options  = this.options,
+      ctx      = this.ctx,
+      a        = this.axes,
+      style    = { size: options.fontSize };
+
+    for (i = 0; i < a.x.ticks.length; ++i){
+      if (a.x.ticks[i].label) { ++noLabels; }
+    }
+    xBoxWidth = this.plotWidth / noLabels;
+
+    if (options.grid.circular) {
+      ctx.save();
+      ctx.translate(this.plotOffset.left + this.plotWidth / 2,
+          this.plotOffset.top + this.plotHeight / 2);
+
+      radius = this.plotHeight * options.radar.radiusRatio / 2 + options.fontSize;
+      sides  = this.axes.x.ticks.length;
+      coeff  = 2 * (Math.PI / sides);
+      angle  = -Math.PI / 2;
+
+      drawLabelCircular(this, a.x, false);
+      drawLabelCircular(this, a.x, true);
+      drawLabelCircular(this, a.y, false);
+      drawLabelCircular(this, a.y, true);
+      ctx.restore();
+    }
+
+    if (!options.HtmlText && this.textEnabled) {
+      drawLabelNoHtmlText(this, a.x, 'center', 'top');
+      drawLabelNoHtmlText(this, a.x2, 'center', 'bottom');
+      drawLabelNoHtmlText(this, a.y, 'right', 'middle');
+      drawLabelNoHtmlText(this, a.y2, 'left', 'middle');
+    
+    } else if ((
+        a.x.options.showLabels ||
+        a.x2.options.showLabels ||
+        a.y.options.showLabels ||
+        a.y2.options.showLabels) &&
+        !options.grid.circular
+      ) {
+
+      html = '';
+
+      drawLabelHtml(this, a.x);
+      drawLabelHtml(this, a.x2);
+      drawLabelHtml(this, a.y);
+      drawLabelHtml(this, a.y2);
+
+      ctx.stroke();
+      ctx.restore();
+      div = D.create('div');
+      D.setStyles(div, {
+        fontSize: 'smaller',
+        color: options.grid.color
+      });
+      div.className = 'flotr-labels';
+      D.insert(this.el, div);
+      D.insert(div, html);
+    }
+
+    function drawLabelCircular (graph, axis, minorTicks) {
+      var
+        ticks   = minorTicks ? axis.minorTicks : axis.ticks,
+        isX     = axis.orientation === 1,
+        isFirst = axis.n === 1,
+        style, offset;
+
+      style = {
+        color        : axis.options.color || options.grid.color,
+        angle        : Flotr.toRad(axis.options.labelsAngle),
+        textBaseline : 'middle'
+      };
+
+      for (i = 0; i < ticks.length &&
+          (minorTicks ? axis.options.showMinorLabels : axis.options.showLabels); ++i){
+        tick = ticks[i];
+        tick.label += '';
+        if (!tick.label || !tick.label.length) { continue; }
+
+        x = Math.cos(i * coeff + angle) * radius;
+        y = Math.sin(i * coeff + angle) * radius;
+
+        style.textAlign = isX ? (Math.abs(x) < 0.1 ? 'center' : (x < 0 ? 'right' : 'left')) : 'left';
+
+        Flotr.drawText(
+          ctx, tick.label,
+          isX ? x : 3,
+          isX ? y : -(axis.ticks[i].v / axis.max) * (radius - options.fontSize),
+          style
+        );
+      }
+    }
+
+    function drawLabelNoHtmlText (graph, axis, textAlign, textBaseline)  {
+      var
+        isX     = axis.orientation === 1,
+        isFirst = axis.n === 1,
+        style, offset;
+
+      style = {
+        color        : axis.options.color || options.grid.color,
+        textAlign    : textAlign,
+        textBaseline : textBaseline,
+        angle : Flotr.toRad(axis.options.labelsAngle)
+      };
+      style = Flotr.getBestTextAlign(style.angle, style);
+
+      for (i = 0; i < axis.ticks.length && continueShowingLabels(axis); ++i) {
+
+        tick = axis.ticks[i];
+        if (!tick.label || !tick.label.length) { continue; }
+
+        offset = axis.d2p(tick.v);
+        if (offset < 0 ||
+            offset > (isX ? graph.plotWidth : graph.plotHeight)) { continue; }
+
+        Flotr.drawText(
+          ctx, tick.label,
+          leftOffset(graph, isX, isFirst, offset),
+          topOffset(graph, isX, isFirst, offset),
+          style
+        );
+
+        // Only draw on axis y2
+        if (!isX && !isFirst) {
+          ctx.save();
+          ctx.strokeStyle = style.color;
+          ctx.beginPath();
+          ctx.moveTo(graph.plotOffset.left + graph.plotWidth - 8, graph.plotOffset.top + axis.d2p(tick.v));
+          ctx.lineTo(graph.plotOffset.left + graph.plotWidth, graph.plotOffset.top + axis.d2p(tick.v));
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+
+      function continueShowingLabels (axis) {
+        return axis.options.showLabels && axis.used;
+      }
+      function leftOffset (graph, isX, isFirst, offset) {
+        return graph.plotOffset.left +
+          (isX ? offset :
+            (isFirst ?
+              -options.grid.labelMargin :
+              options.grid.labelMargin + graph.plotWidth));
+      }
+      function topOffset (graph, isX, isFirst, offset) {
+        return graph.plotOffset.top +
+          (isX ? options.grid.labelMargin : offset) +
+          ((isX && isFirst) ? graph.plotHeight : 0);
+      }
+    }
+
+    function drawLabelHtml (graph, axis) {
+      var
+        isX     = axis.orientation === 1,
+        isFirst = axis.n === 1,
+        name = '',
+        left, style, top,
+        offset = graph.plotOffset;
+
+      if (!isX && !isFirst) {
+        ctx.save();
+        ctx.strokeStyle = axis.options.color || options.grid.color;
+        ctx.beginPath();
+      }
+
+      if (axis.options.showLabels && (isFirst ? true : axis.used)) {
+        for (i = 0; i < axis.ticks.length; ++i) {
+          tick = axis.ticks[i];
+          if (!tick.label || !tick.label.length ||
+              ((isX ? offset.left : offset.top) + axis.d2p(tick.v) < 0) ||
+              ((isX ? offset.left : offset.top) + axis.d2p(tick.v) > (isX ? graph.canvasWidth : graph.canvasHeight))) {
+            continue;
+          }
+          top = offset.top +
+            (isX ?
+              ((isFirst ? 1 : -1 ) * (graph.plotHeight + options.grid.labelMargin)) :
+              axis.d2p(tick.v) - axis.maxLabel.height / 2);
+          left = isX ? (offset.left + axis.d2p(tick.v) - xBoxWidth / 2) : 0;
+
+          name = '';
+          if (i === 0) {
+            name = ' first';
+          } else if (i === axis.ticks.length - 1) {
+            name = ' last';
+          }
+          name += isX ? ' flotr-grid-label-x' : ' flotr-grid-label-y';
+
+          html += [
+            '<div style="position:absolute; text-align:' + (isX ? 'center' : 'right') + '; ',
+            'top:' + top + 'px; ',
+            ((!isX && !isFirst) ? 'right:' : 'left:') + left + 'px; ',
+            'width:' + (isX ? xBoxWidth : ((isFirst ? offset.left : offset.right) - options.grid.labelMargin)) + 'px; ',
+            axis.options.color ? ('color:' + axis.options.color + '; ') : ' ',
+            '" class="flotr-grid-label' + name + '">' + tick.label + '</div>'
+          ].join(' ');
+          
+          if (!isX && !isFirst) {
+            ctx.moveTo(offset.left + graph.plotWidth - 8, offset.top + axis.d2p(tick.v));
+            ctx.lineTo(offset.left + graph.plotWidth, offset.top + axis.d2p(tick.v));
+          }
+        }
+      }
+    }
+  }
+
+});
+})();

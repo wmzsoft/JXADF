@@ -1,1 +1,186 @@
-Flotr.addType("candles",{options:{show:!1,lineWidth:1,wickLineWidth:1,candleWidth:.6,fill:!0,upFillColor:"#00A8F0",downFillColor:"#CB4B4B",fillOpacity:.5,barcharts:!1},draw:function(l){var o=l.context;o.save(),o.lineJoin="miter",o.lineCap="butt",o.lineWidth=l.wickLineWidth||l.lineWidth,this.plot(l),o.restore()},plot:function(l){var o,t,a,e,i,n,r,h,d,c,f,s,x,m,M,v=l.data,p=l.context,u=l.xScale,W=l.yScale,T=l.candleWidth/2,g=l.shadowSize,w=l.lineWidth,S=l.wickLineWidth,y=S%2/2;if(!(v.length<1))for(M=0;M<v.length;M++)t=v[M],a=t[0],e=t[1],i=t[2],n=t[3],r=t[4],h=u(a-T),d=u(a+T),c=W(n),f=W(i),s=W(Math.min(e,r)),x=W(Math.max(e,r)),o=l[e>r?"downFillColor":"upFillColor"],l.fill&&!l.barcharts&&(p.fillStyle="rgba(0,0,0,0.05)",p.fillRect(h+g,x+g,d-h,s-x),p.save(),p.globalAlpha=l.fillOpacity,p.fillStyle=o,p.fillRect(h,x+w,d-h,s-x),p.restore()),(w||S)&&(a=Math.floor((h+d)/2)+y,p.strokeStyle=o,p.beginPath(),l.barcharts?(p.moveTo(a,Math.floor(f+w)),p.lineTo(a,Math.floor(c+w)),m=r>e,p.moveTo(m?d:h,Math.floor(x+w)),p.lineTo(a,Math.floor(x+w)),p.moveTo(a,Math.floor(s+w)),p.lineTo(m?h:d,Math.floor(s+w))):(p.strokeRect(h,x+w,d-h,s-x),p.moveTo(a,Math.floor(x+w)),p.lineTo(a,Math.floor(f+w)),p.moveTo(a,Math.floor(s+w)),p.lineTo(a,Math.floor(c+w))),p.closePath(),p.stroke())},hit:function(l){var o,t,a,e,i,n,r,h,d=l.xScale,c=l.yScale,f=l.data,s=l.args,x=s[0],m=l.candleWidth/2,M=s[1],v=x.relX,p=x.relY,u=f.length;for(o=0;u>o;o++)if(t=f[o],a=t[2],e=t[3],i=d(t[0]-m),n=d(t[0]+m),h=c(e),r=c(a),v>i&&n>v&&p>r&&h>p)return M.x=t[0],M.index=o,void(M.seriesIndex=l.index)},drawHit:function(l){var o=l.context;o.save(),this.plot(_.defaults({fill:!!l.fillColor,upFillColor:l.color,downFillColor:l.color,data:[l.data[l.args.index]]},l)),o.restore()},clearHit:function(l){var o=l.args,t=l.context,a=l.xScale,e=l.yScale,i=l.lineWidth,n=l.candleWidth/2,r=l.data[o.index],h=a(r[0]-n)-i,d=a(r[0]+n)+i,c=e(r[2]),f=e(r[3])+i;t.clearRect(h,c,d-h,f-c)},extendXRange:function(l){null===l.options.max&&(l.max=Math.max(l.datamax+.5,l.max),l.min=Math.min(l.datamin-.5,l.min))}});
+/** Candles **/
+Flotr.addType('candles', {
+  options: {
+    show: false,           // => setting to true will show candle sticks, false will hide
+    lineWidth: 1,          // => in pixels
+    wickLineWidth: 1,      // => in pixels
+    candleWidth: 0.6,      // => in units of the x axis
+    fill: true,            // => true to fill the area from the line to the x axis, false for (transparent) no fill
+    upFillColor: '#00A8F0',// => up sticks fill color
+    downFillColor: '#CB4B4B',// => down sticks fill color
+    fillOpacity: 0.5,      // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+    barcharts: false       // => draw as barcharts (not standard bars but financial barcharts)
+  },
+
+  draw : function (options) {
+
+    var
+      context = options.context;
+
+    context.save();
+    context.lineJoin = 'miter';
+    context.lineCap = 'butt';
+    // @TODO linewidth not interpreted the right way.
+    context.lineWidth = options.wickLineWidth || options.lineWidth;
+
+    this.plot(options);
+
+    context.restore();
+  },
+
+  plot : function (options) {
+
+    var
+      data          = options.data,
+      context       = options.context,
+      xScale        = options.xScale,
+      yScale        = options.yScale,
+      width         = options.candleWidth / 2,
+      shadowSize    = options.shadowSize,
+      lineWidth     = options.lineWidth,
+      wickLineWidth = options.wickLineWidth,
+      pixelOffset   = (wickLineWidth % 2) / 2,
+      color,
+      datum, x, y,
+      open, high, low, close,
+      left, right, bottom, top, bottom2, top2, reverseLines,
+      i;
+
+    if (data.length < 1) return;
+
+    for (i = 0; i < data.length; i++) {
+      datum   = data[i];
+      x       = datum[0];
+      open    = datum[1];
+      high    = datum[2];
+      low     = datum[3];
+      close   = datum[4];
+      left    = xScale(x - width);
+      right   = xScale(x + width);
+      bottom  = yScale(low);
+      top     = yScale(high);
+      bottom2 = yScale(Math.min(open, close));
+      top2    = yScale(Math.max(open, close));
+
+      /*
+      // TODO skipping
+      if(right < xa.min || left > xa.max || top < ya.min || bottom > ya.max)
+        continue;
+      */
+
+      color = options[open > close ? 'downFillColor' : 'upFillColor'];
+
+      // Fill the candle.
+      if (options.fill && !options.barcharts) {
+        context.fillStyle = 'rgba(0,0,0,0.05)';
+        context.fillRect(left + shadowSize, top2 + shadowSize, right - left, bottom2 - top2);
+        context.save();
+        context.globalAlpha = options.fillOpacity;
+        context.fillStyle = color;
+        context.fillRect(left, top2 + lineWidth, right - left, bottom2 - top2);
+        context.restore();
+      }
+
+      // Draw candle outline/border, high, low.
+      if (lineWidth || wickLineWidth) {
+
+        x = Math.floor((left + right) / 2) + pixelOffset;
+
+        context.strokeStyle = color;
+        context.beginPath();
+
+        if (options.barcharts) {
+          context.moveTo(x, Math.floor(top + lineWidth));
+          context.lineTo(x, Math.floor(bottom + lineWidth));
+
+          reverseLines = open < close;
+          context.moveTo(reverseLines ? right : left, Math.floor(top2 + lineWidth));
+          context.lineTo(x, Math.floor(top2 + lineWidth));
+          context.moveTo(x, Math.floor(bottom2 + lineWidth));
+          context.lineTo(reverseLines ? left : right, Math.floor(bottom2 + lineWidth));
+        } else {
+          context.strokeRect(left, top2 + lineWidth, right - left, bottom2 - top2);
+          context.moveTo(x, Math.floor(top2 + lineWidth));
+          context.lineTo(x, Math.floor(top + lineWidth));
+          context.moveTo(x, Math.floor(bottom2 + lineWidth));
+          context.lineTo(x, Math.floor(bottom + lineWidth));
+        }
+        
+        context.closePath();
+        context.stroke();
+      }
+    }
+  },
+
+  hit : function (options) {
+    var
+      xScale = options.xScale,
+      yScale = options.yScale,
+      data = options.data,
+      args = options.args,
+      mouse = args[0],
+      width = options.candleWidth / 2,
+      n = args[1],
+      x = mouse.relX,
+      y = mouse.relY,
+      length = data.length,
+      i, datum,
+      high, low,
+      left, right, top, bottom;
+
+    for (i = 0; i < length; i++) {
+      datum   = data[i],
+      high    = datum[2];
+      low     = datum[3];
+      left    = xScale(datum[0] - width);
+      right   = xScale(datum[0] + width);
+      bottom  = yScale(low);
+      top     = yScale(high);
+
+      if (x > left && x < right && y > top && y < bottom) {
+        n.x = datum[0];
+        n.index = i;
+        n.seriesIndex = options.index;
+        return;
+      }
+    }
+  },
+
+  drawHit : function (options) {
+    var
+      context = options.context;
+    context.save();
+    this.plot(
+      _.defaults({
+        fill : !!options.fillColor,
+        upFillColor : options.color,
+        downFillColor : options.color,
+        data : [options.data[options.args.index]]
+      }, options)
+    );
+    context.restore();
+  },
+
+  clearHit : function (options) {
+    var
+      args = options.args,
+      context = options.context,
+      xScale = options.xScale,
+      yScale = options.yScale,
+      lineWidth = options.lineWidth,
+      width = options.candleWidth / 2,
+      bar = options.data[args.index],
+      left = xScale(bar[0] - width) - lineWidth,
+      right = xScale(bar[0] + width) + lineWidth,
+      top = yScale(bar[2]),
+      bottom = yScale(bar[3]) + lineWidth;
+    context.clearRect(left, top, right - left, bottom - top);
+  },
+
+  extendXRange: function (axis, data, options) {
+    if (axis.options.max === null) {
+      axis.max = Math.max(axis.datamax + 0.5, axis.max);
+      axis.min = Math.min(axis.datamin - 0.5, axis.min);
+    }
+  }
+});

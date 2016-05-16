@@ -1,1 +1,626 @@
-!function(e){var c={event:{CHECK:"ztree_check"},id:{CHECK:"_check"},checkbox:{STYLE:"checkbox",DEFAULT:"chk",DISABLED:"disable",FALSE:"false",TRUE:"true",FULL:"full",PART:"part",FOCUS:"focus"},radio:{STYLE:"radio",TYPE_ALL:"all",TYPE_LEVEL:"level"}},a={check:{enable:!1,autoCheckTrigger:!1,chkStyle:c.checkbox.STYLE,nocheckInherit:!1,chkDisabledInherit:!1,radioType:c.radio.TYPE_LEVEL,chkboxType:{Y:"ps",N:"ps"}},data:{key:{checked:"checked"}},callback:{beforeCheck:null,onCheck:null}},t=function(e){var c=y.getRoot(e);c.radioCheckedList=[]},h=function(){},k=function(e){var c=e.treeObj,a=v.event;c.bind(a.CHECK,function(c,a,t,h){p.apply(e.callback.onCheck,[a?a:c,t,h])})},r=function(e){var c=e.treeObj,a=v.event;c.unbind(a.CHECK)},n=function(e){var c=e.target,a=y.getSetting(e.data.treeId),t="",h=null,k="",r="",n=null,d=null;if(p.eqs(e.type,"mouseover")?a.check.enable&&p.eqs(c.tagName,"span")&&null!==c.getAttribute("treeNode"+v.id.CHECK)&&(t=p.getNodeMainDom(c).id,k="mouseoverCheck"):p.eqs(e.type,"mouseout")?a.check.enable&&p.eqs(c.tagName,"span")&&null!==c.getAttribute("treeNode"+v.id.CHECK)&&(t=p.getNodeMainDom(c).id,k="mouseoutCheck"):p.eqs(e.type,"click")&&a.check.enable&&p.eqs(c.tagName,"span")&&null!==c.getAttribute("treeNode"+v.id.CHECK)&&(t=p.getNodeMainDom(c).id,k="checkNode"),t.length>0)switch(h=y.getNodeCache(a,t),k){case"checkNode":n=C.onCheckNode;break;case"mouseoverCheck":n=C.onMouseoverCheck;break;case"mouseoutCheck":n=C.onMouseoutCheck}var i={stop:"checkNode"===k,node:h,nodeEventType:k,nodeEventCallback:n,treeEventType:r,treeEventCallback:d};return i},d=function(e,c,a,t){if(a){var h=e.data.key.checked;if("string"==typeof a[h]&&(a[h]=p.eqs(a[h],"true")),a[h]=!!a[h],a.checkedOld=a[h],"string"==typeof a.nocheck&&(a.nocheck=p.eqs(a.nocheck,"true")),a.nocheck=!!a.nocheck||e.check.nocheckInherit&&t&&!!t.nocheck,"string"==typeof a.chkDisabled&&(a.chkDisabled=p.eqs(a.chkDisabled,"true")),a.chkDisabled=!!a.chkDisabled||e.check.chkDisabledInherit&&t&&!!t.chkDisabled,"string"==typeof a.halfCheck&&(a.halfCheck=p.eqs(a.halfCheck,"true")),a.halfCheck=!!a.halfCheck,a.check_Child_State=-1,a.check_Focus=!1,a.getCheckStatus=function(){return y.getCheckStatus(e,a)},e.check.chkStyle==v.radio.STYLE&&e.check.radioType==v.radio.TYPE_ALL&&a[h]){var k=y.getRoot(e);k.radioCheckedList.push(a)}}},i=function(e,c,a){e.data.key.checked;e.check.enable&&(y.makeChkFlag(e,c),a.push("<span ID='",c.tId,v.id.CHECK,"' class='",S.makeChkClass(e,c),"' treeNode",v.id.CHECK,c.nocheck===!0?" style='display:none;'":"","></span>"))},o=function(e,c){c.checkNode=function(c,a,t,h){var k=e.data.key.checked;if(c.chkDisabled!==!0&&(a!==!0&&a!==!1&&(a=!c[k]),h=!!h,(c[k]!==a||t)&&(!h||0!=p.apply(this.setting.callback.beforeCheck,[e.treeId,c],!0))&&p.uCanDo(this.setting)&&e.check.enable&&c.nocheck!==!0)){c[k]=a;var r=T(c,v.id.CHECK,e);(t||e.check.chkStyle===v.radio.STYLE)&&S.checkNodeRelation(e,c),S.setChkClass(e,r,c),S.repairParentChkClassWithSelf(e,c),h&&e.treeObj.trigger(v.event.CHECK,[null,e.treeId,c])}},c.checkAllNodes=function(c){S.repairAllChk(e,!!c)},c.getCheckedNodes=function(c){var a=e.data.key.children;return c=c!==!1,y.getTreeCheckedNodes(e,y.getRoot(e)[a],c)},c.getChangeCheckedNodes=function(){var c=e.data.key.children;return y.getTreeChangeCheckedNodes(e,y.getRoot(e)[c])},c.setChkDisabled=function(c,a,t,h){a=!!a,t=!!t,h=!!h,S.repairSonChkDisabled(e,c,a,h),S.repairParentChkDisabled(e,c.getParentNode(),a,t)};var a=c.updateNode;c.updateNode=function(t,h){if(a&&a.apply(c,arguments),t&&e.check.enable){var k=T(t,e);if(k.get(0)&&p.uCanDo(e)){var r=T(t,v.id.CHECK,e);(1==h||e.check.chkStyle===v.radio.STYLE)&&S.checkNodeRelation(e,t),S.setChkClass(e,r,t),S.repairParentChkClassWithSelf(e,t)}}}},l={getRadioCheckedList:function(e){for(var c=y.getRoot(e).radioCheckedList,a=0,t=c.length;t>a;a++)y.getNodeCache(e,c[a].tId)||(c.splice(a,1),a--,t--);return c},getCheckStatus:function(e,c){if(!e.check.enable||c.nocheck||c.chkDisabled)return null;var a=e.data.key.checked,t={checked:c[a],half:c.halfCheck?c.halfCheck:e.check.chkStyle==v.radio.STYLE?2===c.check_Child_State:c[a]?c.check_Child_State>-1&&c.check_Child_State<2:c.check_Child_State>0};return t},getTreeCheckedNodes:function(e,c,a,t){if(!c)return[];var h=e.data.key.children,k=e.data.key.checked,r=a&&e.check.chkStyle==v.radio.STYLE&&e.check.radioType==v.radio.TYPE_ALL;t=t?t:[];for(var n=0,d=c.length;d>n&&(c[n].nocheck===!0||c[n].chkDisabled===!0||c[n][k]!=a||(t.push(c[n]),!r))&&(y.getTreeCheckedNodes(e,c[n][h],a,t),!(r&&t.length>0));n++);return t},getTreeChangeCheckedNodes:function(e,c,a){if(!c)return[];var t=e.data.key.children,h=e.data.key.checked;a=a?a:[];for(var k=0,r=c.length;r>k;k++)c[k].nocheck!==!0&&c[k].chkDisabled!==!0&&c[k][h]!=c[k].checkedOld&&a.push(c[k]),y.getTreeChangeCheckedNodes(e,c[k][t],a);return a},makeChkFlag:function(e,c){if(c){var a=e.data.key.children,t=e.data.key.checked,h=-1;if(c[a])for(var k=0,r=c[a].length;r>k;k++){var n=c[a][k],d=-1;if(e.check.chkStyle==v.radio.STYLE){if(d=n.nocheck===!0||n.chkDisabled===!0?n.check_Child_State:n.halfCheck===!0?2:n[t]?2:n.check_Child_State>0?2:0,2==d){h=2;break}0==d&&(h=0)}else if(e.check.chkStyle==v.checkbox.STYLE){if(d=n.nocheck===!0||n.chkDisabled===!0?n.check_Child_State:n.halfCheck===!0?1:n[t]?-1===n.check_Child_State||2===n.check_Child_State?2:1:n.check_Child_State>0?1:0,1===d){h=1;break}if(2===d&&h>-1&&k>0&&d!==h){h=1;break}if(2===h&&d>-1&&2>d){h=1;break}d>-1&&(h=d)}}c.check_Child_State=h}}},s={},C={onCheckNode:function(e,c){if(c.chkDisabled===!0)return!1;var a=y.getSetting(e.data.treeId),t=a.data.key.checked;if(0==p.apply(a.callback.beforeCheck,[a.treeId,c],!0))return!0;c[t]=!c[t],S.checkNodeRelation(a,c);var h=T(c,v.id.CHECK,a);return S.setChkClass(a,h,c),S.repairParentChkClassWithSelf(a,c),a.treeObj.trigger(v.event.CHECK,[e,a.treeId,c]),!0},onMouseoverCheck:function(e,c){if(c.chkDisabled===!0)return!1;var a=y.getSetting(e.data.treeId),t=T(c,v.id.CHECK,a);return c.check_Focus=!0,S.setChkClass(a,t,c),!0},onMouseoutCheck:function(e,c){if(c.chkDisabled===!0)return!1;var a=y.getSetting(e.data.treeId),t=T(c,v.id.CHECK,a);return c.check_Focus=!1,S.setChkClass(a,t,c),!0}},f={},u={checkNodeRelation:function(e,c){var a,t,h,k=e.data.key.children,r=e.data.key.checked,n=v.radio;if(e.check.chkStyle==n.STYLE){var d=y.getRadioCheckedList(e);if(c[r])if(e.check.radioType==n.TYPE_ALL){for(t=d.length-1;t>=0;t--)a=d[t],a[r]=!1,d.splice(t,1),S.setChkClass(e,T(a,v.id.CHECK,e),a),a.parentTId!=c.parentTId&&S.repairParentChkClassWithSelf(e,a);d.push(c)}else{var i=c.parentTId?c.getParentNode():y.getRoot(e);for(t=0,h=i[k].length;h>t;t++)a=i[k][t],a[r]&&a!=c&&(a[r]=!1,S.setChkClass(e,T(a,v.id.CHECK,e),a))}else if(e.check.radioType==n.TYPE_ALL)for(t=0,h=d.length;h>t;t++)if(c==d[t]){d.splice(t,1);break}}else c[r]&&(!c[k]||0==c[k].length||e.check.chkboxType.Y.indexOf("s")>-1)&&S.setSonNodeCheckBox(e,c,!0),c[r]||c[k]&&0!=c[k].length&&!(e.check.chkboxType.N.indexOf("s")>-1)||S.setSonNodeCheckBox(e,c,!1),c[r]&&e.check.chkboxType.Y.indexOf("p")>-1&&S.setParentNodeCheckBox(e,c,!0),!c[r]&&e.check.chkboxType.N.indexOf("p")>-1&&S.setParentNodeCheckBox(e,c,!1)},makeChkClass:function(e,c){var a=e.data.key.checked,t=v.checkbox,h=v.radio,k="";k=c.chkDisabled===!0?t.DISABLED:c.halfCheck?t.PART:e.check.chkStyle==h.STYLE?c.check_Child_State<1?t.FULL:t.PART:c[a]?2===c.check_Child_State||-1===c.check_Child_State?t.FULL:t.PART:c.check_Child_State<1?t.FULL:t.PART;var r=e.check.chkStyle+"_"+(c[a]?t.TRUE:t.FALSE)+"_"+k;return r=c.check_Focus&&c.chkDisabled!==!0?r+"_"+t.FOCUS:r,v.className.BUTTON+" "+t.DEFAULT+" "+r},repairAllChk:function(e,c){if(e.check.enable&&e.check.chkStyle===v.checkbox.STYLE)for(var a=e.data.key.checked,t=e.data.key.children,h=y.getRoot(e),k=0,r=h[t].length;r>k;k++){var n=h[t][k];n.nocheck!==!0&&n.chkDisabled!==!0&&(n[a]=c),S.setSonNodeCheckBox(e,n,c)}},repairChkClass:function(e,c){if(c&&(y.makeChkFlag(e,c),c.nocheck!==!0)){var a=T(c,v.id.CHECK,e);S.setChkClass(e,a,c)}},repairParentChkClass:function(e,c){if(c&&c.parentTId){var a=c.getParentNode();S.repairChkClass(e,a),S.repairParentChkClass(e,a)}},repairParentChkClassWithSelf:function(e,c){if(c){var a=e.data.key.children;c[a]&&c[a].length>0?S.repairParentChkClass(e,c[a][0]):S.repairParentChkClass(e,c)}},repairSonChkDisabled:function(e,c,a,t){if(c){var h=e.data.key.children;if(c.chkDisabled!=a&&(c.chkDisabled=a),S.repairChkClass(e,c),c[h]&&t)for(var k=0,r=c[h].length;r>k;k++){var n=c[h][k];S.repairSonChkDisabled(e,n,a,t)}}},repairParentChkDisabled:function(e,c,a,t){c&&(c.chkDisabled!=a&&t&&(c.chkDisabled=a),S.repairChkClass(e,c),S.repairParentChkDisabled(e,c.getParentNode(),a,t))},setChkClass:function(e,c,a){c&&(a.nocheck===!0?c.hide():c.show(),c.removeClass(),c.addClass(S.makeChkClass(e,a)))},setParentNodeCheckBox:function(e,c,a,t){var h=e.data.key.children,k=e.data.key.checked,r=T(c,v.id.CHECK,e);if(t||(t=c),y.makeChkFlag(e,c),c.nocheck!==!0&&c.chkDisabled!==!0&&(c[k]=a,S.setChkClass(e,r,c),e.check.autoCheckTrigger&&c!=t&&e.treeObj.trigger(v.event.CHECK,[null,e.treeId,c])),c.parentTId){var n=!0;if(!a)for(var d=c.getParentNode()[h],i=0,o=d.length;o>i;i++)if(d[i].nocheck!==!0&&d[i].chkDisabled!==!0&&d[i][k]||(d[i].nocheck===!0||d[i].chkDisabled===!0)&&d[i].check_Child_State>0){n=!1;break}n&&S.setParentNodeCheckBox(e,c.getParentNode(),a,t)}},setSonNodeCheckBox:function(e,c,a,t){if(c){var h=e.data.key.children,k=e.data.key.checked,r=T(c,v.id.CHECK,e);t||(t=c);var n=!1;if(c[h])for(var d=0,i=c[h].length;i>d&&c.chkDisabled!==!0;d++){var o=c[h][d];S.setSonNodeCheckBox(e,o,a,t),o.chkDisabled===!0&&(n=!0)}c!=y.getRoot(e)&&c.chkDisabled!==!0&&(n&&c.nocheck!==!0&&y.makeChkFlag(e,c),c.nocheck!==!0&&c.chkDisabled!==!0?(c[k]=a,n||(c.check_Child_State=c[h]&&c[h].length>0?a?2:0:-1)):c.check_Child_State=-1,S.setChkClass(e,r,c),e.check.autoCheckTrigger&&c!=t&&c.nocheck!==!0&&c.chkDisabled!==!0&&e.treeObj.trigger(v.event.CHECK,[null,e.treeId,c]))}}},g={tools:f,view:u,event:s,data:l};e.extend(!0,e.fn.zTree.consts,c),e.extend(!0,e.fn.zTree._z,g);var b=e.fn.zTree,p=b._z.tools,v=b.consts,S=b._z.view,y=b._z.data,T=(b._z.event,p.$);y.exSetting(a),y.addInitBind(k),y.addInitUnBind(r),y.addInitCache(h),y.addInitNode(d),y.addInitProxy(n,!0),y.addInitRoot(t),y.addBeforeA(i),y.addZTreeTools(o);var N=S.createNodes;S.createNodes=function(e,c,a,t){N&&N.apply(S,arguments),a&&S.repairParentChkClassWithSelf(e,t)};var E=S.removeNode;S.removeNode=function(e,c){var a=c.getParentNode();E&&E.apply(S,arguments),c&&a&&(S.repairChkClass(e,a),S.repairParentChkClass(e,a))};var _=S.appendNodes;S.appendNodes=function(e,c,a,t){var h="";return _&&(h=_.apply(S,arguments)),t&&y.makeChkFlag(e,t),h}}(jQuery);
+/*
+ * JQuery zTree excheck 3.5.14
+ * http://zTree.me/
+ *
+ * Copyright (c) 2010 Hunter.z
+ *
+ * Licensed same as jquery - MIT License
+ * http://www.opensource.org/licenses/mit-license.php
+ *
+ * email: hunter.z@263.net
+ * Date: 2013-06-28
+ */
+(function($){
+	//default consts of excheck
+	var _consts = {
+		event: {
+			CHECK: "ztree_check"
+		},
+		id: {
+			CHECK: "_check"
+		},
+		checkbox: {
+			STYLE: "checkbox",
+			DEFAULT: "chk",
+			DISABLED: "disable",
+			FALSE: "false",
+			TRUE: "true",
+			FULL: "full",
+			PART: "part",
+			FOCUS: "focus"
+		},
+		radio: {
+			STYLE: "radio",
+			TYPE_ALL: "all",
+			TYPE_LEVEL: "level"
+		}
+	},
+	//default setting of excheck
+	_setting = {
+		check: {
+			enable: false,
+			autoCheckTrigger: false,
+			chkStyle: _consts.checkbox.STYLE,
+			nocheckInherit: false,
+			chkDisabledInherit: false,
+			radioType: _consts.radio.TYPE_LEVEL,
+			chkboxType: {
+				"Y": "ps",
+				"N": "ps"
+			}
+		},
+		data: {
+			key: {
+				checked: "checked"
+			}
+		},
+		callback: {
+			beforeCheck:null,
+			onCheck:null
+		}
+	},
+	//default root of excheck
+	_initRoot = function (setting) {
+		var r = data.getRoot(setting);
+		r.radioCheckedList = [];
+	},
+	//default cache of excheck
+	_initCache = function(treeId) {},
+	//default bind event of excheck
+	_bindEvent = function(setting) {
+		var o = setting.treeObj,
+		c = consts.event;
+		o.bind(c.CHECK, function (event, srcEvent, treeId, node) {
+			tools.apply(setting.callback.onCheck, [!!srcEvent?srcEvent : event, treeId, node]);
+		});
+	},
+	_unbindEvent = function(setting) {
+		var o = setting.treeObj,
+		c = consts.event;
+		o.unbind(c.CHECK);
+	},
+	//default event proxy of excheck
+	_eventProxy = function(e) {
+		var target = e.target,
+		setting = data.getSetting(e.data.treeId),
+		tId = "", node = null,
+		nodeEventType = "", treeEventType = "",
+		nodeEventCallback = null, treeEventCallback = null;
+
+		if (tools.eqs(e.type, "mouseover")) {
+			if (setting.check.enable && tools.eqs(target.tagName, "span") && target.getAttribute("treeNode"+ consts.id.CHECK) !== null) {
+				tId = tools.getNodeMainDom(target).id;
+				nodeEventType = "mouseoverCheck";
+			}
+		} else if (tools.eqs(e.type, "mouseout")) {
+			if (setting.check.enable && tools.eqs(target.tagName, "span") && target.getAttribute("treeNode"+ consts.id.CHECK) !== null) {
+				tId = tools.getNodeMainDom(target).id;
+				nodeEventType = "mouseoutCheck";
+			}
+		} else if (tools.eqs(e.type, "click")) {
+			if (setting.check.enable && tools.eqs(target.tagName, "span") && target.getAttribute("treeNode"+ consts.id.CHECK) !== null) {
+				tId = tools.getNodeMainDom(target).id;
+				nodeEventType = "checkNode";
+			}
+		}
+		if (tId.length>0) {
+			node = data.getNodeCache(setting, tId);
+			switch (nodeEventType) {
+				case "checkNode" :
+					nodeEventCallback = _handler.onCheckNode;
+					break;
+				case "mouseoverCheck" :
+					nodeEventCallback = _handler.onMouseoverCheck;
+					break;
+				case "mouseoutCheck" :
+					nodeEventCallback = _handler.onMouseoutCheck;
+					break;
+			}
+		}
+		var proxyResult = {
+			stop: nodeEventType === "checkNode",
+			node: node,
+			nodeEventType: nodeEventType,
+			nodeEventCallback: nodeEventCallback,
+			treeEventType: treeEventType,
+			treeEventCallback: treeEventCallback
+		};
+		return proxyResult
+	},
+	//default init node of excheck
+	_initNode = function(setting, level, n, parentNode, isFirstNode, isLastNode, openFlag) {
+		if (!n) return;
+		var checkedKey = setting.data.key.checked;
+		if (typeof n[checkedKey] == "string") n[checkedKey] = tools.eqs(n[checkedKey], "true");
+		n[checkedKey] = !!n[checkedKey];
+		n.checkedOld = n[checkedKey];
+		if (typeof n.nocheck == "string") n.nocheck = tools.eqs(n.nocheck, "true");
+		n.nocheck = !!n.nocheck || (setting.check.nocheckInherit && parentNode && !!parentNode.nocheck);
+		if (typeof n.chkDisabled == "string") n.chkDisabled = tools.eqs(n.chkDisabled, "true");
+		n.chkDisabled = !!n.chkDisabled || (setting.check.chkDisabledInherit && parentNode && !!parentNode.chkDisabled);
+		if (typeof n.halfCheck == "string") n.halfCheck = tools.eqs(n.halfCheck, "true");
+		n.halfCheck = !!n.halfCheck;
+		n.check_Child_State = -1;
+		n.check_Focus = false;
+		n.getCheckStatus = function() {return data.getCheckStatus(setting, n);};
+
+		if (setting.check.chkStyle == consts.radio.STYLE && setting.check.radioType == consts.radio.TYPE_ALL && n[checkedKey] ) {
+			var r = data.getRoot(setting);
+			r.radioCheckedList.push(n);
+		}
+	},
+	//add dom for check
+	_beforeA = function(setting, node, html) {
+		var checkedKey = setting.data.key.checked;
+		if (setting.check.enable) {
+			data.makeChkFlag(setting, node);
+			html.push("<span ID='", node.tId, consts.id.CHECK, "' class='", view.makeChkClass(setting, node), "' treeNode", consts.id.CHECK, (node.nocheck === true?" style='display:none;'":""),"></span>");
+		}
+	},
+	//update zTreeObj, add method of check
+	_zTreeTools = function(setting, zTreeTools) {
+		zTreeTools.checkNode = function(node, checked, checkTypeFlag, callbackFlag) {
+			var checkedKey = setting.data.key.checked;
+			if (node.chkDisabled === true) return;
+			if (checked !== true && checked !== false) {
+				checked = !node[checkedKey];
+			}
+			callbackFlag = !!callbackFlag;
+
+			if (node[checkedKey] === checked && !checkTypeFlag) {
+				return;
+			} else if (callbackFlag && tools.apply(this.setting.callback.beforeCheck, [setting.treeId, node], true) == false) {
+				return;
+			}
+			if (tools.uCanDo(this.setting) && setting.check.enable && node.nocheck !== true) {
+				node[checkedKey] = checked;
+				var checkObj = $$(node, consts.id.CHECK, setting);
+				if (checkTypeFlag || setting.check.chkStyle === consts.radio.STYLE) view.checkNodeRelation(setting, node);
+				view.setChkClass(setting, checkObj, node);
+				view.repairParentChkClassWithSelf(setting, node);
+				if (callbackFlag) {
+					setting.treeObj.trigger(consts.event.CHECK, [null, setting.treeId, node]);
+				}
+			}
+		}
+
+		zTreeTools.checkAllNodes = function(checked) {
+			view.repairAllChk(setting, !!checked);
+		}
+
+		zTreeTools.getCheckedNodes = function(checked) {
+			var childKey = setting.data.key.children;
+			checked = (checked !== false);
+			return data.getTreeCheckedNodes(setting, data.getRoot(setting)[childKey], checked);
+		}
+
+		zTreeTools.getChangeCheckedNodes = function() {
+			var childKey = setting.data.key.children;
+			return data.getTreeChangeCheckedNodes(setting, data.getRoot(setting)[childKey]);
+		}
+
+		zTreeTools.setChkDisabled = function(node, disabled, inheritParent, inheritChildren) {
+			disabled = !!disabled;
+			inheritParent = !!inheritParent;
+			inheritChildren = !!inheritChildren;
+			view.repairSonChkDisabled(setting, node, disabled, inheritChildren);
+			view.repairParentChkDisabled(setting, node.getParentNode(), disabled, inheritParent);
+		}
+
+		var _updateNode = zTreeTools.updateNode;
+		zTreeTools.updateNode = function(node, checkTypeFlag) {
+			if (_updateNode) _updateNode.apply(zTreeTools, arguments);
+			if (!node || !setting.check.enable) return;
+			var nObj = $$(node, setting);
+			if (nObj.get(0) && tools.uCanDo(setting)) {
+				var checkObj = $$(node, consts.id.CHECK, setting);
+				if (checkTypeFlag == true || setting.check.chkStyle === consts.radio.STYLE) view.checkNodeRelation(setting, node);
+				view.setChkClass(setting, checkObj, node);
+				view.repairParentChkClassWithSelf(setting, node);
+			}
+		}
+	},
+	//method of operate data
+	_data = {
+		getRadioCheckedList: function(setting) {
+			var checkedList = data.getRoot(setting).radioCheckedList;
+			for (var i=0, j=checkedList.length; i<j; i++) {
+				if(!data.getNodeCache(setting, checkedList[i].tId)) {
+					checkedList.splice(i, 1);
+					i--; j--;
+				}
+			}
+			return checkedList;
+		},
+		getCheckStatus: function(setting, node) {
+			if (!setting.check.enable || node.nocheck || node.chkDisabled) return null;
+			var checkedKey = setting.data.key.checked,
+			r = {
+				checked: node[checkedKey],
+				half: node.halfCheck ? node.halfCheck : (setting.check.chkStyle == consts.radio.STYLE ? (node.check_Child_State === 2) : (node[checkedKey] ? (node.check_Child_State > -1 && node.check_Child_State < 2) : (node.check_Child_State > 0)))
+			};
+			return r;
+		},
+		getTreeCheckedNodes: function(setting, nodes, checked, results) {
+			if (!nodes) return [];
+			var childKey = setting.data.key.children,
+			checkedKey = setting.data.key.checked,
+			onlyOne = (checked && setting.check.chkStyle == consts.radio.STYLE && setting.check.radioType == consts.radio.TYPE_ALL);
+			results = !results ? [] : results;
+			for (var i = 0, l = nodes.length; i < l; i++) {
+				if (nodes[i].nocheck !== true && nodes[i].chkDisabled !== true && nodes[i][checkedKey] == checked) {
+					results.push(nodes[i]);
+					if(onlyOne) {
+						break;
+					}
+				}
+				data.getTreeCheckedNodes(setting, nodes[i][childKey], checked, results);
+				if(onlyOne && results.length > 0) {
+					break;
+				}
+			}
+			return results;
+		},
+		getTreeChangeCheckedNodes: function(setting, nodes, results) {
+			if (!nodes) return [];
+			var childKey = setting.data.key.children,
+			checkedKey = setting.data.key.checked;
+			results = !results ? [] : results;
+			for (var i = 0, l = nodes.length; i < l; i++) {
+				if (nodes[i].nocheck !== true && nodes[i].chkDisabled !== true && nodes[i][checkedKey] != nodes[i].checkedOld) {
+					results.push(nodes[i]);
+				}
+				data.getTreeChangeCheckedNodes(setting, nodes[i][childKey], results);
+			}
+			return results;
+		},
+		makeChkFlag: function(setting, node) {
+			if (!node) return;
+			var childKey = setting.data.key.children,
+			checkedKey = setting.data.key.checked,
+			chkFlag = -1;
+			if (node[childKey]) {
+				for (var i = 0, l = node[childKey].length; i < l; i++) {
+					var cNode = node[childKey][i];
+					var tmp = -1;
+					if (setting.check.chkStyle == consts.radio.STYLE) {
+						if (cNode.nocheck === true || cNode.chkDisabled === true) {
+							tmp = cNode.check_Child_State;
+						} else if (cNode.halfCheck === true) {
+							tmp = 2;
+						} else if (cNode[checkedKey]) {
+							tmp = 2;
+						} else {
+							tmp = cNode.check_Child_State > 0 ? 2:0;
+						}
+						if (tmp == 2) {
+							chkFlag = 2; break;
+						} else if (tmp == 0){
+							chkFlag = 0;
+						}
+					} else if (setting.check.chkStyle == consts.checkbox.STYLE) {
+						if (cNode.nocheck === true || cNode.chkDisabled === true) {
+							tmp = cNode.check_Child_State;
+						} else if (cNode.halfCheck === true) {
+							tmp = 1;
+						} else if (cNode[checkedKey] ) {
+							tmp = (cNode.check_Child_State === -1 || cNode.check_Child_State === 2) ? 2 : 1;
+						} else {
+							tmp = (cNode.check_Child_State > 0) ? 1 : 0;
+						}
+						if (tmp === 1) {
+							chkFlag = 1; break;
+						} else if (tmp === 2 && chkFlag > -1 && i > 0 && tmp !== chkFlag) {
+							chkFlag = 1; break;
+						} else if (chkFlag === 2 && tmp > -1 && tmp < 2) {
+							chkFlag = 1; break;
+						} else if (tmp > -1) {
+							chkFlag = tmp;
+						}
+					}
+				}
+			}
+			node.check_Child_State = chkFlag;
+		}
+	},
+	//method of event proxy
+	_event = {
+
+	},
+	//method of event handler
+	_handler = {
+		onCheckNode: function (event, node) {
+			if (node.chkDisabled === true) return false;
+			var setting = data.getSetting(event.data.treeId),
+			checkedKey = setting.data.key.checked;
+			if (tools.apply(setting.callback.beforeCheck, [setting.treeId, node], true) == false) return true;
+			node[checkedKey] = !node[checkedKey];
+			view.checkNodeRelation(setting, node);
+			var checkObj = $$(node, consts.id.CHECK, setting);
+			view.setChkClass(setting, checkObj, node);
+			view.repairParentChkClassWithSelf(setting, node);
+			setting.treeObj.trigger(consts.event.CHECK, [event, setting.treeId, node]);
+			return true;
+		},
+		onMouseoverCheck: function(event, node) {
+			if (node.chkDisabled === true) return false;
+			var setting = data.getSetting(event.data.treeId),
+			checkObj = $$(node, consts.id.CHECK, setting);
+			node.check_Focus = true;
+			view.setChkClass(setting, checkObj, node);
+			return true;
+		},
+		onMouseoutCheck: function(event, node) {
+			if (node.chkDisabled === true) return false;
+			var setting = data.getSetting(event.data.treeId),
+			checkObj = $$(node, consts.id.CHECK, setting);
+			node.check_Focus = false;
+			view.setChkClass(setting, checkObj, node);
+			return true;
+		}
+	},
+	//method of tools for zTree
+	_tools = {
+
+	},
+	//method of operate ztree dom
+	_view = {
+		checkNodeRelation: function(setting, node) {
+			var pNode, i, l,
+			childKey = setting.data.key.children,
+			checkedKey = setting.data.key.checked,
+			r = consts.radio;
+			if (setting.check.chkStyle == r.STYLE) {
+				var checkedList = data.getRadioCheckedList(setting);
+				if (node[checkedKey]) {
+					if (setting.check.radioType == r.TYPE_ALL) {
+						for (i = checkedList.length-1; i >= 0; i--) {
+							pNode = checkedList[i];
+							pNode[checkedKey] = false;
+							checkedList.splice(i, 1);
+
+							view.setChkClass(setting, $$(pNode, consts.id.CHECK, setting), pNode);
+							if (pNode.parentTId != node.parentTId) {
+								view.repairParentChkClassWithSelf(setting, pNode);
+							}
+						}
+						checkedList.push(node);
+					} else {
+						var parentNode = (node.parentTId) ? node.getParentNode() : data.getRoot(setting);
+						for (i = 0, l = parentNode[childKey].length; i < l; i++) {
+							pNode = parentNode[childKey][i];
+							if (pNode[checkedKey] && pNode != node) {
+								pNode[checkedKey] = false;
+								view.setChkClass(setting, $$(pNode, consts.id.CHECK, setting), pNode);
+							}
+						}
+					}
+				} else if (setting.check.radioType == r.TYPE_ALL) {
+					for (i = 0, l = checkedList.length; i < l; i++) {
+						if (node == checkedList[i]) {
+							checkedList.splice(i, 1);
+							break;
+						}
+					}
+				}
+
+			} else {
+				if (node[checkedKey] && (!node[childKey] || node[childKey].length==0 || setting.check.chkboxType.Y.indexOf("s") > -1)) {
+					view.setSonNodeCheckBox(setting, node, true);
+				}
+				if (!node[checkedKey] && (!node[childKey] || node[childKey].length==0 || setting.check.chkboxType.N.indexOf("s") > -1)) {
+					view.setSonNodeCheckBox(setting, node, false);
+				}
+				if (node[checkedKey] && setting.check.chkboxType.Y.indexOf("p") > -1) {
+					view.setParentNodeCheckBox(setting, node, true);
+				}
+				if (!node[checkedKey] && setting.check.chkboxType.N.indexOf("p") > -1) {
+					view.setParentNodeCheckBox(setting, node, false);
+				}
+			}
+		},
+		makeChkClass: function(setting, node) {
+			var checkedKey = setting.data.key.checked,
+			c = consts.checkbox, r = consts.radio,
+			fullStyle = "";
+			if (node.chkDisabled === true) {
+				fullStyle = c.DISABLED;
+			} else if (node.halfCheck) {
+				fullStyle = c.PART;
+			} else if (setting.check.chkStyle == r.STYLE) {
+				fullStyle = (node.check_Child_State < 1)? c.FULL:c.PART;
+			} else {
+				fullStyle = node[checkedKey] ? ((node.check_Child_State === 2 || node.check_Child_State === -1) ? c.FULL:c.PART) : ((node.check_Child_State < 1)? c.FULL:c.PART);
+			}
+			var chkName = setting.check.chkStyle + "_" + (node[checkedKey] ? c.TRUE : c.FALSE) + "_" + fullStyle;
+			chkName = (node.check_Focus && node.chkDisabled !== true) ? chkName + "_" + c.FOCUS : chkName;
+			return consts.className.BUTTON + " " + c.DEFAULT + " " + chkName;
+		},
+		repairAllChk: function(setting, checked) {
+			if (setting.check.enable && setting.check.chkStyle === consts.checkbox.STYLE) {
+				var checkedKey = setting.data.key.checked,
+				childKey = setting.data.key.children,
+				root = data.getRoot(setting);
+				for (var i = 0, l = root[childKey].length; i<l ; i++) {
+					var node = root[childKey][i];
+					if (node.nocheck !== true && node.chkDisabled !== true) {
+						node[checkedKey] = checked;
+					}
+					view.setSonNodeCheckBox(setting, node, checked);
+				}
+			}
+		},
+		repairChkClass: function(setting, node) {
+			if (!node) return;
+			data.makeChkFlag(setting, node);
+			if (node.nocheck !== true) {
+				var checkObj = $$(node, consts.id.CHECK, setting);
+				view.setChkClass(setting, checkObj, node);
+			}
+		},
+		repairParentChkClass: function(setting, node) {
+			if (!node || !node.parentTId) return;
+			var pNode = node.getParentNode();
+			view.repairChkClass(setting, pNode);
+			view.repairParentChkClass(setting, pNode);
+		},
+		repairParentChkClassWithSelf: function(setting, node) {
+			if (!node) return;
+			var childKey = setting.data.key.children;
+			if (node[childKey] && node[childKey].length > 0) {
+				view.repairParentChkClass(setting, node[childKey][0]);
+			} else {
+				view.repairParentChkClass(setting, node);
+			}
+		},
+		repairSonChkDisabled: function(setting, node, chkDisabled, inherit) {
+			if (!node) return;
+			var childKey = setting.data.key.children;
+			if (node.chkDisabled != chkDisabled) {
+				node.chkDisabled = chkDisabled;
+			}
+			view.repairChkClass(setting, node);
+			if (node[childKey] && inherit) {
+				for (var i = 0, l = node[childKey].length; i < l; i++) {
+					var sNode = node[childKey][i];
+					view.repairSonChkDisabled(setting, sNode, chkDisabled, inherit);
+				}
+			}
+		},
+		repairParentChkDisabled: function(setting, node, chkDisabled, inherit) {
+			if (!node) return;
+			if (node.chkDisabled != chkDisabled && inherit) {
+				node.chkDisabled = chkDisabled;
+			}
+			view.repairChkClass(setting, node);
+			view.repairParentChkDisabled(setting, node.getParentNode(), chkDisabled, inherit);
+		},
+		setChkClass: function(setting, obj, node) {
+			if (!obj) return;
+			if (node.nocheck === true) {
+				obj.hide();
+			} else {
+				obj.show();
+			}
+			obj.removeClass();
+			obj.addClass(view.makeChkClass(setting, node));
+		},
+		setParentNodeCheckBox: function(setting, node, value, srcNode) {
+			var childKey = setting.data.key.children,
+			checkedKey = setting.data.key.checked,
+			checkObj = $$(node, consts.id.CHECK, setting);
+			if (!srcNode) srcNode = node;
+			data.makeChkFlag(setting, node);
+			if (node.nocheck !== true && node.chkDisabled !== true) {
+				node[checkedKey] = value;
+				view.setChkClass(setting, checkObj, node);
+				if (setting.check.autoCheckTrigger && node != srcNode) {
+					setting.treeObj.trigger(consts.event.CHECK, [null, setting.treeId, node]);
+				}
+			}
+			if (node.parentTId) {
+				var pSign = true;
+				if (!value) {
+					var pNodes = node.getParentNode()[childKey];
+					for (var i = 0, l = pNodes.length; i < l; i++) {
+						if ((pNodes[i].nocheck !== true && pNodes[i].chkDisabled !== true && pNodes[i][checkedKey])
+						|| ((pNodes[i].nocheck === true || pNodes[i].chkDisabled === true) && pNodes[i].check_Child_State > 0)) {
+							pSign = false;
+							break;
+						}
+					}
+				}
+				if (pSign) {
+					view.setParentNodeCheckBox(setting, node.getParentNode(), value, srcNode);
+				}
+			}
+		},
+		setSonNodeCheckBox: function(setting, node, value, srcNode) {
+			if (!node) return;
+			var childKey = setting.data.key.children,
+			checkedKey = setting.data.key.checked,
+			checkObj = $$(node, consts.id.CHECK, setting);
+			if (!srcNode) srcNode = node;
+
+			var hasDisable = false;
+			if (node[childKey]) {
+				for (var i = 0, l = node[childKey].length; i < l && node.chkDisabled !== true; i++) {
+					var sNode = node[childKey][i];
+					view.setSonNodeCheckBox(setting, sNode, value, srcNode);
+					if (sNode.chkDisabled === true) hasDisable = true;
+				}
+			}
+
+			if (node != data.getRoot(setting) && node.chkDisabled !== true) {
+				if (hasDisable && node.nocheck !== true) {
+					data.makeChkFlag(setting, node);
+				}
+				if (node.nocheck !== true && node.chkDisabled !== true) {
+					node[checkedKey] = value;
+					if (!hasDisable) node.check_Child_State = (node[childKey] && node[childKey].length > 0) ? (value ? 2 : 0) : -1;
+				} else {
+					node.check_Child_State = -1;
+				}
+				view.setChkClass(setting, checkObj, node);
+				if (setting.check.autoCheckTrigger && node != srcNode && node.nocheck !== true && node.chkDisabled !== true) {
+					setting.treeObj.trigger(consts.event.CHECK, [null, setting.treeId, node]);
+				}
+			}
+
+		}
+	},
+
+	_z = {
+		tools: _tools,
+		view: _view,
+		event: _event,
+		data: _data
+	};
+	$.extend(true, $.fn.zTree.consts, _consts);
+	$.extend(true, $.fn.zTree._z, _z);
+
+	var zt = $.fn.zTree,
+	tools = zt._z.tools,
+	consts = zt.consts,
+	view = zt._z.view,
+	data = zt._z.data,
+	event = zt._z.event,
+	$$ = tools.$;
+
+	data.exSetting(_setting);
+	data.addInitBind(_bindEvent);
+	data.addInitUnBind(_unbindEvent);
+	data.addInitCache(_initCache);
+	data.addInitNode(_initNode);
+	data.addInitProxy(_eventProxy, true);
+	data.addInitRoot(_initRoot);
+	data.addBeforeA(_beforeA);
+	data.addZTreeTools(_zTreeTools);
+
+	var _createNodes = view.createNodes;
+	view.createNodes = function(setting, level, nodes, parentNode) {
+		if (_createNodes) _createNodes.apply(view, arguments);
+		if (!nodes) return;
+		view.repairParentChkClassWithSelf(setting, parentNode);
+	}
+	var _removeNode = view.removeNode;
+	view.removeNode = function(setting, node) {
+		var parentNode = node.getParentNode();
+		if (_removeNode) _removeNode.apply(view, arguments);
+		if (!node || !parentNode) return;
+		view.repairChkClass(setting, parentNode);
+		view.repairParentChkClass(setting, parentNode);
+	}
+
+	var _appendNodes = view.appendNodes;
+	view.appendNodes = function(setting, level, nodes, parentNode, initFlag, openFlag) {
+		var html = "";
+		if (_appendNodes) {
+			html = _appendNodes.apply(view, arguments);
+		}
+		if (parentNode) {
+			data.makeChkFlag(setting, parentNode);
+		}
+		return html;
+	}
+})(jQuery);

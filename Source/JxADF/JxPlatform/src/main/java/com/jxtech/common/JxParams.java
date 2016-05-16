@@ -2,10 +2,10 @@ package com.jxtech.common;
 
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
+import com.jxtech.app.jxvars.JxVars;
+import com.jxtech.app.jxvars.JxVarsFactory;
 import com.jxtech.util.JsonUtil;
 import com.jxtech.util.StrUtil;
 
@@ -34,39 +34,37 @@ public class JxParams implements Serializable {
     private String obpmJndi;// oracle bpm 访问地址
 
     // private static final Logger LOG = LoggerFactory.getLogger(JxParams.class);
-    private static JxParams instance;
+
+    private static class SingletonHolder {
+        private static final JxParams INSTANCE = new JxParams();
+    }
 
     private JxParams() {
-
+        JxVars vars = JxVarsFactory.getInstance();
+        this.userInfoUrl = vars.getValue("jx.comtop.userinfourl");
+        this.loginUrl = vars.getValue("jx.loginurl");
+        this.reportUrl = vars.getValue("jx.report.url");
+        this.doclink = vars.getValue("jx.doclink");
+        this.docpath = vars.getValue("jx.docpath");
+        this.jndi = "true".equalsIgnoreCase(vars.getValue("jx.db.jndi", "false"));
+        this.constantConnection = "true".equalsIgnoreCase(vars.getValue("jx.db.constantConnection", "false"));
+        this.authenticate = vars.getValue("jx.authenticate.class");
+        this.permission = vars.getValue("jx.permission.class");
+        this.obpmJndi = vars.getValue("jx.obpm.jndi");
+        this.obpmUser = vars.getValue("jx.obpm.user");
+        this.obpmPass = vars.getValue("jx.obpm.pass");
+        String ftypes = System.getProperty("jx.fileTypes");
+        if (!StrUtil.isNull(ftypes)) {
+            this.fileTypes = new HashMap<String, String>();
+            Map<String, Object> fs = JsonUtil.json2map(ftypes);
+            for (Map.Entry<String, Object> entry : fs.entrySet()) {
+                fileTypes.put(entry.getKey(), String.valueOf(entry.getValue()));
+            }
+        }
     }
 
     public static JxParams getInstance() {
-        if (instance == null) {
-            instance = new JxParams();
-            instance.setUserInfoUrl(System.getProperty("jx.comtop.userinfourl"));
-            instance.setLoginUrl(System.getProperty("jx.loginurl"));
-            instance.setReportUrl(System.getProperty("jx.report.url"));
-            instance.setDoclink(System.getProperty("jx.doclink"));
-            instance.setDocpath(System.getProperty("jx.docpath"));
-            instance.setJndi("true".equalsIgnoreCase(System.getProperty("jx.db.jndi", "false")));
-            instance.setConstantConnection("true".equalsIgnoreCase(System.getProperty("jx.db.constantConnection", "false")));
-            instance.setAuthenticate(System.getProperty("jx.authenticate.class"));
-            instance.setPermission(System.getProperty("jx.permission.class"));
-            instance.setObpmJndi(System.getProperty("jx.obpm.jndi"));
-            instance.setObpmUser(System.getProperty("jx.obpm.user"));
-            instance.setObpmPass(System.getProperty("jx.obpm.pass"));
-            String ftypes = System.getProperty("jx.fileTypes");
-            if (!StrUtil.isNull(ftypes)) {
-                instance.fileTypes = new HashMap<String,String>();
-                Map<String, Object> fs = JsonUtil.json2map(ftypes);
-                Iterator<Entry<String, Object>> iter = fs.entrySet().iterator();
-                while (iter.hasNext()) {
-                    Map.Entry<String, Object> entry = (Map.Entry<String, Object>) iter.next();
-                    instance.fileTypes.put(entry.getKey(), String.valueOf(entry.getValue()));
-                }
-            }
-        }
-        return instance;
+        return SingletonHolder.INSTANCE;
     }
 
     public boolean isJndi() {

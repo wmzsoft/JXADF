@@ -1,1 +1,78 @@
-!function(){function e(e){n.extend(this,e)}var n=Flotr._;e.prototype={getRange:function(){var e,n,t,r=this.data,u=r.length,i=Number.MAX_VALUE,a=Number.MAX_VALUE,o=-Number.MAX_VALUE,d=-Number.MAX_VALUE,m=!1,x=!1;if(0>u||this.hide)return!1;for(t=0;u>t;t++)e=r[t][0],n=r[t][1],null!==e&&(i>e&&(i=e,m=!0),e>o&&(o=e,m=!0)),null!==n&&(a>n&&(a=n,x=!0),n>d&&(d=n,x=!0));return{xmin:i,xmax:o,ymin:a,ymax:d,xused:m,yused:x}}},n.extend(e,{getSeries:function(t){return n.map(t,function(t){var r;return t.data?(r=new e,n.extend(r,t)):r=new e({data:t}),r})}}),Flotr.Series=e}();
+/**
+ * Flotr Series Library
+ */
+
+(function () {
+
+var
+  _ = Flotr._;
+
+function Series (o) {
+  _.extend(this, o);
+}
+
+Series.prototype = {
+
+  getRange: function () {
+
+    var
+      data = this.data,
+      length = data.length,
+      xmin = Number.MAX_VALUE,
+      ymin = Number.MAX_VALUE,
+      xmax = -Number.MAX_VALUE,
+      ymax = -Number.MAX_VALUE,
+      xused = false,
+      yused = false,
+      x, y, i;
+
+    if (length < 0 || this.hide) return false;
+
+    for (i = 0; i < length; i++) {
+      x = data[i][0];
+      y = data[i][1];
+      if (x !== null) {
+        if (x < xmin) { xmin = x; xused = true; }
+        if (x > xmax) { xmax = x; xused = true; }
+      }
+      if (y !== null) {
+        if (y < ymin) { ymin = y; yused = true; }
+        if (y > ymax) { ymax = y; yused = true; }
+      }
+    }
+
+    return {
+      xmin : xmin,
+      xmax : xmax,
+      ymin : ymin,
+      ymax : ymax,
+      xused : xused,
+      yused : yused
+    };
+  }
+};
+
+_.extend(Series, {
+  /**
+   * Collects dataseries from input and parses the series into the right format. It returns an Array 
+   * of Objects each having at least the 'data' key set.
+   * @param {Array, Object} data - Object or array of dataseries
+   * @return {Array} Array of Objects parsed into the right format ({(...,) data: [[x1,y1], [x2,y2], ...] (, ...)})
+   */
+  getSeries: function(data){
+    return _.map(data, function(s){
+      var series;
+      if (s.data) {
+        series = new Series();
+        _.extend(series, s);
+      } else {
+        series = new Series({data:s});
+      }
+      return series;
+    });
+  }
+});
+
+Flotr.Series = Series;
+
+})();

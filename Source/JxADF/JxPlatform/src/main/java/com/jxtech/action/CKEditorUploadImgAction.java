@@ -36,7 +36,7 @@ public class CKEditorUploadImgAction extends JxActionSupport {
      * @throws IOException
      */
     public String execute() throws Exception {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         // 获得response,request
         HttpServletResponse response = ServletActionContext.getResponse();
         HttpServletRequest request = ServletActionContext.getRequest();
@@ -44,29 +44,29 @@ public class CKEditorUploadImgAction extends JxActionSupport {
         response.setCharacterEncoding("UTF-8");
         // CKEditor提交的很重要的一个参数
         String callback = request.getParameter("CKEditorFuncNum");
-        //String expandedName; // 文件扩展名
-        if (uploadContentType.equals("image/pjpeg") || uploadContentType.equals("image/jpeg")) {
+        // String expandedName; // 文件扩展名
+        if ("image/pjpeg".equals(uploadContentType) || "image/jpeg".equals(uploadContentType)) {
             // IE6上传jpg图片的headimageContentType是image/pjpeg，而IE9以及火狐上传的jpg图片是image/jpeg
-            //expandedName = ".jpg";
-        } else if (uploadContentType.equals("image/png") || uploadContentType.equals("image/x-png")) {
+            // expandedName = ".jpg";
+        } else if ("image/png".equals(uploadContentType) || "image/x-png".equals(uploadContentType)) {
             // IE6上传的png图片的headimageContentType是"image/x-png"
-            //expandedName = ".png";
-        } else if (uploadContentType.equals("image/gif")) {
-            //expandedName = ".gif";
-        } else if (uploadContentType.equals("image/bmp")) {
-            //expandedName = ".bmp";
+            // expandedName = ".png";
+        } else if ("image/gif".equals(uploadContentType)) {
+            // expandedName = ".gif";
+        } else if ("image/bmp".equals(uploadContentType)) {
+            // expandedName = ".bmp";
         } else {
             sb.append("<script type=\"text/javascript\">");
-            sb.append("window.parent.CKEDITOR.tools.callFunction(" + callback + ",'','");
-            sb.append(JxLangResourcesUtil.getString("ckeditor.file.format.info") + "');");
+            sb.append("window.parent.CKEDITOR.tools.callFunction(").append(callback).append(",'','");
+            sb.append(JxLangResourcesUtil.getString("ckeditor.file.format.info")).append("');");
             sb.append("</script>");
             message = sb.toString();
             return SUCCESS;
         }
         if (upload.length() > 3000 * 1024) {
             sb.append("<script type=\"text/javascript\">");
-            sb.append("window.parent.CKEDITOR.tools.callFunction(" + callback + ",'','");
-            sb.append(JxLangResourcesUtil.getString("ckeditor.file.maxsize.info") + "');");
+            sb.append("window.parent.CKEDITOR.tools.callFunction(").append(callback).append(",'','");
+            sb.append(JxLangResourcesUtil.getString("ckeditor.file.maxsize.info")).append("');");
             sb.append("</script>");
             message = sb.toString();
             return SUCCESS;
@@ -74,7 +74,7 @@ public class CKEditorUploadImgAction extends JxActionSupport {
         InputStream is = null;
         OutputStream os = null;
         String uploadPath = ServletActionContext.getServletContext().getRealPath(UPLOAD_PATH);
-        String fileName = String.valueOf(DateUtil.now().getTime())+uploadFileName; // 采用时间+原文件名
+        String fileName = String.valueOf(DateUtil.now().getTime()) + uploadFileName; // 采用时间+原文件名
         try {
             is = new FileInputStream(upload);
             // 图片上传路径
@@ -98,9 +98,9 @@ public class CKEditorUploadImgAction extends JxActionSupport {
 
         // 返回"图像"选项卡并显示图片 request.getContextPath()为web项目名
         sb.append("<script type=\"text/javascript\">");
-        sb.append("window.parent.CKEDITOR.tools.callFunction(" + callback + ",'");
-        sb.append(request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort());
-        sb.append(request.getContextPath() + UPLOAD_PATH + "/" + fileName + "','')");
+        sb.append("window.parent.CKEDITOR.tools.callFunction(").append(callback).append(",'");
+        sb.append(request.getScheme()).append("://").append(request.getServerName()).append(":").append(request.getServerPort());
+        sb.append(request.getContextPath()).append(UPLOAD_PATH).append("/").append(fileName).append("','')");
         sb.append("</script>");
         message = sb.toString();
         return SUCCESS;

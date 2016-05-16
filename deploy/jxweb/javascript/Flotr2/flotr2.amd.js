@@ -1,3 +1,5642 @@
-!function(t,e){"function"==typeof define&&define.amd?define(["bean","underscore"],function(i,o){return t.Flotr=e(i,o)}):t.Flotr=e(t.bean,t._)}(this,function(t,e){return function(){var i,o=this,s=this.Flotr;i={_:e,bean:t,isIphone:/iphone/i.test(navigator.userAgent),isIE:-1!=navigator.appVersion.indexOf("MSIE")?parseFloat(navigator.appVersion.split("MSIE")[1]):!1,graphTypes:{},plugins:{},addType:function(t,e){i.graphTypes[t]=e,i.defaultOptions[t]=e.options||{},i.defaultOptions.defaultType=i.defaultOptions.defaultType||t},addPlugin:function(t,e){i.plugins[t]=e,i.defaultOptions[t]=e.options||{}},draw:function(t,e,o,s){return new(s=s||i.Graph)(t,e,o)},merge:function(t,e){var o,s,l=e||{};for(o in t)s=t[o],l[o]=s&&"object"==typeof s?s.constructor===Array?this._.clone(s):s.constructor===RegExp||this._.isElement(s)?s:i.merge(s,e?e[o]:void 0):s;return l},clone:function(t){return i.merge(t,{})},getTickSize:function(t,e,o,s){var l=(o-e)/t,n=i.getMagnitude(l),a=10,r=l/n;return 1.5>r?a=1:2.25>r?a=2:3>r?a=0===s?2:2.5:7.5>r&&(a=5),a*n},defaultTickFormatter:function(t){return t+""},defaultTrackFormatter:function(t){return"("+t.x+", "+t.y+")"},engineeringNotation:function(t,e,i){var o=["Y","Z","E","P","T","G","M","k",""],s=["y","z","a","f","p","n","µ","m",""],l=o.length;if(i=i||1e3,e=Math.pow(10,e||2),0===t)return 0;if(t>1)for(;l--&&t>=i;)t/=i;else for(o=s,l=o.length;l--&&1>t;)t*=i;return Math.round(t*e)/e+o[l]},getMagnitude:function(t){return Math.pow(10,Math.floor(Math.log(t)/Math.LN10))},toPixel:function(t){return Math.floor(t)+.5},toRad:function(t){return-t*(Math.PI/180)},floorInBase:function(t,e){return e*Math.floor(t/e)},drawText:function(t,e,o,s,l){return t.fillText?(l=this._.extend({size:i.defaultOptions.fontSize,color:"#000000",textAlign:"left",textBaseline:"bottom",weight:1,angle:0},l),t.save(),t.translate(o,s),t.rotate(l.angle),t.fillStyle=l.color,t.font=(l.weight>1?"bold ":"")+1.3*l.size+"px sans-serif",t.textAlign=l.textAlign,t.textBaseline=l.textBaseline,t.fillText(e,0,0),void t.restore()):void t.drawText(e,o,s,l)},getBestTextAlign:function(t,e){return e=e||{textAlign:"center",textBaseline:"middle"},t+=i.getTextAngleFromAlign(e),Math.abs(Math.cos(t))>.01&&(e.textAlign=Math.cos(t)>0?"right":"left"),Math.abs(Math.sin(t))>.01&&(e.textBaseline=Math.sin(t)>0?"top":"bottom"),e},alignTable:{"right middle":0,"right top":Math.PI/4,"center top":Math.PI/2,"left top":3*(Math.PI/4),"left middle":Math.PI,"left bottom":-3*(Math.PI/4),"center bottom":-Math.PI/2,"right bottom":-Math.PI/4,"center middle":0},getTextAngleFromAlign:function(t){return i.alignTable[t.textAlign+" "+t.textBaseline]||0},noConflict:function(){return o.Flotr=s,this}},o.Flotr=i}(),Flotr.defaultOptions={colors:["#00A8F0","#C0D800","#CB4B4B","#4DA74D","#9440ED"],ieBackgroundColor:"#FFFFFF",title:null,subtitle:null,shadowSize:4,defaultType:null,HtmlText:!0,fontColor:"#545454",fontSize:7.5,resolution:1,parseFloat:!0,preventDefault:!0,xaxis:{ticks:null,minorTicks:null,showLabels:!0,showMinorLabels:!1,labelsAngle:0,title:null,titleAngle:0,noTicks:5,minorTickFreq:null,tickFormatter:Flotr.defaultTickFormatter,tickDecimals:null,min:null,max:null,autoscale:!1,autoscaleMargin:0,color:null,mode:"normal",timeFormat:null,timeMode:"UTC",timeUnit:"millisecond",scaling:"linear",base:Math.E,titleAlign:"center",margin:!0},x2axis:{},yaxis:{ticks:null,minorTicks:null,showLabels:!0,showMinorLabels:!1,labelsAngle:0,title:null,titleAngle:90,noTicks:5,minorTickFreq:null,tickFormatter:Flotr.defaultTickFormatter,tickDecimals:null,min:null,max:null,autoscale:!1,autoscaleMargin:0,color:null,scaling:"linear",base:Math.E,titleAlign:"center",margin:!0},y2axis:{titleAngle:270},grid:{color:"#545454",backgroundColor:null,backgroundImage:null,watermarkAlpha:.4,tickColor:"#DDDDDD",labelMargin:3,verticalLines:!0,minorVerticalLines:null,horizontalLines:!0,minorHorizontalLines:null,outlineWidth:1,outline:"nsew",circular:!1},mouse:{track:!1,trackAll:!1,position:"se",relative:!1,trackFormatter:Flotr.defaultTrackFormatter,margin:5,lineColor:"#FF3F19",trackDecimals:1,sensibility:2,trackY:!0,radius:3,fillColor:null,fillOpacity:.4}},function(){function t(){this.rgba=["r","g","b","a"];for(var t=4;-1<--t;)this[this.rgba[t]]=arguments[t]||(3==t?1:0);this.normalize()}var e=Flotr._,i={aqua:[0,255,255],azure:[240,255,255],beige:[245,245,220],black:[0,0,0],blue:[0,0,255],brown:[165,42,42],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgrey:[169,169,169],darkgreen:[0,100,0],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],darkviolet:[148,0,211],fuchsia:[255,0,255],gold:[255,215,0],green:[0,128,0],indigo:[75,0,130],khaki:[240,230,140],lightblue:[173,216,230],lightcyan:[224,255,255],lightgreen:[144,238,144],lightgrey:[211,211,211],lightpink:[255,182,193],lightyellow:[255,255,224],lime:[0,255,0],magenta:[255,0,255],maroon:[128,0,0],navy:[0,0,128],olive:[128,128,0],orange:[255,165,0],pink:[255,192,203],purple:[128,0,128],violet:[128,0,128],red:[255,0,0],silver:[192,192,192],white:[255,255,255],yellow:[255,255,0]};t.prototype={scale:function(){for(var t=4;-1<--t;)e.isUndefined(arguments[t])||(this[this.rgba[t]]*=arguments[t]);return this.normalize()},alpha:function(t){return e.isUndefined(t)||e.isNull(t)||(this.a=t),this.normalize()},clone:function(){return new t(this.r,this.b,this.g,this.a)},limit:function(t,e,i){return Math.max(Math.min(t,i),e)},normalize:function(){var t=this.limit;return this.r=t(parseInt(this.r,10),0,255),this.g=t(parseInt(this.g,10),0,255),this.b=t(parseInt(this.b,10),0,255),this.a=t(this.a,0,1),this},distance:function(e){if(e){e=new t.parse(e);for(var i=0,o=3;-1<--o;)i+=Math.abs(this[this.rgba[o]]-e[this.rgba[o]]);return i}},toString:function(){return this.a>=1?"rgb("+[this.r,this.g,this.b].join(",")+")":"rgba("+[this.r,this.g,this.b,this.a].join(",")+")"},contrast:function(){var t=1-(.299*this.r+.587*this.g+.114*this.b)/255;return.5>t?"#000000":"#ffffff"}},e.extend(t,{parse:function(e){if(e instanceof t)return e;var o;if(o=/#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(e))return new t(parseInt(o[1],16),parseInt(o[2],16),parseInt(o[3],16));if(o=/rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(e))return new t(parseInt(o[1],10),parseInt(o[2],10),parseInt(o[3],10));if(o=/#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(e))return new t(parseInt(o[1]+o[1],16),parseInt(o[2]+o[2],16),parseInt(o[3]+o[3],16));if(o=/rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(e))return new t(parseInt(o[1],10),parseInt(o[2],10),parseInt(o[3],10),parseFloat(o[4]));if(o=/rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(e))return new t(2.55*parseFloat(o[1]),2.55*parseFloat(o[2]),2.55*parseFloat(o[3]));if(o=/rgba\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(e))return new t(2.55*parseFloat(o[1]),2.55*parseFloat(o[2]),2.55*parseFloat(o[3]),parseFloat(o[4]));var s=(e+"").replace(/^\s*([\S\s]*?)\s*$/,"$1").toLowerCase();return"transparent"==s?new t(255,255,255,0):(o=i[s])?new t(o[0],o[1],o[2]):new t(0,0,0,0)},processColor:function(i,o){var s=o.opacity;if(!i)return"rgba(0, 0, 0, 0)";if(i instanceof t)return i.alpha(s).toString();if(e.isString(i))return t.parse(i).alpha(s).toString();var l=i.colors?i:{colors:i};if(!o.ctx)return e.isArray(l.colors)?t.parse(e.isArray(l.colors[0])?l.colors[0][1]:l.colors[0]).alpha(s).toString():"rgba(0, 0, 0, 0)";l=e.extend({start:"top",end:"bottom"},l),/top/i.test(l.start)&&(o.x1=0),/left/i.test(l.start)&&(o.y1=0),/bottom/i.test(l.end)&&(o.x2=0),/right/i.test(l.end)&&(o.y2=0);var n,a,r,h=o.ctx.createLinearGradient(o.x1,o.y1,o.x2,o.y2);for(n=0;n<l.colors.length;n++)a=l.colors[n],e.isArray(a)?(r=a[0],a=a[1]):r=n/(l.colors.length-1),h.addColorStop(r,t.parse(a).alpha(s));return h}}),Flotr.Color=t}(),Flotr.Date={set:function(t,e,i,o){i=i||"UTC",e="set"+("UTC"===i?"UTC":"")+e,t[e](o)},get:function(t,e,i){return i=i||"UTC",e="get"+("UTC"===i?"UTC":"")+e,t[e]()},format:function(t,e,i){function o(t){return t+="",1==t.length?"0"+t:t}if(t){for(var s,l=this.get,n={h:l(t,"Hours",i).toString(),H:o(l(t,"Hours",i)),M:o(l(t,"Minutes",i)),S:o(l(t,"Seconds",i)),s:l(t,"Milliseconds",i),d:l(t,"Date",i).toString(),m:(l(t,"Month",i)+1).toString(),y:l(t,"FullYear",i).toString(),b:Flotr.Date.monthNames[l(t,"Month",i)]},a=[],r=!1,h=0;h<e.length;++h)s=e.charAt(h),r?(a.push(n[s]||s),r=!1):"%"==s?r=!0:a.push(s);return a.join("")}},getFormat:function(t,e){var i=Flotr.Date.timeUnits;return t<i.second?"%h:%M:%S.%s":t<i.minute?"%h:%M:%S":t<i.day?e<2*i.day?"%h:%M":"%b %d %h:%M":t<i.month?"%b %d":t<i.year?e<i.year?"%b":"%b %y":"%y"},formatter:function(t,e){var i=e.options,o=Flotr.Date.timeUnits[i.timeUnit],s=new Date(t*o);if(e.options.timeFormat)return Flotr.Date.format(s,i.timeFormat,i.timeMode);var l=(e.max-e.min)*o,n=e.tickSize*Flotr.Date.timeUnits[e.tickUnit];return Flotr.Date.format(s,Flotr.Date.getFormat(n,l),i.timeMode)},generator:function(t){function e(t){l(m,t,c,Flotr.floorInBase(n(m,t,c),x))}var i,o,s,l=this.set,n=this.get,a=this.timeUnits,r=this.spec,h=t.options,c=h.timeMode,d=a[h.timeUnit],f=t.min*d,u=t.max*d,p=(u-f)/h.noTicks,g=[],x=t.tickSize;for(o=h.tickFormatter===Flotr.defaultTickFormatter?this.formatter:h.tickFormatter,s=0;s<r.length-1;++s){var m=r[s][0]*a[r[s][1]];if(p<(m+r[s+1][0]*a[r[s+1][1]])/2&&m>=x)break}x=r[s][0],i=r[s][1],"year"==i&&(x=Flotr.getTickSize(h.noTicks*a.year,f,u,0),.5==x&&(i="month",x=6)),t.tickUnit=i,t.tickSize=x;var v=x*a[i];switch(m=new Date(f),i){case"millisecond":e("Milliseconds");break;case"second":e("Seconds");break;case"minute":e("Minutes");break;case"hour":e("Hours");break;case"month":e("Month");break;case"year":e("FullYear")}v>=a.second&&l(m,"Milliseconds",c,0),v>=a.minute&&l(m,"Seconds",c,0),v>=a.hour&&l(m,"Minutes",c,0),v>=a.day&&l(m,"Hours",c,0),v>=4*a.day&&l(m,"Date",c,1),v>=a.year&&l(m,"Month",c,0);var b,y=0,M=0/0;do if(b=M,M=m.getTime(),g.push({v:M/d,label:o(M/d,t)}),"month"==i)if(1>x){l(m,"Date",c,1);var k=m.getTime();l(m,"Month",c,n(m,"Month",c)+1);var w=m.getTime();m.setTime(M+y*a.hour+(w-k)*x),y=n(m,"Hours",c),l(m,"Hours",c,0)}else l(m,"Month",c,n(m,"Month",c)+x);else"year"==i?l(m,"FullYear",c,n(m,"FullYear",c)+x):m.setTime(M+v);while(u>M&&M!=b);return g},timeUnits:{millisecond:1,second:1e3,minute:6e4,hour:36e5,day:864e5,month:2592e6,year:31556952e3},spec:[[1,"millisecond"],[20,"millisecond"],[50,"millisecond"],[100,"millisecond"],[200,"millisecond"],[500,"millisecond"],[1,"second"],[2,"second"],[5,"second"],[10,"second"],[30,"second"],[1,"minute"],[2,"minute"],[5,"minute"],[10,"minute"],[30,"minute"],[1,"hour"],[2,"hour"],[4,"hour"],[8,"hour"],[12,"hour"],[1,"day"],[2,"day"],[3,"day"],[.25,"month"],[.5,"month"],[1,"month"],[2,"month"],[3,"month"],[6,"month"],[1,"year"]],monthNames:["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"]},function(){var t=Flotr._;Flotr.DOM={addClass:function(e,i){var o=e.className?e.className:"";t.include(o.split(/\s+/g),i)||(e.className=(o?o+" ":"")+i)},create:function(t){return document.createElement(t)},node:function(t){var e,i=Flotr.DOM.create("div");return i.innerHTML=t,e=i.children[0],i.innerHTML="",e},empty:function(t){t.innerHTML=""},hide:function(t){Flotr.DOM.setStyles(t,{display:"none"})},insert:function(e,i){t.isString(i)?e.innerHTML+=i:t.isElement(i)&&e.appendChild(i)},opacity:function(t,e){t.style.opacity=e},position:function(t,e){return t.offsetParent?(e=this.position(t.offsetParent),e.left+=t.offsetLeft,e.top+=t.offsetTop,e):{left:t.offsetLeft||0,top:t.offsetTop||0}},removeClass:function(e,i){var o=e.className?e.className:"";e.className=t.filter(o.split(/\s+/g),function(t){return t!=i?!0:void 0}).join(" ")},setStyles:function(e,i){t.each(i,function(t,i){e.style[i]=t})},show:function(t){Flotr.DOM.setStyles(t,{display:""})},size:function(t){return{height:t.offsetHeight,width:t.offsetWidth}}}}(),function(){var t=Flotr,e=t.bean;t.EventAdapter={observe:function(t,i,o){return e.add(t,i,o),this},fire:function(t,i,o){return e.fire(t,i,o),"undefined"!=typeof Prototype&&Event.fire(t,i,o),this},stopObserving:function(t,i,o){return e.remove(t,i,o),this},eventPointer:function(e){if(!t._.isUndefined(e.touches)&&e.touches.length>0)return{x:e.touches[0].pageX,y:e.touches[0].pageY};if(!t._.isUndefined(e.changedTouches)&&e.changedTouches.length>0)return{x:e.changedTouches[0].pageX,y:e.changedTouches[0].pageY};if(e.pageX||e.pageY)return{x:e.pageX,y:e.pageY};if(e.clientX||e.clientY){var i=document,o=i.body,s=i.documentElement;return{x:e.clientX+o.scrollLeft+s.scrollLeft,y:e.clientY+o.scrollTop+s.scrollTop}}}}}(),function(){var t=Flotr,e=t.DOM,i=t._,o=function(t){this.o=t};o.prototype={dimensions:function(t,e,i,o){return t?this.o.html?this.html(t,this.o.element,i,o):this.canvas(t,e):{width:0,height:0}},canvas:function(e,i){if(this.o.textEnabled){i=i||{};var o,s=this.measureText(e,i),l=s.width,n=i.size||t.defaultOptions.fontSize,a=i.angle||0,r=Math.cos(a),h=Math.sin(a),c=2,d=6;return o={width:Math.abs(r*l)+Math.abs(h*n)+c,height:Math.abs(h*l)+Math.abs(r*n)+d}}},html:function(t,i,o,s){var l=e.create("div");return e.setStyles(l,{position:"absolute",top:"-10000px"}),e.insert(l,'<div style="'+o+'" class="'+s+' flotr-dummy-div">'+t+"</div>"),e.insert(this.o.element,l),e.size(l)},measureText:function(e,o){var s,l=this.o.ctx;return!l.fillText||t.isIphone&&l.measure?{width:l.measure(e,o)}:(o=i.extend({size:t.defaultOptions.fontSize,weight:1,angle:0},o),l.save(),l.font=(o.weight>1?"bold ":"")+1.3*o.size+"px sans-serif",s=l.measureText(e),l.restore(),s)}},Flotr.Text=o}(),function(){function t(){return i.observe.apply(this,arguments),this._handles.push(arguments),this}var e=Flotr.DOM,i=Flotr.EventAdapter,o=Flotr._,s=Flotr;Graph=function(t,e,l){this._setEl(t),this._initMembers(),this._initPlugins(),i.fire(this.el,"flotr:beforeinit",[this]),this.data=e,this.series=s.Series.getSeries(e),this._initOptions(l),this._initGraphTypes(),this._initCanvas(),this._text=new s.Text({element:this.el,ctx:this.ctx,html:this.options.HtmlText,textEnabled:this.textEnabled}),i.fire(this.el,"flotr:afterconstruct",[this]),this._initEvents(),this.findDataRanges(),this.calculateSpacing(),this.draw(o.bind(function(){i.fire(this.el,"flotr:afterinit",[this])},this))},Graph.prototype={destroy:function(){i.fire(this.el,"flotr:destroy"),o.each(this._handles,function(t){i.stopObserving.apply(this,t)}),this._handles=[],this.el.graph=null},observe:t,_observe:t,processColor:function(t,e){var i={x1:0,y1:0,x2:this.plotWidth,y2:this.plotHeight,opacity:1,ctx:this.ctx};return o.extend(i,e),s.Color.processColor(t,i)},findDataRanges:function(){var t,e,i,l=this.axes;o.each(this.series,function(o){i=o.getRange(),i&&(t=o.xaxis,e=o.yaxis,t.datamin=Math.min(i.xmin,t.datamin),t.datamax=Math.max(i.xmax,t.datamax),e.datamin=Math.min(i.ymin,e.datamin),e.datamax=Math.max(i.ymax,e.datamax),t.used=t.used||i.xused,e.used=e.used||i.yused)},this),l.x.used||l.x2.used||(l.x.used=!0),l.y.used||l.y2.used||(l.y.used=!0),o.each(l,function(t){t.calculateRange()});var n=o.keys(s.graphTypes),a=!1;o.each(this.series,function(t){t.hide||(o.each(n,function(e){t[e]&&t[e].show&&(this.extendRange(e,t),a=!0)},this),a||this.extendRange(this.options.defaultType,t))},this)},extendRange:function(t,e){this[t].extendRange&&this[t].extendRange(e,e.data,e[t],this[t]),this[t].extendYRange&&this[t].extendYRange(e.yaxis,e.data,e[t],this[t]),this[t].extendXRange&&this[t].extendXRange(e.xaxis,e.data,e[t],this[t])},calculateSpacing:function(){var t,e,i=this.axes,s=this.options,l=this.series,n=s.grid.labelMargin,a=this._text,r=i.x,h=i.x2,c=i.y,d=i.y2,f=s.grid.outlineWidth;for(o.each(i,function(t){t.calculateTicks(),t.calculateTextDimensions(a,s)}),e=a.dimensions(s.title,{size:1.5*s.fontSize},"font-size:1em;font-weight:bold;","flotr-title"),this.titleHeight=e.height,e=a.dimensions(s.subtitle,{size:s.fontSize},"font-size:smaller;","flotr-subtitle"),this.subtitleHeight=e.height,t=0;t<s.length;++t)l[t].points.show&&(f=Math.max(f,l[t].points.radius+l[t].points.lineWidth/2));var u=this.plotOffset;r.options.margin===!1?(u.bottom=0,u.top=0):(u.bottom+=(s.grid.circular?0:r.used&&r.options.showLabels?r.maxLabel.height+n:0)+(r.used&&r.options.title?r.titleSize.height+n:0)+f,u.top+=(s.grid.circular?0:h.used&&h.options.showLabels?h.maxLabel.height+n:0)+(h.used&&h.options.title?h.titleSize.height+n:0)+this.subtitleHeight+this.titleHeight+f),c.options.margin===!1?(u.left=0,u.right=0):(u.left+=(s.grid.circular?0:c.used&&c.options.showLabels?c.maxLabel.width+n:0)+(c.used&&c.options.title?c.titleSize.width+n:0)+f,u.right+=(s.grid.circular?0:d.used&&d.options.showLabels?d.maxLabel.width+n:0)+(d.used&&d.options.title?d.titleSize.width+n:0)+f),u.top=Math.floor(u.top),this.plotWidth=this.canvasWidth-u.left-u.right,this.plotHeight=this.canvasHeight-u.bottom-u.top,r.length=h.length=this.plotWidth,c.length=d.length=this.plotHeight,c.offset=d.offset=this.plotHeight,r.setScale(),h.setScale(),c.setScale(),d.setScale()},draw:function(t){var e,o=this.ctx;if(i.fire(this.el,"flotr:beforedraw",[this.series,this]),this.series.length){for(o.save(),o.translate(this.plotOffset.left,this.plotOffset.top),e=0;e<this.series.length;e++)this.series[e].hide||this.drawSeries(this.series[e]);o.restore(),this.clip()}i.fire(this.el,"flotr:afterdraw",[this.series,this]),t&&t()},drawSeries:function(t){function e(t,e){var i=this.getOptions(t,e);this[e].draw(i)}var i=!1;t=t||this.series,o.each(s.graphTypes,function(o,s){t[s]&&t[s].show&&this[s]&&(i=!0,e.call(this,t,s))},this),i||e.call(this,t,this.options.defaultType)},getOptions:function(t,e){var i=t[e],o=(this[e],t.xaxis),l=t.yaxis,n={context:this.ctx,width:this.plotWidth,height:this.plotHeight,fontSize:this.options.fontSize,fontColor:this.options.fontColor,textEnabled:this.textEnabled,htmlText:this.options.HtmlText,text:this._text,element:this.el,data:t.data,color:t.color,shadowSize:t.shadowSize,xScale:o.d2p,yScale:l.d2p,xInverse:o.p2d,yInverse:l.p2d};return n=s.merge(i,n),n.fillStyle=this.processColor(i.fillColor||t.color,{opacity:i.fillOpacity}),n},getEventPosition:function(t){var o,s,l,n=document,a=n.body,r=n.documentElement,h=this.axes,c=this.plotOffset,d=this.lastMousePos,f=i.eventPointer(t),u=f.x-d.pageX,p=f.y-d.pageY;return"ontouchstart"in this.el?(o=e.position(this.overlay),s=f.x-o.left-c.left,l=f.y-o.top-c.top):(o=this.overlay.getBoundingClientRect(),s=t.clientX-o.left-c.left-a.scrollLeft-r.scrollLeft,l=t.clientY-o.top-c.top-a.scrollTop-r.scrollTop),{x:h.x.p2d(s),x2:h.x2.p2d(s),y:h.y.p2d(l),y2:h.y2.p2d(l),relX:s,relY:l,dX:u,dY:p,absX:f.x,absY:f.y,pageX:f.x,pageY:f.y}},clickHandler:function(t){return this.ignoreClick?(this.ignoreClick=!1,this.ignoreClick):void i.fire(this.el,"flotr:click",[this.getEventPosition(t),this])},mouseMoveHandler:function(t){if(!this.mouseDownMoveHandler){var e=this.getEventPosition(t);i.fire(this.el,"flotr:mousemove",[t,e,this]),this.lastMousePos=e}},mouseDownHandler:function(t){this.mouseUpHandler||(this.mouseUpHandler=o.bind(function(t){i.stopObserving(document,"mouseup",this.mouseUpHandler),i.stopObserving(document,"mousemove",this.mouseDownMoveHandler),this.mouseDownMoveHandler=null,this.mouseUpHandler=null,i.fire(this.el,"flotr:mouseup",[t,this])},this),this.mouseDownMoveHandler=o.bind(function(e){var o=this.getEventPosition(e);i.fire(this.el,"flotr:mousemove",[t,o,this]),this.lastMousePos=o},this),i.observe(document,"mouseup",this.mouseUpHandler),i.observe(document,"mousemove",this.mouseDownMoveHandler),i.fire(this.el,"flotr:mousedown",[t,this]),this.ignoreClick=!1)},drawTooltip:function(t,i,o,s){var l=this.getMouseTrack(),n="opacity:0.7;background-color:#000;color:#fff;display:none;position:absolute;padding:2px 8px;-moz-border-radius:4px;border-radius:4px;white-space:nowrap;",a=s.position,r=s.margin,h=this.plotOffset;null!==i&&null!==o?(s.relative?("n"==a.charAt(0)?n+="bottom:"+(r-h.top-o+this.canvasHeight)+"px;top:auto;":"s"==a.charAt(0)&&(n+="top:"+(r+h.top+o)+"px;bottom:auto;"),"e"==a.charAt(1)?n+="left:"+(r+h.left+i)+"px;right:auto;":"w"==a.charAt(1)&&(n+="right:"+(r-h.left-i+this.canvasWidth)+"px;left:auto;")):("n"==a.charAt(0)?n+="top:"+(r+h.top)+"px;bottom:auto;":"s"==a.charAt(0)&&(n+="bottom:"+(r+h.bottom)+"px;top:auto;"),"e"==a.charAt(1)?n+="right:"+(r+h.right)+"px;left:auto;":"w"==a.charAt(1)&&(n+="left:"+(r+h.left)+"px;right:auto;")),l.style.cssText=n,e.empty(l),e.insert(l,t),e.show(l)):e.hide(l)},clip:function(t){var e=this.plotOffset,i=this.canvasWidth,o=this.canvasHeight;t=t||this.ctx,s.isIE&&s.isIE<9?(t.save(),t.fillStyle=this.processColor(this.options.ieBackgroundColor),t.fillRect(0,0,i,e.top),t.fillRect(0,0,e.left,o),t.fillRect(0,o-e.bottom,i,e.bottom),t.fillRect(i-e.right,0,e.right,o),t.restore()):(t.clearRect(0,0,i,e.top),t.clearRect(0,0,e.left,o),t.clearRect(0,o-e.bottom,i,e.bottom),t.clearRect(i-e.right,0,e.right,o))},_initMembers:function(){this._handles=[],this.lastMousePos={pageX:null,pageY:null},this.plotOffset={left:0,right:0,top:0,bottom:0},this.ignoreClick=!0,this.prevHit=null},_initGraphTypes:function(){o.each(s.graphTypes,function(t,e){this[e]=s.clone(t)},this)},_initEvents:function(){var t,e,s,l=this.el;"ontouchstart"in l?(t=o.bind(function(o){s=!0,i.stopObserving(document,"touchend",t),i.fire(l,"flotr:mouseup",[event,this]),this.multitouches=null,e||this.clickHandler(o)},this),this.observe(this.overlay,"touchstart",o.bind(function(o){e=!1,s=!1,this.ignoreClick=!1,o.touches&&o.touches.length>1&&(this.multitouches=o.touches),i.fire(l,"flotr:mousedown",[event,this]),this.observe(document,"touchend",t)},this)),this.observe(this.overlay,"touchmove",o.bind(function(t){var o=this.getEventPosition(t);this.options.preventDefault&&t.preventDefault(),e=!0,this.multitouches||t.touches&&t.touches.length>1?this.multitouches=t.touches:s||i.fire(l,"flotr:mousemove",[event,o,this]),this.lastMousePos=o},this))):this.observe(this.overlay,"mousedown",o.bind(this.mouseDownHandler,this)).observe(l,"mousemove",o.bind(this.mouseMoveHandler,this)).observe(this.overlay,"click",o.bind(this.clickHandler,this)).observe(l,"mouseout",function(){i.fire(l,"flotr:mouseout")})},_initCanvas:function(){function t(t,i){return t||(t=e.create("canvas"),"undefined"!=typeof FlashCanvas&&"function"==typeof t.getContext&&FlashCanvas.initElement(t),t.className="flotr-"+i,t.style.cssText="position:absolute;left:0px;top:0px;",e.insert(a,t)),o.each(n,function(o,s){e.show(t),("canvas"!=i||t.getAttribute(s)!==o)&&(t.setAttribute(s,o*r.resolution),t.style[s]=o+"px")}),t.context_=null,t}function i(t){window.G_vmlCanvasManager&&window.G_vmlCanvasManager.initElement(t);var e=t.getContext("2d");return window.G_vmlCanvasManager||e.scale(r.resolution,r.resolution),e}var s,l,n,a=this.el,r=this.options,h=a.children,c=[];for(l=h.length;l--;)s=h[l],this.canvas||"flotr-canvas"!==s.className?this.overlay||"flotr-overlay"!==s.className?c.push(s):this.overlay=s:this.canvas=s;for(l=c.length;l--;)a.removeChild(c[l]);if(e.setStyles(a,{position:"relative"}),n={},n.width=a.clientWidth,n.height=a.clientHeight,n.width<=0||n.height<=0||r.resolution<=0)throw"Invalid dimensions for plot, width = "+n.width+", height = "+n.height+", resolution = "+r.resolution;this.canvas=t(this.canvas,"canvas"),this.overlay=t(this.overlay,"overlay"),this.ctx=i(this.canvas),this.ctx.clearRect(0,0,this.canvas.width,this.canvas.height),this.octx=i(this.overlay),this.octx.clearRect(0,0,this.overlay.width,this.overlay.height),this.canvasHeight=n.height,this.canvasWidth=n.width,this.textEnabled=!!this.ctx.drawText||!!this.ctx.fillText},_initPlugins:function(){o.each(s.plugins,function(t,e){o.each(t.callbacks,function(t,e){this.observe(this.el,e,o.bind(t,this))},this),this[e]=s.clone(t),o.each(this[e],function(t,i){o.isFunction(t)&&(this[e][i]=o.bind(t,this))},this)},this)},_initOptions:function(t){var e=s.clone(s.defaultOptions);e.x2axis=o.extend(o.clone(e.xaxis),e.x2axis),e.y2axis=o.extend(o.clone(e.yaxis),e.y2axis),this.options=s.merge(t||{},e),null===this.options.grid.minorVerticalLines&&"logarithmic"===this.options.xaxis.scaling&&(this.options.grid.minorVerticalLines=!0),null===this.options.grid.minorHorizontalLines&&"logarithmic"===this.options.yaxis.scaling&&(this.options.grid.minorHorizontalLines=!0),i.fire(this.el,"flotr:afterinitoptions",[this]),this.axes=s.Axis.getAxes(this.options);var l,n,a,r,h=[],c=[],d=this.series.length,f=this.series.length,u=this.options.colors,p=[],g=0;for(n=f-1;n>-1;--n)l=this.series[n].color,l&&(--f,o.isNumber(l)?h.push(l):p.push(s.Color.parse(l)));for(n=h.length-1;n>-1;--n)f=Math.max(f,h[n]+1);for(n=0;c.length<f;){l=u.length==n?new s.Color(100,100,100):s.Color.parse(u[n]);var x=g%2==1?-1:1,m=1+x*Math.ceil(g/2)*.2;l.scale(m,m,m),c.push(l),++n>=u.length&&(n=0,++g)}for(n=0,a=0;d>n;++n){r=this.series[n],r.color?o.isNumber(r.color)&&(r.color=c[r.color].toString()):r.color=c[a++].toString(),r.xaxis||(r.xaxis=this.axes.x),1==r.xaxis?r.xaxis=this.axes.x:2==r.xaxis&&(r.xaxis=this.axes.x2),r.yaxis||(r.yaxis=this.axes.y),1==r.yaxis?r.yaxis=this.axes.y:2==r.yaxis&&(r.yaxis=this.axes.y2);for(var v in s.graphTypes)r[v]=o.extend(o.clone(this.options[v]),r[v]);r.mouse=o.extend(o.clone(this.options.mouse),r.mouse),o.isUndefined(r.shadowSize)&&(r.shadowSize=this.options.shadowSize)}},_setEl:function(t){if(!t)throw"The target container doesn't exist";if(t.graph instanceof Graph)t.graph.destroy();else if(!t.clientWidth)throw"The target container must be visible";t.graph=this,this.el=t}},Flotr.Graph=Graph}(),function(){function t(t){this.orientation=1,this.offset=0,this.datamin=Number.MAX_VALUE,this.datamax=-Number.MAX_VALUE,s.extend(this,t)}function e(t,e){return t=Math.log(Math.max(t,Number.MIN_VALUE)),e!==Math.E&&(t/=Math.log(e)),t}function o(t,e){return e===Math.E?Math.exp(t):Math.pow(e,t)}var s=Flotr._,l="logarithmic";t.prototype={setScale:function(){var t,i=this.length,s=this.max,n=this.min,a=this.offset,r=this.orientation,h=this.options,c=h.scaling===l;t=c?i/(e(s,h.base)-e(n,h.base)):i/(s-n),this.scale=t,c?(this.d2p=function(i){return a+r*(e(i,h.base)-e(n,h.base))*t},this.p2d=function(i){return o((a+r*i)/t+e(n,h.base),h.base)}):(this.d2p=function(e){return a+r*(e-n)*t},this.p2d=function(e){return(a+r*e)/t+n})},calculateTicks:function(){var t=this.options;this.ticks=[],this.minorTicks=[],t.ticks?(this._cleanUserTicks(t.ticks,this.ticks),this._cleanUserTicks(t.minorTicks||[],this.minorTicks)):"time"==t.mode?this._calculateTimeTicks():"logarithmic"===t.scaling?this._calculateLogTicks():this._calculateTicks(),s.each(this.ticks,function(t){t.label+=""}),s.each(this.minorTicks,function(t){t.label+=""})},calculateRange:function(){if(this.used){var t=this,e=t.options,i=null!==e.min?e.min:t.datamin,o=null!==e.max?e.max:t.datamax,s=e.autoscaleMargin;if("logarithmic"==e.scaling&&(0>=i&&(i=t.datamin),0>=o&&(o=i)),o==i){var l=o?.01:1;null===e.min&&(i-=l),null===e.max&&(o+=l)}if("logarithmic"===e.scaling){0>i&&(i=o/e.base);var n=Math.log(o);e.base!=Math.E&&(n/=Math.log(e.base)),n=Math.ceil(n);var a=Math.log(i);e.base!=Math.E&&(a/=Math.log(e.base)),a=Math.ceil(a),t.tickSize=Flotr.getTickSize(e.noTicks,a,n,null===e.tickDecimals?0:e.tickDecimals),null===e.minorTickFreq&&(e.minorTickFreq=n-a>10?0:n-a>5?2:5)}else t.tickSize=Flotr.getTickSize(e.noTicks,i,o,e.tickDecimals);t.min=i,t.max=o,null===e.min&&e.autoscale&&(t.min-=t.tickSize*s,t.min<0&&t.datamin>=0&&(t.min=0),t.min=t.tickSize*Math.floor(t.min/t.tickSize)),null===e.max&&e.autoscale&&(t.max+=t.tickSize*s,t.max>0&&t.datamax<=0&&t.datamax!=t.datamin&&(t.max=0),t.max=t.tickSize*Math.ceil(t.max/t.tickSize)),t.min==t.max&&(t.max=t.min+1)}},calculateTextDimensions:function(t,e){var i,o,s="";if(this.options.showLabels)for(o=0;o<this.ticks.length;++o)i=this.ticks[o].label.length,i>s.length&&(s=this.ticks[o].label);this.maxLabel=t.dimensions(s,{size:e.fontSize,angle:Flotr.toRad(this.options.labelsAngle)},"font-size:smaller;","flotr-grid-label"),this.titleSize=t.dimensions(this.options.title,{size:1.2*e.fontSize,angle:Flotr.toRad(this.options.titleAngle)},"font-weight:bold;","flotr-axis-title")},_cleanUserTicks:function(t,e){var i,o,l,n,a=this,r=this.options;for(s.isFunction(t)&&(t=t({min:a.min,max:a.max})),o=0;o<t.length;++o)n=t[o],"object"==typeof n?(i=n[0],l=n.length>1?n[1]:r.tickFormatter(i,{min:a.min,max:a.max})):(i=n,l=r.tickFormatter(i,{min:this.min,max:this.max})),e[o]={v:i,label:l}},_calculateTimeTicks:function(){this.ticks=Flotr.Date.generator(this)},_calculateLogTicks:function(){var t,e,o=this,s=o.options,l=Math.log(o.max);s.base!=Math.E&&(l/=Math.log(s.base)),l=Math.ceil(l);var n=Math.log(o.min);for(s.base!=Math.E&&(n/=Math.log(s.base)),n=Math.ceil(n),i=n;l>i;i+=o.tickSize){e=s.base==Math.E?Math.exp(i):Math.pow(s.base,i);var a=e*(s.base==Math.E?Math.exp(o.tickSize):Math.pow(s.base,o.tickSize)),r=(a-e)/s.minorTickFreq;for(o.ticks.push({v:e,label:s.tickFormatter(e,{min:o.min,max:o.max})}),t=e+r;a>t;t+=r)o.minorTicks.push({v:t,label:s.tickFormatter(t,{min:o.min,max:o.max})})}e=s.base==Math.E?Math.exp(i):Math.pow(s.base,i),o.ticks.push({v:e,label:s.tickFormatter(e,{min:o.min,max:o.max})})},_calculateTicks:function(){var t,e,i,o,s,l,n=this,a=n.options,r=n.tickSize,h=n.min,c=n.max,d=r*Math.ceil(h/r);for(a.minorTickFreq&&(e=r/a.minorTickFreq),s=0;(i=o=d+s*r)<=c;++s)if(t=a.tickDecimals,null===t&&(t=1-Math.floor(Math.log(r)/Math.LN10)),0>t&&(t=0),i=i.toFixed(t),n.ticks.push({v:i,label:a.tickFormatter(i,{min:n.min,max:n.max})}),a.minorTickFreq)for(l=0;l<a.minorTickFreq&&c>s*r+l*e;++l)i=o+l*e,n.minorTicks.push({v:i,label:a.tickFormatter(i,{min:n.min,max:n.max})})}},s.extend(t,{getAxes:function(e){return{x:new t({options:e.xaxis,n:1,length:this.plotWidth}),x2:new t({options:e.x2axis,n:2,length:this.plotWidth}),y:new t({options:e.yaxis,n:1,length:this.plotHeight,offset:this.plotHeight,orientation:-1}),y2:new t({options:e.y2axis,n:2,length:this.plotHeight,offset:this.plotHeight,orientation:-1})}}}),Flotr.Axis=t}(),function(){function t(t){e.extend(this,t)}var e=Flotr._;t.prototype={getRange:function(){var t,e,i,o=this.data,s=o.length,l=Number.MAX_VALUE,n=Number.MAX_VALUE,a=-Number.MAX_VALUE,r=-Number.MAX_VALUE,h=!1,c=!1;if(0>s||this.hide)return!1;for(i=0;s>i;i++)t=o[i][0],e=o[i][1],null!==t&&(l>t&&(l=t,h=!0),t>a&&(a=t,h=!0)),null!==e&&(n>e&&(n=e,c=!0),e>r&&(r=e,c=!0));return{xmin:l,xmax:a,ymin:n,ymax:r,xused:h,yused:c}}},e.extend(t,{getSeries:function(i){return e.map(i,function(i){var o;return i.data?(o=new t,e.extend(o,i)):o=new t({data:i}),o})}}),Flotr.Series=t}(),Flotr.addType("lines",{options:{show:!1,lineWidth:2,fill:!1,fillBorder:!1,fillColor:null,fillOpacity:.4,steps:!1,stacked:!1},stack:{values:[]},draw:function(t){var e,i=t.context,o=t.lineWidth,s=t.shadowSize;i.save(),i.lineJoin="round",s&&(i.lineWidth=s/2,e=o/2+i.lineWidth/2,i.strokeStyle="rgba(0,0,0,0.1)",this.plot(t,e+s/2,!1),i.strokeStyle="rgba(0,0,0,0.2)",this.plot(t,e,!1)),i.lineWidth=o,i.strokeStyle=t.color,this.plot(t,0,!0),i.restore()},plot:function(t,e,i){function o(){!e&&t.fill&&k&&(s=p(k[0]),d.fillStyle=t.fillStyle,d.lineTo(l,M),d.lineTo(s,M),d.lineTo(s,g(k[1])),d.fill(),t.fillBorder&&d.stroke())}var s,l,n,a,r,h,c,d=t.context,f=t.width,u=t.height,p=t.xScale,g=t.yScale,x=t.data,m=t.stacked?this.stack:!1,v=x.length-1,b=null,y=null,M=g(0),k=null;if(!(1>v)){for(d.beginPath(),c=0;v>c;++c)null!==x[c][1]&&null!==x[c+1][1]?(s=p(x[c][0]),l=p(x[c+1][0]),null===k&&(k=x[c]),m?(r=m.values[x[c][0]]||0,h=m.values[x[c+1][0]]||m.values[x[c][0]]||0,n=g(x[c][1]+r),a=g(x[c+1][1]+h),i&&(m.values[x[c][0]]=x[c][1]+r,c==v-1&&(m.values[x[c+1][0]]=x[c+1][1]+h))):(n=g(x[c][1]),a=g(x[c+1][1])),n>u&&a>u||0>n&&0>a||0>s&&0>l||s>f&&l>f||((b!=s||y!=n+e)&&d.moveTo(s,n+e),b=l,y=a+e,t.steps?(d.lineTo(b+e/2,n+e),d.lineTo(b+e/2,y)):d.lineTo(b,y))):t.fill&&c>0&&x[c][1]&&(d.stroke(),o(),k=null,d.closePath(),d.beginPath());(!t.fill||t.fill&&!t.fillBorder)&&d.stroke(),o(),d.closePath()}},extendYRange:function(t,e,i,o){var s=t.options;
-if(i.stacked&&(!s.max&&0!==s.max||!s.min&&0!==s.min)){var l,n,a=t.max,r=t.min,h=o.positiveSums||{},c=o.negativeSums||{};for(n=0;n<e.length;n++)l=e[n][0]+"",e[n][1]>0?(h[l]=(h[l]||0)+e[n][1],a=Math.max(a,h[l])):(c[l]=(c[l]||0)+e[n][1],r=Math.min(r,c[l]));o.negativeSums=c,o.positiveSums=h,t.max=a,t.min=r}i.steps&&(this.hit=function(t){var e,i=t.data,o=t.args,s=t.yScale,l=o[0],n=i.length,a=o[1],r=t.xInverse(l.relX),h=l.relY;for(e=0;n-1>e;e++)if(r>=i[e][0]&&r<=i[e+1][0]){Math.abs(s(i[e][1])-h)<8&&(a.x=i[e][0],a.y=i[e][1],a.index=e,a.seriesIndex=t.index);break}},this.drawHit=function(t){var e,i=t.context,o=t.args,s=t.data,l=t.xScale,n=o.index,a=l(o.x),r=t.yScale(o.y);s.length-1>n&&(e=t.xScale(s[n+1][0]),i.save(),i.strokeStyle=t.color,i.lineWidth=t.lineWidth,i.beginPath(),i.moveTo(a,r),i.lineTo(e,r),i.stroke(),i.closePath(),i.restore())},this.clearHit=function(t){var e,i=t.context,o=t.args,s=t.data,l=t.xScale,n=t.lineWidth,a=o.index,r=l(o.x),h=t.yScale(o.y);s.length-1>a&&(e=t.xScale(s[a+1][0]),i.clearRect(r-n,h-n,e-r+2*n,2*n))})}}),Flotr.addType("bars",{options:{show:!1,lineWidth:2,barWidth:1,fill:!0,fillColor:null,fillOpacity:.4,horizontal:!1,stacked:!1,centered:!0,topPadding:.1,grouped:!1},stack:{positive:[],negative:[],_positive:[],_negative:[]},draw:function(t){var e=t.context;this.current+=1,e.save(),e.lineJoin="miter",e.lineWidth=t.lineWidth,e.strokeStyle=t.color,t.fill&&(e.fillStyle=t.fillStyle),this.plot(t),e.restore()},plot:function(t){var e,i,o,s,l,n,a=t.data,r=t.context,h=t.shadowSize;if(!(a.length<1))for(this.translate(r,t.horizontal),e=0;e<a.length;e++)i=this.getBarGeometry(a[e][0],a[e][1],t),null!==i&&(o=i.left,s=i.top,l=i.width,n=i.height,t.fill&&r.fillRect(o,s,l,n),h&&(r.save(),r.fillStyle="rgba(0,0,0,0.05)",r.fillRect(o+h,s+h,l,n),r.restore()),t.lineWidth&&r.strokeRect(o,s,l,n))},translate:function(t,e){e&&(t.rotate(-Math.PI/2),t.scale(-1,1))},getBarGeometry:function(t,e,i){var o,s,l,n,a,r=i.horizontal,h=i.barWidth,c=i.centered,d=i.stacked?this.stack:!1,f=i.lineWidth,u=c?h/2:0,p=r?i.yScale:i.xScale,g=r?i.xScale:i.yScale,x=r?e:t,m=r?t:e,v=0;return i.grouped&&(this.current/this.groups,x-=u,h/=this.groups,u=h/2,x=x+h*this.current-u),d&&(o=m>0?d.positive:d.negative,v=o[x]||v,o[x]=v+m),s=p(x-u),l=p(x+h-u),n=g(m+v),a=g(v),0>a&&(a=0),null===t||null===e?null:{x:x,y:m,xScale:p,yScale:g,top:n,left:Math.min(s,l)-f/2,width:Math.abs(l-s)-f,height:a-n}},hit:function(t){var e,i,o=t.data,s=t.args,l=s[0],n=s[1],a=t.xInverse(l.relX),r=t.yInverse(l.relY),h=this.getBarGeometry(a,r,t),c=h.width/2,d=h.left,f=h.y;for(i=o.length;i--;)e=this.getBarGeometry(o[i][0],o[i][1],t),(f>0&&f<e.y||0>f&&f>e.y)&&Math.abs(d-e.left)<c&&(n.x=o[i][0],n.y=o[i][1],n.index=i,n.seriesIndex=t.index)},drawHit:function(t){var e=t.context,i=t.args,o=this.getBarGeometry(i.x,i.y,t),s=o.left,l=o.top,n=o.width,a=o.height;e.save(),e.strokeStyle=t.color,e.lineWidth=t.lineWidth,this.translate(e,t.horizontal),e.beginPath(),e.moveTo(s,l+a),e.lineTo(s,l),e.lineTo(s+n,l),e.lineTo(s+n,l+a),t.fill&&(e.fillStyle=t.fillStyle,e.fill()),e.stroke(),e.closePath(),e.restore()},clearHit:function(t){var e=t.context,i=t.args,o=this.getBarGeometry(i.x,i.y,t),s=o.left,l=o.width,n=o.top,a=o.height,r=2*t.lineWidth;e.save(),this.translate(e,t.horizontal),e.clearRect(s-r,Math.min(n,n+a)-r,l+2*r,Math.abs(a)+2*r),e.restore()},extendXRange:function(t,e,i,o){this._extendRange(t,e,i,o),this.groups=this.groups+1||1,this.current=0},extendYRange:function(t,e,i,o){this._extendRange(t,e,i,o)},_extendRange:function(t,i,o){var s=t.options.max;if(!e.isNumber(s)&&!e.isString(s)){var l,n,a,r=t.min,h=t.max,c=o.horizontal,d=t.orientation,f=this.positiveSums||{},u=this.negativeSums||{};if((1==d&&!c||-1==d&&c)&&o.centered&&(h=Math.max(t.datamax+o.barWidth,h),r=Math.min(t.datamin-o.barWidth,r)),o.stacked&&(1==d&&c||-1==d&&!c))for(a=i.length;a--;)l=i[a][1==d?1:0]+"",n=i[a][1==d?0:1],n>0?(f[l]=(f[l]||0)+n,h=Math.max(h,f[l])):(u[l]=(u[l]||0)+n,r=Math.min(r,u[l]));(1==d&&c||-1==d&&!c)&&o.topPadding&&(t.max===t.datamax||o.stacked&&this.stackMax!==h)&&(h+=o.topPadding*(h-r)),this.stackMin=r,this.stackMax=h,this.negativeSums=u,this.positiveSums=f,t.max=h,t.min=r}}}),Flotr.addType("bubbles",{options:{show:!1,lineWidth:2,fill:!0,fillOpacity:.4,baseRadius:2},draw:function(t){var e=t.context,i=t.shadowSize;e.save(),e.lineWidth=t.lineWidth,e.fillStyle="rgba(0,0,0,0.05)",e.strokeStyle="rgba(0,0,0,0.05)",this.plot(t,i/2),e.strokeStyle="rgba(0,0,0,0.1)",this.plot(t,i/4),e.strokeStyle=t.color,e.fillStyle=t.fillStyle,this.plot(t),e.restore()},plot:function(t,e){var i,o,s=t.data,l=t.context;for(e=e||0,o=0;o<s.length;++o)i=this.getGeometry(s[o],t),l.beginPath(),l.arc(i.x+e,i.y+e,i.z,0,2*Math.PI,!0),l.stroke(),t.fill&&l.fill(),l.closePath()},getGeometry:function(t,e){return{x:e.xScale(t[0]),y:e.yScale(t[1]),z:t[2]*e.baseRadius}},hit:function(t){var e,o,s,l,n=t.data,a=t.args,r=a[0],h=a[1],c=r.relX,d=r.relY;for(h.best=h.best||Number.MAX_VALUE,i=n.length;i--;)o=this.getGeometry(n[i],t),s=o.x-c,l=o.y-d,e=Math.sqrt(s*s+l*l),e<o.z&&o.z<h.best&&(h.x=n[i][0],h.y=n[i][1],h.index=i,h.seriesIndex=t.index,h.best=o.z)},drawHit:function(t){var e=t.context,i=this.getGeometry(t.data[t.args.index],t);e.save(),e.lineWidth=t.lineWidth,e.fillStyle=t.fillStyle,e.strokeStyle=t.color,e.beginPath(),e.arc(i.x,i.y,i.z,0,2*Math.PI,!0),e.fill(),e.stroke(),e.closePath(),e.restore()},clearHit:function(t){var e=t.context,i=this.getGeometry(t.data[t.args.index],t),o=i.z+t.lineWidth;e.save(),e.clearRect(i.x-o,i.y-o,2*o,2*o),e.restore()}}),Flotr.addType("candles",{options:{show:!1,lineWidth:1,wickLineWidth:1,candleWidth:.6,fill:!0,upFillColor:"#00A8F0",downFillColor:"#CB4B4B",fillOpacity:.5,barcharts:!1},draw:function(t){var e=t.context;e.save(),e.lineJoin="miter",e.lineCap="butt",e.lineWidth=t.wickLineWidth||t.lineWidth,this.plot(t),e.restore()},plot:function(t){var e,i,o,s,l,n,a,r,h,c,d,f,u,p,g,x=t.data,m=t.context,v=t.xScale,b=t.yScale,y=t.candleWidth/2,M=t.shadowSize,k=t.lineWidth,w=t.wickLineWidth,S=w%2/2;if(!(x.length<1))for(g=0;g<x.length;g++)i=x[g],o=i[0],l=i[1],n=i[2],a=i[3],r=i[4],h=v(o-y),c=v(o+y),d=b(a),f=b(n),u=b(Math.min(l,r)),p=b(Math.max(l,r)),e=t[l>r?"downFillColor":"upFillColor"],t.fill&&!t.barcharts&&(m.fillStyle="rgba(0,0,0,0.05)",m.fillRect(h+M,p+M,c-h,u-p),m.save(),m.globalAlpha=t.fillOpacity,m.fillStyle=e,m.fillRect(h,p+k,c-h,u-p),m.restore()),(k||w)&&(o=Math.floor((h+c)/2)+S,m.strokeStyle=e,m.beginPath(),t.barcharts?(m.moveTo(o,Math.floor(f+y)),m.lineTo(o,Math.floor(d+y)),s=Math.floor(l+y)+.5,m.moveTo(Math.floor(h)+S,s),m.lineTo(o,s),s=Math.floor(r+y)+.5,m.moveTo(Math.floor(c)+S,s),m.lineTo(o,s)):(m.strokeRect(h,p+k,c-h,u-p),m.moveTo(o,Math.floor(p+k)),m.lineTo(o,Math.floor(f+k)),m.moveTo(o,Math.floor(u+k)),m.lineTo(o,Math.floor(d+k))),m.closePath(),m.stroke())},extendXRange:function(t){null===t.options.max&&(t.max=Math.max(t.datamax+.5,t.max),t.min=Math.min(t.datamin-.5,t.min))}}),Flotr.addType("gantt",{options:{show:!1,lineWidth:2,barWidth:1,fill:!0,fillColor:null,fillOpacity:.4,centered:!0},draw:function(t){var e=this.ctx,i=t.gantt.barWidth,o=Math.min(t.gantt.lineWidth,i);if(e.save(),e.translate(this.plotOffset.left,this.plotOffset.top),e.lineJoin="miter",e.lineWidth=o,e.strokeStyle=t.color,e.save(),this.gantt.plotShadows(t,i,0,t.gantt.fill),e.restore(),t.gantt.fill){var s=t.gantt.fillColor||t.color;e.fillStyle=this.processColor(s,{opacity:t.gantt.fillOpacity})}this.gantt.plot(t,i,0,t.gantt.fill),e.restore()},plot:function(t,e,i,o){var s=t.data;if(!(s.length<1)){var l,n=t.xaxis,a=t.yaxis,r=this.ctx;for(l=0;l<s.length;l++){var h=s[l][0],c=s[l][1],d=s[l][2],f=!0,u=!0,p=!0;if(null!==c&&null!==d){var g=c,x=c+d,m=h-(t.gantt.centered?e/2:0),v=h+e-(t.gantt.centered?e/2:0);x<n.min||g>n.max||v<a.min||m>a.max||(g<n.min&&(g=n.min,f=!1),x>n.max&&(x=n.max,n.lastSerie!=t&&(u=!1)),m<a.min&&(m=a.min),v>a.max&&(v=a.max,a.lastSerie!=t&&(u=!1)),o&&(r.beginPath(),r.moveTo(n.d2p(g),a.d2p(m)+i),r.lineTo(n.d2p(g),a.d2p(v)+i),r.lineTo(n.d2p(x),a.d2p(v)+i),r.lineTo(n.d2p(x),a.d2p(m)+i),r.fill(),r.closePath()),t.gantt.lineWidth&&(f||p||u)&&(r.beginPath(),r.moveTo(n.d2p(g),a.d2p(m)+i),r[f?"lineTo":"moveTo"](n.d2p(g),a.d2p(v)+i),r[u?"lineTo":"moveTo"](n.d2p(x),a.d2p(v)+i),r[p?"lineTo":"moveTo"](n.d2p(x),a.d2p(m)+i),r.stroke(),r.closePath()))}}}},plotShadows:function(t,e){var i=t.data;if(!(i.length<1)){var o,s,l,n,a=t.xaxis,r=t.yaxis,h=this.ctx,c=this.options.shadowSize;for(o=0;o<i.length;o++)if(s=i[o][0],l=i[o][1],n=i[o][2],null!==l&&null!==n){var d=l,f=l+n,u=s-(t.gantt.centered?e/2:0),p=s+e-(t.gantt.centered?e/2:0);if(!(f<a.min||d>a.max||p<r.min||u>r.max)){d<a.min&&(d=a.min),f>a.max&&(f=a.max),u<r.min&&(u=r.min),p>r.max&&(p=r.max);var g=a.d2p(f)-a.d2p(d)-(a.d2p(f)+c<=this.plotWidth?0:c),x=r.d2p(u)-r.d2p(p)-(r.d2p(u)+c<=this.plotHeight?0:c);h.fillStyle="rgba(0,0,0,0.05)",h.fillRect(Math.min(a.d2p(d)+c,this.plotWidth),Math.min(r.d2p(p)+c,this.plotHeight),g,x)}}}},extendXRange:function(t){if(null===t.options.max){var e,i,o,s,l=t.min,n=t.max,a={},r=null;for(e=0;e<this.series.length;++e)if(o=this.series[e],s=o.gantt,s.show&&o.xaxis==t){for(i=0;i<o.data.length;i++)s.show&&(y=o.data[i][0]+"",a[y]=Math.max(a[y]||0,o.data[i][1]+o.data[i][2]),r=o);for(i in a)n=Math.max(a[i],n)}t.lastSerie=r,t.max=n,t.min=l}},extendYRange:function(t){if(null===t.options.max){var e,i,o,s,l=Number.MIN_VALUE,n=Number.MAX_VALUE,a=null;for(e=0;e<this.series.length;++e)if(o=this.series[e],s=o.gantt,s.show&&!o.hide&&o.yaxis==t){var r=Number.MIN_VALUE,h=Number.MAX_VALUE;for(i=0;i<o.data.length;i++)r=Math.max(r,o.data[i][0]),h=Math.min(h,o.data[i][0]);s.centered?(l=Math.max(r+.5,l),n=Math.min(h-.5,n)):(l=Math.max(r+1,l),n=Math.min(h,n)),s.barWidth+r>l&&(l=t.max+s.barWidth)}t.lastSerie=a,t.max=l,t.min=n,t.tickSize=Flotr.getTickSize(t.options.noTicks,n,l,t.options.tickDecimals)}}}),function(){function t(t){return"object"==typeof t&&t.constructor&&(Image?!0:t.constructor===Image)}Flotr.defaultMarkerFormatter=function(t){return Math.round(100*t.y)/100+""},Flotr.addType("markers",{options:{show:!1,lineWidth:1,color:"#000000",fill:!1,fillColor:"#FFFFFF",fillOpacity:.4,stroke:!1,position:"ct",verticalMargin:0,labelFormatter:Flotr.defaultMarkerFormatter,fontSize:Flotr.defaultOptions.fontSize,stacked:!1,stackingType:"b",horizontal:!1},stack:{positive:[],negative:[],values:[]},draw:function(t){function e(t,e){return o=d.negative[t]||0,i=d.positive[t]||0,e>0?(d.positive[t]=o+e,o+e):(d.negative[t]=i+e,i+e)}var i,o,s,l,n,a,r,h=t.data,c=t.context,d=t.stacked?t.stack:!1,f=t.stackingType;for(c.save(),c.lineJoin="round",c.lineWidth=t.lineWidth,c.strokeStyle="rgba(0,0,0,0.5)",c.fillStyle=t.fillStyle,l=0;l<h.length;++l)n=h[l][0],a=h[l][1],d&&("b"==f?t.horizontal?a=e(a,n):n=e(n,a):"a"==f&&(s=d.values[n]||0,d.values[n]=s+a,a=s+a)),r=t.labelFormatter({x:n,y:a,index:l,data:h}),this.plot(t.xScale(n),t.yScale(a),r,t);c.restore()},plot:function(e,i,o,s){s.context;if(t(o)&&!o.complete)throw"Marker image not loaded.";this._plot(e,i,o,s)},_plot:function(e,i,o,s){var l,n=s.context,a=2,r=e,h=i;l=t(o)?{height:o.height,width:o.width}:s.text.canvas(o),l.width=Math.floor(l.width+2*a),l.height=Math.floor(l.height+2*a),-1!=s.position.indexOf("c")?r-=l.width/2+a:-1!=s.position.indexOf("l")&&(r-=l.width),-1!=s.position.indexOf("m")?h-=l.height/2+a:-1!=s.position.indexOf("t")?h-=l.height+s.verticalMargin:h+=s.verticalMargin,r=Math.floor(r)+.5,h=Math.floor(h)+.5,s.fill&&n.fillRect(r,h,l.width,l.height),s.stroke&&n.strokeRect(r,h,l.width,l.height),t(o)?n.drawImage(o,r+a,h+a):Flotr.drawText(n,o,r+a,h+a,{textBaseline:"top",textAlign:"left",size:s.fontSize,color:s.color})}})}(),function(){Flotr._;Flotr.defaultPieLabelFormatter=function(t,e){return(100*e/t).toFixed(2)+"%"},Flotr.addType("pie",{options:{show:!1,lineWidth:1,fill:!0,fillColor:null,fillOpacity:.6,explode:6,sizeRatio:.6,startAngle:Math.PI/4,labelFormatter:Flotr.defaultPieLabelFormatter,pie3D:!1,pie3DviewAngle:Math.PI/2*.8,pie3DspliceThickness:20,epsilon:.1},draw:function(t){var e,i,o,s=t.data,l=t.context,n=l.canvas,a=t.lineWidth,r=t.shadowSize,h=t.sizeRatio,c=t.height,d=t.width,f=t.explode,u=t.color,p=t.fill,g=t.fillStyle,x=Math.min(n.width,n.height)*h/2,m=s[0][1],v=[],b=1,y=2*Math.PI*m/this.total,M=this.startAngle||2*Math.PI*t.startAngle,k=M+y,w=M+y/2,S=t.labelFormatter(this.total,m),T=f+x+4,F=Math.cos(w)*T,A=Math.sin(w)*T,W=0>F?"right":"left",C=A>0?"top":"bottom";if(l.save(),l.translate(d/2,c/2),l.scale(1,b),i=Math.cos(w)*f,o=Math.sin(w)*f,r>0&&(this.plotSlice(i+r,o+r,x,M,k,l),p&&(l.fillStyle="rgba(0,0,0,0.1)",l.fill())),this.plotSlice(i,o,x,M,k,l),p&&(l.fillStyle=g,l.fill()),l.lineWidth=a,l.strokeStyle=u,l.stroke(),e={size:1.2*t.fontSize,color:t.fontColor,weight:1.5},S&&(t.htmlText||!t.textEnabled?(divStyle="position:absolute;"+C+":"+(c/2+("top"===C?A:-A))+"px;",divStyle+=W+":"+(d/2+("right"===W?-F:F))+"px;",v.push('<div style="',divStyle,'" class="flotr-grid-label">',S,"</div>")):(e.textAlign=W,e.textBaseline=C,Flotr.drawText(l,S,F,A,e))),t.htmlText||!t.textEnabled){var O=Flotr.DOM.node('<div style="color:'+t.fontColor+'" class="flotr-labels"></div>');Flotr.DOM.insert(O,v.join("")),Flotr.DOM.insert(t.element,O)}l.restore(),this.startAngle=k,this.slices=this.slices||[],this.slices.push({radius:Math.min(n.width,n.height)*h/2,x:i,y:o,explode:f,start:M,end:k})},plotSlice:function(t,e,i,o,s,l){l.beginPath(),l.moveTo(t,e),l.arc(t,e,i,o,s,!1),l.lineTo(t,e),l.closePath()},hit:function(t){var e=t.data[0],i=t.args,o=t.index,s=i[0],l=i[1],n=this.slices[o],a=s.relX-t.width/2,r=s.relY-t.height/2,h=Math.sqrt(a*a+r*r),c=Math.atan(r/a),d=2*Math.PI,f=n.explode||t.explode,u=n.start%d,p=n.end%d,g=t.epsilon;0>a?c+=Math.PI:a>0&&0>r&&(c+=d),h<n.radius+f&&h>f&&(c>u&&p>c||u>p&&(p>c||c>u)||u===p&&(n.start===n.end&&Math.abs(c-u)<g||n.start!==n.end&&Math.abs(c-u)>g))&&(l.x=e[0],l.y=e[1],l.sAngle=u,l.eAngle=p,l.index=0,l.seriesIndex=o,l.fraction=e[1]/this.total)},drawHit:function(t){var e=t.context,i=this.slices[t.args.seriesIndex];e.save(),e.translate(t.width/2,t.height/2),this.plotSlice(i.x,i.y,i.radius,i.start,i.end,e),e.stroke(),e.restore()},clearHit:function(t){var e=t.context,i=this.slices[t.args.seriesIndex],o=2*t.lineWidth,s=i.radius+o;e.save(),e.translate(t.width/2,t.height/2),e.clearRect(i.x-s,i.y-s,2*s+o,2*s+o),e.restore()},extendYRange:function(t,e){this.total=(this.total||0)+e[0][1]}})}(),Flotr.addType("points",{options:{show:!1,radius:3,lineWidth:2,fill:!0,fillColor:"#FFFFFF",fillOpacity:1,hitRadius:null},draw:function(t){var e=t.context,i=(t.lineWidth,t.shadowSize);e.save(),i>0&&(e.lineWidth=i/2,e.strokeStyle="rgba(0,0,0,0.1)",this.plot(t,i/2+e.lineWidth/2),e.strokeStyle="rgba(0,0,0,0.2)",this.plot(t,e.lineWidth/2)),e.lineWidth=t.lineWidth,e.strokeStyle=t.color,t.fill&&(e.fillStyle=t.fillStyle),this.plot(t),e.restore()},plot:function(t,e){var i,o,s,l=t.data,n=t.context,a=t.xScale,r=t.yScale;for(i=l.length-1;i>-1;--i)s=l[i][1],null!==s&&(o=a(l[i][0]),s=r(s),0>o||o>t.width||0>s||s>t.height||(n.beginPath(),e?n.arc(o,s+e,t.radius,0,Math.PI,!1):(n.arc(o,s,t.radius,0,2*Math.PI,!0),t.fill&&n.fill()),n.stroke(),n.closePath()))}}),Flotr.addType("radar",{options:{show:!1,lineWidth:2,fill:!0,fillOpacity:.4,radiusRatio:.9},draw:function(t){var e=t.context,i=t.shadowSize;e.save(),e.translate(t.width/2,t.height/2),e.lineWidth=t.lineWidth,e.fillStyle="rgba(0,0,0,0.05)",e.strokeStyle="rgba(0,0,0,0.05)",this.plot(t,i/2),e.strokeStyle="rgba(0,0,0,0.1)",this.plot(t,i/4),e.strokeStyle=t.color,e.fillStyle=t.fillStyle,this.plot(t),e.restore()},plot:function(t,e){var i,o,s=t.data,l=t.context,n=Math.min(t.height,t.width)*t.radiusRatio/2,a=2*Math.PI/s.length,r=-Math.PI/2;for(e=e||0,l.beginPath(),i=0;i<s.length;++i)o=s[i][1]/this.max,l[0===i?"moveTo":"lineTo"](Math.cos(i*a+r)*n*o+e,Math.sin(i*a+r)*n*o+e);l.closePath(),t.fill&&l.fill(),l.stroke()},extendYRange:function(t){this.max=Math.max(t.max,this.max||-Number.MAX_VALUE)}}),Flotr.addType("timeline",{options:{show:!1,lineWidth:1,barWidth:.2,fill:!0,fillColor:null,fillOpacity:.4,centered:!0},draw:function(t){var e=t.context;e.save(),e.lineJoin="miter",e.lineWidth=t.lineWidth,e.strokeStyle=t.color,e.fillStyle=t.fillStyle,this.plot(t),e.restore()},plot:function(t){var e=t.data,i=t.context,o=t.xScale,s=t.yScale,l=t.barWidth,n=t.lineWidth;Flotr._.each(e,function(t){var e=t[0],a=t[1],r=t[2],h=l,c=Math.ceil(o(e)),d=Math.ceil(o(e+r))-c,f=Math.round(s(a)),u=Math.round(s(a-h))-f,p=c-n/2,g=Math.round(f-u/2)-n/2;i.strokeRect(p,g,d,u),i.fillRect(p,g,d,u)})},extendRange:function(t){var e=t.data,i=t.xaxis,o=t.yaxis,s=t.timeline.barWidth;if(null===i.options.min&&(i.min=i.datamin-s/2),null===i.options.max){var l=i.max;Flotr._.each(e,function(t){l=Math.max(l,t[0]+t[2])},this),i.max=l+s/2}null===o.options.min&&(o.min=o.datamin-s),null===o.options.min&&(o.max=o.datamax+s)}}),function(){var t=Flotr.DOM;Flotr.addPlugin("crosshair",{options:{mode:null,color:"#FF0000",hideCursor:!0},callbacks:{"flotr:mousemove":function(t,e){this.options.crosshair.mode&&(this.crosshair.clearCrosshair(),this.crosshair.drawCrosshair(e))}},drawCrosshair:function(e){var i=this.octx,o=this.options.crosshair,s=this.plotOffset,l=s.left+Math.round(e.relX)+.5,n=s.top+Math.round(e.relY)+.5;return e.relX<0||e.relY<0||e.relX>this.plotWidth||e.relY>this.plotHeight?(this.el.style.cursor=null,void t.removeClass(this.el,"flotr-crosshair")):(o.hideCursor&&(this.el.style.cursor="none",t.addClass(this.el,"flotr-crosshair")),i.save(),i.strokeStyle=o.color,i.lineWidth=1,i.beginPath(),-1!=o.mode.indexOf("x")&&(i.moveTo(l,s.top),i.lineTo(l,s.top+this.plotHeight)),-1!=o.mode.indexOf("y")&&(i.moveTo(s.left,n),i.lineTo(s.left+this.plotWidth,n)),i.stroke(),void i.restore())},clearCrosshair:function(){var t=this.plotOffset,e=this.lastMousePos,i=this.octx;e&&(i.clearRect(Math.round(e.relX)+t.left,t.top,1,this.plotHeight+1),i.clearRect(t.left,Math.round(e.relY)+t.top,this.plotWidth+1,1))}})}(),function(){function t(t,e){var i="image/"+t,o=e.toDataURL(i),s=new Image;return s.src=o,s}var e=Flotr.DOM,i=Flotr._;Flotr.addPlugin("download",{saveImage:function(o,s,l,n){var a=null;if(Flotr.isIE&&Flotr.isIE<9)return a="<html><body>"+this.canvas.firstChild.innerHTML+"</body></html>",window.open().document.write(a);if("jpeg"===o||"png"===o)return a=t(o,this.canvas,s,l),i.isElement(a)&&n?(this.download.restoreCanvas(),e.hide(this.canvas),e.hide(this.overlay),e.setStyles({position:"absolute"}),e.insert(this.el,a),this.saveImageElement=a,void 0):window.open(a.src)},restoreCanvas:function(){e.show(this.canvas),e.show(this.overlay),this.saveImageElement&&this.el.removeChild(this.saveImageElement),this.saveImageElement=null}})}(),function(){var t=Flotr.EventAdapter,e=Flotr._;Flotr.addPlugin("graphGrid",{callbacks:{"flotr:beforedraw":function(){this.graphGrid.drawGrid()},"flotr:afterdraw":function(){this.graphGrid.drawOutline()}},drawGrid:function(){function i(t){for(a=0;a<t.length;++a){var e=t[a].v/n.max;for(r=0;b>=r;++r)h[0===r?"moveTo":"lineTo"](Math.cos(r*y+M)*v*e,Math.sin(r*y+M)*v*e)}}function o(t,i){e.each(e.pluck(t,"v"),function(t){t<=n.min||t>=n.max||(t==n.min||t==n.max)&&d.outlineWidth||i(Math.floor(n.d2p(t))+h.lineWidth/2)})}function s(t){h.moveTo(t,0),h.lineTo(t,x)}function l(t){h.moveTo(0,t),h.lineTo(m,t)}var n,a,r,h=this.ctx,c=this.options,d=c.grid,f=d.verticalLines,u=d.horizontalLines,p=d.minorVerticalLines,g=d.minorHorizontalLines,x=this.plotHeight,m=this.plotWidth;if((f||p||u||g)&&t.fire(this.el,"flotr:beforegrid",[this.axes.x,this.axes.y,c,this]),h.save(),h.lineWidth=1,h.strokeStyle=d.tickColor,d.circular){h.translate(this.plotOffset.left+m/2,this.plotOffset.top+x/2);var v=Math.min(x,m)*c.radar.radiusRatio/2,b=this.axes.x.ticks.length,y=2*(Math.PI/b),M=-Math.PI/2;h.beginPath(),n=this.axes.y,u&&i(n.ticks),g&&i(n.minorTicks),f&&e.times(b,function(t){h.moveTo(0,0),h.lineTo(Math.cos(t*y+M)*v,Math.sin(t*y+M)*v)}),h.stroke()}else h.translate(this.plotOffset.left,this.plotOffset.top),d.backgroundColor&&(h.fillStyle=this.processColor(d.backgroundColor,{x1:0,y1:0,x2:m,y2:x}),h.fillRect(0,0,m,x)),h.beginPath(),n=this.axes.x,f&&o(n.ticks,s),p&&o(n.minorTicks,s),n=this.axes.y,u&&o(n.ticks,l),g&&o(n.minorTicks,l),h.stroke();h.restore(),(f||p||u||g)&&t.fire(this.el,"flotr:aftergrid",[this.axes.x,this.axes.y,c,this])},drawOutline:function(){var t,e,o,s,l=this,n=l.options,a=n.grid,r=a.outline,h=l.ctx,c=a.backgroundImage,d=l.plotOffset,f=d.left,u=d.top,p=l.plotWidth,g=l.plotHeight;if(a.outlineWidth){if(h.save(),a.circular){h.translate(f+p/2,u+g/2);var x=Math.min(g,p)*n.radar.radiusRatio/2,m=this.axes.x.ticks.length,v=2*(Math.PI/m),b=-Math.PI/2;for(h.beginPath(),h.lineWidth=a.outlineWidth,h.strokeStyle=a.color,h.lineJoin="round",i=0;m>=i;++i)h[0===i?"moveTo":"lineTo"](Math.cos(i*v+b)*x,Math.sin(i*v+b)*x);h.stroke()}else{h.translate(f,u);var y=a.outlineWidth,M=.5-y+(y+1)%2/2,k="lineTo",w="moveTo";h.lineWidth=y,h.strokeStyle=a.color,h.lineJoin="miter",h.beginPath(),h.moveTo(M,M),p-=y/2%1,g+=y/2,h[-1!==r.indexOf("n")?k:w](p,M),h[-1!==r.indexOf("e")?k:w](p,g),h[-1!==r.indexOf("s")?k:w](M,g),h[-1!==r.indexOf("w")?k:w](M,M),h.stroke(),h.closePath()}h.restore(),c&&(e=c.src||c,o=(parseInt(c.left,10)||0)+d.left,s=(parseInt(c.top,10)||0)+d.top,t=new Image,t.onload=function(){h.save(),c.alpha&&(h.globalAlpha=c.alpha),h.globalCompositeOperation="destination-over",h.drawImage(t,0,0,t.width,t.height,o,s,p,g),h.restore()},t.src=e)}}})}(),function(){var t=Flotr.DOM,e=Flotr._,i=Flotr,o="opacity:0.7;background-color:#000;color:#fff;display:none;position:absolute;padding:2px 8px;-moz-border-radius:4px;border-radius:4px;white-space:nowrap;";Flotr.addPlugin("hit",{callbacks:{"flotr:mousemove":function(t,e){this.hit.track(e)},"flotr:click":function(t){var i=this.hit.track(t);e.defaults(t,i)},"flotr:mouseout":function(){this.hit.clearHit()},"flotr:destroy":function(){this.mouseTrack=null}},track:function(t){return this.options.mouse.track||e.any(this.series,function(t){return t.mouse&&t.mouse.track})?this.hit.hit(t):void 0},executeOnType:function(t,o,s){function l(t,l){e.each(e.keys(i.graphTypes),function(e){t[e]&&t[e].show&&this[e][o]&&(n=this.getOptions(t,e),n.fill=!!t.mouse.fillColor,n.fillStyle=this.processColor(t.mouse.fillColor||"#ffffff",{opacity:t.mouse.fillOpacity}),n.color=t.mouse.lineColor,n.context=this.octx,n.index=l,s&&(n.args=s),this[e][o].call(this[e],n),a=!0)},this)}var n,a=!1;return e.isArray(t)||(t=[t]),e.each(t,l,this),a},drawHit:function(t){var e=this.octx,i=t.series;if(i.mouse.lineColor){if(e.save(),e.lineWidth=i.points?i.points.lineWidth:1,e.strokeStyle=i.mouse.lineColor,e.fillStyle=this.processColor(i.mouse.fillColor||"#ffffff",{opacity:i.mouse.fillOpacity}),e.translate(this.plotOffset.left,this.plotOffset.top),!this.hit.executeOnType(i,"drawHit",t)){var o=t.xaxis,s=t.yaxis;e.beginPath(),e.arc(o.d2p(t.x),s.d2p(t.y),i.points.hitRadius||i.points.radius||i.mouse.radius,0,2*Math.PI,!0),e.fill(),e.stroke(),e.closePath()}e.restore(),this.clip(e)}this.prevHit=t},clearHit:function(){var e=this.prevHit,i=this.octx,o=this.plotOffset;if(i.save(),i.translate(o.left,o.top),e){if(!this.hit.executeOnType(e.series,"clearHit",this.prevHit)){var s=e.series,l=s.points?s.points.lineWidth:1;offset=(s.points.hitRadius||s.points.radius||s.mouse.radius)+l,i.clearRect(e.xaxis.d2p(e.x)-offset,e.yaxis.d2p(e.y)-offset,2*offset,2*offset)}t.hide(this.mouseTrack),this.prevHit=null}i.restore()},hit:function(t){var i,o,s,l,n,a,r,h=this.options,c=this.prevHit;if(0!==this.series.length)return r={relX:t.relX,relY:t.relY,absX:t.absX,absY:t.absY},h.mouse.trackY&&!h.mouse.trackAll&&this.hit.executeOnType(this.series,"hit",[t,r])&&!e.isUndefined(r.seriesIndex)?(l=this.series[r.seriesIndex],r.series=l,r.mouse=l.mouse,r.xaxis=l.xaxis,r.yaxis=l.yaxis):(i=this.hit.closest(t),i&&(i=h.mouse.trackY?i.point:i.x,s=i.seriesIndex,l=this.series[s],n=l.xaxis,a=l.yaxis,o=2*l.mouse.sensibility,(h.mouse.trackAll||i.distanceX<o/n.scale&&(!h.mouse.trackY||i.distanceY<o/a.scale))&&(r.series=l,r.xaxis=l.xaxis,r.yaxis=l.yaxis,r.mouse=l.mouse,r.x=i.x,r.y=i.y,r.dist=i.distance,r.index=i.dataIndex,r.seriesIndex=s))),c&&c.index===r.index&&c.seriesIndex===r.seriesIndex||(this.hit.clearHit(),r.series&&r.mouse&&r.mouse.track&&(this.hit.drawMouseTrack(r),this.hit.drawHit(r),Flotr.EventAdapter.fire(this.el,"flotr:hit",[r,this]))),r},closest:function(t){function e(t){t.distance=s,t.distanceX=l,t.distanceY=n,t.seriesIndex=d,t.dataIndex=f,t.x=h,t.y=c,y=!0}var i,o,s,l,n,a,r,h,c,d,f,u=this.series,p=(this.options,t.relX),g=t.relY,x=Number.MAX_VALUE,m=Number.MAX_VALUE,v={},b={},y=!1;for(d=0;d<u.length;d++)for(i=u[d],o=i.data,a=i.xaxis.p2d(p),r=i.yaxis.p2d(g),f=o.length;f--;)h=o[f][0],c=o[f][1],null!==h&&null!==c&&(h<i.xaxis.min||h>i.xaxis.max||(l=Math.abs(h-a),n=Math.abs(c-r),s=l*l+n*n,x>s&&(x=s,e(v)),m>l&&(m=l,e(b))));return y?{point:v,x:b}:!1},drawMouseTrack:function(e){{var i="",s=e.series,l=e.mouse.position,n=e.mouse.margin,a=e.x,r=e.y,h=o,c=this.mouseTrack,d=this.plotOffset,f=d.left,u=d.right,p=d.bottom,g=d.top,x=e.mouse.trackDecimals;this.options}if(c||(c=t.node('<div class="flotr-mouse-value"></div>'),this.mouseTrack=c,t.insert(this.el,c)),e.mouse.relative)if(s.pie&&s.pie.show){var m={x:this.plotWidth/2,y:this.plotHeight/2},v=Math.min(this.canvasWidth,this.canvasHeight)*s.pie.sizeRatio/2,b=e.sAngle<e.eAngle?(e.sAngle+e.eAngle)/2:(e.sAngle+e.eAngle+2*Math.PI)/2;i+="bottom:"+(n-g-m.y-Math.sin(b)*v/2+this.canvasHeight)+"px;top:auto;",i+="left:"+(n+f+m.x+Math.cos(b)*v/2)+"px;right:auto;"}else i+=/n/.test(l)?"bottom:"+(n-g-e.yaxis.d2p(e.y)+this.canvasHeight)+"px;top:auto;":"top:"+(n+g+e.yaxis.d2p(e.y))+"px;bottom:auto;",i+=/w/.test(l)?"right:"+(n-f-e.xaxis.d2p(e.x)+this.canvasWidth)+"px;left:auto;":"left:"+(n+f+e.xaxis.d2p(e.x))+"px;right:auto;";else"n"==l.charAt(0)?i+="top:"+(n+g)+"px;bottom:auto;":"s"==l.charAt(0)&&(i+="bottom:"+(n+p)+"px;top:auto;"),"e"==l.charAt(1)?i+="right:"+(n+u)+"px;left:auto;":"w"==l.charAt(1)&&(i+="left:"+(n+f)+"px;right:auto;");h+=i,c.style.cssText=h,(!x||0>x)&&(x=0),a&&a.toFixed&&(a=a.toFixed(x)),r&&r.toFixed&&(r=r.toFixed(x)),c.innerHTML=e.mouse.trackFormatter({x:a,y:r,series:e.series,index:e.index,nearest:e,fraction:e.fraction}),t.show(c),e.mouse.relative&&(/[ew]/.test(l)?/[ns]/.test(l)||(c.style.top=g+e.yaxis.d2p(e.y)-t.size(c).height/2+"px"):c.style.left=f+e.xaxis.d2p(e.x)-t.size(c).width/2+"px")}})}(),function(){function t(t){return t.which?1===t.which:0===t.button||1===t.button}function e(t,e){return Math.min(Math.max(0,t),e.plotWidth-1)}function i(t,e){return Math.min(Math.max(0,t),e.plotHeight)}var o=(Flotr.DOM,Flotr.EventAdapter),s=Flotr._;Flotr.addPlugin("selection",{options:{pinchOnly:null,mode:null,color:"#B6D9FF",fps:20},callbacks:{"flotr:mouseup":function(t){var e=this.options.selection,i=this.selection,o=this.getEventPosition(t);e&&e.mode&&(i.interval&&clearInterval(i.interval),this.multitouches?i.updateSelection():e.pinchOnly||i.setSelectionPos(i.selection.second,o),i.clearSelection(),i.selecting&&i.selectionIsSane()&&(i.drawSelection(),i.fireSelectEvent(),this.ignoreClick=!0))},"flotr:mousedown":function(e){var i=this.options.selection,o=this.selection,l=this.getEventPosition(e);i&&i.mode&&(!i.mode||!t(e)&&s.isUndefined(e.touches)||(i.pinchOnly||o.setSelectionPos(o.selection.first,l),o.interval&&clearInterval(o.interval),this.lastMousePos.pageX=null,o.selecting=!1,o.interval=setInterval(s.bind(o.updateSelection,this),1e3/i.fps)))},"flotr:destroy":function(){clearInterval(this.selection.interval)}},getArea:function(){{var t,e,i,o,s=this.selection.selection,l=this.axes;s.first,s.second}return t=l.x.p2d(s.first.x),e=l.x.p2d(s.second.x),i=l.y.p2d(s.first.y),o=l.y.p2d(s.second.y),{x1:Math.min(t,e),y1:Math.min(i,o),x2:Math.max(t,e),y2:Math.max(i,o),xfirst:t,xsecond:e,yfirst:i,ysecond:o}},selection:{first:{x:-1,y:-1},second:{x:-1,y:-1}},prevSelection:null,interval:null,fireSelectEvent:function(t){var e=this.selection.getArea();t=t||"select",e.selection=this.selection.selection,o.fire(this.el,"flotr:"+t,[e,this])},setSelection:function(t,o){var s=this.options,l=this.axes.x,n=this.axes.y,a=n.scale,r=l.scale,h=-1!=s.selection.mode.indexOf("x"),c=-1!=s.selection.mode.indexOf("y"),d=this.selection.selection;this.selection.clearSelection(),d.first.y=i(h&&!c?0:(n.max-t.y1)*a,this),d.second.y=i(h&&!c?this.plotHeight-1:(n.max-t.y2)*a,this),d.first.x=e(c&&!h?0:(t.x1-l.min)*r,this),d.second.x=e(c&&!h?this.plotWidth:(t.x2-l.min)*r,this),this.selection.drawSelection(),o||this.selection.fireSelectEvent()},setSelectionPos:function(t,o){var s=this.options.selection.mode,l=this.selection.selection;t.x=-1==s.indexOf("x")?t==l.first?0:this.plotWidth:e(o.relX,this),t.y=-1==s.indexOf("y")?t==l.first?0:this.plotHeight-1:i(o.relY,this)},drawSelection:function(){this.selection.fireSelectEvent("selecting");var t=this.selection.selection,e=this.octx,i=this.options,o=this.plotOffset,s=this.selection.prevSelection;if(!s||t.first.x!=s.first.x||t.first.y!=s.first.y||t.second.x!=s.second.x||t.second.y!=s.second.y){e.save(),e.strokeStyle=this.processColor(i.selection.color,{opacity:.8}),e.lineWidth=1,e.lineJoin="miter",e.fillStyle=this.processColor(i.selection.color,{opacity:.4}),this.selection.prevSelection={first:{x:t.first.x,y:t.first.y},second:{x:t.second.x,y:t.second.y}};var l=Math.min(t.first.x,t.second.x),n=Math.min(t.first.y,t.second.y),a=Math.abs(t.second.x-t.first.x),r=Math.abs(t.second.y-t.first.y);e.fillRect(l+o.left+.5,n+o.top+.5,a,r),e.strokeRect(l+o.left+.5,n+o.top+.5,a,r),e.restore()}},updateSelection:function(){if(this.lastMousePos.pageX){if(this.selection.selecting=!0,this.multitouches)this.selection.setSelectionPos(this.selection.selection.first,this.getEventPosition(this.multitouches[0])),this.selection.setSelectionPos(this.selection.selection.second,this.getEventPosition(this.multitouches[1]));else{if(this.options.selection.pinchOnly)return;this.selection.setSelectionPos(this.selection.selection.second,this.lastMousePos)}this.selection.clearSelection(),this.selection.selectionIsSane()&&this.selection.drawSelection()}},clearSelection:function(){if(this.selection.prevSelection){var t=this.selection.prevSelection,e=1,i=this.plotOffset,o=Math.min(t.first.x,t.second.x),s=Math.min(t.first.y,t.second.y),l=Math.abs(t.second.x-t.first.x),n=Math.abs(t.second.y-t.first.y);this.octx.clearRect(o+i.left-e+.5,s+i.top-e,l+2*e+.5,n+2*e+.5),this.selection.prevSelection=null}},selectionIsSane:function(){var t=this.selection.selection;return Math.abs(t.second.x-t.first.x)>=5||Math.abs(t.second.y-t.first.y)>=5}})}(),function(){var t=Flotr.DOM;Flotr.addPlugin("labels",{callbacks:{"flotr:afterdraw":function(){this.labels.draw()}},draw:function(){function e(t,e,i){{var o,l=i?e.minorTicks:e.ticks,a=1===e.orientation;1===e.n}for(o={color:e.options.color||p.grid.color,angle:Flotr.toRad(e.options.labelsAngle),textBaseline:"middle"},d=0;d<l.length&&(i?e.options.showMinorLabels:e.options.showLabels);++d)s=l[d],s.label+="",s.label&&s.label.length&&(x=Math.cos(d*r+h)*n,y=Math.sin(d*r+h)*n,o.textAlign=a?Math.abs(x)<.1?"center":0>x?"right":"left":"left",Flotr.drawText(g,s.label,a?x:3,a?y:-(e.ticks[d].v/e.max)*(n-p.fontSize),o))}function i(t,e,i,o){function l(t){return t.options.showLabels&&t.used}function n(t,e,i,o){return t.plotOffset.left+(e?o:i?-p.grid.labelMargin:p.grid.labelMargin+t.plotWidth)}function a(t,e,i,o){return t.plotOffset.top+(e?p.grid.labelMargin:o)+(e&&i?t.plotHeight:0)}var r,h,c=1===e.orientation,f=1===e.n;for(r={color:e.options.color||p.grid.color,textAlign:i,textBaseline:o,angle:Flotr.toRad(e.options.labelsAngle)},r=Flotr.getBestTextAlign(r.angle,r),d=0;d<e.ticks.length&&l(e);++d)s=e.ticks[d],s.label&&s.label.length&&(h=e.d2p(s.v),0>h||h>(c?t.plotWidth:t.plotHeight)||(Flotr.drawText(g,s.label,n(t,c,f,h),a(t,c,f,h),r),c||f||(g.save(),g.strokeStyle=r.color,g.beginPath(),g.moveTo(t.plotOffset.left+t.plotWidth-8,t.plotOffset.top+e.d2p(s.v)),g.lineTo(t.plotOffset.left+t.plotWidth,t.plotOffset.top+e.d2p(s.v)),g.stroke(),g.restore())))}function o(t,e){var i,o,n=1===e.orientation,a=1===e.n,r="",h=t.plotOffset;if(n||a||(g.save(),g.strokeStyle=e.options.color||p.grid.color,g.beginPath()),e.options.showLabels&&(a?!0:e.used))for(d=0;d<e.ticks.length;++d)s=e.ticks[d],!s.label||!s.label.length||(n?h.left:h.top)+e.d2p(s.v)<0||(n?h.left:h.top)+e.d2p(s.v)>(n?t.canvasWidth:t.canvasHeight)||(o=h.top+(n?(a?1:-1)*(t.plotHeight+p.grid.labelMargin):e.d2p(s.v)-e.maxLabel.height/2),i=n?h.left+e.d2p(s.v)-l/2:0,r="",0===d?r=" first":d===e.ticks.length-1&&(r=" last"),r+=n?" flotr-grid-label-x":" flotr-grid-label-y",f+=['<div style="position:absolute; text-align:'+(n?"center":"right")+"; ","top:"+o+"px; ",(n||a?"left:":"right:")+i+"px; ","width:"+(n?l:(a?h.left:h.right)-p.grid.labelMargin)+"px; ",e.options.color?"color:"+e.options.color+"; ":" ",'" class="flotr-grid-label'+r+'">'+s.label+"</div>"].join(" "),n||a||(g.moveTo(h.left+t.plotWidth-8,h.top+e.d2p(s.v)),g.lineTo(h.left+t.plotWidth,h.top+e.d2p(s.v))))
-}{var s,l,n,a,r,h,c,d,f="",u=0,p=this.options,g=this.ctx,m=this.axes;({size:p.fontSize})}for(d=0;d<m.x.ticks.length;++d)m.x.ticks[d].label&&++u;l=this.plotWidth/u,p.grid.circular&&(g.save(),g.translate(this.plotOffset.left+this.plotWidth/2,this.plotOffset.top+this.plotHeight/2),n=this.plotHeight*p.radar.radiusRatio/2+p.fontSize,a=this.axes.x.ticks.length,r=2*(Math.PI/a),h=-Math.PI/2,e(this,m.x,!1),e(this,m.x,!0),e(this,m.y,!1),e(this,m.y,!0),g.restore()),!p.HtmlText&&this.textEnabled?(i(this,m.x,"center","top"),i(this,m.x2,"center","bottom"),i(this,m.y,"right","middle"),i(this,m.y2,"left","middle")):(m.x.options.showLabels||m.x2.options.showLabels||m.y.options.showLabels||m.y2.options.showLabels)&&!p.grid.circular&&(f="",o(this,m.x),o(this,m.x2),o(this,m.y),o(this,m.y2),g.stroke(),g.restore(),c=t.create("div"),t.setStyles(c,{fontSize:"smaller",color:p.grid.color}),c.className="flotr-labels",t.insert(this.el,c),t.insert(c,f))}})}(),function(){var t=Flotr.DOM,e=Flotr._;Flotr.addPlugin("legend",{options:{show:!0,noColumns:1,labelFormatter:function(t){return t},labelBoxBorderColor:"#CCCCCC",labelBoxWidth:14,labelBoxHeight:10,labelBoxMargin:5,container:null,position:"nw",margin:5,backgroundColor:"#F0F0F0",backgroundOpacity:.85},callbacks:{"flotr:afterinit":function(){this.legend.insertLegend()}},insertLegend:function(){if(this.options.legend.show){var i,o,s,l=this.series,n=this.plotOffset,a=this.options,r=a.legend,h=[],c=!1,d=this.ctx,f=e.filter(l,function(t){return t.label&&!t.hide}).length,u=r.position,p=r.margin,g=r.backgroundOpacity;if(f){var x=r.labelBoxWidth,m=r.labelBoxHeight,v=r.labelBoxMargin,b=n.left+p,y=n.top+p,M=0,k={size:1.1*a.fontSize,color:a.grid.color};for(i=l.length-1;i>-1;--i)l[i].label&&!l[i].hide&&(o=r.labelFormatter(l[i].label),M=Math.max(M,this._text.measureText(o,k).width));var w=Math.round(x+3*v+M),S=Math.round(f*(v+m)+v);if(g||0===g||(g=.1),a.HtmlText||!this.textEnabled||r.container){for(i=0;i<l.length;++i)if(l[i].label&&!l[i].hide){i%r.noColumns===0&&(h.push(c?"</tr><tr>":"<tr>"),c=!0);var T=l[i],F=r.labelBoxWidth,A=r.labelBoxHeight;o=r.labelFormatter(T.label),s="background-color:"+(T.bars&&T.bars.show&&T.bars.fillColor&&T.bars.fill?T.bars.fillColor:T.color)+";",h.push('<td class="flotr-legend-color-box">','<div style="border:1px solid ',r.labelBoxBorderColor,';padding:1px">','<div style="width:',F-1,"px;height:",A-1,"px;border:1px solid ",l[i].color,'">','<div style="width:',F,"px;height:",A,"px;",s,'"></div>',"</div>","</div>","</td>",'<td class="flotr-legend-label">',o,"</td>")}if(c&&h.push("</tr>"),h.length>0){var W='<table style="font-size:smaller;color:'+a.grid.color+'">'+h.join("")+"</table>";if(r.container)t.empty(r.container),t.insert(r.container,W);else{var C={position:"absolute",zIndex:"2",border:"1px solid "+r.labelBoxBorderColor};"n"==u.charAt(0)?(C.top=p+n.top+"px",C.bottom="auto"):"c"==u.charAt(0)?(C.top=p+(this.plotHeight-S)/2+"px",C.bottom="auto"):"s"==u.charAt(0)&&(C.bottom=p+n.bottom+"px",C.top="auto"),"e"==u.charAt(1)?(C.right=p+n.right+"px",C.left="auto"):"w"==u.charAt(1)&&(C.left=p+n.left+"px",C.right="auto");var O=t.create("div");if(O.className="flotr-legend",t.setStyles(O,C),t.insert(O,W),t.insert(this.el,O),!g)return;var z=r.backgroundColor||a.grid.backgroundColor||"#ffffff";e.extend(C,t.size(O),{backgroundColor:z,zIndex:"",border:""}),C.width+="px",C.height+="px",O=t.create("div"),O.className="flotr-legend-bg",t.setStyles(O,C),t.opacity(O,g),t.insert(O," "),t.insert(this.el,O)}}}else{"s"==u.charAt(0)&&(y=n.top+this.plotHeight-(p+S)),"c"==u.charAt(0)&&(y=n.top+this.plotHeight/2-(p+S/2)),"e"==u.charAt(1)&&(b=n.left+this.plotWidth-(p+w)),s=this.processColor(r.backgroundColor,{opacity:g}),d.fillStyle=s,d.fillRect(b,y,w,S),d.strokeStyle=r.labelBoxBorderColor,d.strokeRect(Flotr.toPixel(b),Flotr.toPixel(y),w,S);var H=b+v,P=y+v;for(i=0;i<l.length;i++)l[i].label&&!l[i].hide&&(o=r.labelFormatter(l[i].label),d.fillStyle=l[i].color,d.fillRect(H,P,x-1,m-1),d.strokeStyle=r.labelBoxBorderColor,d.lineWidth=1,d.strokeRect(Math.ceil(H)-1.5,Math.ceil(P)-1.5,x+2,m+2),Flotr.drawText(d,o,H+x+v,P+m,k),P+=m+v)}}}}})}(),function(){function t(t){if(this.options.spreadsheet.tickFormatter)return this.options.spreadsheet.tickFormatter(t);var e=i.find(this.axes.x.ticks,function(e){return e.v==t});return e?e.label:t}var e=Flotr.DOM,i=Flotr._;Flotr.addPlugin("spreadsheet",{options:{show:!1,tabGraphLabel:"Graph",tabDataLabel:"Data",toolbarDownload:"Download CSV",toolbarSelectAll:"Select all",csvFileSeparator:",",decimalSeparator:".",tickFormatter:null,initialTab:"graph"},callbacks:{"flotr:afterconstruct":function(){if(this.options.spreadsheet.show){var t,i=this.spreadsheet,o=e.node('<div class="flotr-tabs-group" style="position:absolute;left:0px;width:'+this.canvasWidth+'px"></div>'),s=e.node('<div style="float:left" class="flotr-tab selected">'+this.options.spreadsheet.tabGraphLabel+"</div>"),l=e.node('<div style="float:left" class="flotr-tab">'+this.options.spreadsheet.tabDataLabel+"</div>");i.tabsContainer=o,i.tabs={graph:s,data:l},e.insert(o,s),e.insert(o,l),e.insert(this.el,o),t=e.size(l).height+2,this.plotOffset.bottom+=t,e.setStyles(o,{top:this.canvasHeight-t+"px"}),this.observe(s,"click",function(){i.showTab("graph")}).observe(l,"click",function(){i.showTab("data")}),"graph"!==this.options.spreadsheet.initialTab&&i.showTab(this.options.spreadsheet.initialTab)}}},loadDataGrid:function(){if(this.seriesData)return this.seriesData;var t=this.series,e={};return i.each(t,function(t,o){i.each(t.data,function(t){var i=t[0],s=t[1],l=e[i];if(l)l[o+1]=s;else{var n=[];n[0]=i,n[o+1]=s,e[i]=n}})}),this.seriesData=i.sortBy(e,function(t,e){return parseInt(e,10)}),this.seriesData},constructDataGrid:function(){if(this.spreadsheet.datagrid)return this.spreadsheet.datagrid;var o,s,l,n=this.series,a=this.spreadsheet.loadDataGrid(),r=["<colgroup><col />"],h=['<table class="flotr-datagrid"><tr class="first-row">'];h.push("<th>&nbsp;</th>"),i.each(n,function(t,e){h.push('<th scope="col">'+(t.label||String.fromCharCode(65+e))+"</th>"),r.push("<col />")}),h.push("</tr>"),i.each(a,function(e){h.push("<tr>"),i.times(n.length+1,function(o){var s="td",l=e[o],n=i.isUndefined(l)?"":Math.round(1e5*l)/1e5;if(0===o){s="th";var a=t.call(this,n);a&&(n=a)}h.push("<"+s+("th"==s?' scope="row"':"")+">"+n+"</"+s+">")},this),h.push("</tr>")},this),r.push("</colgroup>"),l=e.node(h.join("")),o=e.node('<button type="button" class="flotr-datagrid-toolbar-button">'+this.options.spreadsheet.toolbarDownload+"</button>"),s=e.node('<button type="button" class="flotr-datagrid-toolbar-button">'+this.options.spreadsheet.toolbarSelectAll+"</button>"),this.observe(o,"click",i.bind(this.spreadsheet.downloadCSV,this)).observe(s,"click",i.bind(this.spreadsheet.selectAllData,this));var c=e.node('<div class="flotr-datagrid-toolbar"></div>');e.insert(c,o),e.insert(c,s);var d=this.canvasHeight-e.size(this.spreadsheet.tabsContainer).height-2,f=e.node('<div class="flotr-datagrid-container" style="position:absolute;left:0px;top:0px;width:'+this.canvasWidth+"px;height:"+d+'px;overflow:auto;z-index:10"></div>');return e.insert(f,c),e.insert(f,l),e.insert(this.el,f),this.spreadsheet.datagrid=l,this.spreadsheet.container=f,l},showTab:function(t){if(this.spreadsheet.activeTab!==t){switch(t){case"graph":e.hide(this.spreadsheet.container),e.removeClass(this.spreadsheet.tabs.data,"selected"),e.addClass(this.spreadsheet.tabs.graph,"selected");break;case"data":this.spreadsheet.datagrid||this.spreadsheet.constructDataGrid(),e.show(this.spreadsheet.container),e.addClass(this.spreadsheet.tabs.data,"selected"),e.removeClass(this.spreadsheet.tabs.graph,"selected");break;default:throw"Illegal tab name: "+t}this.spreadsheet.activeTab=t}},selectAllData:function(){if(this.spreadsheet.tabs){var t,e,i,o,s=this.spreadsheet.constructDataGrid();return this.spreadsheet.showTab("data"),setTimeout(function(){(i=s.ownerDocument)&&(o=i.defaultView)&&o.getSelection&&i.createRange&&(t=window.getSelection())&&t.removeAllRanges?(e=i.createRange(),e.selectNode(s),t.removeAllRanges(),t.addRange(e)):document.body&&document.body.createTextRange&&(e=document.body.createTextRange())&&(e.moveToElementText(s),e.select())},0),!0}return!1},downloadCSV:function(){var e="",o=this.series,s=this.options,l=this.spreadsheet.loadDataGrid(),n=encodeURIComponent(s.spreadsheet.csvFileSeparator);if(s.spreadsheet.decimalSeparator===s.spreadsheet.csvFileSeparator)throw"The decimal separator is the same as the column separator ("+s.spreadsheet.decimalSeparator+")";i.each(o,function(t,i){e+=n+'"'+(t.label||String.fromCharCode(65+i)).replace(/\"/g,'\\"')+'"'}),e+="%0D%0A",e+=i.reduce(l,function(e,i){var o=t.call(this,i[0])||"";o='"'+(o+"").replace(/\"/g,'\\"')+'"';var l=i.slice(1).join(n);return"."!==s.spreadsheet.decimalSeparator&&(l=l.replace(/\./g,s.spreadsheet.decimalSeparator)),e+o+n+l+"%0D%0A"},"",this),Flotr.isIE&&Flotr.isIE<9?(e=e.replace(new RegExp(n,"g"),decodeURIComponent(n)).replace(/%0A/g,"\n").replace(/%0D/g,"\r"),window.open().document.write(e)):window.open("data:text/csv,"+e)}})}(),function(){var t=Flotr.DOM;Flotr.addPlugin("titles",{callbacks:{"flotr:afterdraw":function(){this.titles.drawTitles()}},drawTitles:function(){var e,i=this.options,o=i.grid.labelMargin,s=this.ctx,l=this.axes;if(!i.HtmlText&&this.textEnabled){var n={size:i.fontSize,color:i.grid.color,textAlign:"center"};i.subtitle&&Flotr.drawText(s,i.subtitle,this.plotOffset.left+this.plotWidth/2,this.titleHeight+this.subtitleHeight-2,n),n.weight=1.5,n.size*=1.5,i.title&&Flotr.drawText(s,i.title,this.plotOffset.left+this.plotWidth/2,this.titleHeight-2,n),n.weight=1.8,n.size*=.8,l.x.options.title&&l.x.used&&(n.textAlign=l.x.options.titleAlign||"center",n.textBaseline="top",n.angle=Flotr.toRad(l.x.options.titleAngle),n=Flotr.getBestTextAlign(n.angle,n),Flotr.drawText(s,l.x.options.title,this.plotOffset.left+this.plotWidth/2,this.plotOffset.top+l.x.maxLabel.height+this.plotHeight+2*o,n)),l.x2.options.title&&l.x2.used&&(n.textAlign=l.x2.options.titleAlign||"center",n.textBaseline="bottom",n.angle=Flotr.toRad(l.x2.options.titleAngle),n=Flotr.getBestTextAlign(n.angle,n),Flotr.drawText(s,l.x2.options.title,this.plotOffset.left+this.plotWidth/2,this.plotOffset.top-l.x2.maxLabel.height-2*o,n)),l.y.options.title&&l.y.used&&(n.textAlign=l.y.options.titleAlign||"right",n.textBaseline="middle",n.angle=Flotr.toRad(l.y.options.titleAngle),n=Flotr.getBestTextAlign(n.angle,n),Flotr.drawText(s,l.y.options.title,this.plotOffset.left-l.y.maxLabel.width-2*o,this.plotOffset.top+this.plotHeight/2,n)),l.y2.options.title&&l.y2.used&&(n.textAlign=l.y2.options.titleAlign||"left",n.textBaseline="middle",n.angle=Flotr.toRad(l.y2.options.titleAngle),n=Flotr.getBestTextAlign(n.angle,n),Flotr.drawText(s,l.y2.options.title,this.plotOffset.left+this.plotWidth+l.y2.maxLabel.width+2*o,this.plotOffset.top+this.plotHeight/2,n))}else{e=[],i.title&&e.push('<div style="position:absolute;top:0;left:',this.plotOffset.left,"px;font-size:1em;font-weight:bold;text-align:center;width:",this.plotWidth,'px;" class="flotr-title">',i.title,"</div>"),i.subtitle&&e.push('<div style="position:absolute;top:',this.titleHeight,"px;left:",this.plotOffset.left,"px;font-size:smaller;text-align:center;width:",this.plotWidth,'px;" class="flotr-subtitle">',i.subtitle,"</div>"),e.push("</div>"),e.push('<div class="flotr-axis-title" style="font-weight:bold;">'),l.x.options.title&&l.x.used&&e.push('<div style="position:absolute;top:',this.plotOffset.top+this.plotHeight+i.grid.labelMargin+l.x.titleSize.height,"px;left:",this.plotOffset.left,"px;width:",this.plotWidth,"px;text-align:",l.x.options.titleAlign,';" class="flotr-axis-title flotr-axis-title-x1">',l.x.options.title,"</div>"),l.x2.options.title&&l.x2.used&&e.push('<div style="position:absolute;top:0;left:',this.plotOffset.left,"px;width:",this.plotWidth,"px;text-align:",l.x2.options.titleAlign,';" class="flotr-axis-title flotr-axis-title-x2">',l.x2.options.title,"</div>"),l.y.options.title&&l.y.used&&e.push('<div style="position:absolute;top:',this.plotOffset.top+this.plotHeight/2-l.y.titleSize.height/2,"px;left:0;text-align:",l.y.options.titleAlign,';" class="flotr-axis-title flotr-axis-title-y1">',l.y.options.title,"</div>"),l.y2.options.title&&l.y2.used&&e.push('<div style="position:absolute;top:',this.plotOffset.top+this.plotHeight/2-l.y.titleSize.height/2,"px;right:0;text-align:",l.y2.options.titleAlign,';" class="flotr-axis-title flotr-axis-title-y2">',l.y2.options.title,"</div>"),e=e.join("");var a=t.create("div");t.setStyles({color:i.grid.color}),a.className="flotr-titles",t.insert(this.el,a),t.insert(a,e)}}})}(),Flotr});
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['bean', 'underscore'], function (bean, _) {
+            // Also create a global in case some scripts
+            // that are loaded still are looking for
+            // a global even when an AMD loader is in use.
+            return (root.Flotr = factory(bean, _));
+        });
+    } else {
+        // Browser globals
+        root.Flotr = factory(root.bean, root._);
+    }
+}(this, function (bean, _) {
+
+/**
+ * Flotr2 (c) 2012 Carl Sutherland
+ * MIT License
+ * Special thanks to:
+ * Flotr: http://code.google.com/p/flotr/ (fork)
+ * Flot: https://github.com/flot/flot (original fork)
+ */
+(function () {
+
+var
+  global = this,
+  previousFlotr = this.Flotr,
+  Flotr;
+
+Flotr = {
+  _: _,
+  bean: bean,
+  isIphone: /iphone/i.test(navigator.userAgent),
+  isIE: (navigator.appVersion.indexOf("MSIE") != -1 ? parseFloat(navigator.appVersion.split("MSIE")[1]) : false),
+  
+  /**
+   * An object of the registered graph types. Use Flotr.addType(type, object)
+   * to add your own type.
+   */
+  graphTypes: {},
+  
+  /**
+   * The list of the registered plugins
+   */
+  plugins: {},
+  
+  /**
+   * Can be used to add your own chart type. 
+   * @param {String} name - Type of chart, like 'pies', 'bars' etc.
+   * @param {String} graphType - The object containing the basic drawing functions (draw, etc)
+   */
+  addType: function(name, graphType){
+    Flotr.graphTypes[name] = graphType;
+    Flotr.defaultOptions[name] = graphType.options || {};
+    Flotr.defaultOptions.defaultType = Flotr.defaultOptions.defaultType || name;
+  },
+  
+  /**
+   * Can be used to add a plugin
+   * @param {String} name - The name of the plugin
+   * @param {String} plugin - The object containing the plugin's data (callbacks, options, function1, function2, ...)
+   */
+  addPlugin: function(name, plugin){
+    Flotr.plugins[name] = plugin;
+    Flotr.defaultOptions[name] = plugin.options || {};
+  },
+  
+  /**
+   * Draws the graph. This function is here for backwards compatibility with Flotr version 0.1.0alpha.
+   * You could also draw graphs by directly calling Flotr.Graph(element, data, options).
+   * @param {Element} el - element to insert the graph into
+   * @param {Object} data - an array or object of dataseries
+   * @param {Object} options - an object containing options
+   * @param {Class} _GraphKlass_ - (optional) Class to pass the arguments to, defaults to Flotr.Graph
+   * @return {Object} returns a new graph object and of course draws the graph.
+   */
+  draw: function(el, data, options, GraphKlass){  
+    GraphKlass = GraphKlass || Flotr.Graph;
+    return new GraphKlass(el, data, options);
+  },
+  
+  /**
+   * Recursively merges two objects.
+   * @param {Object} src - source object (likely the object with the least properties)
+   * @param {Object} dest - destination object (optional, object with the most properties)
+   * @return {Object} recursively merged Object
+   * @TODO See if we can't remove this.
+   */
+  merge: function(src, dest){
+    var i, v, result = dest || {};
+
+    for (i in src) {
+      v = src[i];
+      if (v && typeof(v) === 'object') {
+        if (v.constructor === Array) {
+          result[i] = this._.clone(v);
+        } else if (v.constructor !== RegExp && !this._.isElement(v)) {
+          result[i] = Flotr.merge(v, (dest ? dest[i] : undefined));
+        } else {
+          result[i] = v;
+        }
+      } else {
+        result[i] = v;
+      }
+    }
+
+    return result;
+  },
+  
+  /**
+   * Recursively clones an object.
+   * @param {Object} object - The object to clone
+   * @return {Object} the clone
+   * @TODO See if we can't remove this.
+   */
+  clone: function(object){
+    return Flotr.merge(object, {});
+  },
+  
+  /**
+   * Function calculates the ticksize and returns it.
+   * @param {Integer} noTicks - number of ticks
+   * @param {Integer} min - lower bound integer value for the current axis
+   * @param {Integer} max - upper bound integer value for the current axis
+   * @param {Integer} decimals - number of decimals for the ticks
+   * @return {Integer} returns the ticksize in pixels
+   */
+  getTickSize: function(noTicks, min, max, decimals){
+    var delta = (max - min) / noTicks,
+        magn = Flotr.getMagnitude(delta),
+        tickSize = 10,
+        norm = delta / magn; // Norm is between 1.0 and 10.0.
+        
+    if(norm < 1.5) tickSize = 1;
+    else if(norm < 2.25) tickSize = 2;
+    else if(norm < 3) tickSize = ((decimals === 0) ? 2 : 2.5);
+    else if(norm < 7.5) tickSize = 5;
+    
+    return tickSize * magn;
+  },
+  
+  /**
+   * Default tick formatter.
+   * @param {String, Integer} val - tick value integer
+   * @param {Object} axisOpts - the axis' options
+   * @return {String} formatted tick string
+   */
+  defaultTickFormatter: function(val, axisOpts){
+    return val+'';
+  },
+  
+  /**
+   * Formats the mouse tracker values.
+   * @param {Object} obj - Track value Object {x:..,y:..}
+   * @return {String} Formatted track string
+   */
+  defaultTrackFormatter: function(obj){
+    return '('+obj.x+', '+obj.y+')';
+  }, 
+  
+  /**
+   * Utility function to convert file size values in bytes to kB, MB, ...
+   * @param value {Number} - The value to convert
+   * @param precision {Number} - The number of digits after the comma (default: 2)
+   * @param base {Number} - The base (default: 1000)
+   */
+  engineeringNotation: function(value, precision, base){
+    var sizes =         ['Y','Z','E','P','T','G','M','k',''],
+        fractionSizes = ['y','z','a','f','p','n','µ','m',''],
+        total = sizes.length;
+
+    base = base || 1000;
+    precision = Math.pow(10, precision || 2);
+
+    if (value === 0) return 0;
+
+    if (value > 1) {
+      while (total-- && (value >= base)) value /= base;
+    }
+    else {
+      sizes = fractionSizes;
+      total = sizes.length;
+      while (total-- && (value < 1)) value *= base;
+    }
+
+    return (Math.round(value * precision) / precision) + sizes[total];
+  },
+  
+  /**
+   * Returns the magnitude of the input value.
+   * @param {Integer, Float} x - integer or float value
+   * @return {Integer, Float} returns the magnitude of the input value
+   */
+  getMagnitude: function(x){
+    return Math.pow(10, Math.floor(Math.log(x) / Math.LN10));
+  },
+  toPixel: function(val){
+    return Math.floor(val)+0.5;//((val-Math.round(val) < 0.4) ? (Math.floor(val)-0.5) : val);
+  },
+  toRad: function(angle){
+    return -angle * (Math.PI/180);
+  },
+  floorInBase: function(n, base) {
+    return base * Math.floor(n / base);
+  },
+  drawText: function(ctx, text, x, y, style) {
+    if (!ctx.fillText) {
+      ctx.drawText(text, x, y, style);
+      return;
+    }
+    
+    style = this._.extend({
+      size: Flotr.defaultOptions.fontSize,
+      color: '#000000',
+      textAlign: 'left',
+      textBaseline: 'bottom',
+      weight: 1,
+      angle: 0
+    }, style);
+    
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(style.angle);
+    ctx.fillStyle = style.color;
+    ctx.font = (style.weight > 1 ? "bold " : "") + (style.size*1.3) + "px sans-serif";
+    ctx.textAlign = style.textAlign;
+    ctx.textBaseline = style.textBaseline;
+    ctx.fillText(text, 0, 0);
+    ctx.restore();
+  },
+  getBestTextAlign: function(angle, style) {
+    style = style || {textAlign: 'center', textBaseline: 'middle'};
+    angle += Flotr.getTextAngleFromAlign(style);
+    
+    if (Math.abs(Math.cos(angle)) > 10e-3) 
+      style.textAlign    = (Math.cos(angle) > 0 ? 'right' : 'left');
+    
+    if (Math.abs(Math.sin(angle)) > 10e-3) 
+      style.textBaseline = (Math.sin(angle) > 0 ? 'top' : 'bottom');
+    
+    return style;
+  },
+  alignTable: {
+    'right middle' : 0,
+    'right top'    : Math.PI/4,
+    'center top'   : Math.PI/2,
+    'left top'     : 3*(Math.PI/4),
+    'left middle'  : Math.PI,
+    'left bottom'  : -3*(Math.PI/4),
+    'center bottom': -Math.PI/2,
+    'right bottom' : -Math.PI/4,
+    'center middle': 0
+  },
+  getTextAngleFromAlign: function(style) {
+    return Flotr.alignTable[style.textAlign+' '+style.textBaseline] || 0;
+  },
+  noConflict : function () {
+    global.Flotr = previousFlotr;
+    return this;
+  }
+};
+
+global.Flotr = Flotr;
+
+})();
+
+/**
+ * Flotr Defaults
+ */
+Flotr.defaultOptions = {
+  colors: ['#00A8F0', '#C0D800', '#CB4B4B', '#4DA74D', '#9440ED'], //=> The default colorscheme. When there are > 5 series, additional colors are generated.
+  ieBackgroundColor: '#FFFFFF', // Background color for excanvas clipping
+  title: null,             // => The graph's title
+  subtitle: null,          // => The graph's subtitle
+  shadowSize: 4,           // => size of the 'fake' shadow
+  defaultType: null,       // => default series type
+  HtmlText: true,          // => wether to draw the text using HTML or on the canvas
+  fontColor: '#545454',    // => default font color
+  fontSize: 7.5,           // => canvas' text font size
+  resolution: 1,           // => resolution of the graph, to have printer-friendly graphs !
+  parseFloat: true,        // => whether to preprocess data for floats (ie. if input is string)
+  preventDefault: true,    // => preventDefault by default for mobile events.  Turn off to enable scroll.
+  xaxis: {
+    ticks: null,           // => format: either [1, 3] or [[1, 'a'], 3]
+    minorTicks: null,      // => format: either [1, 3] or [[1, 'a'], 3]
+    showLabels: true,      // => setting to true will show the axis ticks labels, hide otherwise
+    showMinorLabels: false,// => true to show the axis minor ticks labels, false to hide
+    labelsAngle: 0,        // => labels' angle, in degrees
+    title: null,           // => axis title
+    titleAngle: 0,         // => axis title's angle, in degrees
+    noTicks: 5,            // => number of ticks for automagically generated ticks
+    minorTickFreq: null,   // => number of minor ticks between major ticks for autogenerated ticks
+    tickFormatter: Flotr.defaultTickFormatter, // => fn: number, Object -> string
+    tickDecimals: null,    // => no. of decimals, null means auto
+    min: null,             // => min. value to show, null means set automatically
+    max: null,             // => max. value to show, null means set automatically
+    autoscale: false,      // => Turns autoscaling on with true
+    autoscaleMargin: 0,    // => margin in % to add if auto-setting min/max
+    color: null,           // => color of the ticks
+    mode: 'normal',        // => can be 'time' or 'normal'
+    timeFormat: null,
+    timeMode:'UTC',        // => For UTC time ('local' for local time).
+    timeUnit:'millisecond',// => Unit for time (millisecond, second, minute, hour, day, month, year)
+    scaling: 'linear',     // => Scaling, can be 'linear' or 'logarithmic'
+    base: Math.E,
+    titleAlign: 'center',
+    margin: true           // => Turn off margins with false
+  },
+  x2axis: {},
+  yaxis: {
+    ticks: null,           // => format: either [1, 3] or [[1, 'a'], 3]
+    minorTicks: null,      // => format: either [1, 3] or [[1, 'a'], 3]
+    showLabels: true,      // => setting to true will show the axis ticks labels, hide otherwise
+    showMinorLabels: false,// => true to show the axis minor ticks labels, false to hide
+    labelsAngle: 0,        // => labels' angle, in degrees
+    title: null,           // => axis title
+    titleAngle: 90,        // => axis title's angle, in degrees
+    noTicks: 5,            // => number of ticks for automagically generated ticks
+    minorTickFreq: null,   // => number of minor ticks between major ticks for autogenerated ticks
+    tickFormatter: Flotr.defaultTickFormatter, // => fn: number, Object -> string
+    tickDecimals: null,    // => no. of decimals, null means auto
+    min: null,             // => min. value to show, null means set automatically
+    max: null,             // => max. value to show, null means set automatically
+    autoscale: false,      // => Turns autoscaling on with true
+    autoscaleMargin: 0,    // => margin in % to add if auto-setting min/max
+    color: null,           // => The color of the ticks
+    scaling: 'linear',     // => Scaling, can be 'linear' or 'logarithmic'
+    base: Math.E,
+    titleAlign: 'center',
+    margin: true           // => Turn off margins with false
+  },
+  y2axis: {
+    titleAngle: 270
+  },
+  grid: {
+    color: '#545454',      // => primary color used for outline and labels
+    backgroundColor: null, // => null for transparent, else color
+    backgroundImage: null, // => background image. String or object with src, left and top
+    watermarkAlpha: 0.4,   // => 
+    tickColor: '#DDDDDD',  // => color used for the ticks
+    labelMargin: 3,        // => margin in pixels
+    verticalLines: true,   // => whether to show gridlines in vertical direction
+    minorVerticalLines: null, // => whether to show gridlines for minor ticks in vertical dir.
+    horizontalLines: true, // => whether to show gridlines in horizontal direction
+    minorHorizontalLines: null, // => whether to show gridlines for minor ticks in horizontal dir.
+    outlineWidth: 1,       // => width of the grid outline/border in pixels
+    outline : 'nsew',      // => walls of the outline to display
+    circular: false        // => if set to true, the grid will be circular, must be used when radars are drawn
+  },
+  mouse: {
+    track: false,          // => true to track the mouse, no tracking otherwise
+    trackAll: false,
+    position: 'se',        // => position of the value box (default south-east)
+    relative: false,       // => next to the mouse cursor
+    trackFormatter: Flotr.defaultTrackFormatter, // => formats the values in the value box
+    margin: 5,             // => margin in pixels of the valuebox
+    lineColor: '#FF3F19',  // => line color of points that are drawn when mouse comes near a value of a series
+    trackDecimals: 1,      // => decimals for the track values
+    sensibility: 2,        // => the lower this number, the more precise you have to aim to show a value
+    trackY: true,          // => whether or not to track the mouse in the y axis
+    radius: 3,             // => radius of the track point
+    fillColor: null,       // => color to fill our select bar with only applies to bar and similar graphs (only bars for now)
+    fillOpacity: 0.4       // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill 
+  }
+};
+
+/**
+ * Flotr Color
+ */
+
+(function () {
+
+var
+  _ = Flotr._;
+
+// Constructor
+function Color (r, g, b, a) {
+  this.rgba = ['r','g','b','a'];
+  var x = 4;
+  while(-1<--x){
+    this[this.rgba[x]] = arguments[x] || ((x==3) ? 1.0 : 0);
+  }
+  this.normalize();
+}
+
+// Constants
+var COLOR_NAMES = {
+  aqua:[0,255,255],azure:[240,255,255],beige:[245,245,220],black:[0,0,0],blue:[0,0,255],
+  brown:[165,42,42],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgrey:[169,169,169],
+  darkgreen:[0,100,0],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],
+  darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],
+  darkviolet:[148,0,211],fuchsia:[255,0,255],gold:[255,215,0],green:[0,128,0],indigo:[75,0,130],
+  khaki:[240,230,140],lightblue:[173,216,230],lightcyan:[224,255,255],lightgreen:[144,238,144],
+  lightgrey:[211,211,211],lightpink:[255,182,193],lightyellow:[255,255,224],lime:[0,255,0],magenta:[255,0,255],
+  maroon:[128,0,0],navy:[0,0,128],olive:[128,128,0],orange:[255,165,0],pink:[255,192,203],purple:[128,0,128],
+  violet:[128,0,128],red:[255,0,0],silver:[192,192,192],white:[255,255,255],yellow:[255,255,0]
+};
+
+Color.prototype = {
+  scale: function(rf, gf, bf, af){
+    var x = 4;
+    while (-1 < --x) {
+      if (!_.isUndefined(arguments[x])) this[this.rgba[x]] *= arguments[x];
+    }
+    return this.normalize();
+  },
+  alpha: function(alpha) {
+    if (!_.isUndefined(alpha) && !_.isNull(alpha)) {
+      this.a = alpha;
+    }
+    return this.normalize();
+  },
+  clone: function(){
+    return new Color(this.r, this.b, this.g, this.a);
+  },
+  limit: function(val,minVal,maxVal){
+    return Math.max(Math.min(val, maxVal), minVal);
+  },
+  normalize: function(){
+    var limit = this.limit;
+    this.r = limit(parseInt(this.r, 10), 0, 255);
+    this.g = limit(parseInt(this.g, 10), 0, 255);
+    this.b = limit(parseInt(this.b, 10), 0, 255);
+    this.a = limit(this.a, 0, 1);
+    return this;
+  },
+  distance: function(color){
+    if (!color) return;
+    color = new Color.parse(color);
+    var dist = 0, x = 3;
+    while(-1<--x){
+      dist += Math.abs(this[this.rgba[x]] - color[this.rgba[x]]);
+    }
+    return dist;
+  },
+  toString: function(){
+    return (this.a >= 1.0) ? 'rgb('+[this.r,this.g,this.b].join(',')+')' : 'rgba('+[this.r,this.g,this.b,this.a].join(',')+')';
+  },
+  contrast: function () {
+    var
+      test = 1 - ( 0.299 * this.r + 0.587 * this.g + 0.114 * this.b) / 255;
+    return (test < 0.5 ? '#000000' : '#ffffff');
+  }
+};
+
+_.extend(Color, {
+  /**
+   * Parses a color string and returns a corresponding Color.
+   * The different tests are in order of probability to improve speed.
+   * @param {String, Color} str - string thats representing a color
+   * @return {Color} returns a Color object or false
+   */
+  parse: function(color){
+    if (color instanceof Color) return color;
+
+    var result;
+
+    // #a0b1c2
+    if((result = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color)))
+      return new Color(parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16));
+
+    // rgb(num,num,num)
+    if((result = /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(color)))
+      return new Color(parseInt(result[1], 10), parseInt(result[2], 10), parseInt(result[3], 10));
+  
+    // #fff
+    if((result = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color)))
+      return new Color(parseInt(result[1]+result[1],16), parseInt(result[2]+result[2],16), parseInt(result[3]+result[3],16));
+  
+    // rgba(num,num,num,num)
+    if((result = /rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(color)))
+      return new Color(parseInt(result[1], 10), parseInt(result[2], 10), parseInt(result[3], 10), parseFloat(result[4]));
+      
+    // rgb(num%,num%,num%)
+    if((result = /rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(color)))
+      return new Color(parseFloat(result[1])*2.55, parseFloat(result[2])*2.55, parseFloat(result[3])*2.55);
+  
+    // rgba(num%,num%,num%,num)
+    if((result = /rgba\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(color)))
+      return new Color(parseFloat(result[1])*2.55, parseFloat(result[2])*2.55, parseFloat(result[3])*2.55, parseFloat(result[4]));
+
+    // Otherwise, we're most likely dealing with a named color.
+    var name = (color+'').replace(/^\s*([\S\s]*?)\s*$/, '$1').toLowerCase();
+    if(name == 'transparent'){
+      return new Color(255, 255, 255, 0);
+    }
+    return (result = COLOR_NAMES[name]) ? new Color(result[0], result[1], result[2]) : new Color(0, 0, 0, 0);
+  },
+
+  /**
+   * Process color and options into color style.
+   */
+  processColor: function(color, options) {
+
+    var opacity = options.opacity;
+    if (!color) return 'rgba(0, 0, 0, 0)';
+    if (color instanceof Color) return color.alpha(opacity).toString();
+    if (_.isString(color)) return Color.parse(color).alpha(opacity).toString();
+    
+    var grad = color.colors ? color : {colors: color};
+    
+    if (!options.ctx) {
+      if (!_.isArray(grad.colors)) return 'rgba(0, 0, 0, 0)';
+      return Color.parse(_.isArray(grad.colors[0]) ? grad.colors[0][1] : grad.colors[0]).alpha(opacity).toString();
+    }
+    grad = _.extend({start: 'top', end: 'bottom'}, grad); 
+    
+    if (/top/i.test(grad.start))  options.x1 = 0;
+    if (/left/i.test(grad.start)) options.y1 = 0;
+    if (/bottom/i.test(grad.end)) options.x2 = 0;
+    if (/right/i.test(grad.end))  options.y2 = 0;
+
+    var i, c, stop, gradient = options.ctx.createLinearGradient(options.x1, options.y1, options.x2, options.y2);
+    for (i = 0; i < grad.colors.length; i++) {
+      c = grad.colors[i];
+      if (_.isArray(c)) {
+        stop = c[0];
+        c = c[1];
+      }
+      else stop = i / (grad.colors.length-1);
+      gradient.addColorStop(stop, Color.parse(c).alpha(opacity));
+    }
+    return gradient;
+  }
+});
+
+Flotr.Color = Color;
+
+})();
+
+/**
+ * Flotr Date
+ */
+Flotr.Date = {
+
+  set : function (date, name, mode, value) {
+    mode = mode || 'UTC';
+    name = 'set' + (mode === 'UTC' ? 'UTC' : '') + name;
+    date[name](value);
+  },
+
+  get : function (date, name, mode) {
+    mode = mode || 'UTC';
+    name = 'get' + (mode === 'UTC' ? 'UTC' : '') + name;
+    return date[name]();
+  },
+
+  format: function(d, format, mode) {
+    if (!d) return;
+
+    // We should maybe use an "official" date format spec, like PHP date() or ColdFusion 
+    // http://fr.php.net/manual/en/function.date.php
+    // http://livedocs.adobe.com/coldfusion/8/htmldocs/help.html?content=functions_c-d_29.html
+    var
+      get = this.get,
+      tokens = {
+        h: get(d, 'Hours', mode).toString(),
+        H: leftPad(get(d, 'Hours', mode)),
+        M: leftPad(get(d, 'Minutes', mode)),
+        S: leftPad(get(d, 'Seconds', mode)),
+        s: get(d, 'Milliseconds', mode),
+        d: get(d, 'Date', mode).toString(),
+        m: (get(d, 'Month', mode) + 1).toString(),
+        y: get(d, 'FullYear', mode).toString(),
+        b: Flotr.Date.monthNames[get(d, 'Month', mode)]
+      };
+
+    function leftPad(n){
+      n += '';
+      return n.length == 1 ? "0" + n : n;
+    }
+    
+    var r = [], c,
+        escape = false;
+    
+    for (var i = 0; i < format.length; ++i) {
+      c = format.charAt(i);
+      
+      if (escape) {
+        r.push(tokens[c] || c);
+        escape = false;
+      }
+      else if (c == "%")
+        escape = true;
+      else
+        r.push(c);
+    }
+    return r.join('');
+  },
+  getFormat: function(time, span) {
+    var tu = Flotr.Date.timeUnits;
+         if (time < tu.second) return "%h:%M:%S.%s";
+    else if (time < tu.minute) return "%h:%M:%S";
+    else if (time < tu.day)    return (span < 2 * tu.day) ? "%h:%M" : "%b %d %h:%M";
+    else if (time < tu.month)  return "%b %d";
+    else if (time < tu.year)   return (span < tu.year) ? "%b" : "%b %y";
+    else                       return "%y";
+  },
+  formatter: function (v, axis) {
+    var
+      options = axis.options,
+      scale = Flotr.Date.timeUnits[options.timeUnit],
+      d = new Date(v * scale);
+
+    // first check global format
+    if (axis.options.timeFormat)
+      return Flotr.Date.format(d, options.timeFormat, options.timeMode);
+    
+    var span = (axis.max - axis.min) * scale,
+        t = axis.tickSize * Flotr.Date.timeUnits[axis.tickUnit];
+
+    return Flotr.Date.format(d, Flotr.Date.getFormat(t, span), options.timeMode);
+  },
+  generator: function(axis) {
+
+     var
+      set       = this.set,
+      get       = this.get,
+      timeUnits = this.timeUnits,
+      spec      = this.spec,
+      options   = axis.options,
+      mode      = options.timeMode,
+      scale     = timeUnits[options.timeUnit],
+      min       = axis.min * scale,
+      max       = axis.max * scale,
+      delta     = (max - min) / options.noTicks,
+      ticks     = [],
+      tickSize  = axis.tickSize,
+      tickUnit,
+      formatter, i;
+
+    // Use custom formatter or time tick formatter
+    formatter = (options.tickFormatter === Flotr.defaultTickFormatter ?
+      this.formatter : options.tickFormatter
+    );
+
+    for (i = 0; i < spec.length - 1; ++i) {
+      var d = spec[i][0] * timeUnits[spec[i][1]];
+      if (delta < (d + spec[i+1][0] * timeUnits[spec[i+1][1]]) / 2 && d >= tickSize)
+        break;
+    }
+    tickSize = spec[i][0];
+    tickUnit = spec[i][1];
+
+    // special-case the possibility of several years
+    if (tickUnit == "year") {
+      tickSize = Flotr.getTickSize(options.noTicks*timeUnits.year, min, max, 0);
+
+      // Fix for 0.5 year case
+      if (tickSize == 0.5) {
+        tickUnit = "month";
+        tickSize = 6;
+      }
+    }
+
+    axis.tickUnit = tickUnit;
+    axis.tickSize = tickSize;
+
+    var step = tickSize * timeUnits[tickUnit];
+    d = new Date(min);
+
+    function setTick (name) {
+      set(d, name, mode, Flotr.floorInBase(
+        get(d, name, mode), tickSize
+      ));
+    }
+
+    switch (tickUnit) {
+      case "millisecond": setTick('Milliseconds'); break;
+      case "second": setTick('Seconds'); break;
+      case "minute": setTick('Minutes'); break;
+      case "hour": setTick('Hours'); break;
+      case "month": setTick('Month'); break;
+      case "year": setTick('FullYear'); break;
+    }
+    
+    // reset smaller components
+    if (step >= timeUnits.second)  set(d, 'Milliseconds', mode, 0);
+    if (step >= timeUnits.minute)  set(d, 'Seconds', mode, 0);
+    if (step >= timeUnits.hour)    set(d, 'Minutes', mode, 0);
+    if (step >= timeUnits.day)     set(d, 'Hours', mode, 0);
+    if (step >= timeUnits.day * 4) set(d, 'Date', mode, 1);
+    if (step >= timeUnits.year)    set(d, 'Month', mode, 0);
+
+    var carry = 0, v = NaN, prev;
+    do {
+      prev = v;
+      v = d.getTime();
+      ticks.push({ v: v / scale, label: formatter(v / scale, axis) });
+      if (tickUnit == "month") {
+        if (tickSize < 1) {
+          /* a bit complicated - we'll divide the month up but we need to take care of fractions
+           so we don't end up in the middle of a day */
+          set(d, 'Date', mode, 1);
+          var start = d.getTime();
+          set(d, 'Month', mode, get(d, 'Month', mode) + 1);
+          var end = d.getTime();
+          d.setTime(v + carry * timeUnits.hour + (end - start) * tickSize);
+          carry = get(d, 'Hours', mode);
+          set(d, 'Hours', mode, 0);
+        }
+        else
+          set(d, 'Month', mode, get(d, 'Month', mode) + tickSize);
+      }
+      else if (tickUnit == "year") {
+        set(d, 'FullYear', mode, get(d, 'FullYear', mode) + tickSize);
+      }
+      else
+        d.setTime(v + step);
+
+    } while (v < max && v != prev);
+
+    return ticks;
+  },
+  timeUnits: {
+    millisecond: 1,
+    second: 1000,
+    minute: 1000 * 60,
+    hour:   1000 * 60 * 60,
+    day:    1000 * 60 * 60 * 24,
+    month:  1000 * 60 * 60 * 24 * 30,
+    year:   1000 * 60 * 60 * 24 * 365.2425
+  },
+  // the allowed tick sizes, after 1 year we use an integer algorithm
+  spec: [
+    [1, "millisecond"], [20, "millisecond"], [50, "millisecond"], [100, "millisecond"], [200, "millisecond"], [500, "millisecond"], 
+    [1, "second"],   [2, "second"],  [5, "second"], [10, "second"], [30, "second"], 
+    [1, "minute"],   [2, "minute"],  [5, "minute"], [10, "minute"], [30, "minute"], 
+    [1, "hour"],     [2, "hour"],    [4, "hour"],   [8, "hour"],    [12, "hour"],
+    [1, "day"],      [2, "day"],     [3, "day"],
+    [0.25, "month"], [0.5, "month"], [1, "month"],  [2, "month"],   [3, "month"], [6, "month"],
+    [1, "year"]
+  ],
+  monthNames: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+};
+
+(function () {
+
+var _ = Flotr._;
+
+Flotr.DOM = {
+  addClass: function(element, name){
+    var classList = (element.className ? element.className : '');
+      if (_.include(classList.split(/\s+/g), name)) return;
+    element.className = (classList ? classList + ' ' : '') + name;
+  },
+  /**
+   * Create an element.
+   */
+  create: function(tag){
+    return document.createElement(tag);
+  },
+  node: function(html) {
+    var div = Flotr.DOM.create('div'), n;
+    div.innerHTML = html;
+    n = div.children[0];
+    div.innerHTML = '';
+    return n;
+  },
+  /**
+   * Remove all children.
+   */
+  empty: function(element){
+    element.innerHTML = '';
+    /*
+    if (!element) return;
+    _.each(element.childNodes, function (e) {
+      Flotr.DOM.empty(e);
+      element.removeChild(e);
+    });
+    */
+  },
+  hide: function(element){
+    Flotr.DOM.setStyles(element, {display:'none'});
+  },
+  /**
+   * Insert a child.
+   * @param {Element} element
+   * @param {Element|String} Element or string to be appended.
+   */
+  insert: function(element, child){
+    if(_.isString(child))
+      element.innerHTML += child;
+    else if (_.isElement(child))
+      element.appendChild(child);
+  },
+  // @TODO find xbrowser implementation
+  opacity: function(element, opacity) {
+    element.style.opacity = opacity;
+  },
+  position: function(element, p){
+    if (!element.offsetParent)
+      return {left: (element.offsetLeft || 0), top: (element.offsetTop || 0)};
+
+    p = this.position(element.offsetParent);
+    p.left  += element.offsetLeft;
+    p.top   += element.offsetTop;
+    return p;
+  },
+  removeClass: function(element, name) {
+    var classList = (element.className ? element.className : '');
+    element.className = _.filter(classList.split(/\s+/g), function (c) {
+      if (c != name) return true; }
+    ).join(' ');
+  },
+  setStyles: function(element, o) {
+    _.each(o, function (value, key) {
+      element.style[key] = value;
+    });
+  },
+  show: function(element){
+    Flotr.DOM.setStyles(element, {display:''});
+  },
+  /**
+   * Return element size.
+   */
+  size: function(element){
+    return {
+      height : element.offsetHeight,
+      width : element.offsetWidth };
+  }
+};
+
+})();
+
+/**
+ * Flotr Event Adapter
+ */
+(function () {
+var
+  F = Flotr,
+  bean = F.bean;
+F.EventAdapter = {
+  observe: function(object, name, callback) {
+    bean.add(object, name, callback);
+    return this;
+  },
+  fire: function(object, name, args) {
+    bean.fire(object, name, args);
+    if (typeof(Prototype) != 'undefined')
+      Event.fire(object, name, args);
+    // @TODO Someone who uses mootools, add mootools adapter for existing applciations.
+    return this;
+  },
+  stopObserving: function(object, name, callback) {
+    bean.remove(object, name, callback);
+    return this;
+  },
+  eventPointer: function(e) {
+    if (!F._.isUndefined(e.touches) && e.touches.length > 0) {
+      return {
+        x : e.touches[0].pageX,
+        y : e.touches[0].pageY
+      };
+    } else if (!F._.isUndefined(e.changedTouches) && e.changedTouches.length > 0) {
+      return {
+        x : e.changedTouches[0].pageX,
+        y : e.changedTouches[0].pageY
+      };
+    } else if (e.pageX || e.pageY) {
+      return {
+        x : e.pageX,
+        y : e.pageY
+      };
+    } else if (e.clientX || e.clientY) {
+      var
+        d = document,
+        b = d.body,
+        de = d.documentElement;
+      return {
+        x: e.clientX + b.scrollLeft + de.scrollLeft,
+        y: e.clientY + b.scrollTop + de.scrollTop
+      };
+    }
+  }
+};
+})();
+
+/**
+ * Text Utilities
+ */
+(function () {
+
+var
+  F = Flotr,
+  D = F.DOM,
+  _ = F._,
+
+Text = function (o) {
+  this.o = o;
+};
+
+Text.prototype = {
+
+  dimensions : function (text, canvasStyle, htmlStyle, className) {
+
+    if (!text) return { width : 0, height : 0 };
+    
+    return (this.o.html) ?
+      this.html(text, this.o.element, htmlStyle, className) : 
+      this.canvas(text, canvasStyle);
+  },
+
+  canvas : function (text, style) {
+
+    if (!this.o.textEnabled) return;
+    style = style || {};
+
+    var
+      metrics = this.measureText(text, style),
+      width = metrics.width,
+      height = style.size || F.defaultOptions.fontSize,
+      angle = style.angle || 0,
+      cosAngle = Math.cos(angle),
+      sinAngle = Math.sin(angle),
+      widthPadding = 2,
+      heightPadding = 6,
+      bounds;
+
+    bounds = {
+      width: Math.abs(cosAngle * width) + Math.abs(sinAngle * height) + widthPadding,
+      height: Math.abs(sinAngle * width) + Math.abs(cosAngle * height) + heightPadding
+    };
+
+    return bounds;
+  },
+
+  html : function (text, element, style, className) {
+
+    var div = D.create('div');
+
+    D.setStyles(div, { 'position' : 'absolute', 'top' : '-10000px' });
+    D.insert(div, '<div style="'+style+'" class="'+className+' flotr-dummy-div">' + text + '</div>');
+    D.insert(this.o.element, div);
+
+    return D.size(div);
+  },
+
+  measureText : function (text, style) {
+
+    var
+      context = this.o.ctx,
+      metrics;
+
+    if (!context.fillText || (F.isIphone && context.measure)) {
+      return { width : context.measure(text, style)};
+    }
+
+    style = _.extend({
+      size: F.defaultOptions.fontSize,
+      weight: 1,
+      angle: 0
+    }, style);
+
+    context.save();
+    context.font = (style.weight > 1 ? "bold " : "") + (style.size*1.3) + "px sans-serif";
+    metrics = context.measureText(text);
+    context.restore();
+
+    return metrics;
+  }
+};
+
+Flotr.Text = Text;
+
+})();
+
+/**
+ * Flotr Graph class that plots a graph on creation.
+ */
+(function () {
+
+var
+  D     = Flotr.DOM,
+  E     = Flotr.EventAdapter,
+  _     = Flotr._,
+  flotr = Flotr;
+/**
+ * Flotr Graph constructor.
+ * @param {Element} el - element to insert the graph into
+ * @param {Object} data - an array or object of dataseries
+ * @param {Object} options - an object containing options
+ */
+Graph = function(el, data, options){
+// Let's see if we can get away with out this [JS]
+//  try {
+    this._setEl(el);
+    this._initMembers();
+    this._initPlugins();
+
+    E.fire(this.el, 'flotr:beforeinit', [this]);
+
+    this.data = data;
+    this.series = flotr.Series.getSeries(data);
+    this._initOptions(options);
+    this._initGraphTypes();
+    this._initCanvas();
+    this._text = new flotr.Text({
+      element : this.el,
+      ctx : this.ctx,
+      html : this.options.HtmlText,
+      textEnabled : this.textEnabled
+    });
+    E.fire(this.el, 'flotr:afterconstruct', [this]);
+    this._initEvents();
+
+    this.findDataRanges();
+    this.calculateSpacing();
+
+    this.draw(_.bind(function() {
+      E.fire(this.el, 'flotr:afterinit', [this]);
+    }, this));
+/*
+    try {
+  } catch (e) {
+    try {
+      console.error(e);
+    } catch (e2) {}
+  }*/
+};
+
+function observe (object, name, callback) {
+  E.observe.apply(this, arguments);
+  this._handles.push(arguments);
+  return this;
+}
+
+Graph.prototype = {
+
+  destroy: function () {
+    E.fire(this.el, 'flotr:destroy');
+    _.each(this._handles, function (handle) {
+      E.stopObserving.apply(this, handle);
+    });
+    this._handles = [];
+    this.el.graph = null;
+  },
+
+  observe : observe,
+
+  /**
+   * @deprecated
+   */
+  _observe : observe,
+
+  processColor: function(color, options){
+    var o = { x1: 0, y1: 0, x2: this.plotWidth, y2: this.plotHeight, opacity: 1, ctx: this.ctx };
+    _.extend(o, options);
+    return flotr.Color.processColor(color, o);
+  },
+  /**
+   * Function determines the min and max values for the xaxis and yaxis.
+   *
+   * TODO logarithmic range validation (consideration of 0)
+   */
+  findDataRanges: function(){
+    var a = this.axes,
+      xaxis, yaxis, range;
+
+    _.each(this.series, function (series) {
+      range = series.getRange();
+      if (range) {
+        xaxis = series.xaxis;
+        yaxis = series.yaxis;
+        xaxis.datamin = Math.min(range.xmin, xaxis.datamin);
+        xaxis.datamax = Math.max(range.xmax, xaxis.datamax);
+        yaxis.datamin = Math.min(range.ymin, yaxis.datamin);
+        yaxis.datamax = Math.max(range.ymax, yaxis.datamax);
+        xaxis.used = (xaxis.used || range.xused);
+        yaxis.used = (yaxis.used || range.yused);
+      }
+    }, this);
+
+    // Check for empty data, no data case (none used)
+    if (!a.x.used && !a.x2.used) a.x.used = true;
+    if (!a.y.used && !a.y2.used) a.y.used = true;
+
+    _.each(a, function (axis) {
+      axis.calculateRange();
+    });
+
+    var
+      types = _.keys(flotr.graphTypes),
+      drawn = false;
+
+    _.each(this.series, function (series) {
+      if (series.hide) return;
+      _.each(types, function (type) {
+        if (series[type] && series[type].show) {
+          this.extendRange(type, series);
+          drawn = true;
+        }
+      }, this);
+      if (!drawn) {
+        this.extendRange(this.options.defaultType, series);
+      }
+    }, this);
+  },
+
+  extendRange : function (type, series) {
+    if (this[type].extendRange) this[type].extendRange(series, series.data, series[type], this[type]);
+    if (this[type].extendYRange) this[type].extendYRange(series.yaxis, series.data, series[type], this[type]);
+    if (this[type].extendXRange) this[type].extendXRange(series.xaxis, series.data, series[type], this[type]);
+  },
+
+  /**
+   * Calculates axis label sizes.
+   */
+  calculateSpacing: function(){
+
+    var a = this.axes,
+        options = this.options,
+        series = this.series,
+        margin = options.grid.labelMargin,
+        T = this._text,
+        x = a.x,
+        x2 = a.x2,
+        y = a.y,
+        y2 = a.y2,
+        maxOutset = options.grid.outlineWidth,
+        i, j, l, dim;
+
+    // TODO post refactor, fix this
+    _.each(a, function (axis) {
+      axis.calculateTicks();
+      axis.calculateTextDimensions(T, options);
+    });
+
+    // Title height
+    dim = T.dimensions(
+      options.title,
+      {size: options.fontSize*1.5},
+      'font-size:1em;font-weight:bold;',
+      'flotr-title'
+    );
+    this.titleHeight = dim.height;
+
+    // Subtitle height
+    dim = T.dimensions(
+      options.subtitle,
+      {size: options.fontSize},
+      'font-size:smaller;',
+      'flotr-subtitle'
+    );
+    this.subtitleHeight = dim.height;
+
+    for(j = 0; j < options.length; ++j){
+      if (series[j].points.show){
+        maxOutset = Math.max(maxOutset, series[j].points.radius + series[j].points.lineWidth/2);
+      }
+    }
+
+    var p = this.plotOffset;
+    if (x.options.margin === false) {
+      p.bottom = 0;
+      p.top    = 0;
+    } else {
+      p.bottom += (options.grid.circular ? 0 : (x.used && x.options.showLabels ?  (x.maxLabel.height + margin) : 0)) +
+                  (x.used && x.options.title ? (x.titleSize.height + margin) : 0) + maxOutset;
+
+      p.top    += (options.grid.circular ? 0 : (x2.used && x2.options.showLabels ? (x2.maxLabel.height + margin) : 0)) +
+                  (x2.used && x2.options.title ? (x2.titleSize.height + margin) : 0) + this.subtitleHeight + this.titleHeight + maxOutset;
+    }
+    if (y.options.margin === false) {
+      p.left  = 0;
+      p.right = 0;
+    } else {
+      p.left   += (options.grid.circular ? 0 : (y.used && y.options.showLabels ?  (y.maxLabel.width + margin) : 0)) +
+                  (y.used && y.options.title ? (y.titleSize.width + margin) : 0) + maxOutset;
+
+      p.right  += (options.grid.circular ? 0 : (y2.used && y2.options.showLabels ? (y2.maxLabel.width + margin) : 0)) +
+                  (y2.used && y2.options.title ? (y2.titleSize.width + margin) : 0) + maxOutset;
+    }
+
+    p.top = Math.floor(p.top); // In order the outline not to be blured
+
+    this.plotWidth  = this.canvasWidth - p.left - p.right;
+    this.plotHeight = this.canvasHeight - p.bottom - p.top;
+
+    // TODO post refactor, fix this
+    x.length = x2.length = this.plotWidth;
+    y.length = y2.length = this.plotHeight;
+    y.offset = y2.offset = this.plotHeight;
+    x.setScale();
+    x2.setScale();
+    y.setScale();
+    y2.setScale();
+  },
+  /**
+   * Draws grid, labels, series and outline.
+   */
+  draw: function(after) {
+
+    var
+      context = this.ctx,
+      i;
+
+    E.fire(this.el, 'flotr:beforedraw', [this.series, this]);
+
+    if (this.series.length) {
+
+      context.save();
+      context.translate(this.plotOffset.left, this.plotOffset.top);
+
+      for (i = 0; i < this.series.length; i++) {
+        if (!this.series[i].hide) this.drawSeries(this.series[i]);
+      }
+
+      context.restore();
+      this.clip();
+    }
+
+    E.fire(this.el, 'flotr:afterdraw', [this.series, this]);
+    if (after) after();
+  },
+  /**
+   * Actually draws the graph.
+   * @param {Object} series - series to draw
+   */
+  drawSeries: function(series){
+
+    function drawChart (series, typeKey) {
+      var options = this.getOptions(series, typeKey);
+      this[typeKey].draw(options);
+    }
+
+    var drawn = false;
+    series = series || this.series;
+
+    _.each(flotr.graphTypes, function (type, typeKey) {
+      if (series[typeKey] && series[typeKey].show && this[typeKey]) {
+        drawn = true;
+        drawChart.call(this, series, typeKey);
+      }
+    }, this);
+
+    if (!drawn) drawChart.call(this, series, this.options.defaultType);
+  },
+
+  getOptions : function (series, typeKey) {
+    var
+      type = series[typeKey],
+      graphType = this[typeKey],
+      xaxis = series.xaxis,
+      yaxis = series.yaxis,
+      options = {
+        context     : this.ctx,
+        width       : this.plotWidth,
+        height      : this.plotHeight,
+        fontSize    : this.options.fontSize,
+        fontColor   : this.options.fontColor,
+        textEnabled : this.textEnabled,
+        htmlText    : this.options.HtmlText,
+        text        : this._text, // TODO Is this necessary?
+        element     : this.el,
+        data        : series.data,
+        color       : series.color,
+        shadowSize  : series.shadowSize,
+        xScale      : xaxis.d2p,
+        yScale      : yaxis.d2p,
+        xInverse    : xaxis.p2d,
+        yInverse    : yaxis.p2d
+      };
+
+    options = flotr.merge(type, options);
+
+    // Fill
+    options.fillStyle = this.processColor(
+      type.fillColor || series.color,
+      {opacity: type.fillOpacity}
+    );
+
+    return options;
+  },
+  /**
+   * Calculates the coordinates from a mouse event object.
+   * @param {Event} event - Mouse Event object.
+   * @return {Object} Object with coordinates of the mouse.
+   */
+  getEventPosition: function (e){
+
+    var
+      d = document,
+      b = d.body,
+      de = d.documentElement,
+      axes = this.axes,
+      plotOffset = this.plotOffset,
+      lastMousePos = this.lastMousePos,
+      pointer = E.eventPointer(e),
+      dx = pointer.x - lastMousePos.pageX,
+      dy = pointer.y - lastMousePos.pageY,
+      r, rx, ry;
+
+    if ('ontouchstart' in this.el) {
+      r = D.position(this.overlay);
+      rx = pointer.x - r.left - plotOffset.left;
+      ry = pointer.y - r.top - plotOffset.top;
+    } else {
+      r = this.overlay.getBoundingClientRect();
+      rx = e.clientX - r.left - plotOffset.left - b.scrollLeft - de.scrollLeft;
+      ry = e.clientY - r.top - plotOffset.top - b.scrollTop - de.scrollTop;
+    }
+
+    return {
+      x:  axes.x.p2d(rx),
+      x2: axes.x2.p2d(rx),
+      y:  axes.y.p2d(ry),
+      y2: axes.y2.p2d(ry),
+      relX: rx,
+      relY: ry,
+      dX: dx,
+      dY: dy,
+      absX: pointer.x,
+      absY: pointer.y,
+      pageX: pointer.x,
+      pageY: pointer.y
+    };
+  },
+  /**
+   * Observes the 'click' event and fires the 'flotr:click' event.
+   * @param {Event} event - 'click' Event object.
+   */
+  clickHandler: function(event){
+    if(this.ignoreClick){
+      this.ignoreClick = false;
+      return this.ignoreClick;
+    }
+    E.fire(this.el, 'flotr:click', [this.getEventPosition(event), this]);
+  },
+  /**
+   * Observes mouse movement over the graph area. Fires the 'flotr:mousemove' event.
+   * @param {Event} event - 'mousemove' Event object.
+   */
+  mouseMoveHandler: function(event){
+    if (this.mouseDownMoveHandler) return;
+    var pos = this.getEventPosition(event);
+    E.fire(this.el, 'flotr:mousemove', [event, pos, this]);
+    this.lastMousePos = pos;
+  },
+  /**
+   * Observes the 'mousedown' event.
+   * @param {Event} event - 'mousedown' Event object.
+   */
+  mouseDownHandler: function (event){
+
+    /*
+    // @TODO Context menu?
+    if(event.isRightClick()) {
+      event.stop();
+
+      var overlay = this.overlay;
+      overlay.hide();
+
+      function cancelContextMenu () {
+        overlay.show();
+        E.stopObserving(document, 'mousemove', cancelContextMenu);
+      }
+      E.observe(document, 'mousemove', cancelContextMenu);
+      return;
+    }
+    */
+
+    if (this.mouseUpHandler) return;
+    this.mouseUpHandler = _.bind(function (e) {
+      E.stopObserving(document, 'mouseup', this.mouseUpHandler);
+      E.stopObserving(document, 'mousemove', this.mouseDownMoveHandler);
+      this.mouseDownMoveHandler = null;
+      this.mouseUpHandler = null;
+      // @TODO why?
+      //e.stop();
+      E.fire(this.el, 'flotr:mouseup', [e, this]);
+    }, this);
+    this.mouseDownMoveHandler = _.bind(function (e) {
+        var pos = this.getEventPosition(e);
+        E.fire(this.el, 'flotr:mousemove', [event, pos, this]);
+        this.lastMousePos = pos;
+    }, this);
+    E.observe(document, 'mouseup', this.mouseUpHandler);
+    E.observe(document, 'mousemove', this.mouseDownMoveHandler);
+    E.fire(this.el, 'flotr:mousedown', [event, this]);
+    this.ignoreClick = false;
+  },
+  drawTooltip: function(content, x, y, options) {
+    var mt = this.getMouseTrack(),
+        style = 'opacity:0.7;background-color:#000;color:#fff;display:none;position:absolute;padding:2px 8px;-moz-border-radius:4px;border-radius:4px;white-space:nowrap;',
+        p = options.position,
+        m = options.margin,
+        plotOffset = this.plotOffset;
+
+    if(x !== null && y !== null){
+      if (!options.relative) { // absolute to the canvas
+             if(p.charAt(0) == 'n') style += 'top:' + (m + plotOffset.top) + 'px;bottom:auto;';
+        else if(p.charAt(0) == 's') style += 'bottom:' + (m + plotOffset.bottom) + 'px;top:auto;';
+             if(p.charAt(1) == 'e') style += 'right:' + (m + plotOffset.right) + 'px;left:auto;';
+        else if(p.charAt(1) == 'w') style += 'left:' + (m + plotOffset.left) + 'px;right:auto;';
+      }
+      else { // relative to the mouse
+             if(p.charAt(0) == 'n') style += 'bottom:' + (m - plotOffset.top - y + this.canvasHeight) + 'px;top:auto;';
+        else if(p.charAt(0) == 's') style += 'top:' + (m + plotOffset.top + y) + 'px;bottom:auto;';
+             if(p.charAt(1) == 'e') style += 'left:' + (m + plotOffset.left + x) + 'px;right:auto;';
+        else if(p.charAt(1) == 'w') style += 'right:' + (m - plotOffset.left - x + this.canvasWidth) + 'px;left:auto;';
+      }
+
+      mt.style.cssText = style;
+      D.empty(mt);
+      D.insert(mt, content);
+      D.show(mt);
+    }
+    else {
+      D.hide(mt);
+    }
+  },
+
+  clip: function (ctx) {
+
+    var
+      o   = this.plotOffset,
+      w   = this.canvasWidth,
+      h   = this.canvasHeight;
+
+    ctx = ctx || this.ctx;
+
+    if (flotr.isIE && flotr.isIE < 9) {
+      // Clipping for excanvas :-(
+      ctx.save();
+      ctx.fillStyle = this.processColor(this.options.ieBackgroundColor);
+      ctx.fillRect(0, 0, w, o.top);
+      ctx.fillRect(0, 0, o.left, h);
+      ctx.fillRect(0, h - o.bottom, w, o.bottom);
+      ctx.fillRect(w - o.right, 0, o.right,h);
+      ctx.restore();
+    } else {
+      ctx.clearRect(0, 0, w, o.top);
+      ctx.clearRect(0, 0, o.left, h);
+      ctx.clearRect(0, h - o.bottom, w, o.bottom);
+      ctx.clearRect(w - o.right, 0, o.right,h);
+    }
+  },
+
+  _initMembers: function() {
+    this._handles = [];
+    this.lastMousePos = {pageX: null, pageY: null };
+    this.plotOffset = {left: 0, right: 0, top: 0, bottom: 0};
+    this.ignoreClick = true;
+    this.prevHit = null;
+  },
+
+  _initGraphTypes: function() {
+    _.each(flotr.graphTypes, function(handler, graphType){
+      this[graphType] = flotr.clone(handler);
+    }, this);
+  },
+
+  _initEvents: function () {
+
+    var
+      el = this.el,
+      touchendHandler, movement, touchend;
+
+    if ('ontouchstart' in el) {
+
+      touchendHandler = _.bind(function (e) {
+        touchend = true;
+        E.stopObserving(document, 'touchend', touchendHandler);
+        E.fire(el, 'flotr:mouseup', [event, this]);
+        this.multitouches = null;
+
+        if (!movement) {
+          this.clickHandler(e);
+        }
+      }, this);
+
+      this.observe(this.overlay, 'touchstart', _.bind(function (e) {
+        movement = false;
+        touchend = false;
+        this.ignoreClick = false;
+
+        if (e.touches && e.touches.length > 1) {
+          this.multitouches = e.touches;
+        }
+
+        E.fire(el, 'flotr:mousedown', [event, this]);
+        this.observe(document, 'touchend', touchendHandler);
+      }, this));
+
+      this.observe(this.overlay, 'touchmove', _.bind(function (e) {
+
+        var pos = this.getEventPosition(e);
+
+        if (this.options.preventDefault) {
+          e.preventDefault();
+        }
+
+        movement = true;
+
+        if (this.multitouches || (e.touches && e.touches.length > 1)) {
+          this.multitouches = e.touches;
+        } else {
+          if (!touchend) {
+            E.fire(el, 'flotr:mousemove', [event, pos, this]);
+          }
+        }
+        this.lastMousePos = pos;
+      }, this));
+
+    } else {
+      this.
+        observe(this.overlay, 'mousedown', _.bind(this.mouseDownHandler, this)).
+        observe(el, 'mousemove', _.bind(this.mouseMoveHandler, this)).
+        observe(this.overlay, 'click', _.bind(this.clickHandler, this)).
+        observe(el, 'mouseout', function () {
+          E.fire(el, 'flotr:mouseout');
+        });
+    }
+  },
+
+  /**
+   * Initializes the canvas and it's overlay canvas element. When the browser is IE, this makes use
+   * of excanvas. The overlay canvas is inserted for displaying interactions. After the canvas elements
+   * are created, the elements are inserted into the container element.
+   */
+  _initCanvas: function(){
+    var el = this.el,
+      o = this.options,
+      children = el.children,
+      removedChildren = [],
+      child, i,
+      size, style;
+
+    // Empty the el
+    for (i = children.length; i--;) {
+      child = children[i];
+      if (!this.canvas && child.className === 'flotr-canvas') {
+        this.canvas = child;
+      } else if (!this.overlay && child.className === 'flotr-overlay') {
+        this.overlay = child;
+      } else {
+        removedChildren.push(child);
+      }
+    }
+    for (i = removedChildren.length; i--;) {
+      el.removeChild(removedChildren[i]);
+    }
+
+    D.setStyles(el, {position: 'relative'}); // For positioning labels and overlay.
+    size = {};
+    size.width = el.clientWidth;
+    size.height = el.clientHeight;
+
+    if(size.width <= 0 || size.height <= 0 || o.resolution <= 0){
+      throw 'Invalid dimensions for plot, width = ' + size.width + ', height = ' + size.height + ', resolution = ' + o.resolution;
+    }
+
+    // Main canvas for drawing graph types
+    this.canvas = getCanvas(this.canvas, 'canvas');
+    // Overlay canvas for interactive features
+    this.overlay = getCanvas(this.overlay, 'overlay');
+    this.ctx = getContext(this.canvas);
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.octx = getContext(this.overlay);
+    this.octx.clearRect(0, 0, this.overlay.width, this.overlay.height);
+    this.canvasHeight = size.height;
+    this.canvasWidth = size.width;
+    this.textEnabled = !!this.ctx.drawText || !!this.ctx.fillText; // Enable text functions
+
+    function getCanvas(canvas, name){
+      if(!canvas){
+        canvas = D.create('canvas');
+        if (typeof FlashCanvas != "undefined" && typeof canvas.getContext === 'function') {
+          FlashCanvas.initElement(canvas);
+        }
+        canvas.className = 'flotr-'+name;
+        canvas.style.cssText = 'position:absolute;left:0px;top:0px;';
+        D.insert(el, canvas);
+      }
+      _.each(size, function(size, attribute){
+        D.show(canvas);
+        if (name == 'canvas' && canvas.getAttribute(attribute) === size) {
+          return;
+        }
+        canvas.setAttribute(attribute, size * o.resolution);
+        canvas.style[attribute] = size + 'px';
+      });
+      canvas.context_ = null; // Reset the ExCanvas context
+      return canvas;
+    }
+
+    function getContext(canvas){
+      if(window.G_vmlCanvasManager) window.G_vmlCanvasManager.initElement(canvas); // For ExCanvas
+      var context = canvas.getContext('2d');
+      if(!window.G_vmlCanvasManager) context.scale(o.resolution, o.resolution);
+      return context;
+    }
+  },
+
+  _initPlugins: function(){
+    // TODO Should be moved to flotr and mixed in.
+    _.each(flotr.plugins, function(plugin, name){
+      _.each(plugin.callbacks, function(fn, c){
+        this.observe(this.el, c, _.bind(fn, this));
+      }, this);
+      this[name] = flotr.clone(plugin);
+      _.each(this[name], function(fn, p){
+        if (_.isFunction(fn))
+          this[name][p] = _.bind(fn, this);
+      }, this);
+    }, this);
+  },
+
+  /**
+   * Sets options and initializes some variables and color specific values, used by the constructor.
+   * @param {Object} opts - options object
+   */
+  _initOptions: function(opts){
+    var options = flotr.clone(flotr.defaultOptions);
+    options.x2axis = _.extend(_.clone(options.xaxis), options.x2axis);
+    options.y2axis = _.extend(_.clone(options.yaxis), options.y2axis);
+    this.options = flotr.merge(opts || {}, options);
+
+    if (this.options.grid.minorVerticalLines === null &&
+      this.options.xaxis.scaling === 'logarithmic') {
+      this.options.grid.minorVerticalLines = true;
+    }
+    if (this.options.grid.minorHorizontalLines === null &&
+      this.options.yaxis.scaling === 'logarithmic') {
+      this.options.grid.minorHorizontalLines = true;
+    }
+
+    E.fire(this.el, 'flotr:afterinitoptions', [this]);
+
+    this.axes = flotr.Axis.getAxes(this.options);
+
+    // Initialize some variables used throughout this function.
+    var assignedColors = [],
+        colors = [],
+        ln = this.series.length,
+        neededColors = this.series.length,
+        oc = this.options.colors,
+        usedColors = [],
+        variation = 0,
+        c, i, j, s;
+
+    // Collect user-defined colors from series.
+    for(i = neededColors - 1; i > -1; --i){
+      c = this.series[i].color;
+      if(c){
+        --neededColors;
+        if(_.isNumber(c)) assignedColors.push(c);
+        else usedColors.push(flotr.Color.parse(c));
+      }
+    }
+
+    // Calculate the number of colors that need to be generated.
+    for(i = assignedColors.length - 1; i > -1; --i)
+      neededColors = Math.max(neededColors, assignedColors[i] + 1);
+
+    // Generate needed number of colors.
+    for(i = 0; colors.length < neededColors;){
+      c = (oc.length == i) ? new flotr.Color(100, 100, 100) : flotr.Color.parse(oc[i]);
+
+      // Make sure each serie gets a different color.
+      var sign = variation % 2 == 1 ? -1 : 1,
+          factor = 1 + sign * Math.ceil(variation / 2) * 0.2;
+      c.scale(factor, factor, factor);
+
+      /**
+       * @todo if we're getting too close to something else, we should probably skip this one
+       */
+      colors.push(c);
+
+      if(++i >= oc.length){
+        i = 0;
+        ++variation;
+      }
+    }
+
+    // Fill the options with the generated colors.
+    for(i = 0, j = 0; i < ln; ++i){
+      s = this.series[i];
+
+      // Assign the color.
+      if (!s.color){
+        s.color = colors[j++].toString();
+      }else if(_.isNumber(s.color)){
+        s.color = colors[s.color].toString();
+      }
+
+      // Every series needs an axis
+      if (!s.xaxis) s.xaxis = this.axes.x;
+           if (s.xaxis == 1) s.xaxis = this.axes.x;
+      else if (s.xaxis == 2) s.xaxis = this.axes.x2;
+
+      if (!s.yaxis) s.yaxis = this.axes.y;
+           if (s.yaxis == 1) s.yaxis = this.axes.y;
+      else if (s.yaxis == 2) s.yaxis = this.axes.y2;
+
+      // Apply missing options to the series.
+      for (var t in flotr.graphTypes){
+        s[t] = _.extend(_.clone(this.options[t]), s[t]);
+      }
+      s.mouse = _.extend(_.clone(this.options.mouse), s.mouse);
+
+      if (_.isUndefined(s.shadowSize)) s.shadowSize = this.options.shadowSize;
+    }
+  },
+
+  _setEl: function(el) {
+    if (!el) throw 'The target container doesn\'t exist';
+    else if (el.graph instanceof Graph) el.graph.destroy();
+    else if (!el.clientWidth) throw 'The target container must be visible';
+
+    el.graph = this;
+    this.el = el;
+  }
+};
+
+Flotr.Graph = Graph;
+
+})();
+
+/**
+ * Flotr Axis Library
+ */
+
+(function () {
+
+var
+  _ = Flotr._,
+  LOGARITHMIC = 'logarithmic';
+
+function Axis (o) {
+
+  this.orientation = 1;
+  this.offset = 0;
+  this.datamin = Number.MAX_VALUE;
+  this.datamax = -Number.MAX_VALUE;
+
+  _.extend(this, o);
+}
+
+
+// Prototype
+Axis.prototype = {
+
+  setScale : function () {
+    var
+      length = this.length,
+      max = this.max,
+      min = this.min,
+      offset = this.offset,
+      orientation = this.orientation,
+      options = this.options,
+      logarithmic = options.scaling === LOGARITHMIC,
+      scale;
+
+    if (logarithmic) {
+      scale = length / (log(max, options.base) - log(min, options.base));
+    } else {
+      scale = length / (max - min);
+    }
+    this.scale = scale;
+
+    // Logarithmic?
+    if (logarithmic) {
+      this.d2p = function (dataValue) {
+        return offset + orientation * (log(dataValue, options.base) - log(min, options.base)) * scale;
+      }
+      this.p2d = function (pointValue) {
+        return exp((offset + orientation * pointValue) / scale + log(min, options.base), options.base);
+      }
+    } else {
+      this.d2p = function (dataValue) {
+        return offset + orientation * (dataValue - min) * scale;
+      }
+      this.p2d = function (pointValue) {
+        return (offset + orientation * pointValue) / scale + min;
+      }
+    }
+  },
+
+  calculateTicks : function () {
+    var options = this.options;
+
+    this.ticks = [];
+    this.minorTicks = [];
+    
+    // User Ticks
+    if(options.ticks){
+      this._cleanUserTicks(options.ticks, this.ticks);
+      this._cleanUserTicks(options.minorTicks || [], this.minorTicks);
+    }
+    else {
+      if (options.mode == 'time') {
+        this._calculateTimeTicks();
+      } else if (options.scaling === 'logarithmic') {
+        this._calculateLogTicks();
+      } else {
+        this._calculateTicks();
+      }
+    }
+
+    // Ticks to strings
+    _.each(this.ticks, function (tick) { tick.label += ''; });
+    _.each(this.minorTicks, function (tick) { tick.label += ''; });
+  },
+
+  /**
+   * Calculates the range of an axis to apply autoscaling.
+   */
+  calculateRange: function () {
+
+    if (!this.used) return;
+
+    var axis  = this,
+      o       = axis.options,
+      min     = o.min !== null ? o.min : axis.datamin,
+      max     = o.max !== null ? o.max : axis.datamax,
+      margin  = o.autoscaleMargin;
+        
+    if (o.scaling == 'logarithmic') {
+      if (min <= 0) min = axis.datamin;
+
+      // Let it widen later on
+      if (max <= 0) max = min;
+    }
+
+    if (max == min) {
+      var widen = max ? 0.01 : 1.00;
+      if (o.min === null) min -= widen;
+      if (o.max === null) max += widen;
+    }
+
+    if (o.scaling === 'logarithmic') {
+      if (min < 0) min = max / o.base;  // Could be the result of widening
+
+      var maxexp = Math.log(max);
+      if (o.base != Math.E) maxexp /= Math.log(o.base);
+      maxexp = Math.ceil(maxexp);
+
+      var minexp = Math.log(min);
+      if (o.base != Math.E) minexp /= Math.log(o.base);
+      minexp = Math.ceil(minexp);
+      
+      axis.tickSize = Flotr.getTickSize(o.noTicks, minexp, maxexp, o.tickDecimals === null ? 0 : o.tickDecimals);
+                        
+      // Try to determine a suitable amount of miniticks based on the length of a decade
+      if (o.minorTickFreq === null) {
+        if (maxexp - minexp > 10)
+          o.minorTickFreq = 0;
+        else if (maxexp - minexp > 5)
+          o.minorTickFreq = 2;
+        else
+          o.minorTickFreq = 5;
+      }
+    } else {
+      axis.tickSize = Flotr.getTickSize(o.noTicks, min, max, o.tickDecimals);
+    }
+
+    axis.min = min;
+    axis.max = max; //extendRange may use axis.min or axis.max, so it should be set before it is caled
+
+    // Autoscaling. @todo This probably fails with log scale. Find a testcase and fix it
+    if(o.min === null && o.autoscale){
+      axis.min -= axis.tickSize * margin;
+      // Make sure we don't go below zero if all values are positive.
+      if(axis.min < 0 && axis.datamin >= 0) axis.min = 0;
+      axis.min = axis.tickSize * Math.floor(axis.min / axis.tickSize);
+    }
+    
+    if(o.max === null && o.autoscale){
+      axis.max += axis.tickSize * margin;
+      if(axis.max > 0 && axis.datamax <= 0 && axis.datamax != axis.datamin) axis.max = 0;        
+      axis.max = axis.tickSize * Math.ceil(axis.max / axis.tickSize);
+    }
+
+    if (axis.min == axis.max) axis.max = axis.min + 1;
+  },
+
+  calculateTextDimensions : function (T, options) {
+
+    var maxLabel = '',
+      length,
+      i;
+
+    if (this.options.showLabels) {
+      for (i = 0; i < this.ticks.length; ++i) {
+        length = this.ticks[i].label.length;
+        if (length > maxLabel.length){
+          maxLabel = this.ticks[i].label;
+        }
+      }
+    }
+
+    this.maxLabel = T.dimensions(
+      maxLabel,
+      {size:options.fontSize, angle: Flotr.toRad(this.options.labelsAngle)},
+      'font-size:smaller;',
+      'flotr-grid-label'
+    );
+
+    this.titleSize = T.dimensions(
+      this.options.title, 
+      {size:options.fontSize*1.2, angle: Flotr.toRad(this.options.titleAngle)},
+      'font-weight:bold;',
+      'flotr-axis-title'
+    );
+  },
+
+  _cleanUserTicks : function (ticks, axisTicks) {
+
+    var axis = this, options = this.options,
+      v, i, label, tick;
+
+    if(_.isFunction(ticks)) ticks = ticks({min : axis.min, max : axis.max});
+
+    for(i = 0; i < ticks.length; ++i){
+      tick = ticks[i];
+      if(typeof(tick) === 'object'){
+        v = tick[0];
+        label = (tick.length > 1) ? tick[1] : options.tickFormatter(v, {min : axis.min, max : axis.max});
+      } else {
+        v = tick;
+        label = options.tickFormatter(v, {min : this.min, max : this.max});
+      }
+      axisTicks[i] = { v: v, label: label };
+    }
+  },
+
+  _calculateTimeTicks : function () {
+    this.ticks = Flotr.Date.generator(this);
+  },
+
+  _calculateLogTicks : function () {
+
+    var axis = this,
+      o = axis.options,
+      v,
+      decadeStart;
+
+    var max = Math.log(axis.max);
+    if (o.base != Math.E) max /= Math.log(o.base);
+    max = Math.ceil(max);
+
+    var min = Math.log(axis.min);
+    if (o.base != Math.E) min /= Math.log(o.base);
+    min = Math.ceil(min);
+    
+    for (i = min; i < max; i += axis.tickSize) {
+      decadeStart = (o.base == Math.E) ? Math.exp(i) : Math.pow(o.base, i);
+      // Next decade begins here:
+      var decadeEnd = decadeStart * ((o.base == Math.E) ? Math.exp(axis.tickSize) : Math.pow(o.base, axis.tickSize));
+      var stepSize = (decadeEnd - decadeStart) / o.minorTickFreq;
+      
+      axis.ticks.push({v: decadeStart, label: o.tickFormatter(decadeStart, {min : axis.min, max : axis.max})});
+      for (v = decadeStart + stepSize; v < decadeEnd; v += stepSize)
+        axis.minorTicks.push({v: v, label: o.tickFormatter(v, {min : axis.min, max : axis.max})});
+    }
+    
+    // Always show the value at the would-be start of next decade (end of this decade)
+    decadeStart = (o.base == Math.E) ? Math.exp(i) : Math.pow(o.base, i);
+    axis.ticks.push({v: decadeStart, label: o.tickFormatter(decadeStart, {min : axis.min, max : axis.max})});
+  },
+
+  _calculateTicks : function () {
+
+    var axis      = this,
+        o         = axis.options,
+        tickSize  = axis.tickSize,
+        min       = axis.min,
+        max       = axis.max,
+        start     = tickSize * Math.ceil(min / tickSize), // Round to nearest multiple of tick size.
+        decimals,
+        minorTickSize,
+        v, v2,
+        i, j;
+    
+    if (o.minorTickFreq)
+      minorTickSize = tickSize / o.minorTickFreq;
+                      
+    // Then store all possible ticks.
+    for (i = 0; (v = v2 = start + i * tickSize) <= max; ++i){
+      
+      // Round (this is always needed to fix numerical instability).
+      decimals = o.tickDecimals;
+      if (decimals === null) decimals = 1 - Math.floor(Math.log(tickSize) / Math.LN10);
+      if (decimals < 0) decimals = 0;
+      
+      v = v.toFixed(decimals);
+      axis.ticks.push({ v: v, label: o.tickFormatter(v, {min : axis.min, max : axis.max}) });
+
+      if (o.minorTickFreq) {
+        for (j = 0; j < o.minorTickFreq && (i * tickSize + j * minorTickSize) < max; ++j) {
+          v = v2 + j * minorTickSize;
+          axis.minorTicks.push({ v: v, label: o.tickFormatter(v, {min : axis.min, max : axis.max}) });
+        }
+      }
+    }
+
+  }
+};
+
+
+// Static Methods
+_.extend(Axis, {
+  getAxes : function (options) {
+    return {
+      x:  new Axis({options: options.xaxis,  n: 1, length: this.plotWidth}),
+      x2: new Axis({options: options.x2axis, n: 2, length: this.plotWidth}),
+      y:  new Axis({options: options.yaxis,  n: 1, length: this.plotHeight, offset: this.plotHeight, orientation: -1}),
+      y2: new Axis({options: options.y2axis, n: 2, length: this.plotHeight, offset: this.plotHeight, orientation: -1})
+    };
+  }
+});
+
+
+// Helper Methods
+
+
+function log (value, base) {
+  value = Math.log(Math.max(value, Number.MIN_VALUE));
+  if (base !== Math.E) 
+    value /= Math.log(base);
+  return value;
+}
+
+function exp (value, base) {
+  return (base === Math.E) ? Math.exp(value) : Math.pow(base, value);
+}
+
+Flotr.Axis = Axis;
+
+})();
+
+/**
+ * Flotr Series Library
+ */
+
+(function () {
+
+var
+  _ = Flotr._;
+
+function Series (o) {
+  _.extend(this, o);
+}
+
+Series.prototype = {
+
+  getRange: function () {
+
+    var
+      data = this.data,
+      length = data.length,
+      xmin = Number.MAX_VALUE,
+      ymin = Number.MAX_VALUE,
+      xmax = -Number.MAX_VALUE,
+      ymax = -Number.MAX_VALUE,
+      xused = false,
+      yused = false,
+      x, y, i;
+
+    if (length < 0 || this.hide) return false;
+
+    for (i = 0; i < length; i++) {
+      x = data[i][0];
+      y = data[i][1];
+      if (x !== null) {
+        if (x < xmin) { xmin = x; xused = true; }
+        if (x > xmax) { xmax = x; xused = true; }
+      }
+      if (y !== null) {
+        if (y < ymin) { ymin = y; yused = true; }
+        if (y > ymax) { ymax = y; yused = true; }
+      }
+    }
+
+    return {
+      xmin : xmin,
+      xmax : xmax,
+      ymin : ymin,
+      ymax : ymax,
+      xused : xused,
+      yused : yused
+    };
+  }
+};
+
+_.extend(Series, {
+  /**
+   * Collects dataseries from input and parses the series into the right format. It returns an Array 
+   * of Objects each having at least the 'data' key set.
+   * @param {Array, Object} data - Object or array of dataseries
+   * @return {Array} Array of Objects parsed into the right format ({(...,) data: [[x1,y1], [x2,y2], ...] (, ...)})
+   */
+  getSeries: function(data){
+    return _.map(data, function(s){
+      var series;
+      if (s.data) {
+        series = new Series();
+        _.extend(series, s);
+      } else {
+        series = new Series({data:s});
+      }
+      return series;
+    });
+  }
+});
+
+Flotr.Series = Series;
+
+})();
+
+/** Lines **/
+Flotr.addType('lines', {
+  options: {
+    show: false,           // => setting to true will show lines, false will hide
+    lineWidth: 2,          // => line width in pixels
+    fill: false,           // => true to fill the area from the line to the x axis, false for (transparent) no fill
+    fillBorder: false,     // => draw a border around the fill
+    fillColor: null,       // => fill color
+    fillOpacity: 0.4,      // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+    steps: false,          // => draw steps
+    stacked: false         // => setting to true will show stacked lines, false will show normal lines
+  },
+
+  stack : {
+    values : []
+  },
+
+  /**
+   * Draws lines series in the canvas element.
+   * @param {Object} options
+   */
+  draw : function (options) {
+
+    var
+      context     = options.context,
+      lineWidth   = options.lineWidth,
+      shadowSize  = options.shadowSize,
+      offset;
+
+    context.save();
+    context.lineJoin = 'round';
+
+    if (shadowSize) {
+
+      context.lineWidth = shadowSize / 2;
+      offset = lineWidth / 2 + context.lineWidth / 2;
+      
+      // @TODO do this instead with a linear gradient
+      context.strokeStyle = "rgba(0,0,0,0.1)";
+      this.plot(options, offset + shadowSize / 2, false);
+
+      context.strokeStyle = "rgba(0,0,0,0.2)";
+      this.plot(options, offset, false);
+    }
+
+    context.lineWidth = lineWidth;
+    context.strokeStyle = options.color;
+
+    this.plot(options, 0, true);
+
+    context.restore();
+  },
+
+  plot : function (options, shadowOffset, incStack) {
+
+    var
+      context   = options.context,
+      width     = options.width, 
+      height    = options.height,
+      xScale    = options.xScale,
+      yScale    = options.yScale,
+      data      = options.data, 
+      stack     = options.stacked ? this.stack : false,
+      length    = data.length - 1,
+      prevx     = null,
+      prevy     = null,
+      zero      = yScale(0),
+      start     = null,
+      x1, x2, y1, y2, stack1, stack2, i;
+      
+    if (length < 1) return;
+
+    context.beginPath();
+
+    for (i = 0; i < length; ++i) {
+
+      // To allow empty values
+      if (data[i][1] === null || data[i+1][1] === null) {
+        if (options.fill) {
+          if (i > 0 && data[i][1]) {
+            context.stroke();
+            fill();
+            start = null;
+            context.closePath();
+            context.beginPath();
+          }
+        }
+        continue;
+      }
+
+      // Zero is infinity for log scales
+      // TODO handle zero for logarithmic
+      // if (xa.options.scaling === 'logarithmic' && (data[i][0] <= 0 || data[i+1][0] <= 0)) continue;
+      // if (ya.options.scaling === 'logarithmic' && (data[i][1] <= 0 || data[i+1][1] <= 0)) continue;
+      
+      x1 = xScale(data[i][0]);
+      x2 = xScale(data[i+1][0]);
+
+      if (start === null) start = data[i];
+      
+      if (stack) {
+
+        stack1 = stack.values[data[i][0]] || 0;
+        stack2 = stack.values[data[i+1][0]] || stack.values[data[i][0]] || 0;
+
+        y1 = yScale(data[i][1] + stack1);
+        y2 = yScale(data[i+1][1] + stack2);
+        
+        if(incStack){
+          stack.values[data[i][0]] = data[i][1]+stack1;
+            
+          if(i == length-1)
+            stack.values[data[i+1][0]] = data[i+1][1]+stack2;
+        }
+      }
+      else{
+        y1 = yScale(data[i][1]);
+        y2 = yScale(data[i+1][1]);
+      }
+
+      if (
+        (y1 > height && y2 > height) ||
+        (y1 < 0 && y2 < 0) ||
+        (x1 < 0 && x2 < 0) ||
+        (x1 > width && x2 > width)
+      ) continue;
+
+      if((prevx != x1) || (prevy != y1 + shadowOffset))
+        context.moveTo(x1, y1 + shadowOffset);
+      
+      prevx = x2;
+      prevy = y2 + shadowOffset;
+      if (options.steps) {
+        context.lineTo(prevx + shadowOffset / 2, y1 + shadowOffset);
+        context.lineTo(prevx + shadowOffset / 2, prevy);
+      } else {
+        context.lineTo(prevx, prevy);
+      }
+    }
+    
+    if (!options.fill || options.fill && !options.fillBorder) context.stroke();
+
+    fill();
+
+    function fill () {
+      // TODO stacked lines
+      if(!shadowOffset && options.fill && start){
+        x1 = xScale(start[0]);
+        context.fillStyle = options.fillStyle;
+        context.lineTo(x2, zero);
+        context.lineTo(x1, zero);
+        context.lineTo(x1, yScale(start[1]));
+        context.fill();
+        if (options.fillBorder) {
+          context.stroke();
+        }
+      }
+    }
+
+    context.closePath();
+  },
+
+  // Perform any pre-render precalculations (this should be run on data first)
+  // - Pie chart total for calculating measures
+  // - Stacks for lines and bars
+  // precalculate : function () {
+  // }
+  //
+  //
+  // Get any bounds after pre calculation (axis can fetch this if does not have explicit min/max)
+  // getBounds : function () {
+  // }
+  // getMin : function () {
+  // }
+  // getMax : function () {
+  // }
+  //
+  //
+  // Padding around rendered elements
+  // getPadding : function () {
+  // }
+
+  extendYRange : function (axis, data, options, lines) {
+
+    var o = axis.options;
+
+    // If stacked and auto-min
+    if (options.stacked && ((!o.max && o.max !== 0) || (!o.min && o.min !== 0))) {
+
+      var
+        newmax = axis.max,
+        newmin = axis.min,
+        positiveSums = lines.positiveSums || {},
+        negativeSums = lines.negativeSums || {},
+        x, j;
+
+      for (j = 0; j < data.length; j++) {
+
+        x = data[j][0] + '';
+
+        // Positive
+        if (data[j][1] > 0) {
+          positiveSums[x] = (positiveSums[x] || 0) + data[j][1];
+          newmax = Math.max(newmax, positiveSums[x]);
+        }
+
+        // Negative
+        else {
+          negativeSums[x] = (negativeSums[x] || 0) + data[j][1];
+          newmin = Math.min(newmin, negativeSums[x]);
+        }
+      }
+
+      lines.negativeSums = negativeSums;
+      lines.positiveSums = positiveSums;
+
+      axis.max = newmax;
+      axis.min = newmin;
+    }
+
+    if (options.steps) {
+
+      this.hit = function (options) {
+        var
+          data = options.data,
+          args = options.args,
+          yScale = options.yScale,
+          mouse = args[0],
+          length = data.length,
+          n = args[1],
+          x = options.xInverse(mouse.relX),
+          relY = mouse.relY,
+          i;
+
+        for (i = 0; i < length - 1; i++) {
+          if (x >= data[i][0] && x <= data[i+1][0]) {
+            if (Math.abs(yScale(data[i][1]) - relY) < 8) {
+              n.x = data[i][0];
+              n.y = data[i][1];
+              n.index = i;
+              n.seriesIndex = options.index;
+            }
+            break;
+          }
+        }
+      };
+
+      this.drawHit = function (options) {
+        var
+          context = options.context,
+          args    = options.args,
+          data    = options.data,
+          xScale  = options.xScale,
+          index   = args.index,
+          x       = xScale(args.x),
+          y       = options.yScale(args.y),
+          x2;
+
+        if (data.length - 1 > index) {
+          x2 = options.xScale(data[index + 1][0]);
+          context.save();
+          context.strokeStyle = options.color;
+          context.lineWidth = options.lineWidth;
+          context.beginPath();
+          context.moveTo(x, y);
+          context.lineTo(x2, y);
+          context.stroke();
+          context.closePath();
+          context.restore();
+        }
+      };
+
+      this.clearHit = function (options) {
+        var
+          context = options.context,
+          args    = options.args,
+          data    = options.data,
+          xScale  = options.xScale,
+          width   = options.lineWidth,
+          index   = args.index,
+          x       = xScale(args.x),
+          y       = options.yScale(args.y),
+          x2;
+
+        if (data.length - 1 > index) {
+          x2 = options.xScale(data[index + 1][0]);
+          context.clearRect(x - width, y - width, x2 - x + 2 * width, 2 * width);
+        }
+      };
+    }
+  }
+
+});
+
+/** Bars **/
+Flotr.addType('bars', {
+
+  options: {
+    show: false,           // => setting to true will show bars, false will hide
+    lineWidth: 2,          // => in pixels
+    barWidth: 1,           // => in units of the x axis
+    fill: true,            // => true to fill the area from the line to the x axis, false for (transparent) no fill
+    fillColor: null,       // => fill color
+    fillOpacity: 0.4,      // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+    horizontal: false,     // => horizontal bars (x and y inverted)
+    stacked: false,        // => stacked bar charts
+    centered: true,        // => center the bars to their x axis value
+    topPadding: 0.1,       // => top padding in percent
+    grouped: false         // => groups bars together which share x value, hit not supported.
+  },
+
+  stack : { 
+    positive : [],
+    negative : [],
+    _positive : [], // Shadow
+    _negative : []  // Shadow
+  },
+
+  draw : function (options) {
+    var
+      context = options.context;
+
+    this.current += 1;
+
+    context.save();
+    context.lineJoin = 'miter';
+    // @TODO linewidth not interpreted the right way.
+    context.lineWidth = options.lineWidth;
+    context.strokeStyle = options.color;
+    if (options.fill) context.fillStyle = options.fillStyle;
+    
+    this.plot(options);
+
+    context.restore();
+  },
+
+  plot : function (options) {
+
+    var
+      data            = options.data,
+      context         = options.context,
+      shadowSize      = options.shadowSize,
+      i, geometry, left, top, width, height;
+
+    if (data.length < 1) return;
+
+    this.translate(context, options.horizontal);
+
+    for (i = 0; i < data.length; i++) {
+
+      geometry = this.getBarGeometry(data[i][0], data[i][1], options);
+      if (geometry === null) continue;
+
+      left    = geometry.left;
+      top     = geometry.top;
+      width   = geometry.width;
+      height  = geometry.height;
+
+      if (options.fill) context.fillRect(left, top, width, height);
+      if (shadowSize) {
+        context.save();
+        context.fillStyle = 'rgba(0,0,0,0.05)';
+        context.fillRect(left + shadowSize, top + shadowSize, width, height);
+        context.restore();
+      }
+      if (options.lineWidth) {
+        context.strokeRect(left, top, width, height);
+      }
+    }
+  },
+
+  translate : function (context, horizontal) {
+    if (horizontal) {
+      context.rotate(-Math.PI / 2);
+      context.scale(-1, 1);
+    }
+  },
+
+  getBarGeometry : function (x, y, options) {
+
+    var
+      horizontal    = options.horizontal,
+      barWidth      = options.barWidth,
+      centered      = options.centered,
+      stack         = options.stacked ? this.stack : false,
+      lineWidth     = options.lineWidth,
+      bisection     = centered ? barWidth / 2 : 0,
+      xScale        = horizontal ? options.yScale : options.xScale,
+      yScale        = horizontal ? options.xScale : options.yScale,
+      xValue        = horizontal ? y : x,
+      yValue        = horizontal ? x : y,
+      stackOffset   = 0,
+      stackValue, left, right, top, bottom;
+
+    if (options.grouped) {
+      this.current / this.groups;
+      xValue = xValue - bisection;
+      barWidth = barWidth / this.groups;
+      bisection = barWidth / 2;
+      xValue = xValue + barWidth * this.current - bisection;
+    }
+
+    // Stacked bars
+    if (stack) {
+      stackValue          = yValue > 0 ? stack.positive : stack.negative;
+      stackOffset         = stackValue[xValue] || stackOffset;
+      stackValue[xValue]  = stackOffset + yValue;
+    }
+
+    left    = xScale(xValue - bisection);
+    right   = xScale(xValue + barWidth - bisection);
+    top     = yScale(yValue + stackOffset);
+    bottom  = yScale(stackOffset);
+
+    // TODO for test passing... probably looks better without this
+    if (bottom < 0) bottom = 0;
+
+    // TODO Skipping...
+    // if (right < xa.min || left > xa.max || top < ya.min || bottom > ya.max) continue;
+
+    return (x === null || y === null) ? null : {
+      x         : xValue,
+      y         : yValue,
+      xScale    : xScale,
+      yScale    : yScale,
+      top       : top,
+      left      : Math.min(left, right) - lineWidth / 2,
+      width     : Math.abs(right - left) - lineWidth,
+      height    : bottom - top
+    };
+  },
+
+  hit : function (options) {
+    var
+      data = options.data,
+      args = options.args,
+      mouse = args[0],
+      n = args[1],
+      x = options.xInverse(mouse.relX),
+      y = options.yInverse(mouse.relY),
+      hitGeometry = this.getBarGeometry(x, y, options),
+      width = hitGeometry.width / 2,
+      left = hitGeometry.left,
+      height = hitGeometry.y,
+      geometry, i;
+
+    for (i = data.length; i--;) {
+      geometry = this.getBarGeometry(data[i][0], data[i][1], options);
+      if (
+        // Height:
+        (
+          // Positive Bars:
+          (height > 0 && height < geometry.y) ||
+          // Negative Bars:
+          (height < 0 && height > geometry.y)
+        ) &&
+        // Width:
+        (Math.abs(left - geometry.left) < width)
+      ) {
+        n.x = data[i][0];
+        n.y = data[i][1];
+        n.index = i;
+        n.seriesIndex = options.index;
+      }
+    }
+  },
+
+  drawHit : function (options) {
+    // TODO hits for stacked bars; implement using calculateStack option?
+    var
+      context     = options.context,
+      args        = options.args,
+      geometry    = this.getBarGeometry(args.x, args.y, options),
+      left        = geometry.left,
+      top         = geometry.top,
+      width       = geometry.width,
+      height      = geometry.height;
+
+    context.save();
+    context.strokeStyle = options.color;
+    context.lineWidth = options.lineWidth;
+    this.translate(context, options.horizontal);
+
+    // Draw highlight
+    context.beginPath();
+    context.moveTo(left, top + height);
+    context.lineTo(left, top);
+    context.lineTo(left + width, top);
+    context.lineTo(left + width, top + height);
+    if (options.fill) {
+      context.fillStyle = options.fillStyle;
+      context.fill();
+    }
+    context.stroke();
+    context.closePath();
+
+    context.restore();
+  },
+
+  clearHit: function (options) {
+    var
+      context     = options.context,
+      args        = options.args,
+      geometry    = this.getBarGeometry(args.x, args.y, options),
+      left        = geometry.left,
+      width       = geometry.width,
+      top         = geometry.top,
+      height      = geometry.height,
+      lineWidth   = 2 * options.lineWidth;
+
+    context.save();
+    this.translate(context, options.horizontal);
+    context.clearRect(
+      left - lineWidth,
+      Math.min(top, top + height) - lineWidth,
+      width + 2 * lineWidth,
+      Math.abs(height) + 2 * lineWidth
+    );
+    context.restore();
+  },
+
+  extendXRange : function (axis, data, options, bars) {
+    this._extendRange(axis, data, options, bars);
+    this.groups = (this.groups + 1) || 1;
+    this.current = 0;
+  },
+
+  extendYRange : function (axis, data, options, bars) {
+    this._extendRange(axis, data, options, bars);
+  },
+  _extendRange: function (axis, data, options, bars) {
+
+    var
+      max = axis.options.max;
+
+    if (_.isNumber(max) || _.isString(max)) return; 
+
+    var
+      newmin = axis.min,
+      newmax = axis.max,
+      horizontal = options.horizontal,
+      orientation = axis.orientation,
+      positiveSums = this.positiveSums || {},
+      negativeSums = this.negativeSums || {},
+      value, datum, index, j;
+
+    // Sides of bars
+    if ((orientation == 1 && !horizontal) || (orientation == -1 && horizontal)) {
+      if (options.centered) {
+        newmax = Math.max(axis.datamax + options.barWidth, newmax);
+        newmin = Math.min(axis.datamin - options.barWidth, newmin);
+      }
+    }
+
+    if (options.stacked && 
+        ((orientation == 1 && horizontal) || (orientation == -1 && !horizontal))){
+
+      for (j = data.length; j--;) {
+        value = data[j][(orientation == 1 ? 1 : 0)]+'';
+        datum = data[j][(orientation == 1 ? 0 : 1)];
+
+        // Positive
+        if (datum > 0) {
+          positiveSums[value] = (positiveSums[value] || 0) + datum;
+          newmax = Math.max(newmax, positiveSums[value]);
+        }
+
+        // Negative
+        else {
+          negativeSums[value] = (negativeSums[value] || 0) + datum;
+          newmin = Math.min(newmin, negativeSums[value]);
+        }
+      }
+    }
+
+    // End of bars
+    if ((orientation == 1 && horizontal) || (orientation == -1 && !horizontal)) {
+      if (options.topPadding && (axis.max === axis.datamax || (options.stacked && this.stackMax !== newmax))) {
+        newmax += options.topPadding * (newmax - newmin);
+      }
+    }
+
+    this.stackMin = newmin;
+    this.stackMax = newmax;
+    this.negativeSums = negativeSums;
+    this.positiveSums = positiveSums;
+
+    axis.max = newmax;
+    axis.min = newmin;
+  }
+
+});
+
+/** Bubbles **/
+Flotr.addType('bubbles', {
+  options: {
+    show: false,      // => setting to true will show radar chart, false will hide
+    lineWidth: 2,     // => line width in pixels
+    fill: true,       // => true to fill the area from the line to the x axis, false for (transparent) no fill
+    fillOpacity: 0.4, // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+    baseRadius: 2     // => ratio of the radar, against the plot size
+  },
+  draw : function (options) {
+    var
+      context     = options.context,
+      shadowSize  = options.shadowSize;
+
+    context.save();
+    context.lineWidth = options.lineWidth;
+    
+    // Shadows
+    context.fillStyle = 'rgba(0,0,0,0.05)';
+    context.strokeStyle = 'rgba(0,0,0,0.05)';
+    this.plot(options, shadowSize / 2);
+    context.strokeStyle = 'rgba(0,0,0,0.1)';
+    this.plot(options, shadowSize / 4);
+
+    // Chart
+    context.strokeStyle = options.color;
+    context.fillStyle = options.fillStyle;
+    this.plot(options);
+    
+    context.restore();
+  },
+  plot : function (options, offset) {
+
+    var
+      data    = options.data,
+      context = options.context,
+      geometry,
+      i, x, y, z;
+
+    offset = offset || 0;
+    
+    for (i = 0; i < data.length; ++i){
+
+      geometry = this.getGeometry(data[i], options);
+
+      context.beginPath();
+      context.arc(geometry.x + offset, geometry.y + offset, geometry.z, 0, 2 * Math.PI, true);
+      context.stroke();
+      if (options.fill) context.fill();
+      context.closePath();
+    }
+  },
+  getGeometry : function (point, options) {
+    return {
+      x : options.xScale(point[0]),
+      y : options.yScale(point[1]),
+      z : point[2] * options.baseRadius
+    };
+  },
+  hit : function (options) {
+    var
+      data = options.data,
+      args = options.args,
+      mouse = args[0],
+      n = args[1],
+      relX = mouse.relX,
+      relY = mouse.relY,
+      distance,
+      geometry,
+      dx, dy;
+
+    n.best = n.best || Number.MAX_VALUE;
+
+    for (i = data.length; i--;) {
+      geometry = this.getGeometry(data[i], options);
+
+      dx = geometry.x - relX;
+      dy = geometry.y - relY;
+      distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance < geometry.z && geometry.z < n.best) {
+        n.x = data[i][0];
+        n.y = data[i][1];
+        n.index = i;
+        n.seriesIndex = options.index;
+        n.best = geometry.z;
+      }
+    }
+  },
+  drawHit : function (options) {
+
+    var
+      context = options.context,
+      geometry = this.getGeometry(options.data[options.args.index], options);
+
+    context.save();
+    context.lineWidth = options.lineWidth;
+    context.fillStyle = options.fillStyle;
+    context.strokeStyle = options.color;
+    context.beginPath();
+    context.arc(geometry.x, geometry.y, geometry.z, 0, 2 * Math.PI, true);
+    context.fill();
+    context.stroke();
+    context.closePath();
+    context.restore();
+  },
+  clearHit : function (options) {
+
+    var
+      context = options.context,
+      geometry = this.getGeometry(options.data[options.args.index], options),
+      offset = geometry.z + options.lineWidth;
+
+    context.save();
+    context.clearRect(
+      geometry.x - offset, 
+      geometry.y - offset,
+      2 * offset,
+      2 * offset
+    );
+    context.restore();
+  }
+  // TODO Add a hit calculation method (like pie)
+});
+
+/** Candles **/
+Flotr.addType('candles', {
+  options: {
+    show: false,           // => setting to true will show candle sticks, false will hide
+    lineWidth: 1,          // => in pixels
+    wickLineWidth: 1,      // => in pixels
+    candleWidth: 0.6,      // => in units of the x axis
+    fill: true,            // => true to fill the area from the line to the x axis, false for (transparent) no fill
+    upFillColor: '#00A8F0',// => up sticks fill color
+    downFillColor: '#CB4B4B',// => down sticks fill color
+    fillOpacity: 0.5,      // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+    // TODO Test this barcharts option.
+    barcharts: false       // => draw as barcharts (not standard bars but financial barcharts)
+  },
+
+  draw : function (options) {
+
+    var
+      context = options.context;
+
+    context.save();
+    context.lineJoin = 'miter';
+    context.lineCap = 'butt';
+    // @TODO linewidth not interpreted the right way.
+    context.lineWidth = options.wickLineWidth || options.lineWidth;
+
+    this.plot(options);
+
+    context.restore();
+  },
+
+  plot : function (options) {
+
+    var
+      data          = options.data,
+      context       = options.context,
+      xScale        = options.xScale,
+      yScale        = options.yScale,
+      width         = options.candleWidth / 2,
+      shadowSize    = options.shadowSize,
+      lineWidth     = options.lineWidth,
+      wickLineWidth = options.wickLineWidth,
+      pixelOffset   = (wickLineWidth % 2) / 2,
+      color,
+      datum, x, y,
+      open, high, low, close,
+      left, right, bottom, top, bottom2, top2,
+      i;
+
+    if (data.length < 1) return;
+
+    for (i = 0; i < data.length; i++) {
+      datum   = data[i];
+      x       = datum[0];
+      open    = datum[1];
+      high    = datum[2];
+      low     = datum[3];
+      close   = datum[4];
+      left    = xScale(x - width);
+      right   = xScale(x + width);
+      bottom  = yScale(low);
+      top     = yScale(high);
+      bottom2 = yScale(Math.min(open, close));
+      top2    = yScale(Math.max(open, close));
+
+      /*
+      // TODO skipping
+      if(right < xa.min || left > xa.max || top < ya.min || bottom > ya.max)
+        continue;
+      */
+
+      color = options[open > close ? 'downFillColor' : 'upFillColor'];
+
+      // Fill the candle.
+      // TODO Test the barcharts option
+      if (options.fill && !options.barcharts) {
+        context.fillStyle = 'rgba(0,0,0,0.05)';
+        context.fillRect(left + shadowSize, top2 + shadowSize, right - left, bottom2 - top2);
+        context.save();
+        context.globalAlpha = options.fillOpacity;
+        context.fillStyle = color;
+        context.fillRect(left, top2 + lineWidth, right - left, bottom2 - top2);
+        context.restore();
+      }
+
+      // Draw candle outline/border, high, low.
+      if (lineWidth || wickLineWidth) {
+
+        x = Math.floor((left + right) / 2) + pixelOffset;
+
+        context.strokeStyle = color;
+        context.beginPath();
+
+        // TODO Again with the bartcharts
+        if (options.barcharts) {
+          
+          context.moveTo(x, Math.floor(top + width));
+          context.lineTo(x, Math.floor(bottom + width));
+          
+          y = Math.floor(open + width) + 0.5;
+          context.moveTo(Math.floor(left) + pixelOffset, y);
+          context.lineTo(x, y);
+          
+          y = Math.floor(close + width) + 0.5;
+          context.moveTo(Math.floor(right) + pixelOffset, y);
+          context.lineTo(x, y);
+        } else {
+          context.strokeRect(left, top2 + lineWidth, right - left, bottom2 - top2);
+
+          context.moveTo(x, Math.floor(top2 + lineWidth));
+          context.lineTo(x, Math.floor(top + lineWidth));
+          context.moveTo(x, Math.floor(bottom2 + lineWidth));
+          context.lineTo(x, Math.floor(bottom + lineWidth));
+        }
+        
+        context.closePath();
+        context.stroke();
+      }
+    }
+  },
+  extendXRange: function (axis, data, options) {
+    if (axis.options.max === null) {
+      axis.max = Math.max(axis.datamax + 0.5, axis.max);
+      axis.min = Math.min(axis.datamin - 0.5, axis.min);
+    }
+  }
+});
+
+/** Gantt
+ * Base on data in form [s,y,d] where:
+ * y - executor or simply y value
+ * s - task start value
+ * d - task duration
+ * **/
+Flotr.addType('gantt', {
+  options: {
+    show: false,           // => setting to true will show gantt, false will hide
+    lineWidth: 2,          // => in pixels
+    barWidth: 1,           // => in units of the x axis
+    fill: true,            // => true to fill the area from the line to the x axis, false for (transparent) no fill
+    fillColor: null,       // => fill color
+    fillOpacity: 0.4,      // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+    centered: true         // => center the bars to their x axis value
+  },
+  /**
+   * Draws gantt series in the canvas element.
+   * @param {Object} series - Series with options.gantt.show = true.
+   */
+  draw: function(series) {
+    var ctx = this.ctx,
+      bw = series.gantt.barWidth,
+      lw = Math.min(series.gantt.lineWidth, bw);
+    
+    ctx.save();
+    ctx.translate(this.plotOffset.left, this.plotOffset.top);
+    ctx.lineJoin = 'miter';
+
+    /**
+     * @todo linewidth not interpreted the right way.
+     */
+    ctx.lineWidth = lw;
+    ctx.strokeStyle = series.color;
+    
+    ctx.save();
+    this.gantt.plotShadows(series, bw, 0, series.gantt.fill);
+    ctx.restore();
+    
+    if(series.gantt.fill){
+      var color = series.gantt.fillColor || series.color;
+      ctx.fillStyle = this.processColor(color, {opacity: series.gantt.fillOpacity});
+    }
+    
+    this.gantt.plot(series, bw, 0, series.gantt.fill);
+    ctx.restore();
+  },
+  plot: function(series, barWidth, offset, fill){
+    var data = series.data;
+    if(data.length < 1) return;
+    
+    var xa = series.xaxis,
+        ya = series.yaxis,
+        ctx = this.ctx, i;
+
+    for(i = 0; i < data.length; i++){
+      var y = data[i][0],
+          s = data[i][1],
+          d = data[i][2],
+          drawLeft = true, drawTop = true, drawRight = true;
+      
+      if (s === null || d === null) continue;
+
+      var left = s, 
+          right = s + d,
+          bottom = y - (series.gantt.centered ? barWidth/2 : 0), 
+          top = y + barWidth - (series.gantt.centered ? barWidth/2 : 0);
+      
+      if(right < xa.min || left > xa.max || top < ya.min || bottom > ya.max)
+        continue;
+
+      if(left < xa.min){
+        left = xa.min;
+        drawLeft = false;
+      }
+
+      if(right > xa.max){
+        right = xa.max;
+        if (xa.lastSerie != series)
+          drawTop = false;
+      }
+
+      if(bottom < ya.min)
+        bottom = ya.min;
+
+      if(top > ya.max){
+        top = ya.max;
+        if (ya.lastSerie != series)
+          drawTop = false;
+      }
+      
+      /**
+       * Fill the bar.
+       */
+      if(fill){
+        ctx.beginPath();
+        ctx.moveTo(xa.d2p(left), ya.d2p(bottom) + offset);
+        ctx.lineTo(xa.d2p(left), ya.d2p(top) + offset);
+        ctx.lineTo(xa.d2p(right), ya.d2p(top) + offset);
+        ctx.lineTo(xa.d2p(right), ya.d2p(bottom) + offset);
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      /**
+       * Draw bar outline/border.
+       */
+      if(series.gantt.lineWidth && (drawLeft || drawRight || drawTop)){
+        ctx.beginPath();
+        ctx.moveTo(xa.d2p(left), ya.d2p(bottom) + offset);
+        
+        ctx[drawLeft ?'lineTo':'moveTo'](xa.d2p(left), ya.d2p(top) + offset);
+        ctx[drawTop  ?'lineTo':'moveTo'](xa.d2p(right), ya.d2p(top) + offset);
+        ctx[drawRight?'lineTo':'moveTo'](xa.d2p(right), ya.d2p(bottom) + offset);
+                 
+        ctx.stroke();
+        ctx.closePath();
+      }
+    }
+  },
+  plotShadows: function(series, barWidth, offset){
+    var data = series.data;
+    if(data.length < 1) return;
+    
+    var i, y, s, d,
+        xa = series.xaxis,
+        ya = series.yaxis,
+        ctx = this.ctx,
+        sw = this.options.shadowSize;
+    
+    for(i = 0; i < data.length; i++){
+      y = data[i][0];
+      s = data[i][1];
+      d = data[i][2];
+        
+      if (s === null || d === null) continue;
+            
+      var left = s, 
+          right = s + d,
+          bottom = y - (series.gantt.centered ? barWidth/2 : 0), 
+          top = y + barWidth - (series.gantt.centered ? barWidth/2 : 0);
+ 
+      if(right < xa.min || left > xa.max || top < ya.min || bottom > ya.max)
+        continue;
+      
+      if(left < xa.min)   left = xa.min;
+      if(right > xa.max)  right = xa.max;
+      if(bottom < ya.min) bottom = ya.min;
+      if(top > ya.max)    top = ya.max;
+      
+      var width =  xa.d2p(right)-xa.d2p(left)-((xa.d2p(right)+sw <= this.plotWidth) ? 0 : sw);
+      var height = ya.d2p(bottom)-ya.d2p(top)-((ya.d2p(bottom)+sw <= this.plotHeight) ? 0 : sw );
+      
+      ctx.fillStyle = 'rgba(0,0,0,0.05)';
+      ctx.fillRect(Math.min(xa.d2p(left)+sw, this.plotWidth), Math.min(ya.d2p(top)+sw, this.plotHeight), width, height);
+    }
+  },
+  extendXRange: function(axis) {
+    if(axis.options.max === null){
+      var newmin = axis.min,
+          newmax = axis.max,
+          i, j, x, s, g,
+          stackedSumsPos = {},
+          stackedSumsNeg = {},
+          lastSerie = null;
+
+      for(i = 0; i < this.series.length; ++i){
+        s = this.series[i];
+        g = s.gantt;
+        
+        if(g.show && s.xaxis == axis) {
+            for (j = 0; j < s.data.length; j++) {
+              if (g.show) {
+                y = s.data[j][0]+'';
+                stackedSumsPos[y] = Math.max((stackedSumsPos[y] || 0), s.data[j][1]+s.data[j][2]);
+                lastSerie = s;
+              }
+            }
+            for (j in stackedSumsPos) {
+              newmax = Math.max(stackedSumsPos[j], newmax);
+            }
+        }
+      }
+      axis.lastSerie = lastSerie;
+      axis.max = newmax;
+      axis.min = newmin;
+    }
+  },
+  extendYRange: function(axis){
+    if(axis.options.max === null){
+      var newmax = Number.MIN_VALUE,
+          newmin = Number.MAX_VALUE,
+          i, j, s, g,
+          stackedSumsPos = {},
+          stackedSumsNeg = {},
+          lastSerie = null;
+                  
+      for(i = 0; i < this.series.length; ++i){
+        s = this.series[i];
+        g = s.gantt;
+        
+        if (g.show && !s.hide && s.yaxis == axis) {
+          var datamax = Number.MIN_VALUE, datamin = Number.MAX_VALUE;
+          for(j=0; j < s.data.length; j++){
+            datamax = Math.max(datamax,s.data[j][0]);
+            datamin = Math.min(datamin,s.data[j][0]);
+          }
+            
+          if (g.centered) {
+            newmax = Math.max(datamax + 0.5, newmax);
+            newmin = Math.min(datamin - 0.5, newmin);
+          }
+        else {
+          newmax = Math.max(datamax + 1, newmax);
+            newmin = Math.min(datamin, newmin);
+          }
+          // For normal horizontal bars
+          if (g.barWidth + datamax > newmax){
+            newmax = axis.max + g.barWidth;
+          }
+        }
+      }
+      axis.lastSerie = lastSerie;
+      axis.max = newmax;
+      axis.min = newmin;
+      axis.tickSize = Flotr.getTickSize(axis.options.noTicks, newmin, newmax, axis.options.tickDecimals);
+    }
+  }
+});
+
+/** Markers **/
+/**
+ * Formats the marker labels.
+ * @param {Object} obj - Marker value Object {x:..,y:..}
+ * @return {String} Formatted marker string
+ */
+(function () {
+
+Flotr.defaultMarkerFormatter = function(obj){
+  return (Math.round(obj.y*100)/100)+'';
+};
+
+Flotr.addType('markers', {
+  options: {
+    show: false,           // => setting to true will show markers, false will hide
+    lineWidth: 1,          // => line width of the rectangle around the marker
+    color: '#000000',      // => text color
+    fill: false,           // => fill or not the marekers' rectangles
+    fillColor: "#FFFFFF",  // => fill color
+    fillOpacity: 0.4,      // => fill opacity
+    stroke: false,         // => draw the rectangle around the markers
+    position: 'ct',        // => the markers position (vertical align: b, m, t, horizontal align: l, c, r)
+    verticalMargin: 0,     // => the margin between the point and the text.
+    labelFormatter: Flotr.defaultMarkerFormatter,
+    fontSize: Flotr.defaultOptions.fontSize,
+    stacked: false,        // => true if markers should be stacked
+    stackingType: 'b',     // => define staching behavior, (b- bars like, a - area like) (see Issue 125 for details)
+    horizontal: false      // => true if markers should be horizontal (For now only in a case on horizontal stacked bars, stacks should be calculated horizontaly)
+  },
+
+  // TODO test stacked markers.
+  stack : {
+      positive : [],
+      negative : [],
+      values : []
+  },
+
+  draw : function (options) {
+
+    var
+      data            = options.data,
+      context         = options.context,
+      stack           = options.stacked ? options.stack : false,
+      stackType       = options.stackingType,
+      stackOffsetNeg,
+      stackOffsetPos,
+      stackOffset,
+      i, x, y, label;
+
+    context.save();
+    context.lineJoin = 'round';
+    context.lineWidth = options.lineWidth;
+    context.strokeStyle = 'rgba(0,0,0,0.5)';
+    context.fillStyle = options.fillStyle;
+
+    function stackPos (a, b) {
+      stackOffsetPos = stack.negative[a] || 0;
+      stackOffsetNeg = stack.positive[a] || 0;
+      if (b > 0) {
+        stack.positive[a] = stackOffsetPos + b;
+        return stackOffsetPos + b;
+      } else {
+        stack.negative[a] = stackOffsetNeg + b;
+        return stackOffsetNeg + b;
+      }
+    }
+
+    for (i = 0; i < data.length; ++i) {
+    
+      x = data[i][0];
+      y = data[i][1];
+        
+      if (stack) {
+        if (stackType == 'b') {
+          if (options.horizontal) y = stackPos(y, x);
+          else x = stackPos(x, y);
+        } else if (stackType == 'a') {
+          stackOffset = stack.values[x] || 0;
+          stack.values[x] = stackOffset + y;
+          y = stackOffset + y;
+        }
+      }
+
+      label = options.labelFormatter({x: x, y: y, index: i, data : data});
+      this.plot(options.xScale(x), options.yScale(y), label, options);
+    }
+    context.restore();
+  },
+  plot: function(x, y, label, options) {
+    var context = options.context;
+    if (isImage(label) && !label.complete) {
+      throw 'Marker image not loaded.';
+    } else {
+      this._plot(x, y, label, options);
+    }
+  },
+
+  _plot: function(x, y, label, options) {
+    var context = options.context,
+        margin = 2,
+        left = x,
+        top = y,
+        dim;
+
+    if (isImage(label))
+      dim = {height : label.height, width: label.width};
+    else
+      dim = options.text.canvas(label);
+
+    dim.width = Math.floor(dim.width+margin*2);
+    dim.height = Math.floor(dim.height+margin*2);
+
+         if (options.position.indexOf('c') != -1) left -= dim.width/2 + margin;
+    else if (options.position.indexOf('l') != -1) left -= dim.width;
+    
+         if (options.position.indexOf('m') != -1) top -= dim.height/2 + margin;
+    else if (options.position.indexOf('t') != -1) top -= dim.height + options.verticalMargin;
+    else top += options.verticalMargin;
+    
+    left = Math.floor(left)+0.5;
+    top = Math.floor(top)+0.5;
+    
+    if(options.fill)
+      context.fillRect(left, top, dim.width, dim.height);
+      
+    if(options.stroke)
+      context.strokeRect(left, top, dim.width, dim.height);
+    
+    if (isImage(label))
+      context.drawImage(label, left+margin, top+margin);
+    else
+      Flotr.drawText(context, label, left+margin, top+margin, {textBaseline: 'top', textAlign: 'left', size: options.fontSize, color: options.color});
+  }
+});
+
+function isImage (i) {
+  return typeof i === 'object' && i.constructor && (Image ? true : i.constructor === Image);
+}
+
+})();
+
+/**
+ * Pie
+ *
+ * Formats the pies labels.
+ * @param {Object} slice - Slice object
+ * @return {String} Formatted pie label string
+ */
+(function () {
+
+var
+  _ = Flotr._;
+
+Flotr.defaultPieLabelFormatter = function (total, value) {
+  return (100 * value / total).toFixed(2)+'%';
+};
+
+Flotr.addType('pie', {
+  options: {
+    show: false,           // => setting to true will show bars, false will hide
+    lineWidth: 1,          // => in pixels
+    fill: true,            // => true to fill the area from the line to the x axis, false for (transparent) no fill
+    fillColor: null,       // => fill color
+    fillOpacity: 0.6,      // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+    explode: 6,            // => the number of pixels the splices will be far from the center
+    sizeRatio: 0.6,        // => the size ratio of the pie relative to the plot 
+    startAngle: Math.PI/4, // => the first slice start angle
+    labelFormatter: Flotr.defaultPieLabelFormatter,
+    pie3D: false,          // => whether to draw the pie in 3 dimenstions or not (ineffective) 
+    pie3DviewAngle: (Math.PI/2 * 0.8),
+    pie3DspliceThickness: 20,
+    epsilon: 0.1           // => how close do you have to get to hit empty slice
+  },
+
+  draw : function (options) {
+
+    // TODO 3D charts what?
+
+    var
+      data          = options.data,
+      context       = options.context,
+      canvas        = context.canvas,
+      lineWidth     = options.lineWidth,
+      shadowSize    = options.shadowSize,
+      sizeRatio     = options.sizeRatio,
+      height        = options.height,
+      width         = options.width,
+      explode       = options.explode,
+      color         = options.color,
+      fill          = options.fill,
+      fillStyle     = options.fillStyle,
+      radius        = Math.min(canvas.width, canvas.height) * sizeRatio / 2,
+      value         = data[0][1],
+      html          = [],
+      vScale        = 1,//Math.cos(series.pie.viewAngle);
+      measure       = Math.PI * 2 * value / this.total,
+      startAngle    = this.startAngle || (2 * Math.PI * options.startAngle), // TODO: this initial startAngle is already in radians (fixing will be test-unstable)
+      endAngle      = startAngle + measure,
+      bisection     = startAngle + measure / 2,
+      label         = options.labelFormatter(this.total, value),
+      //plotTickness  = Math.sin(series.pie.viewAngle)*series.pie.spliceThickness / vScale;
+      explodeCoeff  = explode + radius + 4,
+      distX         = Math.cos(bisection) * explodeCoeff,
+      distY         = Math.sin(bisection) * explodeCoeff,
+      textAlign     = distX < 0 ? 'right' : 'left',
+      textBaseline  = distY > 0 ? 'top' : 'bottom',
+      style,
+      x, y;
+    
+    context.save();
+    context.translate(width / 2, height / 2);
+    context.scale(1, vScale);
+
+    x = Math.cos(bisection) * explode;
+    y = Math.sin(bisection) * explode;
+
+    // Shadows
+    if (shadowSize > 0) {
+      this.plotSlice(x + shadowSize, y + shadowSize, radius, startAngle, endAngle, context);
+      if (fill) {
+        context.fillStyle = 'rgba(0,0,0,0.1)';
+        context.fill();
+      }
+    }
+
+    this.plotSlice(x, y, radius, startAngle, endAngle, context);
+    if (fill) {
+      context.fillStyle = fillStyle;
+      context.fill();
+    }
+    context.lineWidth = lineWidth;
+    context.strokeStyle = color;
+    context.stroke();
+
+    style = {
+      size : options.fontSize * 1.2,
+      color : options.fontColor,
+      weight : 1.5
+    };
+
+    if (label) {
+      if (options.htmlText || !options.textEnabled) {
+        divStyle = 'position:absolute;' + textBaseline + ':' + (height / 2 + (textBaseline === 'top' ? distY : -distY)) + 'px;';
+        divStyle += textAlign + ':' + (width / 2 + (textAlign === 'right' ? -distX : distX)) + 'px;';
+        html.push('<div style="', divStyle, '" class="flotr-grid-label">', label, '</div>');
+      }
+      else {
+        style.textAlign = textAlign;
+        style.textBaseline = textBaseline;
+        Flotr.drawText(context, label, distX, distY, style);
+      }
+    }
+    
+    if (options.htmlText || !options.textEnabled) {
+      var div = Flotr.DOM.node('<div style="color:' + options.fontColor + '" class="flotr-labels"></div>');
+      Flotr.DOM.insert(div, html.join(''));
+      Flotr.DOM.insert(options.element, div);
+    }
+    
+    context.restore();
+
+    // New start angle
+    this.startAngle = endAngle;
+    this.slices = this.slices || [];
+    this.slices.push({
+      radius : Math.min(canvas.width, canvas.height) * sizeRatio / 2,
+      x : x,
+      y : y,
+      explode : explode,
+      start : startAngle,
+      end : endAngle
+    });
+  },
+  plotSlice : function (x, y, radius, startAngle, endAngle, context) {
+    context.beginPath();
+    context.moveTo(x, y);
+    context.arc(x, y, radius, startAngle, endAngle, false);
+    context.lineTo(x, y);
+    context.closePath();
+  },
+  hit : function (options) {
+
+    var
+      data      = options.data[0],
+      args      = options.args,
+      index     = options.index,
+      mouse     = args[0],
+      n         = args[1],
+      slice     = this.slices[index],
+      x         = mouse.relX - options.width / 2,
+      y         = mouse.relY - options.height / 2,
+      r         = Math.sqrt(x * x + y * y),
+      theta     = Math.atan(y / x),
+      circle    = Math.PI * 2,
+      explode   = slice.explode || options.explode,
+      start     = slice.start % circle,
+      end       = slice.end % circle,
+      epsilon   = options.epsilon;
+
+    if (x < 0) {
+      theta += Math.PI;
+    } else if (x > 0 && y < 0) {
+      theta += circle;
+    }
+
+    if (r < slice.radius + explode && r > explode) {
+      if (
+          (theta > start && theta < end) || // Normal Slice
+          (start > end && (theta < end || theta > start)) || // First slice
+          // TODO: Document the two cases at the end:
+          (start === end && ((slice.start === slice.end && Math.abs(theta - start) < epsilon) || (slice.start !== slice.end && Math.abs(theta-start) > epsilon)))
+         ) {
+          
+          // TODO Decouple this from hit plugin (chart shouldn't know what n means)
+         n.x = data[0];
+         n.y = data[1];
+         n.sAngle = start;
+         n.eAngle = end;
+         n.index = 0;
+         n.seriesIndex = index;
+         n.fraction = data[1] / this.total;
+      }
+    }
+  },
+  drawHit: function (options) {
+    var
+      context = options.context,
+      slice = this.slices[options.args.seriesIndex];
+
+    context.save();
+    context.translate(options.width / 2, options.height / 2);
+    this.plotSlice(slice.x, slice.y, slice.radius, slice.start, slice.end, context);
+    context.stroke();
+    context.restore();
+  },
+  clearHit : function (options) {
+    var
+      context = options.context,
+      slice = this.slices[options.args.seriesIndex],
+      padding = 2 * options.lineWidth,
+      radius = slice.radius + padding;
+
+    context.save();
+    context.translate(options.width / 2, options.height / 2);
+    context.clearRect(
+      slice.x - radius,
+      slice.y - radius,
+      2 * radius + padding,
+      2 * radius + padding 
+    );
+    context.restore();
+  },
+  extendYRange : function (axis, data) {
+    this.total = (this.total || 0) + data[0][1];
+  }
+});
+})();
+
+/** Points **/
+Flotr.addType('points', {
+  options: {
+    show: false,           // => setting to true will show points, false will hide
+    radius: 3,             // => point radius (pixels)
+    lineWidth: 2,          // => line width in pixels
+    fill: true,            // => true to fill the points with a color, false for (transparent) no fill
+    fillColor: '#FFFFFF',  // => fill color.  Null to use series color.
+    fillOpacity: 1,        // => opacity of color inside the points
+    hitRadius: null        // => override for points hit radius
+  },
+
+  draw : function (options) {
+    var
+      context     = options.context,
+      lineWidth   = options.lineWidth,
+      shadowSize  = options.shadowSize;
+
+    context.save();
+
+    if (shadowSize > 0) {
+      context.lineWidth = shadowSize / 2;
+      
+      context.strokeStyle = 'rgba(0,0,0,0.1)';
+      this.plot(options, shadowSize / 2 + context.lineWidth / 2);
+
+      context.strokeStyle = 'rgba(0,0,0,0.2)';
+      this.plot(options, context.lineWidth / 2);
+    }
+
+    context.lineWidth = options.lineWidth;
+    context.strokeStyle = options.color;
+    if (options.fill) context.fillStyle = options.fillStyle;
+
+    this.plot(options);
+    context.restore();
+  },
+
+  plot : function (options, offset) {
+    var
+      data    = options.data,
+      context = options.context,
+      xScale  = options.xScale,
+      yScale  = options.yScale,
+      i, x, y;
+      
+    for (i = data.length - 1; i > -1; --i) {
+      y = data[i][1];
+      if (y === null) continue;
+
+      x = xScale(data[i][0]);
+      y = yScale(y);
+
+      if (x < 0 || x > options.width || y < 0 || y > options.height) continue;
+      
+      context.beginPath();
+      if (offset) {
+        context.arc(x, y + offset, options.radius, 0, Math.PI, false);
+      } else {
+        context.arc(x, y, options.radius, 0, 2 * Math.PI, true);
+        if (options.fill) context.fill();
+      }
+      context.stroke();
+      context.closePath();
+    }
+  }
+});
+
+/** Radar **/
+Flotr.addType('radar', {
+  options: {
+    show: false,           // => setting to true will show radar chart, false will hide
+    lineWidth: 2,          // => line width in pixels
+    fill: true,            // => true to fill the area from the line to the x axis, false for (transparent) no fill
+    fillOpacity: 0.4,      // => opacity of the fill color, set to 1 for a solid fill, 0 hides the fill
+    radiusRatio: 0.90      // => ratio of the radar, against the plot size
+  },
+  draw : function (options) {
+    var
+      context = options.context,
+      shadowSize = options.shadowSize;
+
+    context.save();
+    context.translate(options.width / 2, options.height / 2);
+    context.lineWidth = options.lineWidth;
+    
+    // Shadow
+    context.fillStyle = 'rgba(0,0,0,0.05)';
+    context.strokeStyle = 'rgba(0,0,0,0.05)';
+    this.plot(options, shadowSize / 2);
+    context.strokeStyle = 'rgba(0,0,0,0.1)';
+    this.plot(options, shadowSize / 4);
+
+    // Chart
+    context.strokeStyle = options.color;
+    context.fillStyle = options.fillStyle;
+    this.plot(options);
+    
+    context.restore();
+  },
+  plot : function (options, offset) {
+    var
+      data    = options.data,
+      context = options.context,
+      radius  = Math.min(options.height, options.width) * options.radiusRatio / 2,
+      step    = 2 * Math.PI / data.length,
+      angle   = -Math.PI / 2,
+      i, ratio;
+
+    offset = offset || 0;
+
+    context.beginPath();
+    for (i = 0; i < data.length; ++i) {
+      ratio = data[i][1] / this.max;
+
+      context[i === 0 ? 'moveTo' : 'lineTo'](
+        Math.cos(i * step + angle) * radius * ratio + offset,
+        Math.sin(i * step + angle) * radius * ratio + offset
+      );
+    }
+    context.closePath();
+    if (options.fill) context.fill();
+    context.stroke();
+  },
+  extendYRange : function (axis, data) {
+    this.max = Math.max(axis.max, this.max || -Number.MAX_VALUE);
+  }
+});
+
+Flotr.addType('timeline', {
+  options: {
+    show: false,
+    lineWidth: 1,
+    barWidth: 0.2,
+    fill: true,
+    fillColor: null,
+    fillOpacity: 0.4,
+    centered: true
+  },
+
+  draw : function (options) {
+
+    var
+      context = options.context;
+
+    context.save();
+    context.lineJoin    = 'miter';
+    context.lineWidth   = options.lineWidth;
+    context.strokeStyle = options.color;
+    context.fillStyle   = options.fillStyle;
+
+    this.plot(options);
+
+    context.restore();
+  },
+
+  plot : function (options) {
+
+    var
+      data      = options.data,
+      context   = options.context,
+      xScale    = options.xScale,
+      yScale    = options.yScale,
+      barWidth  = options.barWidth,
+      lineWidth = options.lineWidth,
+      i;
+
+    Flotr._.each(data, function (timeline) {
+
+      var 
+        x   = timeline[0],
+        y   = timeline[1],
+        w   = timeline[2],
+        h   = barWidth,
+
+        xt  = Math.ceil(xScale(x)),
+        wt  = Math.ceil(xScale(x + w)) - xt,
+        yt  = Math.round(yScale(y)),
+        ht  = Math.round(yScale(y - h)) - yt,
+
+        x0  = xt - lineWidth / 2,
+        y0  = Math.round(yt - ht / 2) - lineWidth / 2;
+
+      context.strokeRect(x0, y0, wt, ht);
+      context.fillRect(x0, y0, wt, ht);
+
+    });
+  },
+
+  extendRange : function (series) {
+
+    var
+      data  = series.data,
+      xa    = series.xaxis,
+      ya    = series.yaxis,
+      w     = series.timeline.barWidth;
+
+    if (xa.options.min === null)
+      xa.min = xa.datamin - w / 2;
+
+    if (xa.options.max === null) {
+
+      var
+        max = xa.max;
+
+      Flotr._.each(data, function (timeline) {
+        max = Math.max(max, timeline[0] + timeline[2]);
+      }, this);
+
+      xa.max = max + w / 2;
+    }
+
+    if (ya.options.min === null)
+      ya.min = ya.datamin - w;
+    if (ya.options.min === null)
+      ya.max = ya.datamax + w;
+  }
+
+});
+
+(function () {
+
+var D = Flotr.DOM;
+
+Flotr.addPlugin('crosshair', {
+  options: {
+    mode: null,            // => one of null, 'x', 'y' or 'xy'
+    color: '#FF0000',      // => crosshair color
+    hideCursor: true       // => hide the cursor when the crosshair is shown
+  },
+  callbacks: {
+    'flotr:mousemove': function(e, pos) {
+      if (this.options.crosshair.mode) {
+        this.crosshair.clearCrosshair();
+        this.crosshair.drawCrosshair(pos);
+      }
+    }
+  },
+  /**   
+   * Draws the selection box.
+   */
+  drawCrosshair: function(pos) {
+    var octx = this.octx,
+      options = this.options.crosshair,
+      plotOffset = this.plotOffset,
+      x = plotOffset.left + Math.round(pos.relX) + 0.5,
+      y = plotOffset.top + Math.round(pos.relY) + 0.5;
+    
+    if (pos.relX < 0 || pos.relY < 0 || pos.relX > this.plotWidth || pos.relY > this.plotHeight) {
+      this.el.style.cursor = null;
+      D.removeClass(this.el, 'flotr-crosshair');
+      return; 
+    }
+    
+    if (options.hideCursor) {
+      this.el.style.cursor = 'none';
+      D.addClass(this.el, 'flotr-crosshair');
+    }
+    
+    octx.save();
+    octx.strokeStyle = options.color;
+    octx.lineWidth = 1;
+    octx.beginPath();
+    
+    if (options.mode.indexOf('x') != -1) {
+      octx.moveTo(x, plotOffset.top);
+      octx.lineTo(x, plotOffset.top + this.plotHeight);
+    }
+    
+    if (options.mode.indexOf('y') != -1) {
+      octx.moveTo(plotOffset.left, y);
+      octx.lineTo(plotOffset.left + this.plotWidth, y);
+    }
+    
+    octx.stroke();
+    octx.restore();
+  },
+  /**
+   * Removes the selection box from the overlay canvas.
+   */
+  clearCrosshair: function() {
+
+    var
+      plotOffset = this.plotOffset,
+      position = this.lastMousePos,
+      context = this.octx;
+
+    if (position) {
+      context.clearRect(
+        Math.round(position.relX) + plotOffset.left,
+        plotOffset.top,
+        1,
+        this.plotHeight + 1
+      );
+      context.clearRect(
+        plotOffset.left,
+        Math.round(position.relY) + plotOffset.top,
+        this.plotWidth + 1,
+        1
+      );    
+    }
+  }
+});
+})();
+
+(function() {
+
+var
+  D = Flotr.DOM,
+  _ = Flotr._;
+
+function getImage (type, canvas, width, height) {
+
+  // TODO add scaling for w / h
+  var
+    mime = 'image/'+type,
+    data = canvas.toDataURL(mime),
+    image = new Image();
+  image.src = data;
+  return image;
+}
+
+Flotr.addPlugin('download', {
+
+  saveImage: function (type, width, height, replaceCanvas) {
+    var image = null;
+    if (Flotr.isIE && Flotr.isIE < 9) {
+      image = '<html><body>'+this.canvas.firstChild.innerHTML+'</body></html>';
+      return window.open().document.write(image);
+    }
+
+    if (type !== 'jpeg' && type !== 'png') return;
+
+    image = getImage(type, this.canvas, width, height);
+
+    if (_.isElement(image) && replaceCanvas) {
+      this.download.restoreCanvas();
+      D.hide(this.canvas);
+      D.hide(this.overlay);
+      D.setStyles({position: 'absolute'});
+      D.insert(this.el, image);
+      this.saveImageElement = image;
+    } else {
+      return window.open(image.src);
+    }
+  },
+
+  restoreCanvas: function() {
+    D.show(this.canvas);
+    D.show(this.overlay);
+    if (this.saveImageElement) this.el.removeChild(this.saveImageElement);
+    this.saveImageElement = null;
+  }
+});
+
+})();
+
+(function () {
+
+var E = Flotr.EventAdapter,
+    _ = Flotr._;
+
+Flotr.addPlugin('graphGrid', {
+
+  callbacks: {
+    'flotr:beforedraw' : function () {
+      this.graphGrid.drawGrid();
+    },
+    'flotr:afterdraw' : function () {
+      this.graphGrid.drawOutline();
+    }
+  },
+
+  drawGrid: function(){
+
+    var
+      ctx = this.ctx,
+      options = this.options,
+      grid = options.grid,
+      verticalLines = grid.verticalLines,
+      horizontalLines = grid.horizontalLines,
+      minorVerticalLines = grid.minorVerticalLines,
+      minorHorizontalLines = grid.minorHorizontalLines,
+      plotHeight = this.plotHeight,
+      plotWidth = this.plotWidth,
+      a, v, i, j;
+        
+    if(verticalLines || minorVerticalLines || 
+           horizontalLines || minorHorizontalLines){
+      E.fire(this.el, 'flotr:beforegrid', [this.axes.x, this.axes.y, options, this]);
+    }
+    ctx.save();
+    ctx.lineWidth = 1;
+    ctx.strokeStyle = grid.tickColor;
+    
+    function circularHorizontalTicks (ticks) {
+      for(i = 0; i < ticks.length; ++i){
+        var ratio = ticks[i].v / a.max;
+        for(j = 0; j <= sides; ++j){
+          ctx[j === 0 ? 'moveTo' : 'lineTo'](
+            Math.cos(j*coeff+angle)*radius*ratio,
+            Math.sin(j*coeff+angle)*radius*ratio
+          );
+        }
+      }
+    }
+    function drawGridLines (ticks, callback) {
+      _.each(_.pluck(ticks, 'v'), function(v){
+        // Don't show lines on upper and lower bounds.
+        if ((v <= a.min || v >= a.max) || 
+            (v == a.min || v == a.max) && grid.outlineWidth)
+          return;
+        callback(Math.floor(a.d2p(v)) + ctx.lineWidth/2);
+      });
+    }
+    function drawVerticalLines (x) {
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, plotHeight);
+    }
+    function drawHorizontalLines (y) {
+      ctx.moveTo(0, y);
+      ctx.lineTo(plotWidth, y);
+    }
+
+    if (grid.circular) {
+      ctx.translate(this.plotOffset.left+plotWidth/2, this.plotOffset.top+plotHeight/2);
+      var radius = Math.min(plotHeight, plotWidth)*options.radar.radiusRatio/2,
+          sides = this.axes.x.ticks.length,
+          coeff = 2*(Math.PI/sides),
+          angle = -Math.PI/2;
+      
+      // Draw grid lines in vertical direction.
+      ctx.beginPath();
+      
+      a = this.axes.y;
+
+      if(horizontalLines){
+        circularHorizontalTicks(a.ticks);
+      }
+      if(minorHorizontalLines){
+        circularHorizontalTicks(a.minorTicks);
+      }
+      
+      if(verticalLines){
+        _.times(sides, function(i){
+          ctx.moveTo(0, 0);
+          ctx.lineTo(Math.cos(i*coeff+angle)*radius, Math.sin(i*coeff+angle)*radius);
+        });
+      }
+      ctx.stroke();
+    }
+    else {
+      ctx.translate(this.plotOffset.left, this.plotOffset.top);
+  
+      // Draw grid background, if present in options.
+      if(grid.backgroundColor){
+        ctx.fillStyle = this.processColor(grid.backgroundColor, {x1: 0, y1: 0, x2: plotWidth, y2: plotHeight});
+        ctx.fillRect(0, 0, plotWidth, plotHeight);
+      }
+      
+      ctx.beginPath();
+
+      a = this.axes.x;
+      if (verticalLines)        drawGridLines(a.ticks, drawVerticalLines);
+      if (minorVerticalLines)   drawGridLines(a.minorTicks, drawVerticalLines);
+
+      a = this.axes.y;
+      if (horizontalLines)      drawGridLines(a.ticks, drawHorizontalLines);
+      if (minorHorizontalLines) drawGridLines(a.minorTicks, drawHorizontalLines);
+
+      ctx.stroke();
+    }
+    
+    ctx.restore();
+    if(verticalLines || minorVerticalLines ||
+       horizontalLines || minorHorizontalLines){
+      E.fire(this.el, 'flotr:aftergrid', [this.axes.x, this.axes.y, options, this]);
+    }
+  }, 
+
+  drawOutline: function(){
+    var
+      that = this,
+      options = that.options,
+      grid = options.grid,
+      outline = grid.outline,
+      ctx = that.ctx,
+      backgroundImage = grid.backgroundImage,
+      plotOffset = that.plotOffset,
+      leftOffset = plotOffset.left,
+      topOffset = plotOffset.top,
+      plotWidth = that.plotWidth,
+      plotHeight = that.plotHeight,
+      v, img, src, left, top, globalAlpha;
+    
+    if (!grid.outlineWidth) return;
+    
+    ctx.save();
+    
+    if (grid.circular) {
+      ctx.translate(leftOffset + plotWidth / 2, topOffset + plotHeight / 2);
+      var radius = Math.min(plotHeight, plotWidth) * options.radar.radiusRatio / 2,
+          sides = this.axes.x.ticks.length,
+          coeff = 2*(Math.PI/sides),
+          angle = -Math.PI/2;
+      
+      // Draw axis/grid border.
+      ctx.beginPath();
+      ctx.lineWidth = grid.outlineWidth;
+      ctx.strokeStyle = grid.color;
+      ctx.lineJoin = 'round';
+      
+      for(i = 0; i <= sides; ++i){
+        ctx[i === 0 ? 'moveTo' : 'lineTo'](Math.cos(i*coeff+angle)*radius, Math.sin(i*coeff+angle)*radius);
+      }
+      //ctx.arc(0, 0, radius, 0, Math.PI*2, true);
+
+      ctx.stroke();
+    }
+    else {
+      ctx.translate(leftOffset, topOffset);
+      
+      // Draw axis/grid border.
+      var lw = grid.outlineWidth,
+          orig = 0.5-lw+((lw+1)%2/2),
+          lineTo = 'lineTo',
+          moveTo = 'moveTo';
+      ctx.lineWidth = lw;
+      ctx.strokeStyle = grid.color;
+      ctx.lineJoin = 'miter';
+      ctx.beginPath();
+      ctx.moveTo(orig, orig);
+      plotWidth = plotWidth - (lw / 2) % 1;
+      plotHeight = plotHeight + lw / 2;
+      ctx[outline.indexOf('n') !== -1 ? lineTo : moveTo](plotWidth, orig);
+      ctx[outline.indexOf('e') !== -1 ? lineTo : moveTo](plotWidth, plotHeight);
+      ctx[outline.indexOf('s') !== -1 ? lineTo : moveTo](orig, plotHeight);
+      ctx[outline.indexOf('w') !== -1 ? lineTo : moveTo](orig, orig);
+      ctx.stroke();
+      ctx.closePath();
+    }
+    
+    ctx.restore();
+
+    if (backgroundImage) {
+
+      src = backgroundImage.src || backgroundImage;
+      left = (parseInt(backgroundImage.left, 10) || 0) + plotOffset.left;
+      top = (parseInt(backgroundImage.top, 10) || 0) + plotOffset.top;
+      img = new Image();
+
+      img.onload = function() {
+        ctx.save();
+        if (backgroundImage.alpha) ctx.globalAlpha = backgroundImage.alpha;
+        ctx.globalCompositeOperation = 'destination-over';
+        ctx.drawImage(img, 0, 0, img.width, img.height, left, top, plotWidth, plotHeight);
+        ctx.restore();
+      };
+
+      img.src = src;
+    }
+  }
+});
+
+})();
+
+(function () {
+
+var
+  D = Flotr.DOM,
+  _ = Flotr._,
+  flotr = Flotr,
+  S_MOUSETRACK = 'opacity:0.7;background-color:#000;color:#fff;display:none;position:absolute;padding:2px 8px;-moz-border-radius:4px;border-radius:4px;white-space:nowrap;';
+
+Flotr.addPlugin('hit', {
+  callbacks: {
+    'flotr:mousemove': function(e, pos) {
+      this.hit.track(pos);
+    },
+    'flotr:click': function(pos) {
+      var
+        hit = this.hit.track(pos);
+      _.defaults(pos, hit);
+    },
+    'flotr:mouseout': function() {
+      this.hit.clearHit();
+    },
+    'flotr:destroy': function() {
+      this.mouseTrack = null;
+    }
+  },
+  track : function (pos) {
+    if (this.options.mouse.track || _.any(this.series, function(s){return s.mouse && s.mouse.track;})) {
+      return this.hit.hit(pos);
+    }
+  },
+  /**
+   * Try a method on a graph type.  If the method exists, execute it.
+   * @param {Object} series
+   * @param {String} method  Method name.
+   * @param {Array} args  Arguments applied to method.
+   * @return executed successfully or failed.
+   */
+  executeOnType: function(s, method, args){
+    var
+      success = false,
+      options;
+
+    if (!_.isArray(s)) s = [s];
+
+    function e(s, index) {
+      _.each(_.keys(flotr.graphTypes), function (type) {
+        if (s[type] && s[type].show && this[type][method]) {
+          options = this.getOptions(s, type);
+
+          options.fill = !!s.mouse.fillColor;
+          options.fillStyle = this.processColor(s.mouse.fillColor || '#ffffff', {opacity: s.mouse.fillOpacity});
+          options.color = s.mouse.lineColor;
+          options.context = this.octx;
+          options.index = index;
+
+          if (args) options.args = args;
+          this[type][method].call(this[type], options);
+          success = true;
+        }
+      }, this);
+    }
+    _.each(s, e, this);
+
+    return success;
+  },
+  /**
+   * Updates the mouse tracking point on the overlay.
+   */
+  drawHit: function(n){
+    var octx = this.octx,
+      s = n.series;
+
+    if (s.mouse.lineColor) {
+      octx.save();
+      octx.lineWidth = (s.points ? s.points.lineWidth : 1);
+      octx.strokeStyle = s.mouse.lineColor;
+      octx.fillStyle = this.processColor(s.mouse.fillColor || '#ffffff', {opacity: s.mouse.fillOpacity});
+      octx.translate(this.plotOffset.left, this.plotOffset.top);
+
+      if (!this.hit.executeOnType(s, 'drawHit', n)) {
+        var
+          xa = n.xaxis,
+          ya = n.yaxis;
+
+        octx.beginPath();
+          // TODO fix this (points) should move to general testable graph mixin
+          octx.arc(xa.d2p(n.x), ya.d2p(n.y), s.points.hitRadius || s.points.radius || s.mouse.radius, 0, 2 * Math.PI, true);
+          octx.fill();
+          octx.stroke();
+        octx.closePath();
+      }
+      octx.restore();
+      this.clip(octx);
+    }
+    this.prevHit = n;
+  },
+  /**
+   * Removes the mouse tracking point from the overlay.
+   */
+  clearHit: function(){
+    var prev = this.prevHit,
+        octx = this.octx,
+        plotOffset = this.plotOffset;
+    octx.save();
+    octx.translate(plotOffset.left, plotOffset.top);
+    if (prev) {
+      if (!this.hit.executeOnType(prev.series, 'clearHit', this.prevHit)) {
+        // TODO fix this (points) should move to general testable graph mixin
+        var
+          s = prev.series,
+          lw = (s.points ? s.points.lineWidth : 1);
+          offset = (s.points.hitRadius || s.points.radius || s.mouse.radius) + lw;
+        octx.clearRect(
+          prev.xaxis.d2p(prev.x) - offset,
+          prev.yaxis.d2p(prev.y) - offset,
+          offset*2,
+          offset*2
+        );
+      }
+      D.hide(this.mouseTrack);
+      this.prevHit = null;
+    }
+    octx.restore();
+  },
+  /**
+   * Retrieves the nearest data point from the mouse cursor. If it's within
+   * a certain range, draw a point on the overlay canvas and display the x and y
+   * value of the data.
+   * @param {Object} mouse - Object that holds the relative x and y coordinates of the cursor.
+   */
+  hit : function (mouse) {
+
+    var
+      options = this.options,
+      prevHit = this.prevHit,
+      closest, sensibility, dataIndex, seriesIndex, series, value, xaxis, yaxis, n;
+
+    if (this.series.length === 0) return;
+
+    // Nearest data element.
+    // dist, x, y, relX, relY, absX, absY, sAngle, eAngle, fraction, mouse,
+    // xaxis, yaxis, series, index, seriesIndex
+    n = {
+      relX : mouse.relX,
+      relY : mouse.relY,
+      absX : mouse.absX,
+      absY : mouse.absY
+    };
+
+    if (options.mouse.trackY &&
+        !options.mouse.trackAll &&
+        this.hit.executeOnType(this.series, 'hit', [mouse, n]) &&
+        !_.isUndefined(n.seriesIndex))
+      {
+      series    = this.series[n.seriesIndex];
+      n.series  = series;
+      n.mouse   = series.mouse;
+      n.xaxis   = series.xaxis;
+      n.yaxis   = series.yaxis;
+    } else {
+
+      closest = this.hit.closest(mouse);
+
+      if (closest) {
+
+        closest     = options.mouse.trackY ? closest.point : closest.x;
+        seriesIndex = closest.seriesIndex;
+        series      = this.series[seriesIndex];
+        xaxis       = series.xaxis;
+        yaxis       = series.yaxis;
+        sensibility = 2 * series.mouse.sensibility;
+
+        if
+          (options.mouse.trackAll ||
+          (closest.distanceX < sensibility / xaxis.scale &&
+          (!options.mouse.trackY || closest.distanceY < sensibility / yaxis.scale)))
+        {
+          n.series      = series;
+          n.xaxis       = series.xaxis;
+          n.yaxis       = series.yaxis;
+          n.mouse       = series.mouse;
+          n.x           = closest.x;
+          n.y           = closest.y;
+          n.dist        = closest.distance;
+          n.index       = closest.dataIndex;
+          n.seriesIndex = seriesIndex;
+        }
+      }
+    }
+
+    if (!prevHit || (prevHit.index !== n.index || prevHit.seriesIndex !== n.seriesIndex)) {
+      this.hit.clearHit();
+      if (n.series && n.mouse && n.mouse.track) {
+        this.hit.drawMouseTrack(n);
+        this.hit.drawHit(n);
+        Flotr.EventAdapter.fire(this.el, 'flotr:hit', [n, this]);
+      }
+    }
+
+    return n;
+  },
+
+  closest : function (mouse) {
+
+    var
+      series    = this.series,
+      options   = this.options,
+      relX      = mouse.relX,
+      relY      = mouse.relY,
+      compare   = Number.MAX_VALUE,
+      compareX  = Number.MAX_VALUE,
+      closest   = {},
+      closestX  = {},
+      check     = false,
+      serie, data,
+      distance, distanceX, distanceY,
+      mouseX, mouseY,
+      x, y, i, j;
+
+    function setClosest (o) {
+      o.distance = distance;
+      o.distanceX = distanceX;
+      o.distanceY = distanceY;
+      o.seriesIndex = i;
+      o.dataIndex = j;
+      o.x = x;
+      o.y = y;
+      check = true;
+    }
+
+    for (i = 0; i < series.length; i++) {
+
+      serie = series[i];
+      data = serie.data;
+      mouseX = serie.xaxis.p2d(relX);
+      mouseY = serie.yaxis.p2d(relY);
+
+      for (j = data.length; j--;) {
+
+        x = data[j][0];
+        y = data[j][1];
+
+        if (x === null || y === null) continue;
+
+        // don't check if the point isn't visible in the current range
+        if (x < serie.xaxis.min || x > serie.xaxis.max) continue;
+
+        distanceX = Math.abs(x - mouseX);
+        distanceY = Math.abs(y - mouseY);
+
+        // Skip square root for speed
+        distance = distanceX * distanceX + distanceY * distanceY;
+
+        if (distance < compare) {
+          compare = distance;
+          setClosest(closest);
+        }
+
+        if (distanceX < compareX) {
+          compareX = distanceX;
+          setClosest(closestX);
+        }
+      }
+    }
+
+    return check ? {
+      point : closest,
+      x : closestX
+    } : false;
+  },
+
+  drawMouseTrack : function (n) {
+
+    var
+      pos         = '', 
+      s           = n.series,
+      p           = n.mouse.position, 
+      m           = n.mouse.margin,
+      x           = n.x,
+      y           = n.y,
+      elStyle     = S_MOUSETRACK,
+      mouseTrack  = this.mouseTrack,
+      plotOffset  = this.plotOffset,
+      left        = plotOffset.left,
+      right       = plotOffset.right,
+      bottom      = plotOffset.bottom,
+      top         = plotOffset.top,
+      decimals    = n.mouse.trackDecimals,
+      options     = this.options;
+
+    // Create
+    if (!mouseTrack) {
+      mouseTrack = D.node('<div class="flotr-mouse-value"></div>');
+      this.mouseTrack = mouseTrack;
+      D.insert(this.el, mouseTrack);
+    }
+
+    if (!n.mouse.relative) { // absolute to the canvas
+
+      if      (p.charAt(0) == 'n') pos += 'top:' + (m + top) + 'px;bottom:auto;';
+      else if (p.charAt(0) == 's') pos += 'bottom:' + (m + bottom) + 'px;top:auto;';
+      if      (p.charAt(1) == 'e') pos += 'right:' + (m + right) + 'px;left:auto;';
+      else if (p.charAt(1) == 'w') pos += 'left:' + (m + left) + 'px;right:auto;';
+
+    // Pie
+    } else if (s.pie && s.pie.show) {
+      var center = {
+          x: (this.plotWidth)/2,
+          y: (this.plotHeight)/2
+        },
+        radius = (Math.min(this.canvasWidth, this.canvasHeight) * s.pie.sizeRatio) / 2,
+        bisection = n.sAngle<n.eAngle ? (n.sAngle + n.eAngle) / 2: (n.sAngle + n.eAngle + 2* Math.PI) / 2;
+      
+      pos += 'bottom:' + (m - top - center.y - Math.sin(bisection) * radius/2 + this.canvasHeight) + 'px;top:auto;';
+      pos += 'left:' + (m + left + center.x + Math.cos(bisection) * radius/2) + 'px;right:auto;';
+
+    // Default
+    } else {    
+      if (/n/.test(p)) pos += 'bottom:' + (m - top - n.yaxis.d2p(n.y) + this.canvasHeight) + 'px;top:auto;';
+      else             pos += 'top:' + (m + top + n.yaxis.d2p(n.y)) + 'px;bottom:auto;';
+      if (/w/.test(p)) pos += 'right:' + (m - left - n.xaxis.d2p(n.x) + this.canvasWidth) + 'px;left:auto;';
+      else             pos += 'left:' + (m + left + n.xaxis.d2p(n.x)) + 'px;right:auto;';
+    }
+
+    elStyle += pos;
+    mouseTrack.style.cssText = elStyle;
+    if (!decimals || decimals < 0) decimals = 0;
+    
+    if (x && x.toFixed) x = x.toFixed(decimals);
+
+    if (y && y.toFixed) y = y.toFixed(decimals);
+
+    mouseTrack.innerHTML = n.mouse.trackFormatter({
+      x: x ,
+      y: y, 
+      series: n.series, 
+      index: n.index,
+      nearest: n,
+      fraction: n.fraction
+    });
+
+    D.show(mouseTrack);
+
+    if (n.mouse.relative) {
+      if (!/[ew]/.test(p)) {
+        // Center Horizontally
+        mouseTrack.style.left =
+          (left + n.xaxis.d2p(n.x) - D.size(mouseTrack).width / 2) + 'px';
+      } else
+      if (!/[ns]/.test(p)) {
+        // Center Vertically
+        mouseTrack.style.top =
+          (top + n.yaxis.d2p(n.y) - D.size(mouseTrack).height / 2) + 'px';
+      }
+    }
+  }
+
+});
+})();
+
+/** 
+ * Selection Handles Plugin
+ *
+ *
+ * Options
+ *  show - True enables the handles plugin.
+ *  drag - Left and Right drag handles
+ *  scroll - Scrolling handle
+ */
+(function () {
+
+function isLeftClick (e, type) {
+  return (e.which ? (e.which === 1) : (e.button === 0 || e.button === 1));
+}
+
+function boundX(x, graph) {
+  return Math.min(Math.max(0, x), graph.plotWidth - 1);
+}
+
+function boundY(y, graph) {
+  return Math.min(Math.max(0, y), graph.plotHeight);
+}
+
+var
+  D = Flotr.DOM,
+  E = Flotr.EventAdapter,
+  _ = Flotr._;
+
+
+Flotr.addPlugin('selection', {
+
+  options: {
+    pinchOnly: null,       // Only select on pinch
+    mode: null,            // => one of null, 'x', 'y' or 'xy'
+    color: '#B6D9FF',      // => selection box color
+    fps: 20                // => frames-per-second
+  },
+
+  callbacks: {
+    'flotr:mouseup' : function (event) {
+
+      var
+        options = this.options.selection,
+        selection = this.selection,
+        pointer = this.getEventPosition(event);
+
+      if (!options || !options.mode) return;
+      if (selection.interval) clearInterval(selection.interval);
+
+      if (this.multitouches) {
+        selection.updateSelection();
+      } else
+      if (!options.pinchOnly) {
+        selection.setSelectionPos(selection.selection.second, pointer);
+      }
+      selection.clearSelection();
+
+      if(selection.selecting && selection.selectionIsSane()){
+        selection.drawSelection();
+        selection.fireSelectEvent();
+        this.ignoreClick = true;
+      }
+    },
+    'flotr:mousedown' : function (event) {
+
+      var
+        options = this.options.selection,
+        selection = this.selection,
+        pointer = this.getEventPosition(event);
+
+      if (!options || !options.mode) return;
+      if (!options.mode || (!isLeftClick(event) && _.isUndefined(event.touches))) return;
+      if (!options.pinchOnly) selection.setSelectionPos(selection.selection.first, pointer);
+      if (selection.interval) clearInterval(selection.interval);
+
+      this.lastMousePos.pageX = null;
+      selection.selecting = false;
+      selection.interval = setInterval(
+        _.bind(selection.updateSelection, this),
+        1000 / options.fps
+      );
+    },
+    'flotr:destroy' : function (event) {
+      clearInterval(this.selection.interval);
+    }
+  },
+
+  // TODO This isn't used.  Maybe it belongs in the draw area and fire select event methods?
+  getArea: function() {
+
+    var
+      s = this.selection.selection,
+      a = this.axes,
+      first = s.first,
+      second = s.second,
+      x1, x2, y1, y2;
+
+    x1 = a.x.p2d(s.first.x);
+    x2 = a.x.p2d(s.second.x);
+    y1 = a.y.p2d(s.first.y);
+    y2 = a.y.p2d(s.second.y);
+
+    return {
+      x1 : Math.min(x1, x2),
+      y1 : Math.min(y1, y2),
+      x2 : Math.max(x1, x2),
+      y2 : Math.max(y1, y2),
+      xfirst : x1,
+      xsecond : x2,
+      yfirst : y1,
+      ysecond : y2
+    };
+  },
+
+  selection: {first: {x: -1, y: -1}, second: {x: -1, y: -1}},
+  prevSelection: null,
+  interval: null,
+
+  /**
+   * Fires the 'flotr:select' event when the user made a selection.
+   */
+  fireSelectEvent: function(name){
+    var
+      area = this.selection.getArea();
+    name = name || 'select';
+    area.selection = this.selection.selection;
+    E.fire(this.el, 'flotr:'+name, [area, this]);
+  },
+
+  /**
+   * Allows the user the manually select an area.
+   * @param {Object} area - Object with coordinates to select.
+   */
+  setSelection: function(area, preventEvent){
+    var options = this.options,
+      xa = this.axes.x,
+      ya = this.axes.y,
+      vertScale = ya.scale,
+      hozScale = xa.scale,
+      selX = options.selection.mode.indexOf('x') != -1,
+      selY = options.selection.mode.indexOf('y') != -1,
+      s = this.selection.selection;
+    
+    this.selection.clearSelection();
+
+    s.first.y  = boundY((selX && !selY) ? 0 : (ya.max - area.y1) * vertScale, this);
+    s.second.y = boundY((selX && !selY) ? this.plotHeight - 1: (ya.max - area.y2) * vertScale, this);
+    s.first.x  = boundX((selY && !selX) ? 0 : (area.x1 - xa.min) * hozScale, this);
+    s.second.x = boundX((selY && !selX) ? this.plotWidth : (area.x2 - xa.min) * hozScale, this);
+    
+    this.selection.drawSelection();
+    if (!preventEvent)
+      this.selection.fireSelectEvent();
+  },
+
+  /**
+   * Calculates the position of the selection.
+   * @param {Object} pos - Position object.
+   * @param {Event} event - Event object.
+   */
+  setSelectionPos: function(pos, pointer) {
+    var mode = this.options.selection.mode,
+        selection = this.selection.selection;
+
+    if(mode.indexOf('x') == -1) {
+      pos.x = (pos == selection.first) ? 0 : this.plotWidth;         
+    }else{
+      pos.x = boundX(pointer.relX, this);
+    }
+
+    if (mode.indexOf('y') == -1) {
+      pos.y = (pos == selection.first) ? 0 : this.plotHeight - 1;
+    }else{
+      pos.y = boundY(pointer.relY, this);
+    }
+  },
+  /**
+   * Draws the selection box.
+   */
+  drawSelection: function() {
+
+    this.selection.fireSelectEvent('selecting');
+
+    var s = this.selection.selection,
+      octx = this.octx,
+      options = this.options,
+      plotOffset = this.plotOffset,
+      prevSelection = this.selection.prevSelection;
+    
+    if (prevSelection &&
+      s.first.x == prevSelection.first.x &&
+      s.first.y == prevSelection.first.y && 
+      s.second.x == prevSelection.second.x &&
+      s.second.y == prevSelection.second.y) {
+      return;
+    }
+
+    octx.save();
+    octx.strokeStyle = this.processColor(options.selection.color, {opacity: 0.8});
+    octx.lineWidth = 1;
+    octx.lineJoin = 'miter';
+    octx.fillStyle = this.processColor(options.selection.color, {opacity: 0.4});
+
+    this.selection.prevSelection = {
+      first: { x: s.first.x, y: s.first.y },
+      second: { x: s.second.x, y: s.second.y }
+    };
+
+    var x = Math.min(s.first.x, s.second.x),
+        y = Math.min(s.first.y, s.second.y),
+        w = Math.abs(s.second.x - s.first.x),
+        h = Math.abs(s.second.y - s.first.y);
+
+    octx.fillRect(x + plotOffset.left+0.5, y + plotOffset.top+0.5, w, h);
+    octx.strokeRect(x + plotOffset.left+0.5, y + plotOffset.top+0.5, w, h);
+    octx.restore();
+  },
+
+  /**
+   * Updates (draws) the selection box.
+   */
+  updateSelection: function(){
+    if (!this.lastMousePos.pageX) return;
+
+    this.selection.selecting = true;
+
+    if (this.multitouches) {
+      this.selection.setSelectionPos(this.selection.selection.first,  this.getEventPosition(this.multitouches[0]));
+      this.selection.setSelectionPos(this.selection.selection.second,  this.getEventPosition(this.multitouches[1]));
+    } else
+    if (this.options.selection.pinchOnly) {
+      return;
+    } else {
+      this.selection.setSelectionPos(this.selection.selection.second, this.lastMousePos);
+    }
+
+    this.selection.clearSelection();
+    
+    if(this.selection.selectionIsSane()) {
+      this.selection.drawSelection();
+    }
+  },
+
+  /**
+   * Removes the selection box from the overlay canvas.
+   */
+  clearSelection: function() {
+    if (!this.selection.prevSelection) return;
+      
+    var prevSelection = this.selection.prevSelection,
+      lw = 1,
+      plotOffset = this.plotOffset,
+      x = Math.min(prevSelection.first.x, prevSelection.second.x),
+      y = Math.min(prevSelection.first.y, prevSelection.second.y),
+      w = Math.abs(prevSelection.second.x - prevSelection.first.x),
+      h = Math.abs(prevSelection.second.y - prevSelection.first.y);
+    
+    this.octx.clearRect(x + plotOffset.left - lw + 0.5,
+                        y + plotOffset.top - lw,
+                        w + 2 * lw + 0.5,
+                        h + 2 * lw + 0.5);
+    
+    this.selection.prevSelection = null;
+  },
+  /**
+   * Determines whether or not the selection is sane and should be drawn.
+   * @return {Boolean} - True when sane, false otherwise.
+   */
+  selectionIsSane: function(){
+    var s = this.selection.selection;
+    return Math.abs(s.second.x - s.first.x) >= 5 || 
+           Math.abs(s.second.y - s.first.y) >= 5;
+  }
+
+});
+
+})();
+
+(function () {
+
+var D = Flotr.DOM;
+
+Flotr.addPlugin('labels', {
+
+  callbacks : {
+    'flotr:afterdraw' : function () {
+      this.labels.draw();
+    }
+  },
+
+  draw: function(){
+    // Construct fixed width label boxes, which can be styled easily.
+    var
+      axis, tick, left, top, xBoxWidth,
+      radius, sides, coeff, angle,
+      div, i, html = '',
+      noLabels = 0,
+      options  = this.options,
+      ctx      = this.ctx,
+      a        = this.axes,
+      style    = { size: options.fontSize };
+
+    for (i = 0; i < a.x.ticks.length; ++i){
+      if (a.x.ticks[i].label) { ++noLabels; }
+    }
+    xBoxWidth = this.plotWidth / noLabels;
+
+    if (options.grid.circular) {
+      ctx.save();
+      ctx.translate(this.plotOffset.left + this.plotWidth / 2,
+          this.plotOffset.top + this.plotHeight / 2);
+
+      radius = this.plotHeight * options.radar.radiusRatio / 2 + options.fontSize;
+      sides  = this.axes.x.ticks.length;
+      coeff  = 2 * (Math.PI / sides);
+      angle  = -Math.PI / 2;
+
+      drawLabelCircular(this, a.x, false);
+      drawLabelCircular(this, a.x, true);
+      drawLabelCircular(this, a.y, false);
+      drawLabelCircular(this, a.y, true);
+      ctx.restore();
+    }
+
+    if (!options.HtmlText && this.textEnabled) {
+      drawLabelNoHtmlText(this, a.x, 'center', 'top');
+      drawLabelNoHtmlText(this, a.x2, 'center', 'bottom');
+      drawLabelNoHtmlText(this, a.y, 'right', 'middle');
+      drawLabelNoHtmlText(this, a.y2, 'left', 'middle');
+    
+    } else if ((
+        a.x.options.showLabels ||
+        a.x2.options.showLabels ||
+        a.y.options.showLabels ||
+        a.y2.options.showLabels) &&
+        !options.grid.circular
+      ) {
+
+      html = '';
+
+      drawLabelHtml(this, a.x);
+      drawLabelHtml(this, a.x2);
+      drawLabelHtml(this, a.y);
+      drawLabelHtml(this, a.y2);
+
+      ctx.stroke();
+      ctx.restore();
+      div = D.create('div');
+      D.setStyles(div, {
+        fontSize: 'smaller',
+        color: options.grid.color
+      });
+      div.className = 'flotr-labels';
+      D.insert(this.el, div);
+      D.insert(div, html);
+    }
+
+    function drawLabelCircular (graph, axis, minorTicks) {
+      var
+        ticks   = minorTicks ? axis.minorTicks : axis.ticks,
+        isX     = axis.orientation === 1,
+        isFirst = axis.n === 1,
+        style, offset;
+
+      style = {
+        color        : axis.options.color || options.grid.color,
+        angle        : Flotr.toRad(axis.options.labelsAngle),
+        textBaseline : 'middle'
+      };
+
+      for (i = 0; i < ticks.length &&
+          (minorTicks ? axis.options.showMinorLabels : axis.options.showLabels); ++i){
+        tick = ticks[i];
+        tick.label += '';
+        if (!tick.label || !tick.label.length) { continue; }
+
+        x = Math.cos(i * coeff + angle) * radius;
+        y = Math.sin(i * coeff + angle) * radius;
+
+        style.textAlign = isX ? (Math.abs(x) < 0.1 ? 'center' : (x < 0 ? 'right' : 'left')) : 'left';
+
+        Flotr.drawText(
+          ctx, tick.label,
+          isX ? x : 3,
+          isX ? y : -(axis.ticks[i].v / axis.max) * (radius - options.fontSize),
+          style
+        );
+      }
+    }
+
+    function drawLabelNoHtmlText (graph, axis, textAlign, textBaseline)  {
+      var
+        isX     = axis.orientation === 1,
+        isFirst = axis.n === 1,
+        style, offset;
+
+      style = {
+        color        : axis.options.color || options.grid.color,
+        textAlign    : textAlign,
+        textBaseline : textBaseline,
+        angle : Flotr.toRad(axis.options.labelsAngle)
+      };
+      style = Flotr.getBestTextAlign(style.angle, style);
+
+      for (i = 0; i < axis.ticks.length && continueShowingLabels(axis); ++i) {
+
+        tick = axis.ticks[i];
+        if (!tick.label || !tick.label.length) { continue; }
+
+        offset = axis.d2p(tick.v);
+        if (offset < 0 ||
+            offset > (isX ? graph.plotWidth : graph.plotHeight)) { continue; }
+
+        Flotr.drawText(
+          ctx, tick.label,
+          leftOffset(graph, isX, isFirst, offset),
+          topOffset(graph, isX, isFirst, offset),
+          style
+        );
+
+        // Only draw on axis y2
+        if (!isX && !isFirst) {
+          ctx.save();
+          ctx.strokeStyle = style.color;
+          ctx.beginPath();
+          ctx.moveTo(graph.plotOffset.left + graph.plotWidth - 8, graph.plotOffset.top + axis.d2p(tick.v));
+          ctx.lineTo(graph.plotOffset.left + graph.plotWidth, graph.plotOffset.top + axis.d2p(tick.v));
+          ctx.stroke();
+          ctx.restore();
+        }
+      }
+
+      function continueShowingLabels (axis) {
+        return axis.options.showLabels && axis.used;
+      }
+      function leftOffset (graph, isX, isFirst, offset) {
+        return graph.plotOffset.left +
+          (isX ? offset :
+            (isFirst ?
+              -options.grid.labelMargin :
+              options.grid.labelMargin + graph.plotWidth));
+      }
+      function topOffset (graph, isX, isFirst, offset) {
+        return graph.plotOffset.top +
+          (isX ? options.grid.labelMargin : offset) +
+          ((isX && isFirst) ? graph.plotHeight : 0);
+      }
+    }
+
+    function drawLabelHtml (graph, axis) {
+      var
+        isX     = axis.orientation === 1,
+        isFirst = axis.n === 1,
+        name = '',
+        left, style, top,
+        offset = graph.plotOffset;
+
+      if (!isX && !isFirst) {
+        ctx.save();
+        ctx.strokeStyle = axis.options.color || options.grid.color;
+        ctx.beginPath();
+      }
+
+      if (axis.options.showLabels && (isFirst ? true : axis.used)) {
+        for (i = 0; i < axis.ticks.length; ++i) {
+          tick = axis.ticks[i];
+          if (!tick.label || !tick.label.length ||
+              ((isX ? offset.left : offset.top) + axis.d2p(tick.v) < 0) ||
+              ((isX ? offset.left : offset.top) + axis.d2p(tick.v) > (isX ? graph.canvasWidth : graph.canvasHeight))) {
+            continue;
+          }
+          top = offset.top +
+            (isX ?
+              ((isFirst ? 1 : -1 ) * (graph.plotHeight + options.grid.labelMargin)) :
+              axis.d2p(tick.v) - axis.maxLabel.height / 2);
+          left = isX ? (offset.left + axis.d2p(tick.v) - xBoxWidth / 2) : 0;
+
+          name = '';
+          if (i === 0) {
+            name = ' first';
+          } else if (i === axis.ticks.length - 1) {
+            name = ' last';
+          }
+          name += isX ? ' flotr-grid-label-x' : ' flotr-grid-label-y';
+
+          html += [
+            '<div style="position:absolute; text-align:' + (isX ? 'center' : 'right') + '; ',
+            'top:' + top + 'px; ',
+            ((!isX && !isFirst) ? 'right:' : 'left:') + left + 'px; ',
+            'width:' + (isX ? xBoxWidth : ((isFirst ? offset.left : offset.right) - options.grid.labelMargin)) + 'px; ',
+            axis.options.color ? ('color:' + axis.options.color + '; ') : ' ',
+            '" class="flotr-grid-label' + name + '">' + tick.label + '</div>'
+          ].join(' ');
+          
+          if (!isX && !isFirst) {
+            ctx.moveTo(offset.left + graph.plotWidth - 8, offset.top + axis.d2p(tick.v));
+            ctx.lineTo(offset.left + graph.plotWidth, offset.top + axis.d2p(tick.v));
+          }
+        }
+      }
+    }
+  }
+
+});
+})();
+
+(function () {
+
+var
+  D = Flotr.DOM,
+  _ = Flotr._;
+
+Flotr.addPlugin('legend', {
+  options: {
+    show: true,            // => setting to true will show the legend, hide otherwise
+    noColumns: 1,          // => number of colums in legend table // @todo: doesn't work for HtmlText = false
+    labelFormatter: function(v){return v;}, // => fn: string -> string
+    labelBoxBorderColor: '#CCCCCC', // => border color for the little label boxes
+    labelBoxWidth: 14,
+    labelBoxHeight: 10,
+    labelBoxMargin: 5,
+    container: null,       // => container (as jQuery object) to put legend in, null means default on top of graph
+    position: 'nw',        // => position of default legend container within plot
+    margin: 5,             // => distance from grid edge to default legend container within plot
+    backgroundColor: '#F0F0F0', // => Legend background color.
+    backgroundOpacity: 0.85// => set to 0 to avoid background, set to 1 for a solid background
+  },
+  callbacks: {
+    'flotr:afterinit': function() {
+      this.legend.insertLegend();
+    }
+  },
+  /**
+   * Adds a legend div to the canvas container or draws it on the canvas.
+   */
+  insertLegend: function(){
+
+    if(!this.options.legend.show)
+      return;
+
+    var series      = this.series,
+      plotOffset    = this.plotOffset,
+      options       = this.options,
+      legend        = options.legend,
+      fragments     = [],
+      rowStarted    = false, 
+      ctx           = this.ctx,
+      itemCount     = _.filter(series, function(s) {return (s.label && !s.hide);}).length,
+      p             = legend.position, 
+      m             = legend.margin,
+      opacity       = legend.backgroundOpacity,
+      i, label, color;
+
+    if (itemCount) {
+
+      var lbw = legend.labelBoxWidth,
+          lbh = legend.labelBoxHeight,
+          lbm = legend.labelBoxMargin,
+          offsetX = plotOffset.left + m,
+          offsetY = plotOffset.top + m,
+          labelMaxWidth = 0,
+          style = {
+            size: options.fontSize*1.1,
+            color: options.grid.color
+          };
+
+      // We calculate the labels' max width
+      for(i = series.length - 1; i > -1; --i){
+        if(!series[i].label || series[i].hide) continue;
+        label = legend.labelFormatter(series[i].label);
+        labelMaxWidth = Math.max(labelMaxWidth, this._text.measureText(label, style).width);
+      }
+
+      var legendWidth  = Math.round(lbw + lbm*3 + labelMaxWidth),
+          legendHeight = Math.round(itemCount*(lbm+lbh) + lbm);
+
+      // Default Opacity
+      if (!opacity && opacity !== 0) {
+        opacity = 0.1;
+      }
+
+      if (!options.HtmlText && this.textEnabled && !legend.container) {
+        
+        if(p.charAt(0) == 's') offsetY = plotOffset.top + this.plotHeight - (m + legendHeight);
+        if(p.charAt(0) == 'c') offsetY = plotOffset.top + (this.plotHeight/2) - (m + (legendHeight/2));
+        if(p.charAt(1) == 'e') offsetX = plotOffset.left + this.plotWidth - (m + legendWidth);
+        
+        // Legend box
+        color = this.processColor(legend.backgroundColor, { opacity : opacity });
+
+        ctx.fillStyle = color;
+        ctx.fillRect(offsetX, offsetY, legendWidth, legendHeight);
+        ctx.strokeStyle = legend.labelBoxBorderColor;
+        ctx.strokeRect(Flotr.toPixel(offsetX), Flotr.toPixel(offsetY), legendWidth, legendHeight);
+        
+        // Legend labels
+        var x = offsetX + lbm;
+        var y = offsetY + lbm;
+        for(i = 0; i < series.length; i++){
+          if(!series[i].label || series[i].hide) continue;
+          label = legend.labelFormatter(series[i].label);
+          
+          ctx.fillStyle = series[i].color;
+          ctx.fillRect(x, y, lbw-1, lbh-1);
+          
+          ctx.strokeStyle = legend.labelBoxBorderColor;
+          ctx.lineWidth = 1;
+          ctx.strokeRect(Math.ceil(x)-1.5, Math.ceil(y)-1.5, lbw+2, lbh+2);
+          
+          // Legend text
+          Flotr.drawText(ctx, label, x + lbw + lbm, y + lbh, style);
+          
+          y += lbh + lbm;
+        }
+      }
+      else {
+        for(i = 0; i < series.length; ++i){
+          if(!series[i].label || series[i].hide) continue;
+          
+          if(i % legend.noColumns === 0){
+            fragments.push(rowStarted ? '</tr><tr>' : '<tr>');
+            rowStarted = true;
+          }
+
+          var s = series[i],
+            boxWidth = legend.labelBoxWidth,
+            boxHeight = legend.labelBoxHeight;
+
+          label = legend.labelFormatter(s.label);
+          color = 'background-color:' + ((s.bars && s.bars.show && s.bars.fillColor && s.bars.fill) ? s.bars.fillColor : s.color) + ';';
+          
+          fragments.push(
+            '<td class="flotr-legend-color-box">',
+              '<div style="border:1px solid ', legend.labelBoxBorderColor, ';padding:1px">',
+                '<div style="width:', (boxWidth-1), 'px;height:', (boxHeight-1), 'px;border:1px solid ', series[i].color, '">', // Border
+                  '<div style="width:', boxWidth, 'px;height:', boxHeight, 'px;', color, '"></div>', // Background
+                '</div>',
+              '</div>',
+            '</td>',
+            '<td class="flotr-legend-label">', label, '</td>'
+          );
+        }
+        if(rowStarted) fragments.push('</tr>');
+          
+        if(fragments.length > 0){
+          var table = '<table style="font-size:smaller;color:' + options.grid.color + '">' + fragments.join('') + '</table>';
+          if(legend.container){
+            D.empty(legend.container);
+            D.insert(legend.container, table);
+          }
+          else {
+            var styles = {position: 'absolute', 'zIndex': '2', 'border' : '1px solid ' + legend.labelBoxBorderColor};
+
+                 if(p.charAt(0) == 'n') { styles.top = (m + plotOffset.top) + 'px'; styles.bottom = 'auto'; }
+            else if(p.charAt(0) == 'c') { styles.top = (m + (this.plotHeight - legendHeight) / 2) + 'px'; styles.bottom = 'auto'; }
+            else if(p.charAt(0) == 's') { styles.bottom = (m + plotOffset.bottom) + 'px'; styles.top = 'auto'; }
+                 if(p.charAt(1) == 'e') { styles.right = (m + plotOffset.right) + 'px'; styles.left = 'auto'; }
+            else if(p.charAt(1) == 'w') { styles.left = (m + plotOffset.left) + 'px'; styles.right = 'auto'; }
+
+            var div = D.create('div'), size;
+            div.className = 'flotr-legend';
+            D.setStyles(div, styles);
+            D.insert(div, table);
+            D.insert(this.el, div);
+            
+            if (!opacity) return;
+
+            var c = legend.backgroundColor || options.grid.backgroundColor || '#ffffff';
+
+            _.extend(styles, D.size(div), {
+              'backgroundColor': c,
+              'zIndex' : '',
+              'border' : ''
+            });
+            styles.width += 'px';
+            styles.height += 'px';
+
+             // Put in the transparent background separately to avoid blended labels and
+            div = D.create('div');
+            div.className = 'flotr-legend-bg';
+            D.setStyles(div, styles);
+            D.opacity(div, opacity);
+            D.insert(div, ' ');
+            D.insert(this.el, div);
+          }
+        }
+      }
+    }
+  }
+});
+})();
+
+/** Spreadsheet **/
+(function() {
+
+function getRowLabel(value){
+  if (this.options.spreadsheet.tickFormatter){
+    //TODO maybe pass the xaxis formatter to the custom tick formatter as an opt-out?
+    return this.options.spreadsheet.tickFormatter(value);
+  }
+  else {
+    var t = _.find(this.axes.x.ticks, function(t){return t.v == value;});
+    if (t) {
+      return t.label;
+    }
+    return value;
+  }
+}
+
+var
+  D = Flotr.DOM,
+  _ = Flotr._;
+
+Flotr.addPlugin('spreadsheet', {
+  options: {
+    show: false,           // => show the data grid using two tabs
+    tabGraphLabel: 'Graph',
+    tabDataLabel: 'Data',
+    toolbarDownload: 'Download CSV', // @todo: add better language support
+    toolbarSelectAll: 'Select all',
+    csvFileSeparator: ',',
+    decimalSeparator: '.',
+    tickFormatter: null,
+    initialTab: 'graph'
+  },
+  /**
+   * Builds the tabs in the DOM
+   */
+  callbacks: {
+    'flotr:afterconstruct': function(){
+      // @TODO necessary?
+      //this.el.select('.flotr-tabs-group,.flotr-datagrid-container').invoke('remove');
+      
+      if (!this.options.spreadsheet.show) return;
+      
+      var ss = this.spreadsheet,
+        container = D.node('<div class="flotr-tabs-group" style="position:absolute;left:0px;width:'+this.canvasWidth+'px"></div>'),
+        graph = D.node('<div style="float:left" class="flotr-tab selected">'+this.options.spreadsheet.tabGraphLabel+'</div>'),
+        data = D.node('<div style="float:left" class="flotr-tab">'+this.options.spreadsheet.tabDataLabel+'</div>'),
+        offset;
+
+      ss.tabsContainer = container;
+      ss.tabs = { graph : graph, data : data };
+
+      D.insert(container, graph);
+      D.insert(container, data);
+      D.insert(this.el, container);
+
+      offset = D.size(data).height + 2;
+      this.plotOffset.bottom += offset;
+
+      D.setStyles(container, {top: this.canvasHeight-offset+'px'});
+
+      this.
+        observe(graph, 'click',  function(){ss.showTab('graph');}).
+        observe(data, 'click', function(){ss.showTab('data');});
+      if (this.options.spreadsheet.initialTab !== 'graph'){
+        ss.showTab(this.options.spreadsheet.initialTab);
+      }
+    }
+  },
+  /**
+   * Builds a matrix of the data to make the correspondance between the x values and the y values :
+   * X value => Y values from the axes
+   * @return {Array} The data grid
+   */
+  loadDataGrid: function(){
+    if (this.seriesData) return this.seriesData;
+
+    var s = this.series,
+        rows = {};
+
+    /* The data grid is a 2 dimensions array. There is a row for each X value.
+     * Each row contains the x value and the corresponding y value for each serie ('undefined' if there isn't one)
+    **/
+    _.each(s, function(serie, i){
+      _.each(serie.data, function (v) {
+        var x = v[0],
+            y = v[1],
+            r = rows[x];
+        if (r) {
+          r[i+1] = y;
+        } else {
+          var newRow = [];
+          newRow[0] = x;
+          newRow[i+1] = y;
+          rows[x] = newRow;
+        }
+      });
+    });
+
+    // The data grid is sorted by x value
+    this.seriesData = _.sortBy(rows, function(row, x){
+      return parseInt(x, 10);
+    });
+    return this.seriesData;
+  },
+  /**
+   * Constructs the data table for the spreadsheet
+   * @todo make a spreadsheet manager (Flotr.Spreadsheet)
+   * @return {Element} The resulting table element
+   */
+  constructDataGrid: function(){
+    // If the data grid has already been built, nothing to do here
+    if (this.spreadsheet.datagrid) return this.spreadsheet.datagrid;
+    
+    var s = this.series,
+        datagrid = this.spreadsheet.loadDataGrid(),
+        colgroup = ['<colgroup><col />'],
+        buttonDownload, buttonSelect, t;
+    
+    // First row : series' labels
+    var html = ['<table class="flotr-datagrid"><tr class="first-row">'];
+    html.push('<th>&nbsp;</th>');
+    _.each(s, function(serie,i){
+      html.push('<th scope="col">'+(serie.label || String.fromCharCode(65+i))+'</th>');
+      colgroup.push('<col />');
+    });
+    html.push('</tr>');
+    // Data rows
+    _.each(datagrid, function(row){
+      html.push('<tr>');
+      _.times(s.length+1, function(i){
+        var tag = 'td',
+            value = row[i],
+            // TODO: do we really want to handle problems with floating point
+            // precision here?
+            content = (!_.isUndefined(value) ? Math.round(value*100000)/100000 : '');
+        if (i === 0) {
+          tag = 'th';
+          var label = getRowLabel.call(this, content);
+          if (label) content = label;
+        }
+
+        html.push('<'+tag+(tag=='th'?' scope="row"':'')+'>'+content+'</'+tag+'>');
+      }, this);
+      html.push('</tr>');
+    }, this);
+    colgroup.push('</colgroup>');
+    t = D.node(html.join(''));
+
+    /**
+     * @TODO disabled this
+    if (!Flotr.isIE || Flotr.isIE == 9) {
+      function handleMouseout(){
+        t.select('colgroup col.hover, th.hover').invoke('removeClassName', 'hover');
+      }
+      function handleMouseover(e){
+        var td = e.element(),
+          siblings = td.previousSiblings();
+        t.select('th[scope=col]')[siblings.length-1].addClassName('hover');
+        t.select('colgroup col')[siblings.length].addClassName('hover');
+      }
+      _.each(t.select('td'), function(td) {
+        Flotr.EventAdapter.
+          observe(td, 'mouseover', handleMouseover).
+          observe(td, 'mouseout', handleMouseout);
+      });
+    }
+    */
+
+    buttonDownload = D.node(
+      '<button type="button" class="flotr-datagrid-toolbar-button">' +
+      this.options.spreadsheet.toolbarDownload +
+      '</button>');
+
+    buttonSelect = D.node(
+      '<button type="button" class="flotr-datagrid-toolbar-button">' +
+      this.options.spreadsheet.toolbarSelectAll+
+      '</button>');
+
+    this.
+      observe(buttonDownload, 'click', _.bind(this.spreadsheet.downloadCSV, this)).
+      observe(buttonSelect, 'click', _.bind(this.spreadsheet.selectAllData, this));
+
+    var toolbar = D.node('<div class="flotr-datagrid-toolbar"></div>');
+    D.insert(toolbar, buttonDownload);
+    D.insert(toolbar, buttonSelect);
+
+    var containerHeight =this.canvasHeight - D.size(this.spreadsheet.tabsContainer).height-2,
+        container = D.node('<div class="flotr-datagrid-container" style="position:absolute;left:0px;top:0px;width:'+
+          this.canvasWidth+'px;height:'+containerHeight+'px;overflow:auto;z-index:10"></div>');
+
+    D.insert(container, toolbar);
+    D.insert(container, t);
+    D.insert(this.el, container);
+    this.spreadsheet.datagrid = t;
+    this.spreadsheet.container = container;
+
+    return t;
+  },  
+  /**
+   * Shows the specified tab, by its name
+   * @todo make a tab manager (Flotr.Tabs)
+   * @param {String} tabName - The tab name
+   */
+  showTab: function(tabName){
+    if (this.spreadsheet.activeTab === tabName){
+      return;
+    }
+    switch(tabName) {
+      case 'graph':
+        D.hide(this.spreadsheet.container);
+        D.removeClass(this.spreadsheet.tabs.data, 'selected');
+        D.addClass(this.spreadsheet.tabs.graph, 'selected');
+      break;
+      case 'data':
+        if (!this.spreadsheet.datagrid)
+          this.spreadsheet.constructDataGrid();
+        D.show(this.spreadsheet.container);
+        D.addClass(this.spreadsheet.tabs.data, 'selected');
+        D.removeClass(this.spreadsheet.tabs.graph, 'selected');
+      break;
+      default:
+        throw 'Illegal tab name: ' + tabName;
+    }
+    this.spreadsheet.activeTab = tabName;
+  },
+  /**
+   * Selects the data table in the DOM for copy/paste
+   */
+  selectAllData: function(){
+    if (this.spreadsheet.tabs) {
+      var selection, range, doc, win, node = this.spreadsheet.constructDataGrid();
+
+      this.spreadsheet.showTab('data');
+      
+      // deferred to be able to select the table
+      setTimeout(function () {
+        if ((doc = node.ownerDocument) && (win = doc.defaultView) && 
+            win.getSelection && doc.createRange && 
+            (selection = window.getSelection()) && 
+            selection.removeAllRanges) {
+            range = doc.createRange();
+            range.selectNode(node);
+            selection.removeAllRanges();
+            selection.addRange(range);
+        }
+        else if (document.body && document.body.createTextRange && 
+                (range = document.body.createTextRange())) {
+            range.moveToElementText(node);
+            range.select();
+        }
+      }, 0);
+      return true;
+    }
+    else return false;
+  },
+  /**
+   * Converts the data into CSV in order to download a file
+   */
+  downloadCSV: function(){
+    var csv = '',
+        series = this.series,
+        options = this.options,
+        dg = this.spreadsheet.loadDataGrid(),
+        separator = encodeURIComponent(options.spreadsheet.csvFileSeparator);
+    
+    if (options.spreadsheet.decimalSeparator === options.spreadsheet.csvFileSeparator) {
+      throw "The decimal separator is the same as the column separator ("+options.spreadsheet.decimalSeparator+")";
+    }
+    
+    // The first row
+    _.each(series, function(serie, i){
+      csv += separator+'"'+(serie.label || String.fromCharCode(65+i)).replace(/\"/g, '\\"')+'"';
+    });
+
+    csv += "%0D%0A"; // \r\n
+    
+    // For each row
+    csv += _.reduce(dg, function(memo, row){
+      var rowLabel = getRowLabel.call(this, row[0]) || '';
+      rowLabel = '"'+(rowLabel+'').replace(/\"/g, '\\"')+'"';
+      var numbers = row.slice(1).join(separator);
+      if (options.spreadsheet.decimalSeparator !== '.') {
+        numbers = numbers.replace(/\./g, options.spreadsheet.decimalSeparator);
+      }
+      return memo + rowLabel+separator+numbers+"%0D%0A"; // \t and \r\n
+    }, '', this);
+
+    if (Flotr.isIE && Flotr.isIE < 9) {
+      csv = csv.replace(new RegExp(separator, 'g'), decodeURIComponent(separator)).replace(/%0A/g, '\n').replace(/%0D/g, '\r');
+      window.open().document.write(csv);
+    }
+    else window.open('data:text/csv,'+csv);
+  }
+});
+})();
+
+(function () {
+
+var D = Flotr.DOM;
+
+Flotr.addPlugin('titles', {
+  callbacks: {
+    'flotr:afterdraw': function() {
+      this.titles.drawTitles();
+    }
+  },
+  /**
+   * Draws the title and the subtitle
+   */
+  drawTitles : function () {
+    var html,
+        options = this.options,
+        margin = options.grid.labelMargin,
+        ctx = this.ctx,
+        a = this.axes;
+    
+    if (!options.HtmlText && this.textEnabled) {
+      var style = {
+        size: options.fontSize,
+        color: options.grid.color,
+        textAlign: 'center'
+      };
+      
+      // Add subtitle
+      if (options.subtitle){
+        Flotr.drawText(
+          ctx, options.subtitle,
+          this.plotOffset.left + this.plotWidth/2, 
+          this.titleHeight + this.subtitleHeight - 2,
+          style
+        );
+      }
+      
+      style.weight = 1.5;
+      style.size *= 1.5;
+      
+      // Add title
+      if (options.title){
+        Flotr.drawText(
+          ctx, options.title,
+          this.plotOffset.left + this.plotWidth/2, 
+          this.titleHeight - 2,
+          style
+        );
+      }
+      
+      style.weight = 1.8;
+      style.size *= 0.8;
+      
+      // Add x axis title
+      if (a.x.options.title && a.x.used){
+        style.textAlign = a.x.options.titleAlign || 'center';
+        style.textBaseline = 'top';
+        style.angle = Flotr.toRad(a.x.options.titleAngle);
+        style = Flotr.getBestTextAlign(style.angle, style);
+        Flotr.drawText(
+          ctx, a.x.options.title,
+          this.plotOffset.left + this.plotWidth/2, 
+          this.plotOffset.top + a.x.maxLabel.height + this.plotHeight + 2 * margin,
+          style
+        );
+      }
+      
+      // Add x2 axis title
+      if (a.x2.options.title && a.x2.used){
+        style.textAlign = a.x2.options.titleAlign || 'center';
+        style.textBaseline = 'bottom';
+        style.angle = Flotr.toRad(a.x2.options.titleAngle);
+        style = Flotr.getBestTextAlign(style.angle, style);
+        Flotr.drawText(
+          ctx, a.x2.options.title,
+          this.plotOffset.left + this.plotWidth/2, 
+          this.plotOffset.top - a.x2.maxLabel.height - 2 * margin,
+          style
+        );
+      }
+      
+      // Add y axis title
+      if (a.y.options.title && a.y.used){
+        style.textAlign = a.y.options.titleAlign || 'right';
+        style.textBaseline = 'middle';
+        style.angle = Flotr.toRad(a.y.options.titleAngle);
+        style = Flotr.getBestTextAlign(style.angle, style);
+        Flotr.drawText(
+          ctx, a.y.options.title,
+          this.plotOffset.left - a.y.maxLabel.width - 2 * margin, 
+          this.plotOffset.top + this.plotHeight / 2,
+          style
+        );
+      }
+      
+      // Add y2 axis title
+      if (a.y2.options.title && a.y2.used){
+        style.textAlign = a.y2.options.titleAlign || 'left';
+        style.textBaseline = 'middle';
+        style.angle = Flotr.toRad(a.y2.options.titleAngle);
+        style = Flotr.getBestTextAlign(style.angle, style);
+        Flotr.drawText(
+          ctx, a.y2.options.title,
+          this.plotOffset.left + this.plotWidth + a.y2.maxLabel.width + 2 * margin, 
+          this.plotOffset.top + this.plotHeight / 2,
+          style
+        );
+      }
+    } 
+    else {
+      html = [];
+      
+      // Add title
+      if (options.title)
+        html.push(
+          '<div style="position:absolute;top:0;left:', 
+          this.plotOffset.left, 'px;font-size:1em;font-weight:bold;text-align:center;width:',
+          this.plotWidth,'px;" class="flotr-title">', options.title, '</div>'
+        );
+      
+      // Add subtitle
+      if (options.subtitle)
+        html.push(
+          '<div style="position:absolute;top:', this.titleHeight, 'px;left:', 
+          this.plotOffset.left, 'px;font-size:smaller;text-align:center;width:',
+          this.plotWidth, 'px;" class="flotr-subtitle">', options.subtitle, '</div>'
+        );
+
+      html.push('</div>');
+      
+      html.push('<div class="flotr-axis-title" style="font-weight:bold;">');
+      
+      // Add x axis title
+      if (a.x.options.title && a.x.used)
+        html.push(
+          '<div style="position:absolute;top:', 
+          (this.plotOffset.top + this.plotHeight + options.grid.labelMargin + a.x.titleSize.height), 
+          'px;left:', this.plotOffset.left, 'px;width:', this.plotWidth, 
+          'px;text-align:', a.x.options.titleAlign, ';" class="flotr-axis-title flotr-axis-title-x1">', a.x.options.title, '</div>'
+        );
+      
+      // Add x2 axis title
+      if (a.x2.options.title && a.x2.used)
+        html.push(
+          '<div style="position:absolute;top:0;left:', this.plotOffset.left, 'px;width:', 
+          this.plotWidth, 'px;text-align:', a.x2.options.titleAlign, ';" class="flotr-axis-title flotr-axis-title-x2">', a.x2.options.title, '</div>'
+        );
+      
+      // Add y axis title
+      if (a.y.options.title && a.y.used)
+        html.push(
+          '<div style="position:absolute;top:', 
+          (this.plotOffset.top + this.plotHeight/2 - a.y.titleSize.height/2), 
+          'px;left:0;text-align:', a.y.options.titleAlign, ';" class="flotr-axis-title flotr-axis-title-y1">', a.y.options.title, '</div>'
+        );
+      
+      // Add y2 axis title
+      if (a.y2.options.title && a.y2.used)
+        html.push(
+          '<div style="position:absolute;top:', 
+          (this.plotOffset.top + this.plotHeight/2 - a.y.titleSize.height/2), 
+          'px;right:0;text-align:', a.y2.options.titleAlign, ';" class="flotr-axis-title flotr-axis-title-y2">', a.y2.options.title, '</div>'
+        );
+      
+      html = html.join('');
+
+      var div = D.create('div');
+      D.setStyles({
+        color: options.grid.color 
+      });
+      div.className = 'flotr-titles';
+      D.insert(this.el, div);
+      D.insert(div, html);
+    }
+  }
+});
+})();
+
+  return Flotr;
+
+}));

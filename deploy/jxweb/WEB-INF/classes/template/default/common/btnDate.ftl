@@ -14,7 +14,7 @@ $author:wmzsoft@gmail.com
 <#include "ftl-head.ftl"/>
 <#if (maxtype??)>
 	<#if (maxtype?upper_case)=='DATE'>
-		<img src='${baseSkin}/images/datePicker.gif' class="iconbutton"  title="${parameters.tagbundle['datapicker.title']}" onClick='showDate(this, event)' tid="${dateid!(parameters.id!'x')}" /><#t>
+		<img src='${baseSkin}/images/datePicker.gif' class="iconbutton"  title="${parameters.tagbundle['datapicker.title']!}" onClick='showDate(this, event)' tid="${dateid!(parameters.id!'x')}" /><#t>
 	<#elseif (maxtype?upper_case)=='DATETIME'>
 		<img src='${baseSkin}/images/datetime.png' class="iconbutton"  onClick='showDateTime(this,event)' tid="${dateid!(parameters.id!'x')}" /><#t>
 	<#elseif (maxtype?upper_case)=='TIME'>

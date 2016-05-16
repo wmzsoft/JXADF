@@ -8,8 +8,8 @@ $author:wmzsoft@gmail.com
 <!--table-toot.ftl begin-->
 <#if (parameters.footVisible!true)>
 <div style="float:left" id="${parameters.id!'test'}_info" role="status" aria-live="polite">
-${parameters.tagbundle['table-tfoot.totalpre']}&nbsp;${parameters.count!0}
-    &nbsp;${parameters.tagbundle['table-tfoot.totaltail']}
+${parameters.tagbundle['table-tfoot.totalpre']!}&nbsp;${parameters.count!0}
+    &nbsp;${parameters.tagbundle['table-tfoot.totaltail']!}
     <input type='text' class='pageSelected' id='${parameters.id}_pagesize' name='pagesize'
            value='${parameters.pagesize!20}'
            SIZE='3'
@@ -39,11 +39,11 @@ ${parameters.tagbundle['table-tfoot.totalpre']}&nbsp;${parameters.count!0}
         <#lt> class="pagesize-select" <#rt>
     </#if>
     <#lt> onclick="spanSetPageSize('${parameters.id}',100);">100</span><#rt>
-    )&nbsp;${parameters.tagbundle['table-tfoot.items']}<#t>
+    )&nbsp;${parameters.tagbundle['table-tfoot.items']!}<#t>
 </div>
 
 <div id="${parameters.id!'test'}_paginate" style="float:right">
-  ${parameters.pagenum!0}&nbsp;/&nbsp;${parameters.pagecount!0}${parameters.tagbundle['table-tfoot.cpagetail']}
+  ${parameters.pagenum!0}&nbsp;/&nbsp;${parameters.pagecount!0}${parameters.tagbundle['table-tfoot.cpagetail']!}
     <#if ((parameters.pagenum!1)>1)>
         <a href='javascript:pageFirst("${parameters.id}")' class="table-tfoot-page-first"></a>
         <a href='javascript:pagePre("${parameters.id}")' class="table-tfoot-page-pre"></a>
@@ -52,11 +52,11 @@ ${parameters.tagbundle['table-tfoot.totalpre']}&nbsp;${parameters.count!0}
         <a href='javascript:pageNext("${parameters.id}")' class="table-tfoot-page-next"></a>
         <a href='javascript:pageLast("${parameters.id}")' class="table-tfoot-page-last"></a>
     </#if>
-${parameters.tagbundle['table-tfoot.goto']}
+${parameters.tagbundle['table-tfoot.goto']!}
     <INPUT TYPE='text' id='${parameters.id}_topage' NAME='gotoPage'
            class="gotoPage" value='1' onpaste="return pagePaste()"
            onkeypress='pageGotoKeypress("${parameters.id}", event)' SIZE='3'
-           maxlength='5'>${parameters.tagbundle['table-tfoot.cpagetail']}
+           maxlength='5'>${parameters.tagbundle['table-tfoot.cpagetail']!}
 
     <input type='button' value='GO' onclick='pageGoto("${parameters.id}")' class='btn_href_GO'>
 

@@ -1,1 +1,9 @@
-!function(t,i,e){"$:nomunge";function n(){h=i[s](function(){r.each(function(){var i=t(this),n=i.width(),h=i.height(),r=t.data(this,o);return r===e?void old_handler.apply(this,arguments):void((n!==r.w||h!==r.h)&&i.trigger(d,[r.w=n,r.h=h]))}),n()},a[u])}var h,r=t([]),a=t.resize=t.extend(t.resize,{}),s="setTimeout",d="resize",o=d+"-special-event",u="delay",l="throttleWindow";a[u]=10,a[l]=!0,t.event.special[d]={setup:function(){if(!a[l]&&this[s])return!1;var i=t(this);r=r.add(i),t.data(this,o,{w:i.width(),h:i.height()}),1===r.length&&n()},teardown:function(){if(!a[l]&&this[s])return!1;var i=t(this);r=r.not(i),i.removeData(o),r.length||clearTimeout(h)},add:function(i){function n(i,n,r){var a=t(this),s=t.data(this,o);return s===e?void h.apply(this,arguments):(s.w=n!==e?n:a.width(),s.h=r!==e?r:a.height(),void h.apply(this,arguments))}if(!a[l]&&this[s])return!1;var h;return t.isFunction(i)?(h=i,n):(h=i.handler,void(i.handler=n))}}}(jQuery,this);
+/*!
+ * jQuery resize event - v1.1 - 3/14/2010
+ * http://benalman.com/projects/jquery-resize-plugin/
+ * 
+ * Copyright (c) 2010 "Cowboy" Ben Alman
+ * Dual licensed under the MIT and GPL licenses.
+ * http://benalman.com/about/license/
+ */
+(function($,h,c){var a=$([]),e=$.resize=$.extend($.resize,{}),i,k="setTimeout",j="resize",d=j+"-special-event",b="delay",f="throttleWindow";e[b]=10;e[f]=true;$.event.special[j]={setup:function(){if(!e[f]&&this[k]){return false}var l=$(this);a=a.add(l);$.data(this,d,{w:l.width(),h:l.height()});if(a.length===1){g()}},teardown:function(){if(!e[f]&&this[k]){return false}var l=$(this);a=a.not(l);l.removeData(d);if(!a.length){clearTimeout(i)}},add:function(l){if(!e[f]&&this[k]){return false}var n;function m(s,o,p){var q=$(this),r=$.data(this,d);if(r===c){n.apply(this,arguments);return}r.w=o!==c?o:q.width();r.h=p!==c?p:q.height();n.apply(this,arguments)}if($.isFunction(l)){n=l;return m}else{n=l.handler;l.handler=m}}};function g(){i=h[k](function(){a.each(function(){var n=$(this),m=n.width(),l=n.height(),o=$.data(this,d);if(o===c){old_handler.apply(this,arguments);return}if(m!==o.w||l!==o.h){n.trigger(j,[o.w=m,o.h=l])}});g()},e[b])}})(jQuery,this);

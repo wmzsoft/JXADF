@@ -16,9 +16,9 @@ import com.jxtech.util.StrUtil;
  */
 public class JxSessionID {
     public static final String ID = "jxsessionid";
-    public static String MYKEY = null;
     private static long sessiontime = 0;// 限时2小时
-    private static Map<String, String[]> users = new HashMap<String, String[]>();// 将生成的KEY\时间保存起来，超时无效
+    // 将生成的KEY\时间保存起来，超时无效
+    private static final Map<String, String[]> users = new HashMap<String, String[]>();
 
     /**
      * 通过SessionID解析用户名

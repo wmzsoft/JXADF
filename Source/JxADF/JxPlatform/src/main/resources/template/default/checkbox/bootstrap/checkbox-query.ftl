@@ -29,7 +29,7 @@ $author:sl
         <select onChange="selectChange(this,event)" id="${parameters.id}"  <#t>
             <#lt> inputmode="${parameters.inputmode}" changed="0" dataattribute="${parameters.dataattribute}" <#rt>
             <#lt> cause="=?" class="checkbox_td_query"><#t>
-            <option value="">${parameters.tagbundle['select.options']}</option>
+            <option value="">${parameters.tagbundle['select.options']!}</option>
             <option value="${parameters.checked!'1'}">${parameters.checked!'1'}</option>
             <option value="${parameters.notChecked!'0'}">${parameters.notChecked!'0'}</option>
         </select> <#t>

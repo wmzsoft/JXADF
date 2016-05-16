@@ -28,7 +28,6 @@ public class LayoutPanel extends JxBaseUIBean {
     private String status;
     private String scrollable;
 
-
     public LayoutPanel(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
         super(stack, request, response);
     }
@@ -47,61 +46,79 @@ public class LayoutPanel extends JxBaseUIBean {
     public void evaluateParams() {
         super.evaluateParams();
         region = findString(region);
-        if("".equals(region)){
+        if ("".equals(region)) {
             region = "center";
         }
-        addParameter("region",region);
-        addParameter("panelSize",findString(size));
-        addParameter("minSize",findString(minSize));
-        addParameter("maxSize",findString(maxSize));
+        addParameter("region", region);
+        addParameter("panelSize", findString(size));
+        addParameter("minSize", findString(minSize));
+        addParameter("maxSize", findString(maxSize));
         space = findString(space);
-        if("".equals(space)){
+        if ("".equals(space)) {
             space = "0";
         }
-        addParameter("space",findString(space));
+        addParameter("space", findString(space));
 
         closable = findString(closable);
-        if("".equals(closable)){
+        if ("".equals(closable)) {
             closable = "false";
         }
-        addParameter("closable",closable);
+        addParameter("closable", closable);
 
         resizable = findString(resizable);
-        if("".equals(resizable)){
+        if ("".equals(resizable)) {
             resizable = "false";
         }
-        addParameter("resizable",resizable);
+        addParameter("resizable", resizable);
 
         status = findString(status);
-        if("".equals(status)){
+        if ("".equals(status)) {
             status = "open";
         }
-        addParameter("status",status);
+        addParameter("status", status);
 
         scrollable = findString(scrollable);
-        if("".equals(scrollable) || "true".equals(scrollable)){
+        if ("".equals(scrollable) || "true".equals(scrollable)) {
             scrollable = "scrollable";
-        }else{
+        } else {
             scrollable = "unScrollable";
         }
-        addParameter("scrollable",scrollable);
+        addParameter("scrollable", scrollable);
     }
 
-    public void setRegion(String region){ this.region = region; }
+    public void setRegion(String region) {
+        this.region = region;
+    }
 
-    public void setSize(String size) { this.size = size;}
+    public void setSize(String size) {
+        this.size = size;
+    }
 
-    public void setMinSize(String minSize){ this.minSize = minSize;}
+    public void setMinSize(String minSize) {
+        this.minSize = minSize;
+    }
 
-    public void setMaxSize(String maxSize){ this.maxSize = maxSize;}
+    public void setMaxSize(String maxSize) {
+        this.maxSize = maxSize;
+    }
 
-    public void setSpace(String space) { this.space = space;}
+    public void setSpace(String space) {
+        this.space = space;
+    }
 
-    public void setClosable(String closable){ this.closable = closable;}
+    public void setClosable(String closable) {
+        this.closable = closable;
+    }
 
-    public void setResizable(String resizable){ this.resizable = resizable;}
+    public void setResizable(String resizable) {
+        this.resizable = resizable;
+    }
 
-    public void setStatus(String status){ this.status = status;}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-    public void setScrollable(String scrollable){this.status = scrollable;}
+    public void setScrollable(String scrollable) {
+        this.status = scrollable;
+    }
 }

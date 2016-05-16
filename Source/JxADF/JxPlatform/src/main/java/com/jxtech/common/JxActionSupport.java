@@ -37,7 +37,7 @@ public class JxActionSupport extends ActionSupport {
     public String execute() throws Exception {
         ActionContext context = ActionContext.getContext();
         HttpServletRequest request = (HttpServletRequest) context.get(StrutsStatics.HTTP_REQUEST);
-        ServletActionContext.getResponse().setHeader("Server", MiscTool.IP);
+        ServletActionContext.getResponse().setHeader("Server", MiscTool.getIp());
         if (request != null) {
             request.setAttribute(JxSession.USER_INFO, JxSession.getJxUserInfo());
         }

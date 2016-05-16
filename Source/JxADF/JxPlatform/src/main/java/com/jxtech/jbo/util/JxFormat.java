@@ -14,6 +14,8 @@ import java.util.*;
  * @date 2013.08
  */
 public class JxFormat {
+    private static final Logger LOG = LoggerFactory.getLogger(JxFormat.class);
+
     public static final int ALN = 0;
     public static final int UPPER = 1;
     public static final int LOWER = 2;
@@ -36,7 +38,7 @@ public class JxFormat {
     public static final int BIGINT = 19;
     public static final int NUMBER = 20;
     public static final int UDTYPE = 99;
-    public static String[] TYPEASSTRING = {"ALN", "UPPER", "LOWER", "DATE", "DATETIME", "TIME", "INTEGER", "SMALLINT", "FLOAT", "DECIMAL", "DURATION", "AMOUNT", "YORN", "GL", "LONGALN", "CRYPTO", "CRYPTOX", "CLOB", "BLOB", "BIGINT", "NUMBER"};
+    public static final String[] TYPEASSTRING = { "ALN", "UPPER", "LOWER", "DATE", "DATETIME", "TIME", "INTEGER", "SMALLINT", "FLOAT", "DECIMAL", "DURATION", "AMOUNT", "YORN", "GL", "LONGALN", "CRYPTO", "CRYPTOX", "CLOB", "BLOB", "BIGINT", "NUMBER" };
     public static final int UNLIMITEDPLACES = 8;
     public static final String TIMESEP = ":";
     public static final String DATESEP = "/";
@@ -51,9 +53,8 @@ public class JxFormat {
     public static final String SEPERATORS = " /-.:";
     public static final double MINSPERHOUR = 60.0D;
     public static final String SPECIALSAVECHARS = "=: \t\r\n\f#!";
-    public static final char[] HEXDIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-    private static final Logger LOG = LoggerFactory.getLogger(JxFormat.class);
-    private static HashMap<String, String> settingProps = new HashMap<String, String>();
+    public static final char[] HEXDIGITS = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F' };
+    private static final HashMap<String, String> settingProps = new HashMap<String, String>();
 
     public static int stringToInt(String s) throws JxException {
         return stringToInt(s, Locale.getDefault());
@@ -62,7 +63,7 @@ public class JxFormat {
     public static int stringToInt(String s, Locale l) throws JxException {
         if (s == null) {
             // Object[] params = { s };
-            Object[] params = {"Transformation parameter value is empty"};
+            Object[] params = { "Transformation parameter value is empty" };
             throw new JxException("system", "invalidnumberint", params);
         }
 
@@ -82,7 +83,7 @@ public class JxFormat {
                 throw new ParseException("parseerror", 0);
             }
         } catch (ParseException e) {
-            Object[] params = {s};
+            Object[] params = { s };
             throw new JxException("system", "invalidnumberint", params);
         }
 
@@ -95,7 +96,7 @@ public class JxFormat {
 
     public static long stringToLong(String s, Locale l) throws JxException {
         if ((s == null) || ((s.indexOf(44) != -1) && (s.length() < 5))) {
-            Object[] params = {s};
+            Object[] params = { s };
             throw new JxException("system", "invalidnumberint", params);
         }
 
@@ -116,7 +117,7 @@ public class JxFormat {
             }
 
         } catch (ParseException e) {
-            Object[] params = {s};
+            Object[] params = { s };
             throw new JxException("system", "invalidnumberint", params);
         }
 
@@ -130,13 +131,14 @@ public class JxFormat {
                 int current = 0;
                 for (int i = 0; i < s.length(); i++) {
                     char cur = s.charAt(i);
-                    if (cur != tc) r.setCharAt(current++, cur);
+                    if (cur != tc)
+                        r.setCharAt(current++, cur);
                 }
                 outStr = r.toString();
             }
             String rets = String.valueOf(num.longValue());
             if ((outStr != null) && (!outStr.trim().equalsIgnoreCase(rets))) {
-                Object[] params = {s};
+                Object[] params = { s };
                 throw new JxException("system", "invalidnumberint", params);
             }
 
@@ -181,7 +183,7 @@ public class JxFormat {
     public static double stringToAmount(String s, Locale l) throws JxException {
         if (s == null) {
             // Object[] params = { s };
-            Object[] params = {"Transformation parameter value is empty"};
+            Object[] params = { "Transformation parameter value is empty" };
             throw new JxException("system", "invalidnumberintdec", params);
         }
 
@@ -191,7 +193,7 @@ public class JxFormat {
         try {
             return stringToDouble(s, l);
         } catch (JxException e2) {
-            Object[] params = {s};
+            Object[] params = { s };
             throw new JxException("system", "invalidnumberintdec", params);
         }
     }
@@ -215,7 +217,7 @@ public class JxFormat {
     public static double stringToDouble(String s, Locale l) throws JxException {
         if (s == null) {
             // Object[] params = { s };
-            Object[] params = {"Transformation parameter value is empty"};
+            Object[] params = { "Transformation parameter value is empty" };
             throw new JxException("system", "invalidnumberintdec", params);
         }
 
@@ -234,7 +236,7 @@ public class JxFormat {
                 throw new ParseException("parseerror", 0);
             }
         } catch (ParseException e) {
-            Object[] params = {s};
+            Object[] params = { s };
             throw new JxException("system", "invalidnumberintdec", params);
         }
 
@@ -291,7 +293,7 @@ public class JxFormat {
             }
 
             if (s.indexOf(DECIMALSEP) != -1) {
-                throw new JxException("system", "invalidduration", new Object[]{s});
+                throw new JxException("system", "invalidduration", new Object[] { s });
             }
 
             if (s.startsWith("-")) {
@@ -310,7 +312,7 @@ public class JxFormat {
                 }
             }
         } catch (JxException e) {
-            throw new JxException("system", "invalidduration", new Object[]{s});
+            throw new JxException("system", "invalidduration", new Object[] { s });
         }
 
         double dl = 0.0D;
@@ -345,7 +347,8 @@ public class JxFormat {
         }
 
         String retStr = null;
-        if (mins < 10) retStr = hours + ":" + "0" + mins;
+        if (mins < 10)
+            retStr = hours + ":" + "0" + mins;
         else {
             retStr = hours + ":" + mins;
         }
@@ -364,15 +367,18 @@ public class JxFormat {
             throw new JxException("system", "invalidyorn");
         }
 
-        if (s.equalsIgnoreCase("true")) return true;
+        if (s.equalsIgnoreCase("true"))
+            return true;
         if (s.equalsIgnoreCase("false")) {
             return false;
         }
-        if (s.equalsIgnoreCase(getStoreYesValue())) return true;
+        if (s.equalsIgnoreCase(getStoreYesValue()))
+            return true;
         if (s.equalsIgnoreCase(getStoreNoValue())) {
             return false;
         }
-        if (s.equalsIgnoreCase(getDisplayYesValue(l))) return true;
+        if (s.equalsIgnoreCase(getDisplayYesValue(l)))
+            return true;
         if (s.equalsIgnoreCase(getDisplayNoValue(l))) {
             return false;
         }
@@ -527,7 +533,7 @@ public class JxFormat {
             long milliseconds = 0L;
             int remainingHours = Integer.parseInt(remainingString.substring(0, 2));
             int remainingMinutes = Integer.parseInt(remainingString.substring(3, 5));
-            milliseconds = (remainingHours * 60 + remainingMinutes) * 60 * 1000;
+            milliseconds = (remainingHours * 60 + remainingMinutes) * 60 * 1000L;
 
             if (addSubtract == '+') {
                 milliseconds = -milliseconds;
@@ -816,7 +822,7 @@ public class JxFormat {
         boolean yearentered = false;
         boolean ampmValidate = false;
 
-        int[] value = {0, 0, 0, 0, 0, 0};
+        int[] value = { 0, 0, 0, 0, 0, 0 };
         int tokencount = 0;
 
         String ampm = null;
@@ -844,14 +850,16 @@ public class JxFormat {
                 int pos = tokenToPosition(tokencount, pattern);
                 value[pos] = stringToInt(token, l);
 
-                if (pos == 2) yearentered = true;
+                if (pos == 2)
+                    yearentered = true;
             } catch (JxException e) {
                 int am;
                 if ((am = stringToAmPm(token, l)) != -1) {
                     ampmValidate = true;
 
                     if ((value[3] > 0) && (value[3] <= 12)) {
-                        if (value[3] == 12) value[3] -= 12;
+                        if (value[3] == 12)
+                            value[3] -= 12;
                         value[3] += am * 12;
                     } else {
                         throw new JxException("system", "invaliddate");
@@ -859,7 +867,8 @@ public class JxFormat {
                 } else {
                     int m;
                     if ((m = stringToMonth(token, l)) != -1) {
-                        if (value[1] != 0) value[0] = value[1];
+                        if (value[1] != 0)
+                            value[0] = value[1];
                         value[1] = m;
                     } else {
                         throw new JxException("system", "invaliddate");
@@ -920,7 +929,8 @@ public class JxFormat {
         String[] pm = df.getAmPmStrings();
 
         for (int i = 0; i < pm.length; i++) {
-            if (s.equals(pm[i].toUpperCase())) return i;
+            if (s.equals(pm[i].toUpperCase()))
+                return i;
         }
         return -1;
     }
@@ -931,11 +941,13 @@ public class JxFormat {
         s = s.toUpperCase();
         String[] shortmnths = df.getShortMonths();
         for (int i = 0; i < shortmnths.length; i++) {
-            if (s.equals(shortmnths[i].toUpperCase())) return i + 1;
+            if (s.equals(shortmnths[i].toUpperCase()))
+                return i + 1;
         }
         String[] mnths = df.getMonths();
         for (int i = 0; i < mnths.length; i++) {
-            if (s.equals(mnths[i].toUpperCase())) return i + 1;
+            if (s.equals(mnths[i].toUpperCase()))
+                return i + 1;
         }
         return -1;
     }
@@ -946,13 +958,20 @@ public class JxFormat {
 
         while (st.hasMoreTokens()) {
             String s = st.nextToken();
-            if ((s.indexOf(100) != -1) && (i == tokennum)) return 0;
-            if ((s.indexOf(77) != -1) && (i == tokennum)) return 1;
-            if ((s.indexOf(121) != -1) && (i == tokennum)) return 2;
-            if ((s.indexOf(72) != -1) && (i == tokennum)) return 3;
-            if ((s.indexOf(104) != -1) && (i == tokennum)) return 3;
-            if ((s.indexOf(109) != -1) && (i == tokennum)) return 4;
-            if ((s.indexOf(115) != -1) && (i == tokennum)) return 5;
+            if ((s.indexOf(100) != -1) && (i == tokennum))
+                return 0;
+            if ((s.indexOf(77) != -1) && (i == tokennum))
+                return 1;
+            if ((s.indexOf(121) != -1) && (i == tokennum))
+                return 2;
+            if ((s.indexOf(72) != -1) && (i == tokennum))
+                return 3;
+            if ((s.indexOf(104) != -1) && (i == tokennum))
+                return 3;
+            if ((s.indexOf(109) != -1) && (i == tokennum))
+                return 4;
+            if ((s.indexOf(115) != -1) && (i == tokennum))
+                return 5;
             i++;
         }
 
@@ -960,7 +979,7 @@ public class JxFormat {
     }
 
     public static boolean isTimePartEntered(String s, Locale l) {
-        int[] value = {0, 0, 0, 0, 0, 0};
+        int[] value = { 0, 0, 0, 0, 0, 0 };
         int tokencount = 0;
         try {
             String pattern = getDateTimePattern(l);
@@ -993,7 +1012,8 @@ public class JxFormat {
                     if ((am = stringToAmPm(token, l)) != -1) {
                         if ((value[3] > 0) && (value[3] <= 12)) {
                             if (am == 1) {
-                                if (value[3] == 12) value[3] -= 12;
+                                if (value[3] == 12)
+                                    value[3] -= 12;
                                 value[3] += am * 12;
                             }
                         }
@@ -1040,7 +1060,7 @@ public class JxFormat {
     public static String clobToString(Clob c) {
         try {
             long pos = 1L;
-            int len = (int)c.length();
+            int len = (int) c.length();
             return c.getSubString(pos, len);
         } catch (Exception e) {
             LOG.error(e.getMessage());
@@ -1052,7 +1072,7 @@ public class JxFormat {
         byte[] array = null;
         try {
             long pos = 1L;
-            int len = (int)(b.length());
+            int len = (int) (b.length());
             array = b.getBytes(pos, len);
         } catch (Exception e) {
             LOG.error(e.getMessage());
@@ -1114,7 +1134,8 @@ public class JxFormat {
         boolean is24hr = false;
         String pattern = getTimePattern(l);
         if ((pattern != null) && (pattern.trim().length() > 0)) {
-            if (pattern.indexOf("H") > -1) is24hr = true;
+            if (pattern.indexOf("H") > -1)
+                is24hr = true;
         }
         return is24hr;
     }
@@ -1125,13 +1146,20 @@ public class JxFormat {
 
         while (st.hasMoreTokens()) {
             String s = st.nextToken();
-            if ((s.indexOf(100) != -1) && (tokennum == 0)) return i;
-            if ((s.indexOf(77) != -1) && (tokennum == 1)) return i;
-            if ((s.indexOf(121) != -1) && (tokennum == 2)) return i;
-            if ((s.indexOf(72) != -1) && (tokennum == 3)) return i;
-            if ((s.indexOf(104) != -1) && (tokennum == 3)) return i;
-            if ((s.indexOf(109) != -1) && (tokennum == 4)) return i;
-            if ((s.indexOf(115) != -1) && (tokennum == 5)) return i;
+            if ((s.indexOf(100) != -1) && (tokennum == 0))
+                return i;
+            if ((s.indexOf(77) != -1) && (tokennum == 1))
+                return i;
+            if ((s.indexOf(121) != -1) && (tokennum == 2))
+                return i;
+            if ((s.indexOf(72) != -1) && (tokennum == 3))
+                return i;
+            if ((s.indexOf(104) != -1) && (tokennum == 3))
+                return i;
+            if ((s.indexOf(109) != -1) && (tokennum == 4))
+                return i;
+            if ((s.indexOf(115) != -1) && (tokennum == 5))
+                return i;
             i++;
         }
 
@@ -1145,44 +1173,47 @@ public class JxFormat {
         for (int x = 0; x < len; x++) {
             char aChar = theString.charAt(x);
             switch (aChar) {
-                case ' ':
-                    if ((x == 0) || (escapeSpace)) outBuffer.append('\\');
-                    outBuffer.append(' ');
-                    break;
-                case '\\':
+            case ' ':
+                if ((x == 0) || (escapeSpace))
                     outBuffer.append('\\');
+                outBuffer.append(' ');
+                break;
+            case '\\':
+                outBuffer.append('\\');
+                outBuffer.append('\\');
+                break;
+            case '\t':
+                outBuffer.append('\\');
+                outBuffer.append('t');
+                break;
+            case '\n':
+                outBuffer.append('\\');
+                outBuffer.append('n');
+                break;
+            case '\r':
+                outBuffer.append('\\');
+                outBuffer.append('r');
+                break;
+            case '\f':
+                outBuffer.append('\\');
+                outBuffer.append('f');
+                break;
+            default:
+                if ("=: \t\r\n\f#!".indexOf(aChar) != -1) {
                     outBuffer.append('\\');
-                    break;
-                case '\t':
-                    outBuffer.append('\\');
-                    outBuffer.append('t');
-                    break;
-                case '\n':
-                    outBuffer.append('\\');
-                    outBuffer.append('n');
-                    break;
-                case '\r':
-                    outBuffer.append('\\');
-                    outBuffer.append('r');
-                    break;
-                case '\f':
-                    outBuffer.append('\\');
-                    outBuffer.append('f');
-                    break;
-                default:
-                    if ("=: \t\r\n\f#!".indexOf(aChar) != -1) {
-                        outBuffer.append('\\');
-                        outBuffer.append(aChar);
-                    } else {
-                        if (escapeUnicode) outBuffer.append("\\\\");
-                        else outBuffer.append("\\");
-                        outBuffer.append('u');
-                        outBuffer.append(toHex(aChar >> '\f' & 0xF));
-                        outBuffer.append(toHex(aChar >> '\b' & 0xF));
-                        outBuffer.append(toHex(aChar >> '\004' & 0xF));
-                        outBuffer.append(toHex(aChar & 0xF));
-                    }
-                    break;
+                    outBuffer.append(aChar);
+                } else {
+                    if (escapeUnicode)
+                        outBuffer.append("\\\\");
+                    else
+                        outBuffer.append("\\");
+                    outBuffer.append('u');
+                    outBuffer.append(toHex(aChar >> '\f' & 0xF));
+                    outBuffer.append(toHex(aChar >> '\b' & 0xF));
+                    outBuffer.append(toHex(aChar >> '\004' & 0xF));
+                    outBuffer.append(toHex(aChar & 0xF));
+                }
+                break;
             }
         }
         return outBuffer.toString();

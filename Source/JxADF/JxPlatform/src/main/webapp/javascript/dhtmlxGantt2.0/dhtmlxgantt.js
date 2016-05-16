@@ -6196,7 +6196,7 @@ dataProcessor.prototype={
 dhtmlx.assert = function(check, message){
 	if (!check){
 		dhtmlx.message({ type:"error", text:message, expire:-1 });
-		debugger;
+		//debugger;
 	}
 };
 

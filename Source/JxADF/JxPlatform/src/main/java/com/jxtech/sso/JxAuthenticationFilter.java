@@ -73,7 +73,7 @@ public class JxAuthenticationFilter extends AbstractCasFilter {
 
     public final void doFilter(final ServletRequest servletRequest, final ServletResponse servletResponse, final FilterChain filterChain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) servletRequest;
-        final HttpSession session = request.getSession(false);
+        HttpSession session = request.getSession(false);
         if (session != null) {
             Object val = session.getAttribute(JxSession.USER_INFO);
             if (val instanceof JxUserInfo) {
@@ -113,6 +113,9 @@ public class JxAuthenticationFilter extends AbstractCasFilter {
         String ssoUserId = JxSessionID.getUserId(jxsessionid);// 得到登录名称
         if (!StrUtil.isNull(ssoUserId)) {
             // 准备内部登录
+            if (session==null){
+                session = request.getSession(true);
+            }
             boolean isLogin = JxSession.loginBySsoUser(ssoUserId, session);
             if (isLogin) {
                 // 如果登录成功，则不需要跳转到登录页面了。

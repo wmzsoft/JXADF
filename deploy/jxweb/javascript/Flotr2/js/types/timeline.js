@@ -1,1 +1,90 @@
-Flotr.addType("timeline",{options:{show:!1,lineWidth:1,barWidth:.2,fill:!0,fillColor:null,fillOpacity:.4,centered:!0},draw:function(t){var i=t.context;i.save(),i.lineJoin="miter",i.lineWidth=t.lineWidth,i.strokeStyle=t.color,i.fillStyle=t.fillStyle,this.plot(t),i.restore()},plot:function(t){var i=t.data,l=t.context,n=t.xScale,a=t.yScale,e=t.barWidth,o=t.lineWidth;Flotr._.each(i,function(t){var i=t[0],r=t[1],d=t[2],c=e,h=Math.ceil(n(i)),m=Math.ceil(n(i+d))-h,s=Math.round(a(r)),u=Math.round(a(r-c))-s,x=h-o/2,f=Math.round(s-u/2)-o/2;l.strokeRect(x,f,m,u),l.fillRect(x,f,m,u)})},extendRange:function(t){var i=t.data,l=t.xaxis,n=t.yaxis,a=t.timeline.barWidth;if(null===l.options.min&&(l.min=l.datamin-a/2),null===l.options.max){var e=l.max;Flotr._.each(i,function(t){e=Math.max(e,t[0]+t[2])},this),l.max=e+a/2}null===n.options.min&&(n.min=n.datamin-a),null===n.options.min&&(n.max=n.datamax+a)}});
+Flotr.addType('timeline', {
+  options: {
+    show: false,
+    lineWidth: 1,
+    barWidth: 0.2,
+    fill: true,
+    fillColor: null,
+    fillOpacity: 0.4,
+    centered: true
+  },
+
+  draw : function (options) {
+
+    var
+      context = options.context;
+
+    context.save();
+    context.lineJoin    = 'miter';
+    context.lineWidth   = options.lineWidth;
+    context.strokeStyle = options.color;
+    context.fillStyle   = options.fillStyle;
+
+    this.plot(options);
+
+    context.restore();
+  },
+
+  plot : function (options) {
+
+    var
+      data      = options.data,
+      context   = options.context,
+      xScale    = options.xScale,
+      yScale    = options.yScale,
+      barWidth  = options.barWidth,
+      lineWidth = options.lineWidth,
+      i;
+
+    Flotr._.each(data, function (timeline) {
+
+      var 
+        x   = timeline[0],
+        y   = timeline[1],
+        w   = timeline[2],
+        h   = barWidth,
+
+        xt  = Math.ceil(xScale(x)),
+        wt  = Math.ceil(xScale(x + w)) - xt,
+        yt  = Math.round(yScale(y)),
+        ht  = Math.round(yScale(y - h)) - yt,
+
+        x0  = xt - lineWidth / 2,
+        y0  = Math.round(yt - ht / 2) - lineWidth / 2;
+
+      context.strokeRect(x0, y0, wt, ht);
+      context.fillRect(x0, y0, wt, ht);
+
+    });
+  },
+
+  extendRange : function (series) {
+
+    var
+      data  = series.data,
+      xa    = series.xaxis,
+      ya    = series.yaxis,
+      w     = series.timeline.barWidth;
+
+    if (xa.options.min === null)
+      xa.min = xa.datamin - w / 2;
+
+    if (xa.options.max === null) {
+
+      var
+        max = xa.max;
+
+      Flotr._.each(data, function (timeline) {
+        max = Math.max(max, timeline[0] + timeline[2]);
+      }, this);
+
+      xa.max = max + w / 2;
+    }
+
+    if (ya.options.min === null)
+      ya.min = ya.datamin - w;
+    if (ya.options.min === null)
+      ya.max = ya.datamax + w;
+  }
+
+});

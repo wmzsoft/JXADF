@@ -9,7 +9,7 @@ $author:wmzsoft@gmail.com
 <#if (parameters.menusList??) >
     <#if ((parameters.menusList?size) > 0) >
     <div class="choose-option">
-        <div class="appbar-menu-option">${parameters.tagbundle['appbar.menu.option']}</div>
+        <div class="appbar-menu-option">${parameters.tagbundle['appbar.menu.option']!}</div>
         <div class="appbar-menu-list">
             <table>
                 <#list parameters.menusList as menu>

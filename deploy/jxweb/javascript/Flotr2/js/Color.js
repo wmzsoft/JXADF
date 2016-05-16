@@ -1,1 +1,163 @@
-!function(){function r(){this.rgba=["r","g","b","a"];for(var r=4;-1<--r;)this[this.rgba[r]]=arguments[r]||(3==r?1:0);this.normalize()}var t=Flotr._,e={aqua:[0,255,255],azure:[240,255,255],beige:[245,245,220],black:[0,0,0],blue:[0,0,255],brown:[165,42,42],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgrey:[169,169,169],darkgreen:[0,100,0],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],darkviolet:[148,0,211],fuchsia:[255,0,255],gold:[255,215,0],green:[0,128,0],indigo:[75,0,130],khaki:[240,230,140],lightblue:[173,216,230],lightcyan:[224,255,255],lightgreen:[144,238,144],lightgrey:[211,211,211],lightpink:[255,182,193],lightyellow:[255,255,224],lime:[0,255,0],magenta:[255,0,255],maroon:[128,0,0],navy:[0,0,128],olive:[128,128,0],orange:[255,165,0],pink:[255,192,203],purple:[128,0,128],violet:[128,0,128],red:[255,0,0],silver:[192,192,192],white:[255,255,255],yellow:[255,255,0]};r.prototype={scale:function(){for(var r=4;-1<--r;)t.isUndefined(arguments[r])||(this[this.rgba[r]]*=arguments[r]);return this.normalize()},alpha:function(r){return t.isUndefined(r)||t.isNull(r)||(this.a=r),this.normalize()},clone:function(){return new r(this.r,this.b,this.g,this.a)},limit:function(r,t,e){return Math.max(Math.min(r,e),t)},normalize:function(){var r=this.limit;return this.r=r(parseInt(this.r,10),0,255),this.g=r(parseInt(this.g,10),0,255),this.b=r(parseInt(this.b,10),0,255),this.a=r(this.a,0,1),this},distance:function(t){if(t){t=new r.parse(t);for(var e=0,a=3;-1<--a;)e+=Math.abs(this[this.rgba[a]]-t[this.rgba[a]]);return e}},toString:function(){return this.a>=1?"rgb("+[this.r,this.g,this.b].join(",")+")":"rgba("+[this.r,this.g,this.b,this.a].join(",")+")"},contrast:function(){var r=1-(.299*this.r+.587*this.g+.114*this.b)/255;return.5>r?"#000000":"#ffffff"}},t.extend(r,{parse:function(t){if(t instanceof r)return t;var a;if(a=/#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(t))return new r(parseInt(a[1],16),parseInt(a[2],16),parseInt(a[3],16));if(a=/rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(t))return new r(parseInt(a[1],10),parseInt(a[2],10),parseInt(a[3],10));if(a=/#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(t))return new r(parseInt(a[1]+a[1],16),parseInt(a[2]+a[2],16),parseInt(a[3]+a[3],16));if(a=/rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(t))return new r(parseInt(a[1],10),parseInt(a[2],10),parseInt(a[3],10),parseFloat(a[4]));if(a=/rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(t))return new r(2.55*parseFloat(a[1]),2.55*parseFloat(a[2]),2.55*parseFloat(a[3]));if(a=/rgba\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(t))return new r(2.55*parseFloat(a[1]),2.55*parseFloat(a[2]),2.55*parseFloat(a[3]),parseFloat(a[4]));var s=(t+"").replace(/^\s*([\S\s]*?)\s*$/,"$1").toLowerCase();return"transparent"==s?new r(255,255,255,0):(a=e[s])?new r(a[0],a[1],a[2]):new r(0,0,0,0)},processColor:function(e,a){var s=a.opacity;if(!e)return"rgba(0, 0, 0, 0)";if(e instanceof r)return e.alpha(s).toString();if(t.isString(e))return r.parse(e).alpha(s).toString();var n=e.colors?e:{colors:e};if(!a.ctx)return t.isArray(n.colors)?r.parse(t.isArray(n.colors[0])?n.colors[0][1]:n.colors[0]).alpha(s).toString():"rgba(0, 0, 0, 0)";n=t.extend({start:"top",end:"bottom"},n),/top/i.test(n.start)&&(a.x1=0),/left/i.test(n.start)&&(a.y1=0),/bottom/i.test(n.end)&&(a.x2=0),/right/i.test(n.end)&&(a.y2=0);var i,o,l,h=a.ctx.createLinearGradient(a.x1,a.y1,a.x2,a.y2);for(i=0;i<n.colors.length;i++)o=n.colors[i],t.isArray(o)?(l=o[0],o=o[1]):l=i/(n.colors.length-1),h.addColorStop(l,r.parse(o).alpha(s));return h}}),Flotr.Color=r}();
+/**
+ * Flotr Color
+ */
+
+(function () {
+
+var
+  _ = Flotr._;
+
+// Constructor
+function Color (r, g, b, a) {
+  this.rgba = ['r','g','b','a'];
+  var x = 4;
+  while(-1<--x){
+    this[this.rgba[x]] = arguments[x] || ((x==3) ? 1.0 : 0);
+  }
+  this.normalize();
+}
+
+// Constants
+var COLOR_NAMES = {
+  aqua:[0,255,255],azure:[240,255,255],beige:[245,245,220],black:[0,0,0],blue:[0,0,255],
+  brown:[165,42,42],cyan:[0,255,255],darkblue:[0,0,139],darkcyan:[0,139,139],darkgrey:[169,169,169],
+  darkgreen:[0,100,0],darkkhaki:[189,183,107],darkmagenta:[139,0,139],darkolivegreen:[85,107,47],
+  darkorange:[255,140,0],darkorchid:[153,50,204],darkred:[139,0,0],darksalmon:[233,150,122],
+  darkviolet:[148,0,211],fuchsia:[255,0,255],gold:[255,215,0],green:[0,128,0],indigo:[75,0,130],
+  khaki:[240,230,140],lightblue:[173,216,230],lightcyan:[224,255,255],lightgreen:[144,238,144],
+  lightgrey:[211,211,211],lightpink:[255,182,193],lightyellow:[255,255,224],lime:[0,255,0],magenta:[255,0,255],
+  maroon:[128,0,0],navy:[0,0,128],olive:[128,128,0],orange:[255,165,0],pink:[255,192,203],purple:[128,0,128],
+  violet:[128,0,128],red:[255,0,0],silver:[192,192,192],white:[255,255,255],yellow:[255,255,0]
+};
+
+Color.prototype = {
+  scale: function(rf, gf, bf, af){
+    var x = 4;
+    while (-1 < --x) {
+      if (!_.isUndefined(arguments[x])) this[this.rgba[x]] *= arguments[x];
+    }
+    return this.normalize();
+  },
+  alpha: function(alpha) {
+    if (!_.isUndefined(alpha) && !_.isNull(alpha)) {
+      this.a = alpha;
+    }
+    return this.normalize();
+  },
+  clone: function(){
+    return new Color(this.r, this.b, this.g, this.a);
+  },
+  limit: function(val,minVal,maxVal){
+    return Math.max(Math.min(val, maxVal), minVal);
+  },
+  normalize: function(){
+    var limit = this.limit;
+    this.r = limit(parseInt(this.r, 10), 0, 255);
+    this.g = limit(parseInt(this.g, 10), 0, 255);
+    this.b = limit(parseInt(this.b, 10), 0, 255);
+    this.a = limit(this.a, 0, 1);
+    return this;
+  },
+  distance: function(color){
+    if (!color) return;
+    color = new Color.parse(color);
+    var dist = 0, x = 3;
+    while(-1<--x){
+      dist += Math.abs(this[this.rgba[x]] - color[this.rgba[x]]);
+    }
+    return dist;
+  },
+  toString: function(){
+    return (this.a >= 1.0) ? 'rgb('+[this.r,this.g,this.b].join(',')+')' : 'rgba('+[this.r,this.g,this.b,this.a].join(',')+')';
+  },
+  contrast: function () {
+    var
+      test = 1 - ( 0.299 * this.r + 0.587 * this.g + 0.114 * this.b) / 255;
+    return (test < 0.5 ? '#000000' : '#ffffff');
+  }
+};
+
+_.extend(Color, {
+  /**
+   * Parses a color string and returns a corresponding Color.
+   * The different tests are in order of probability to improve speed.
+   * @param {String, Color} str - string thats representing a color
+   * @return {Color} returns a Color object or false
+   */
+  parse: function(color){
+    if (color instanceof Color) return color;
+
+    var result;
+
+    // #a0b1c2
+    if((result = /#([a-fA-F0-9]{2})([a-fA-F0-9]{2})([a-fA-F0-9]{2})/.exec(color)))
+      return new Color(parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16));
+
+    // rgb(num,num,num)
+    if((result = /rgb\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*\)/.exec(color)))
+      return new Color(parseInt(result[1], 10), parseInt(result[2], 10), parseInt(result[3], 10));
+  
+    // #fff
+    if((result = /#([a-fA-F0-9])([a-fA-F0-9])([a-fA-F0-9])/.exec(color)))
+      return new Color(parseInt(result[1]+result[1],16), parseInt(result[2]+result[2],16), parseInt(result[3]+result[3],16));
+  
+    // rgba(num,num,num,num)
+    if((result = /rgba\(\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]{1,3})\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(color)))
+      return new Color(parseInt(result[1], 10), parseInt(result[2], 10), parseInt(result[3], 10), parseFloat(result[4]));
+      
+    // rgb(num%,num%,num%)
+    if((result = /rgb\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*\)/.exec(color)))
+      return new Color(parseFloat(result[1])*2.55, parseFloat(result[2])*2.55, parseFloat(result[3])*2.55);
+  
+    // rgba(num%,num%,num%,num)
+    if((result = /rgba\(\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\%\s*,\s*([0-9]+(?:\.[0-9]+)?)\s*\)/.exec(color)))
+      return new Color(parseFloat(result[1])*2.55, parseFloat(result[2])*2.55, parseFloat(result[3])*2.55, parseFloat(result[4]));
+
+    // Otherwise, we're most likely dealing with a named color.
+    var name = (color+'').replace(/^\s*([\S\s]*?)\s*$/, '$1').toLowerCase();
+    if(name == 'transparent'){
+      return new Color(255, 255, 255, 0);
+    }
+    return (result = COLOR_NAMES[name]) ? new Color(result[0], result[1], result[2]) : new Color(0, 0, 0, 0);
+  },
+
+  /**
+   * Process color and options into color style.
+   */
+  processColor: function(color, options) {
+
+    var opacity = options.opacity;
+    if (!color) return 'rgba(0, 0, 0, 0)';
+    if (color instanceof Color) return color.alpha(opacity).toString();
+    if (_.isString(color)) return Color.parse(color).alpha(opacity).toString();
+    
+    var grad = color.colors ? color : {colors: color};
+    
+    if (!options.ctx) {
+      if (!_.isArray(grad.colors)) return 'rgba(0, 0, 0, 0)';
+      return Color.parse(_.isArray(grad.colors[0]) ? grad.colors[0][1] : grad.colors[0]).alpha(opacity).toString();
+    }
+    grad = _.extend({start: 'top', end: 'bottom'}, grad); 
+    
+    if (/top/i.test(grad.start))  options.x1 = 0;
+    if (/left/i.test(grad.start)) options.y1 = 0;
+    if (/bottom/i.test(grad.end)) options.x2 = 0;
+    if (/right/i.test(grad.end))  options.y2 = 0;
+
+    var i, c, stop, gradient = options.ctx.createLinearGradient(options.x1, options.y1, options.x2, options.y2);
+    for (i = 0; i < grad.colors.length; i++) {
+      c = grad.colors[i];
+      if (_.isArray(c)) {
+        stop = c[0];
+        c = c[1];
+      }
+      else stop = i / (grad.colors.length-1);
+      gradient.addColorStop(stop, Color.parse(c).alpha(opacity));
+    }
+    return gradient;
+  }
+});
+
+Flotr.Color = Color;
+
+})();

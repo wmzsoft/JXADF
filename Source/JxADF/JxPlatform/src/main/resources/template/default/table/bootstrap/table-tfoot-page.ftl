@@ -2,7 +2,7 @@
 <nav><#t>
     <ul class="pager">
         <li><#t>
-        ${parameters.tagbundle['table-tfoot.totalpre']}&nbsp;${parameters.count!0}</li><#t>
+        ${parameters.tagbundle['table-tfoot.totalpre']!}&nbsp;${parameters.count!0}</li><#t>
         <#if ((parameters.pagenum!1)>1)>
             <li>
                 <button class="btn btn-default" type="button" onclick='pageFirst("${parameters.id}")'><#t>

@@ -15,17 +15,17 @@ $author:wmzsoft@gmail.com
 <#if (maxtype??)>
 	<#if (maxtype?upper_case)=='DATE'>
 	   <button type="button"  class="btn btn-default" <#rt>
-		  <#lt> title="${parameters.tagbundle['datapicker.title']}" onClick='showDate(this, event)' tid="${dateid!(parameters.id!'x')}" /><#rt>
+		  <#lt> title="${parameters.tagbundle['datapicker.title']!}" onClick='showDate(this, event)' tid="${dateid!(parameters.id!'x')}" /><#rt>
 		  <span class="glyphicon glyphicon-calendar"></span>
 	   </button>
 	<#elseif (maxtype?upper_case)=='DATETIME'>
        <button type="button"  class="btn btn-default" <#rt>
-          <#lt> title="${parameters.tagbundle['datapicker.title']}" onClick='showDateTime(this, event)' tid="${dateid!(parameters.id!'x')}" /><#rt>
+          <#lt> title="${parameters.tagbundle['datapicker.title']!}" onClick='showDateTime(this, event)' tid="${dateid!(parameters.id!'x')}" /><#rt>
           <span class="glyphicon glyphicon-calendar"></span>
        </button>
 	<#elseif (maxtype?upper_case)=='TIME'>
        <button type="button"  class="btn btn-default" <#rt>
-          <#lt> title="${parameters.tagbundle['datapicker.title']}" onClick='showTime(this, event)' tid="${dateid!(parameters.id!'x')}" /><#rt>
+          <#lt> title="${parameters.tagbundle['datapicker.title']!}" onClick='showTime(this, event)' tid="${dateid!(parameters.id!'x')}" /><#rt>
           <span class="glyphicon glyphicon-calendar"></span>
        </button>
 	</#if>

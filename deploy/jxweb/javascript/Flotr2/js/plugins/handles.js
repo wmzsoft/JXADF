@@ -1,1 +1,199 @@
-!function(){function e(){var e,t,s,i,n=this.options,l=this.handles,o=this.el;!n.selection.mode||!n.handles.show||"ontouchstart"in o||(l.initialized=!0,i=r.node('<div class="flotr-handles"></div>'),n=n.handles,n.drag&&(s=r.node('<div class="flotr-handles-handle flotr-handles-drag flotr-handles-right"></div>'),t=r.node('<div class="flotr-handles-handle flotr-handles-drag flotr-handles-left"></div>'),r.insert(i,s),r.insert(i,t),r.hide(t),r.hide(s),l.left=t,l.right=s,this.observe(t,"mousedown",function(){l.moveHandler=d}),this.observe(s,"mousedown",function(){l.moveHandler=h})),n.scroll&&(e=r.node('<div class="flotr-handles-handle flotr-handles-scroll"></div>'),r.insert(i,e),r.hide(e),l.scroll=e,this.observe(e,"mousedown",function(){l.moveHandler=a})),this.observe(document,"mouseup",function(){l.moveHandler=null}),r.insert(o,i))}function t(e){if(this.handles.initialized){var t=this.handles,n=this.options.handles,l=t.left,o=t.right,d=t.scroll;n&&(n.drag&&(s(this,l,e.x1),s(this,o,e.x2)),n.scroll&&i(this,d,e.x1,e.x2))}}function s(e,t,s){r.show(t);var i=r.size(t),n=Math.round(e.axes.x.d2p(s)-i.width/2),l=(e.plotHeight-i.height)/2;r.setStyles(t,{left:n+"px",top:l+"px"})}function i(e,t,s,i){r.show(t);var n=r.size(t),l=Math.round(e.axes.x.d2p(s)),o=e.plotHeight-n.height/2,d=e.axes.x.d2p(i)-e.axes.x.d2p(s);r.setStyles(t,{left:l+"px",top:o+"px",width:d+"px"})}function n(){if(this.handles.initialized){var e=this.handles;e&&(r.hide(e.left),r.hide(e.right),r.hide(e.scroll))}}function l(e,t){if(this.handles.initialized&&this.handles.moveHandler){var s=t.x-this.lastMousePos.x,i=(this.selection.selection,this.selection.getArea()),n=this.handles;n.moveHandler(i,s),o(i,n),this.selection.setSelection(i)}}function o(e,t){var s=t.moveHandler;e.x1>e.x2&&(s==d?s=h:s==h&&(s=d),t.moveHandler=s)}function d(e,t){e.x1+=t}function h(e,t){e.x2+=t}function a(e,t){e.x1+=t,e.x2+=t}var r=Flotr.DOM;Flotr.addPlugin("handles",{options:{show:!1,drag:!0,scroll:!0},callbacks:{"flotr:afterinit":e,"flotr:select":t,"flotr:mousedown":n,"flotr:mousemove":l}})}();
+/** 
+ * Selection Handles Plugin
+ *
+ * Depends upon options.selection.mode
+ *
+ * Options
+ *  show - True enables the handles plugin.
+ *  drag - Left and Right drag handles
+ *  scroll - Scrolling handle
+ */
+(function () {
+
+var D = Flotr.DOM;
+
+Flotr.addPlugin('handles', {
+
+  options: {
+    show: false,
+    drag: true,
+    scroll: true
+  },
+
+  callbacks: {
+    'flotr:afterinit': init,
+    'flotr:select': handleSelect,
+    'flotr:mousedown': reset,
+    'flotr:mousemove': mouseMoveHandler
+  }
+
+});
+
+
+function init() {
+
+  var
+    options = this.options,
+    handles = this.handles,
+    el = this.el,
+    scroll, left, right, container;
+
+  if (!options.selection.mode || !options.handles.show || 'ontouchstart' in el) return;
+
+  handles.initialized = true;
+
+  container = D.node('<div class="flotr-handles"></div>');
+  options = options.handles;
+
+  // Drag handles
+  if (options.drag) {
+    right = D.node('<div class="flotr-handles-handle flotr-handles-drag flotr-handles-right"></div>');
+    left  = D.node('<div class="flotr-handles-handle flotr-handles-drag flotr-handles-left"></div>');
+    D.insert(container, right);
+    D.insert(container, left);
+    D.hide(left);
+    D.hide(right);
+    handles.left = left;
+    handles.right = right;
+
+    this.observe(left, 'mousedown', function () {
+      handles.moveHandler = leftMoveHandler;
+    });
+    this.observe(right, 'mousedown', function () {
+      handles.moveHandler = rightMoveHandler;
+    });
+  }
+
+  // Scroll handle
+  if (options.scroll) {
+    scroll = D.node('<div class="flotr-handles-handle flotr-handles-scroll"></div>');
+    D.insert(container, scroll);
+    D.hide(scroll);
+    handles.scroll = scroll;
+    this.observe(scroll, 'mousedown', function () {
+      handles.moveHandler = scrollMoveHandler;
+    });
+  }
+
+  this.observe(document, 'mouseup', function() {
+    handles.moveHandler = null;
+  });
+
+  D.insert(el, container);
+}
+
+
+function handleSelect(selection) {
+
+  if (!this.handles.initialized) return;
+
+  var
+    handles = this.handles,
+    options = this.options.handles,
+    left = handles.left,
+    right = handles.right,
+    scroll = handles.scroll;
+
+  if (options) {
+    if (options.drag) {
+      positionDrag(this, left, selection.x1);
+      positionDrag(this, right, selection.x2);
+    }
+
+    if (options.scroll) {
+      positionScroll(
+        this,
+        scroll,
+        selection.x1,
+        selection.x2
+      );
+    }
+  }
+}
+
+function positionDrag(graph, handle, x) {
+
+  D.show(handle);
+
+  var size = D.size(handle),
+    l = Math.round(graph.axes.x.d2p(x) - size.width / 2),
+    t = (graph.plotHeight - size.height) / 2;
+
+  D.setStyles(handle, {
+    'left' : l+'px',
+    'top'  : t+'px'
+  });
+}
+
+function positionScroll(graph, handle, x1, x2) {
+
+  D.show(handle);
+
+  var size = D.size(handle),
+    l = Math.round(graph.axes.x.d2p(x1)),
+    t = (graph.plotHeight) - size.height / 2,
+    w = (graph.axes.x.d2p(x2) - graph.axes.x.d2p(x1));
+
+  D.setStyles(handle, {
+    'left' : l+'px',
+    'top'  : t+'px',
+    'width': w+'px'
+  });
+}
+
+function reset() {
+
+  if (!this.handles.initialized) return;
+
+  var
+    handles = this.handles;
+  if (handles) {
+    D.hide(handles.left);
+    D.hide(handles.right);
+    D.hide(handles.scroll);
+  }
+}
+
+function mouseMoveHandler(e, position) {
+
+  if (!this.handles.initialized) return;
+  if (!this.handles.moveHandler) return;
+
+  var
+    delta = position.x - this.lastMousePos.x,
+    selection = this.selection.selection,
+    area = this.selection.getArea(),
+    handles = this.handles;
+
+  handles.moveHandler(area, delta);
+  checkSwap(area, handles);
+
+  this.selection.setSelection(area);
+}
+
+function checkSwap (area, handles) {
+  var moveHandler = handles.moveHandler;
+  if (area.x1 > area.x2) {
+    if (moveHandler == leftMoveHandler) {
+      moveHandler = rightMoveHandler;
+    } else if (moveHandler == rightMoveHandler) {
+      moveHandler = leftMoveHandler;
+    }
+    handles.moveHandler = moveHandler;
+  }
+}
+
+function leftMoveHandler(area, delta) {
+  area.x1 += delta;
+}
+
+function rightMoveHandler(area, delta) {
+  area.x2 += delta;
+}
+
+function scrollMoveHandler(area, delta) {
+  area.x1 += delta;
+  area.x2 += delta;
+}
+
+})();

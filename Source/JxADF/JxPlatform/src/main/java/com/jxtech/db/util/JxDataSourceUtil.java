@@ -334,9 +334,6 @@ public class JxDataSourceUtil {
 
     public static Connection getConnection(String driver, String dburl, String username, String password) throws SQLException {
         DataSource ds = getDataSource(driver, dburl, username, password);
-        if (ds == null) {
-            return null;
-        }
         return ds.getConnection();
     }
 

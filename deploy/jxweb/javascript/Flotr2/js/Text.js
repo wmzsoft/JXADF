@@ -1,1 +1,88 @@
-!function(){var t=Flotr,e=t.DOM,i=t._,s=function(t){this.o=t};s.prototype={dimensions:function(t,e,i,s){return t?this.o.html?this.html(t,this.o.element,i,s):this.canvas(t,e):{width:0,height:0}},canvas:function(e,i){if(this.o.textEnabled){i=i||{};var s,n=this.measureText(e,i),a=n.width,o=i.size||t.defaultOptions.fontSize,h=i.angle||0,r=Math.cos(h),l=Math.sin(h),u=2,d=6;return s={width:Math.abs(r*a)+Math.abs(l*o)+u,height:Math.abs(l*a)+Math.abs(r*o)+d}}},html:function(t,i,s,n){var a=e.create("div");return e.setStyles(a,{position:"absolute",top:"-10000px"}),e.insert(a,'<div style="'+s+'" class="'+n+' flotr-dummy-div">'+t+"</div>"),e.insert(this.o.element,a),e.size(a)},measureText:function(e,s){var n,a=this.o.ctx;return!a.fillText||t.isIphone&&a.measure?{width:a.measure(e,s)}:(s=i.extend({size:t.defaultOptions.fontSize,weight:1,angle:0},s),a.save(),a.font=(s.weight>1?"bold ":"")+1.3*s.size+"px sans-serif",n=a.measureText(e),a.restore(),n)}},Flotr.Text=s}();
+/**
+ * Text Utilities
+ */
+(function () {
+
+var
+  F = Flotr,
+  D = F.DOM,
+  _ = F._,
+
+Text = function (o) {
+  this.o = o;
+};
+
+Text.prototype = {
+
+  dimensions : function (text, canvasStyle, htmlStyle, className) {
+
+    if (!text) return { width : 0, height : 0 };
+    
+    return (this.o.html) ?
+      this.html(text, this.o.element, htmlStyle, className) : 
+      this.canvas(text, canvasStyle);
+  },
+
+  canvas : function (text, style) {
+
+    if (!this.o.textEnabled) return;
+    style = style || {};
+
+    var
+      metrics = this.measureText(text, style),
+      width = metrics.width,
+      height = style.size || F.defaultOptions.fontSize,
+      angle = style.angle || 0,
+      cosAngle = Math.cos(angle),
+      sinAngle = Math.sin(angle),
+      widthPadding = 2,
+      heightPadding = 6,
+      bounds;
+
+    bounds = {
+      width: Math.abs(cosAngle * width) + Math.abs(sinAngle * height) + widthPadding,
+      height: Math.abs(sinAngle * width) + Math.abs(cosAngle * height) + heightPadding
+    };
+
+    return bounds;
+  },
+
+  html : function (text, element, style, className) {
+
+    var div = D.create('div');
+
+    D.setStyles(div, { 'position' : 'absolute', 'top' : '-10000px' });
+    D.insert(div, '<div style="'+style+'" class="'+className+' flotr-dummy-div">' + text + '</div>');
+    D.insert(this.o.element, div);
+
+    return D.size(div);
+  },
+
+  measureText : function (text, style) {
+
+    var
+      context = this.o.ctx,
+      metrics;
+
+    if (!context.fillText || (F.isIphone && context.measure)) {
+      return { width : context.measure(text, style)};
+    }
+
+    style = _.extend({
+      size: F.defaultOptions.fontSize,
+      weight: 1,
+      angle: 0
+    }, style);
+
+    context.save();
+    context.font = (style.weight > 1 ? "bold " : "") + (style.size*1.3) + "px sans-serif";
+    metrics = context.measureText(text);
+    context.restore();
+
+    return metrics;
+  }
+};
+
+Flotr.Text = Text;
+
+})();

@@ -1,1 +1,459 @@
-!function(t){"use strict";function i(t,i,o){var e=[Math.round(t[0]+(i[0]-t[0])*o),Math.round(t[1]+(i[1]-t[1])*o),Math.round(t[2]+(i[2]-t[2])*o),t[3]+(i[3]-t[3])*o];return"rgba("+e.join(",")+")"}var o=function(){},e=t.getOptions(),r=t.each,n=t.extend,l=t.wrap,s=t.Chart,a=t.seriesTypes,d=a.pie,p=a.column,h=HighchartsAdapter.fireEvent,c=HighchartsAdapter.inArray;n(e.lang,{drillUpText:"◁ Back to {series.name}"}),e.drilldown={activeAxisLabelStyle:{cursor:"pointer",color:"#0d233a",fontWeight:"bold",textDecoration:"underline"},activeDataLabelStyle:{cursor:"pointer",color:"#0d233a",fontWeight:"bold",textDecoration:"underline"},animation:{duration:500},drillUpButton:{position:{align:"right",x:-10,y:10}}},t.SVGRenderer.prototype.Element.prototype.fadeIn=function(t){this.attr({opacity:.1,visibility:"visible"}).animate({opacity:1},t||{duration:250})},s.prototype.drilldownLevels=[],s.prototype.addSeriesAsDrilldown=function(t,i){var e,r,l,s=t.series,a=s.xAxis,d=s.yAxis,p=t.color||s.color;i=n({color:p},i),r=c(t,s.points),l={seriesOptions:s.userOptions,shapeArgs:t.shapeArgs,bBox:t.graphic.getBBox(),color:p,newSeries:i,pointOptions:s.options.data[r],pointIndex:r,oldExtremes:{xMin:a&&a.userMin,xMax:a&&a.userMax,yMin:d&&d.userMin,yMax:d&&d.userMax}},this.drilldownLevels.push(l),e=this.addSeries(i,!1),a&&(a.oldPos=a.pos,a.userMin=a.userMax=null,d.userMin=d.userMax=null),s.type===e.type&&(e.animate=e.animateDrilldown||o,e.options.animation=!0),s.remove(!1),this.redraw(),this.showDrillUpButton()},s.prototype.getDrilldownBackText=function(){var t=this.drilldownLevels[this.drilldownLevels.length-1];return this.options.lang.drillUpText.replace("{series.name}",t.seriesOptions.name)},s.prototype.showDrillUpButton=function(){var t,i,o=this,e=this.getDrilldownBackText(),r=o.options.drilldown.drillUpButton;this.drillUpButton?this.drillUpButton.attr({text:e}).align():(t=r.theme,i=t&&t.states,this.drillUpButton=this.renderer.button(e,null,null,function(){o.drillUp()},t,i&&i.hover,i&&i.select).attr({align:r.position.align,zIndex:9}).add().align(r.position,!1,r.relativeTo||"plotBox"))},s.prototype.drillUp=function(){var t=this,i=t.drilldownLevels.pop(),e=t.series[0],r=i.oldExtremes,n=t.addSeries(i.seriesOptions,!1);h(t,"drillup",{seriesOptions:i.seriesOptions}),n.type===e.type&&(n.drilldownLevel=i,n.animate=n.animateDrillupTo||o,n.options.animation=!0,e.animateDrillupFrom&&e.animateDrillupFrom(i)),e.remove(!1),n.xAxis&&(n.xAxis.setExtremes(r.xMin,r.xMax,!1),n.yAxis.setExtremes(r.yMin,r.yMax,!1)),this.redraw(),0===this.drilldownLevels.length?this.drillUpButton=this.drillUpButton.destroy():this.drillUpButton.attr({text:this.getDrilldownBackText()}).align()},d.prototype.animateDrilldown=function(o){var e=this.chart.drilldownLevels[this.chart.drilldownLevels.length-1],n=this.chart.options.drilldown.animation,l=e.shapeArgs,s=l.start,a=l.end-s,d=a/this.points.length,p=t.Color(e.color).rgba;o||r(this.points,function(o,e){var r=t.Color(o.color).rgba;o.graphic.attr(t.merge(l,{start:s+e*d,end:s+(e+1)*d})).animate(o.shapeArgs,t.merge(n,{step:function(t,o){"start"===o.prop&&this.attr({fill:i(p,r,o.pos)})}}))})},d.prototype.animateDrillupTo=p.prototype.animateDrillupTo=function(t){if(!t){var i=this,e=i.drilldownLevel;r(this.points,function(t){t.graphic.hide(),t.dataLabel&&t.dataLabel.hide(),t.connector&&t.connector.hide()}),setTimeout(function(){r(i.points,function(t,i){var o=i===e.pointIndex?"show":"fadeIn";t.graphic[o](),t.dataLabel&&t.dataLabel[o](),t.connector&&t.connector[o]()})},Math.max(this.chart.options.drilldown.animation.duration-50,0)),this.animate=o}},p.prototype.animateDrilldown=function(t){var i=this.chart.drilldownLevels[this.chart.drilldownLevels.length-1].shapeArgs,o=this.chart.options.drilldown.animation;t||(i.x+=this.xAxis.oldPos-this.xAxis.pos,r(this.points,function(t){t.graphic.attr(i).animate(t.shapeArgs,o),t.dataLabel&&t.dataLabel.fadeIn(o)}))},p.prototype.animateDrillupFrom=d.prototype.animateDrillupFrom=function(o){var e=this.chart.options.drilldown.animation,n=this.group;delete this.group,r(this.points,function(r){var l=r.graphic,s=t.Color(r.color).rgba;delete r.graphic,l.animate(o.shapeArgs,t.merge(e,{step:function(e,r){"start"===r.prop&&this.attr({fill:i(s,t.Color(o.color).rgba,r.pos)})},complete:function(){l.destroy(),n&&(n=n.destroy())}}))})},t.Point.prototype.doDrilldown=function(){for(var t,i=this.series,o=i.chart,e=o.options.drilldown,r=(e.series||[]).length;r--&&!t;)e.series[r].id===this.drilldown&&(t=e.series[r]);h(o,"drilldown",{point:this,seriesOptions:t}),t&&o.addSeriesAsDrilldown(this,t)},l(t.Point.prototype,"init",function(i,o,e,r){var n=i.call(this,o,e,r),l=o.chart,s=o.xAxis&&o.xAxis.ticks[r],a=s&&s.label;return n.drilldown?(t.addEvent(n,"click",function(){n.doDrilldown()}),a&&(a._basicStyle||(a._basicStyle=a.element.getAttribute("style")),a.addClass("highcharts-drilldown-axis-label").css(l.options.drilldown.activeAxisLabelStyle).on("click",function(){n.doDrilldown&&n.doDrilldown()}))):a&&a._basicStyle&&a.element.setAttribute("style",a._basicStyle),n}),l(t.Series.prototype,"drawDataLabels",function(t){var i=this.chart.options.drilldown.activeDataLabelStyle;t.call(this),r(this.points,function(t){t.drilldown&&t.dataLabel&&t.dataLabel.attr({"class":"highcharts-drilldown-data-label"}).css(i).on("click",function(){t.doDrilldown()})})}),p.prototype.supportsDrilldown=!0,d.prototype.supportsDrilldown=!0;var u,g=function(t){t.call(this),r(this.points,function(t){t.drilldown&&t.graphic&&t.graphic.attr({"class":"highcharts-drilldown-point"}).css({cursor:"pointer"})})};for(u in a)a[u].prototype.supportsDrilldown&&l(a[u].prototype,"drawTracker",g)}(Highcharts);
+/**
+ * Highcharts Drilldown plugin
+ * 
+ * Author: Torstein Honsi
+ * License: MIT License
+ *
+ * Demo: http://jsfiddle.net/highcharts/Vf3yT/
+ */
+
+/*global HighchartsAdapter*/
+(function (H) {
+
+	"use strict";
+
+	var noop = function () {},
+		defaultOptions = H.getOptions(),
+		each = H.each,
+		extend = H.extend,
+		wrap = H.wrap,
+		Chart = H.Chart,
+		seriesTypes = H.seriesTypes,
+		PieSeries = seriesTypes.pie,
+		ColumnSeries = seriesTypes.column,
+		fireEvent = HighchartsAdapter.fireEvent,
+		inArray = HighchartsAdapter.inArray;
+
+	// Utilities
+	function tweenColors(startColor, endColor, pos) {
+		var rgba = [
+				Math.round(startColor[0] + (endColor[0] - startColor[0]) * pos),
+				Math.round(startColor[1] + (endColor[1] - startColor[1]) * pos),
+				Math.round(startColor[2] + (endColor[2] - startColor[2]) * pos),
+				startColor[3] + (endColor[3] - startColor[3]) * pos
+			];
+		return 'rgba(' + rgba.join(',') + ')';
+	}
+
+	// Add language
+	extend(defaultOptions.lang, {
+		drillUpText: '◁ Back to {series.name}'
+	});
+	defaultOptions.drilldown = {
+		activeAxisLabelStyle: {
+			cursor: 'pointer',
+			color: '#0d233a',
+			fontWeight: 'bold',
+			textDecoration: 'underline'			
+		},
+		activeDataLabelStyle: {
+			cursor: 'pointer',
+			color: '#0d233a',
+			fontWeight: 'bold',
+			textDecoration: 'underline'			
+		},
+		animation: {
+			duration: 500
+		},
+		drillUpButton: {
+			position: { 
+				align: 'right',
+				x: -10,
+				y: 10
+			}
+			// relativeTo: 'plotBox'
+			// theme
+		}
+	};	
+
+	/**
+	 * A general fadeIn method
+	 */
+	H.SVGRenderer.prototype.Element.prototype.fadeIn = function (animation) {
+		this
+		.attr({
+			opacity: 0.1,
+			visibility: 'visible'
+		})
+		.animate({
+			opacity: 1
+		}, animation || {
+			duration: 250
+		});
+	};
+
+	// Extend the Chart prototype
+	Chart.prototype.drilldownLevels = [];
+
+	Chart.prototype.addSeriesAsDrilldown = function (point, ddOptions) {
+		var oldSeries = point.series,
+			xAxis = oldSeries.xAxis,
+			yAxis = oldSeries.yAxis,
+			newSeries,
+			color = point.color || oldSeries.color,
+			pointIndex,
+			level;
+			
+		ddOptions = extend({
+			color: color
+		}, ddOptions);
+		pointIndex = inArray(point, oldSeries.points);
+		
+		level = {
+			seriesOptions: oldSeries.userOptions,
+			shapeArgs: point.shapeArgs,
+			bBox: point.graphic.getBBox(),
+			color: color,
+			newSeries: ddOptions,
+			pointOptions: oldSeries.options.data[pointIndex],
+			pointIndex: pointIndex,
+			oldExtremes: {
+				xMin: xAxis && xAxis.userMin,
+				xMax: xAxis && xAxis.userMax,
+				yMin: yAxis && yAxis.userMin,
+				yMax: yAxis && yAxis.userMax
+			}
+		};
+
+		this.drilldownLevels.push(level);
+
+		newSeries = this.addSeries(ddOptions, false);
+		if (xAxis) {
+			xAxis.oldPos = xAxis.pos;
+			xAxis.userMin = xAxis.userMax = null;
+			yAxis.userMin = yAxis.userMax = null;
+		}
+
+		// Run fancy cross-animation on supported and equal types
+		if (oldSeries.type === newSeries.type) {
+			newSeries.animate = newSeries.animateDrilldown || noop;
+			newSeries.options.animation = true;
+		}
+		
+		oldSeries.remove(false);
+		
+		this.redraw();
+		this.showDrillUpButton();
+	};
+
+	Chart.prototype.getDrilldownBackText = function () {
+		var lastLevel = this.drilldownLevels[this.drilldownLevels.length - 1];
+
+		return this.options.lang.drillUpText.replace('{series.name}', lastLevel.seriesOptions.name);
+
+	};
+
+	Chart.prototype.showDrillUpButton = function () {
+		var chart = this,
+			backText = this.getDrilldownBackText(),
+			buttonOptions = chart.options.drilldown.drillUpButton,
+			attr,
+			states;
+			
+
+		if (!this.drillUpButton) {
+			attr = buttonOptions.theme;
+			states = attr && attr.states;
+						
+			this.drillUpButton = this.renderer.button(
+				backText,
+				null,
+				null,
+				function () {
+					chart.drillUp(); 
+				},
+				attr, 
+				states && states.hover,
+				states && states.select
+			)
+			.attr({
+				align: buttonOptions.position.align,
+				zIndex: 9
+			})
+			.add()
+			.align(buttonOptions.position, false, buttonOptions.relativeTo || 'plotBox');
+		} else {
+			this.drillUpButton.attr({
+				text: backText
+			})
+			.align();
+		}
+	};
+
+	Chart.prototype.drillUp = function () {
+		var chart = this,
+			level = chart.drilldownLevels.pop(),
+			oldSeries = chart.series[0],
+			oldExtremes = level.oldExtremes,
+			newSeries = chart.addSeries(level.seriesOptions, false);
+		
+		fireEvent(chart, 'drillup', { seriesOptions: level.seriesOptions });
+
+		if (newSeries.type === oldSeries.type) {
+			newSeries.drilldownLevel = level;
+			newSeries.animate = newSeries.animateDrillupTo || noop;
+			newSeries.options.animation = true;
+
+			if (oldSeries.animateDrillupFrom) {
+				oldSeries.animateDrillupFrom(level);
+			}
+		}
+
+		oldSeries.remove(false);
+
+		// Reset the zoom level of the upper series
+		if (newSeries.xAxis) {
+			newSeries.xAxis.setExtremes(oldExtremes.xMin, oldExtremes.xMax, false);
+			newSeries.yAxis.setExtremes(oldExtremes.yMin, oldExtremes.yMax, false);
+		}
+
+
+		this.redraw();
+
+		if (this.drilldownLevels.length === 0) {
+			this.drillUpButton = this.drillUpButton.destroy();
+		} else {
+			this.drillUpButton.attr({
+				text: this.getDrilldownBackText()
+			})
+			.align();
+		}
+	};
+
+	PieSeries.prototype.animateDrilldown = function (init) {
+		var level = this.chart.drilldownLevels[this.chart.drilldownLevels.length - 1],
+			animationOptions = this.chart.options.drilldown.animation,
+			animateFrom = level.shapeArgs,
+			start = animateFrom.start,
+			angle = animateFrom.end - start,
+			startAngle = angle / this.points.length,
+			startColor = H.Color(level.color).rgba;
+
+		if (!init) {
+			each(this.points, function (point, i) {
+				var endColor = H.Color(point.color).rgba;
+
+				/*jslint unparam: true*/
+				point.graphic
+					.attr(H.merge(animateFrom, {
+						start: start + i * startAngle,
+						end: start + (i + 1) * startAngle
+					}))
+					.animate(point.shapeArgs, H.merge(animationOptions, {
+						step: function (val, fx) {
+							if (fx.prop === 'start') {
+								this.attr({
+									fill: tweenColors(startColor, endColor, fx.pos)
+								});
+							}
+						}
+					}));
+				/*jslint unparam: false*/
+			});
+		}
+	};
+
+
+	/**
+	 * When drilling up, keep the upper series invisible until the lower series has
+	 * moved into place
+	 */
+	PieSeries.prototype.animateDrillupTo = 
+			ColumnSeries.prototype.animateDrillupTo = function (init) {
+		if (!init) {
+			var newSeries = this,
+				level = newSeries.drilldownLevel;
+
+			each(this.points, function (point) {
+				point.graphic.hide();
+				if (point.dataLabel) {
+					point.dataLabel.hide();
+				}
+				if (point.connector) {
+					point.connector.hide();
+				}
+			});
+
+
+			// Do dummy animation on first point to get to complete
+			setTimeout(function () {
+				each(newSeries.points, function (point, i) {  
+					// Fade in other points			  
+					var verb = i === level.pointIndex ? 'show' : 'fadeIn';
+					point.graphic[verb]();
+					if (point.dataLabel) {
+						point.dataLabel[verb]();
+					}
+					if (point.connector) {
+						point.connector[verb]();
+					}
+				});
+			}, Math.max(this.chart.options.drilldown.animation.duration - 50, 0));
+
+			// Reset
+			this.animate = noop;
+		}
+
+	};
+	
+	ColumnSeries.prototype.animateDrilldown = function (init) {
+		var animateFrom = this.chart.drilldownLevels[this.chart.drilldownLevels.length - 1].shapeArgs,
+			animationOptions = this.chart.options.drilldown.animation;
+			
+		if (!init) {
+
+			animateFrom.x += (this.xAxis.oldPos - this.xAxis.pos);
+	
+			each(this.points, function (point) {
+				point.graphic
+					.attr(animateFrom)
+					.animate(point.shapeArgs, animationOptions);
+				if (point.dataLabel) {
+					point.dataLabel.fadeIn(animationOptions);
+				}
+			});
+		}
+		
+	};
+
+	/**
+	 * When drilling up, pull out the individual point graphics from the lower series
+	 * and animate them into the origin point in the upper series.
+	 */
+	ColumnSeries.prototype.animateDrillupFrom = 
+		PieSeries.prototype.animateDrillupFrom =
+	function (level) {
+		var animationOptions = this.chart.options.drilldown.animation,
+			group = this.group;
+
+		delete this.group;
+		each(this.points, function (point) {
+			var graphic = point.graphic,
+				startColor = H.Color(point.color).rgba;
+
+			delete point.graphic;
+
+			/*jslint unparam: true*/
+			graphic.animate(level.shapeArgs, H.merge(animationOptions, {
+
+				step: function (val, fx) {
+					if (fx.prop === 'start') {
+						this.attr({
+							fill: tweenColors(startColor, H.Color(level.color).rgba, fx.pos)
+						});
+					}
+				},
+				complete: function () {
+					graphic.destroy();
+					if (group) {
+						group = group.destroy();
+					}
+				}
+			}));
+			/*jslint unparam: false*/
+		});
+	};
+	
+	H.Point.prototype.doDrilldown = function () {
+		var series = this.series,
+			chart = series.chart,
+			drilldown = chart.options.drilldown,
+			i = (drilldown.series || []).length,
+			seriesOptions;
+		
+		while (i-- && !seriesOptions) {
+			if (drilldown.series[i].id === this.drilldown) {
+				seriesOptions = drilldown.series[i];
+			}
+		}
+
+		// Fire the event. If seriesOptions is undefined, the implementer can check for 
+		// seriesOptions, and call addSeriesAsDrilldown async if necessary.
+		fireEvent(chart, 'drilldown', { 
+			point: this,
+			seriesOptions: seriesOptions
+		});
+		
+		if (seriesOptions) {
+			chart.addSeriesAsDrilldown(this, seriesOptions);
+		}
+
+	};
+	
+	wrap(H.Point.prototype, 'init', function (proceed, series, options, x) {
+		var point = proceed.call(this, series, options, x),
+			chart = series.chart,
+			tick = series.xAxis && series.xAxis.ticks[x],
+			tickLabel = tick && tick.label;
+		
+		if (point.drilldown) {
+			
+			// Add the click event to the point label
+			H.addEvent(point, 'click', function () {
+				point.doDrilldown();
+			});
+			
+			// Make axis labels clickable
+			if (tickLabel) {
+				if (!tickLabel._basicStyle) {
+					tickLabel._basicStyle = tickLabel.element.getAttribute('style');
+				}
+				tickLabel
+					.addClass('highcharts-drilldown-axis-label')
+					.css(chart.options.drilldown.activeAxisLabelStyle)
+					.on('click', function () {
+						if (point.doDrilldown) {
+							point.doDrilldown();
+						}
+					});
+					
+			}
+		} else if (tickLabel && tickLabel._basicStyle) {
+			tickLabel.element.setAttribute('style', tickLabel._basicStyle);
+		}
+		
+		return point;
+	});
+
+	wrap(H.Series.prototype, 'drawDataLabels', function (proceed) {
+		var css = this.chart.options.drilldown.activeDataLabelStyle;
+
+		proceed.call(this);
+
+		each(this.points, function (point) {
+			if (point.drilldown && point.dataLabel) {
+				point.dataLabel
+					.attr({
+						'class': 'highcharts-drilldown-data-label'
+					})
+					.css(css)
+					.on('click', function () {
+						point.doDrilldown();
+					});
+			}
+		});
+	});
+
+	// Mark the trackers with a pointer 
+	ColumnSeries.prototype.supportsDrilldown = true;
+	PieSeries.prototype.supportsDrilldown = true;
+	var type, 
+		drawTrackerWrapper = function (proceed) {
+			proceed.call(this);
+			each(this.points, function (point) {
+				if (point.drilldown && point.graphic) {
+					point.graphic
+						.attr({
+							'class': 'highcharts-drilldown-point'
+						})
+						.css({ cursor: 'pointer' });
+				}
+			});
+		};
+	for (type in seriesTypes) {
+		if (seriesTypes[type].prototype.supportsDrilldown) {
+			wrap(seriesTypes[type].prototype, 'drawTracker', drawTrackerWrapper);
+		}
+	}
+		
+}(Highcharts));

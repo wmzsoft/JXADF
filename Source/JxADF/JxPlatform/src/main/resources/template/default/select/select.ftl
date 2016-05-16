@@ -32,11 +32,6 @@ $author:wmzsoft@gmail.com
 	    </#if>
 	    <#lt>"><#rt>
     </#if>
-    <#if (parameters.appBundle?? && parameters.appBundle.containsKey('${parameters.dataattribute}'))>
-        <#assign labelvalue=parameters.appBundle.getString(parameters.dataattribute)>
-    <#elseif (parameters.label??) && (avisible==true) >
-        <#assign labelvalue=parameters.label>
-    </#if>
     <#if ((parameters.render!'x')?upper_case=="LINKLABEL")>
         <a href="${parameters.renderExtends!''}<#t>
         <#if (parameters.selectedJbo??)>
@@ -48,9 +43,9 @@ $author:wmzsoft@gmail.com
         <#else>
             ${parameters.selected!}<#t>
         </#if>
-        " target="_blank">${labelvalue!}</a><#t>
+        " target="_blank">${parameters.label!}</a><#t>
     <#else>
-        ${labelvalue!}<#t>
+        ${parameters.label!}<#t>
     </#if>
     <#if (parameters.mystyle!'TD')=='TD'>
         </td><#t>

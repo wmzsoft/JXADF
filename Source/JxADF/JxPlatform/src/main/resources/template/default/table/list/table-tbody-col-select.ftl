@@ -160,7 +160,7 @@ $author:wmzsoft@gmail.com
     <#if ((params.inputmode!'edit')=='QUERY') ||((params.inputmode!'edit')=='QUERYIMMEDIATELY')>
     <#else>
         <#if (aSelected==0)>
-            <option value="" selected>${parameters.tagbundle['select.options']}</option><#t>
+            <option value="" selected>${parameters.tagbundle['select.options']!}</option><#t>
         </#if>
     </#if>
     </select>

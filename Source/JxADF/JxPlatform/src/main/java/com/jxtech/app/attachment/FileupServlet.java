@@ -88,9 +88,9 @@ public class FileupServlet extends HttpServlet {
                 if (!item.isFormField()) { // 如果是表单域 ，就是非文件上传元素
                     String filetype = item.getContentType();
                     String filename = item.getName();// 短路径文件名，在IE7、8下为长文件名
-                    int pos = filename.lastIndexOf("\\");
+                    int pos = filename.lastIndexOf('\\');
                     if (pos < 0) {
-                        pos = filename.lastIndexOf("/");
+                        pos = filename.lastIndexOf('/');
                     }
                     if (pos > 0) {
                         filename = filename.substring(pos + 1);
@@ -115,7 +115,7 @@ public class FileupServlet extends HttpServlet {
                         // 文件已存在。
                         String now = DateUtil.dateTimeToString(new Date());
                         imgTime = now.replaceAll(":", "-");
-                        pos = filepath.lastIndexOf(".");
+                        pos = filepath.lastIndexOf('.');
                         if (pos > 0) {
                             filepath = filepath.substring(0, pos) + "-" + now.replaceAll(":", "-") + filepath.substring(pos);
                         }
@@ -171,28 +171,28 @@ public class FileupServlet extends HttpServlet {
     public void img(String filetype, String filename, String imgTime, String filepaths, String filepath, JxUserInfo userinfo) throws IOException, JxException {
         ImgExcute imgExcute = new ImgExcute();
         // 必须上传的是图片才能够进行压缩和水印
-        int imgIndex = filetype.indexOf("/");
+        int imgIndex = filetype.indexOf('/');
         String imgType = filetype.substring(0, imgIndex);// 获取上传文件类型
 
-        int extindex = filename.lastIndexOf(".");
+        int extindex = filename.lastIndexOf('.');
         String ext = filename.substring(extindex, filename.length());// 获取后缀名称
 
-        int fnameIndex = filename.lastIndexOf(".");
+        int fnameIndex = filename.lastIndexOf('.');
         String fname = filename.substring(0, fnameIndex);// 获取文件名称,不要后缀名
         String ysName = "";
         String syName = "";
 
-        if (imgType.equals("image")) {// 判断必须上传图片才能够压缩和水印
-            if (!imgTime.equals("")) {
-                ysName = "mini-" + fname + "-" + imgTime + ext;// 压缩名字
-                syName = "watermark-" + fname + "-" + imgTime + ext;// 水印名字
+        if ("image".equals(imgType)) {// 判断必须上传图片才能够压缩和水印
+            if (!"".equals(imgTime)) {
+                ysName = StrUtil.contact("mini-", fname, "-", imgTime, ext);// 压缩名字
+                syName = StrUtil.contact("watermark-", fname, "-", imgTime, ext);// 水印名字
             } else {
-                ysName = "mini-" + fname + imgTime + ext;// 压缩名字
-                syName = "watermark-" + fname + imgTime + ext;// 水印名字
+                ysName = StrUtil.contact("mini-", fname, imgTime, ext);// 压缩名字
+                syName = StrUtil.contact("watermark-", fname, imgTime, ext);// 水印名字
             }
 
-            String ysPath = docpath + filepaths + ysName;// 压缩图片的地址
-            String syPath = docpath + filepaths + syName;// 水印图片的地址
+            String ysPath = StrUtil.contact(docpath, filepaths, ysName);// 压缩图片的地址
+            String syPath = StrUtil.contact(docpath, filepaths, syName);// 水印图片的地址
 
             String url = docpath + filepath;
             imgExcute.condense(url, ysPath);// 图片压缩的方法

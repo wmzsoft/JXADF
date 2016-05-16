@@ -53,46 +53,67 @@ public class Layout extends JxBaseUIBean {
         super.evaluateParams();
         addParameter("panels", panels);
         addParameter("panels", rows);
-        addParameter("panels" ,cols);
-        addParameter("minWidth",findString(minWidth));
-        addParameter("minHeight",findString(minHeight));
-        addParameter("width",findString(width));
-        addParameter("height",findString(height));
-        addParameter("maxWidth",findString(maxWidth));
-        addParameter("maxHeight",findString(maxHeight));
-        addParameter("enableLayout",findString(enableLayout));
-        addParameter("storable",findString(storable));
+        addParameter("panels", cols);
+        addParameter("minWidth", findString(minWidth));
+        addParameter("minHeight", findString(minHeight));
+        addParameter("width", findString(width));
+        addParameter("height", findString(height));
+        addParameter("maxWidth", findString(maxWidth));
+        addParameter("maxHeight", findString(maxHeight));
+        addParameter("enableLayout", findString(enableLayout));
+        addParameter("storable", findString(storable));
         displayMode = findString(displayMode);
-        if("".equals(displayMode)){
+        if ("".equals(displayMode)) {
             displayMode = "panel";
         }
-        addParameter("displayMode",displayMode);
+        addParameter("displayMode", displayMode);
     }
-
 
     public void setPanels(List<LayoutPanel> panels) {
         this.panels = panels;
     }
 
-    public void setRows(List<LayoutRow> rows){ this.rows = rows; }
+    public void setRows(List<LayoutRow> rows) {
+        this.rows = rows;
+    }
 
-    public void setCols(List<LayoutCol> cols){ this.cols = cols;}
+    public void setCols(List<LayoutCol> cols) {
+        this.cols = cols;
+    }
 
-    public void setMinWidth(String minWidth) { this.minWidth = minWidth;}
+    public void setMinWidth(String minWidth) {
+        this.minWidth = minWidth;
+    }
 
-    public void setMinHeight(String minHeight) { this.minHeight = minHeight;}
+    public void setMinHeight(String minHeight) {
+        this.minHeight = minHeight;
+    }
 
-    public void setWidth(String width ){ this.width = width; }
+    public void setWidth(String width) {
+        this.width = width;
+    }
 
-    public void setHeight(String height){ this.height = height; }
+    public void setHeight(String height) {
+        this.height = height;
+    }
 
-    public void setMaxWidth (String maxWidth){ this.maxWidth = maxWidth;}
+    public void setMaxWidth(String maxWidth) {
+        this.maxWidth = maxWidth;
+    }
 
-    public void setMaxHeight (String maxHeight ) { this.maxHeight = maxHeight;}
+    public void setMaxHeight(String maxHeight) {
+        this.maxHeight = maxHeight;
+    }
 
-    public void setEnableLayout(String enableLayout){ this.enableLayout = enableLayout;}
+    public void setEnableLayout(String enableLayout) {
+        this.enableLayout = enableLayout;
+    }
 
-    public void setStorable(String storable) { this.storable = storable;}
+    public void setStorable(String storable) {
+        this.storable = storable;
+    }
 
-    public void setDisplayMode(String displayMode){ this.displayMode = displayMode;}
+    public void setDisplayMode(String displayMode) {
+        this.displayMode = displayMode;
+    }
 }

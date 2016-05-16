@@ -1,1 +1,63 @@
-a{CURSOR:pointer;TEXT-DECORATION:none;color:#336EF1}a.menulink{FONT-SIZE:100%;COLOR:#000;TEXT-DECORATION:none}a.menulink:hover,a.menulink:link{FONT-SIZE:100%;COLOR:#000;TEXT-DECORATION:underline}a.divParent{FONT-SIZE:10pt;COLOR:#35c;TEXT-DECORATION:none}a.divRow{FONT-SIZE:9pt;COLOR:#09f;TEXT-DECORATION:none}a:hover{COLOR:#FA6400;TEXT-DECORATION:none}a:visited{TEXT-DECORATION:none}a.head{COLOR:#fff;TEXT-DECORATION:none}.text-center{text-align:center}
+﻿/*******************************************
+* 样式表
+*******************************************/
+/** 重用组件样式部分 ***/
+
+/*******************************************
+ *               链接
+ *******************************************/
+
+a {
+    CURSOR: pointer;
+    TEXT-DECORATION: none;
+    color: #336EF1
+}
+
+a.menulink {
+    FONT-SIZE: 100%;
+    COLOR: #000000;
+    TEXT-DECORATION: none;
+}
+
+a.menulink:link {
+    FONT-SIZE: 100%;
+    COLOR: #000000;
+    TEXT-DECORATION: underline;
+}
+
+a.menulink:hover {
+    FONT-SIZE: 100%;
+    COLOR: #000000;
+    TEXT-DECORATION: underline;
+}
+
+a.divParent {
+    FONT-SIZE: 10pt;
+    COLOR: #3355cc;
+    TEXT-DECORATION: none;
+}
+
+a.divRow {
+    FONT-SIZE: 9pt;
+    COLOR: #0099ff;
+    TEXT-DECORATION: none;
+}
+
+a:hover {
+    COLOR: #FA6400;
+    TEXT-DECORATION: none;
+}
+
+a:visited {
+    TEXT-DECORATION: none;
+}
+
+a.head {
+    COLOR: #ffffff;
+    TEXT-DECORATION: none;
+}
+
+/*useful class*/
+.text-center {
+    text-align: center;
+}

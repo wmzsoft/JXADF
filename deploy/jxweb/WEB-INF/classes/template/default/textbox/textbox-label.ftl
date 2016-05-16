@@ -28,26 +28,22 @@ $author:wmzsoft@gmail.com
     <#assign plabel=parameters.label>
 <#elseif (parameters.dynamicAttributes.label??)>
     <#assign plabel=parameters.dynamicAttributes.label>
-<#elseif (parameters.appBundle?? && parameters.appBundle.containsKey('${parameters.dataattribute}'))>
-	<#assign plabel=parameters.appBundle.getString('${parameters.dataattribute}')>
 <#elseif (parameters.columnAttribute??)>
-    <#assign plabel=parameters.columnAttribute.title!parameters.tagbundle['label.null']>
+    <#assign plabel=parameters.columnAttribute.title!(parameters.tagbundle['label.null']!)>
 </#if>
-
 <#if (((parameters.rows!1)?number) == 1)>
     <#if ((parameters.dataValue!'x')?lower_case)?starts_with("http://") || ((parameters.dataValue!'x')?lower_case)?starts_with("https://")>
-        <a href="${parameters.dataValue!'javascript:void(0)'}" target="_blank">${plabel!''}</a>
+        <a href="${parameters.dataValue!'javascript:void(0)'}" target="_blank">${plabel!''}</a><#t>
     <#elseif (((parameters.render!'x')?upper_case)=="LINKLABEL")>
-        <a href="${parameters.renderExtends!''}${parameters.dataValue!''}" target="_blank">${plabel!''}</a>
+        <a href="${parameters.renderExtends!''}${parameters.dataValue!''}" target="_blank">${plabel!''}</a><#t>
     <#else>
-        ${plabel!''}
+        ${plabel!''}<#t>
     </#if>
 <#elseif (((parameters.render!'x')?upper_case)=="LINKLABEL")>
-    <a href="${parameters.renderExtends!''}${parameters.urlParamValue!}" target="${parameters.urlTarget!'_self'}">${plabel!''}</a>
+    <a href="${parameters.renderExtends!''}${parameters.urlParamValue!}" target="${parameters.urlTarget!'_self'}">${plabel!''}</a><#t>
 <#else>
-    ${plabel!''}
+    ${plabel!''}<#t>
 </#if>
-
 <#if (inputmode=='QUERY') || (inputmode=='QUERYIMMEDIATELY') || (inputmode=='READONLY') || ((parameters.render!'x')=='CKEDITOR') >
     <#-- readonly情况不处理 -->
 <#elseif (parameters.columnAttribute??)>
@@ -58,12 +54,11 @@ $author:wmzsoft@gmail.com
         <#else>
             <#assign remainderLen=inputsize />
         </#if>
-
         <#if parameters.rows?? && !(parameters.readonly!false)>
-            <br/>&nbsp;<font color="Blue">${parameters.tagbundle['textbox.inputcount.pre']}<#t/>
+            <br/>&nbsp;<font color="Blue">${parameters.tagbundle['textbox.inputcount.pre']!}<#t/>
             <input type="text" tabIndex="-1000" id="len${parameters.id!'x'}" <#rt/>
             <#lt> readonly class="form_label_tip" <#rt/>
-            <#lt> value="${remainderLen}" maxvalue="${inputsize?c}">${parameters.tagbundle['textbox.inputcount.end']}</font><#t/>
+            <#lt> value="${remainderLen}" maxvalue="${inputsize?c}">${parameters.tagbundle['textbox.inputcount.end']!}</font><#t/>
         </#if>
     </#if>
 </#if>
@@ -78,5 +73,5 @@ $author:wmzsoft@gmail.com
     <#if parameters.rowspan??>
         <#lt> rowspan="${parameters.rowspan?html}" valign="middle" <#rt>
     </#if>
-><#t>
+	><#t>
 </#if>

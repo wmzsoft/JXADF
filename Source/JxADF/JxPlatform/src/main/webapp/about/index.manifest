@@ -1,0 +1,67 @@
+﻿CACHE MANIFEST
+#by wmzsoft 2016.05.16
+
+CACHE:
+    ./css/bootstrap.css
+    ./css/jxadf.css
+    
+    ./js/jquery-1.js
+    ./js/bootstrap.js
+    ./js/app.js
+    
+    ./images/1.gif
+    ./images/10byun.png
+    ./images/alliance.png
+    ./images/alliance50.png
+    ./images/based-component.png
+    ./images/basis-fn.png
+    ./images/d-mode-img1.png
+    ./images/d-mode-img2.png
+    ./images/d-mode.png
+    ./images/demo.png
+    ./images/documents.png
+    ./images/download.png
+    ./images/form.png
+    ./images/general-plug-in.png
+    ./images/header-title.png
+    ./images/introduction.png
+    ./images/j2ee.png
+    ./images/logo.png
+    ./images/market-positioning.png
+    ./images/methodology.png
+    ./images/p-market-img1.png
+    ./images/p-market-img2.png
+    ./images/p-market-img3.png
+    ./images/plug-in-fn.png
+    ./images/plug-in-market-.png
+    ./images/plug-in.png
+    ./images/qq.gif
+    ./images/qq.png
+    ./images/qzone.gif
+    ./images/qzone.png
+    ./images/sprite.png
+    ./images/ui-style.png
+    ./images/wx.gif
+    ./images/wx.png
+    ./images/xlwb.gif
+    ./images/xlwb.png
+    
+    ./images/en/based-component.jpg
+    ./images/en/d-mode-img1.jpg
+    ./images/en/d-mode-img2.jpg
+    ./images/en/d-mode.jpg
+    ./images/en/general-plug-in.jpg
+    ./images/en/header-title.jpg
+    ./images/en/introduction.jpg
+    ./images/en/market-positioning.jpg
+    ./images/en/plug-in-fn.jpg
+    ./images/en/plug-in-market-.jpg
+    ./images/en/plug-in.jpg
+    ./images/en/ui-style.jpg
+    
+    ./index.html
+    ./index_en.html
+    ./index_zh.html
+    
+NETWORK:
+	*

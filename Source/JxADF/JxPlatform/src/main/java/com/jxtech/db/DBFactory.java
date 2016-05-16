@@ -21,14 +21,14 @@ public class DBFactory {
     /**
      * 数据库在本平台中的实现,数据库名=实现类名，例：ORACLE = com.jxtech.db.impl.oracle.DataQueryImpl
      */
-    public static Map<String, String> dbQueryImpl = new HashMap<String, String>();
-    public static Map<String, String> dbEditImpl = new HashMap<String, String>();
-    public static Map<String, String> dbColumnImpl = new HashMap<String, String>();
+    private static final Map<String, String> dbQueryImpl = new HashMap<String, String>();
+    private static final Map<String, String> dbEditImpl = new HashMap<String, String>();
+    private static final Map<String, String> dbColumnImpl = new HashMap<String, String>();
     // 实例
-    public static Map<String, DbColumn> dbColumnInstance = new HashMap<String, DbColumn>();
+    private static final Map<String, DbColumn> dbColumnInstance = new HashMap<String, DbColumn>();
     public static final String CACHE_PREX = "db.jboset.";
     private static DbColumn defaultDbColumn;
-    private static Logger LOG = LoggerFactory.getLogger(DBFactory.class);
+    private static final Logger LOG = LoggerFactory.getLogger(DBFactory.class);
 
     static {
         dbQueryImpl.put(JxDataSourceUtil.ORACLE, "com.jxtech.db.impl.oracle.DataQueryImpl");

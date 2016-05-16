@@ -1,1 +1,60 @@
-function getByClass(t,e){for(var a=t.getElementsByTagName("*"),r=[],l=0;l<a.length;l++)a[l].className==e&&r.push(a[l]);return r}function getStyle(t,e){return t.currentStyle?t.currentStyle[e]:getComputedStyle(t,!1)[e]}function startMove(t,e,a){clearInterval(t.timer),t.timer=setInterval(function(){var r=0;r="opacity"==e?Math.round(100*parseFloat(getStyle(t,e))):parseInt(getStyle(t,e));var l=(a-r)/6;l=l>0?Math.ceil(l):Math.floor(l),r==a?clearInterval(t.timer):"opacity"==e?(t.style.opacity=(r+l)/100,t.style.filter="alpha(opacity="+(r+l)+")"):t.style[e]=r+l+"px"},30)}
+// JavaScript Document
+function getByClass(oParent,name)
+{
+	var aClass = oParent.getElementsByTagName('*');
+	var arlt = [];
+	for(var i=0; i<aClass.length; i++)
+	{
+		if(aClass[i].className==name)
+		{
+			arlt.push(aClass[i]);
+		}
+	}
+	return arlt;
+}
+
+function getStyle(obj,name)
+{
+	if(obj.currentStyle)
+	{
+		return obj.currentStyle[name]
+	}
+	else
+	{
+		return getComputedStyle(obj,false)[name]
+	}
+}
+
+function startMove(obj,styleName,iTarget)
+{
+	clearInterval(obj.timer)
+	obj.timer = setInterval(function(){
+          var now = 0;
+		  if(styleName=='opacity')
+		  {
+			  now = Math.round((parseFloat(getStyle(obj,styleName))*100));
+		  }
+		  else
+		  {
+			  now = parseInt(getStyle(obj,styleName));
+		  }
+		  var speed = (iTarget-now)/6;
+		  speed = speed>0?Math.ceil(speed):Math.floor(speed);
+		  if(now == iTarget)
+		  {
+			  clearInterval(obj.timer)
+		  }
+		  else
+		  {
+			  if(styleName=='opacity')
+			  {
+				  obj.style.opacity = (now+speed)/100;
+				  obj.style.filter = 'alpha(opacity='+(now+speed)+')'
+			  }
+			  else
+			  {
+				  obj.style[styleName] = now+speed+'px';
+			  }
+		  }
+	},30)
+}

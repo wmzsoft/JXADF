@@ -34,23 +34,6 @@
                     <table>
                     <#list parameters.columns as col>
                         <#if ((col.parameters.visible!true)==true)>
-                            <#assign mytitle=col.parameters.label!''>
-                            <#if (parameters.appBundle?? && col.dataattribute?? && parameters.appBundle.containsKey('${col.dataattribute}'))>
-                                <#assign mytitle = parameters.appBundle.getString('${col.dataattribute}')>
-                            </#if>
-                            <#if (mytitle=='') && col.parameters.jxattribute??>
-                                <#assign mytitle=col.parameters.jxattribute.title!''>
-                            </#if>
-                            <#if (mytitle=='') >
-                                <#if (col.dataattribute??) && (parameters.jboset??) && (parameters.jboset.jxAttributes??)>
-                                    <#if parameters.jboset.jxAttributes[col.dataattribute]??>
-                                        <#assign mytitle=parameters.jboset.jxAttributes[col.dataattribute].title!''>
-                                    </#if>
-                                </#if>
-                            </#if>
-                            <#if (mytitle=='') >
-                                <#assign mytitle=col.dataattribute!'unknown title'>
-                            </#if>
                             <#if col.descdataattribute??>
                                 <#assign colDescDataValue=jbo.getString(col.descdataattribute)!''>
                             </#if>
@@ -75,9 +58,7 @@
                             </#assign>
                             <#if (col.parameters.mxevent?? || ((colDataValue!'') != '')) >
                                 <tr>
-                                    <td class="key"><#t>
-                                        ${mytitle}<#t>
-                                    </td><#t>
+                                    <td class="key">${col.parameters.label!''}</td><#t>
                                     <td class="value">
                                         <#assign maxtype='un'>
                                         <#if col.dataattribute??>
