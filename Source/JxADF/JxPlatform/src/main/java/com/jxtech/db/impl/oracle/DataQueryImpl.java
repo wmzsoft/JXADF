@@ -17,11 +17,9 @@ import org.slf4j.LoggerFactory;
 
 import com.jxtech.app.jxlog.JxLog;
 import com.jxtech.app.jxlog.JxLogFactory;
-import com.jxtech.db.DBFactory;
 import com.jxtech.db.util.JxDataSourceUtil;
 import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JxException;
-import com.jxtech.util.CacheUtil;
 import com.jxtech.util.DateUtil;
 import com.jxtech.util.StrUtil;
 
@@ -37,22 +35,28 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
     /**
      * 查询数据
      *
-     * @param conn      数据库连接
-     * @param tablename 表名
-     * @param queryinfo 查询对象
+     * @param conn
+     *            数据库连接
+     * @param tablename
+     *            表名
+     * @param queryinfo
+     *            查询对象
      * @return
      */
     public List<Map<String, Object>> query(Connection conn, String tablename, DataQueryInfo queryinfo) throws JxException {
-        List<Map<String, Object>> vals = super.query(conn, tablename, queryinfo);
-        if (vals != null) {
-            return vals;
-        }
         if (conn == null || StrUtil.isNull(tablename)) {
             LOG.warn("没有传入正确的参数Connection或tablename=" + tablename);
             return null;
         }
         StringBuilder msql = new StringBuilder();
-        msql.append("Select * from (");
+        msql.append("Select ");
+        String select = queryinfo.getSelectColumn();
+        if (StrUtil.isNull(select)) {
+            msql.append(" * ");
+        } else {
+            msql.append(select);
+        }
+        msql.append(" from (");
         msql.append(tablename);
         msql.append(")");
         String cause = queryinfo.getWhereAllCause();
@@ -60,9 +64,13 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
             msql.append(" where ");
             msql.append(cause);
         }
-        if (!StrUtil.isNull(queryinfo.getOrderby())) {
-            msql.append("  order by  ");
-            msql.append(queryinfo.getOrderby());
+        String groupby = queryinfo.getGroupby();
+        if (!StrUtil.isNull(groupby)) {
+            msql.append(" group by ").append(groupby);
+        }
+        String orderby = queryinfo.getOrderby();
+        if (!StrUtil.isNull(orderby)) {
+            msql.append("  order by  ").append(orderby);
         }
         Object[] params = queryinfo.getWhereAllParams();
         int pageNum = queryinfo.getPageNum();
@@ -89,12 +97,7 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
             if (jxlog != null) {
                 jxlog.debug(msql + "\r\n" + StrUtil.objectToString(params), "QUERY");
             }
-
-
-            vals = toDataMapList(list);
-            String ckey = StrUtil.contact(DBFactory.CACHE_PREX, tablename, ".", String.valueOf(queryinfo.getQueryId(true)));
-            CacheUtil.putJboCache(ckey, vals);
-            return vals;
+            return toDataMapList(list);
         } catch (SQLException e) {
             LOG.error(e.getMessage() + "\r\n" + tablename + "\r\n" + msql + "\r\n" + StrUtil.objectToString(params));
         }
@@ -121,7 +124,7 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
             }
         }
         String where = columnName + "=?";
-        int c = count(conn, tableName, where, new Object[]{columnValue});
+        int c = count(conn, tableName, where, new Object[] { columnValue });
         return (c > 0);
     }
 
@@ -206,13 +209,18 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
     }
 
     @Override
-    public String date2String(Object date) {     
+    public String date2String(Object date) {
         return DateUtil.oracleToDate(date);
     }
 
     @Override
     public String datetime2String(Object datetime) {
         return DateUtil.oracleToDateTime(datetime);
+    }
+
+    @Override
+    public String date2Year(String str) {
+        return "to_char(" + str + ",'yyyy')";
     }
 
 }

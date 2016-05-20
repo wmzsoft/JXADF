@@ -115,6 +115,14 @@ public interface JboSetIFace extends Serializable {
     public boolean canAdd() throws JxException;
 
     /**
+     * 是否可以缓存
+     * 
+     * @return
+     * @throws JxException
+     */
+    public boolean canCache() throws JxException;
+
+    /**
      * 执行添加数据操作
      * 
      * @return

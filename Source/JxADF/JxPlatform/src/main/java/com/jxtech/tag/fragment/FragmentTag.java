@@ -33,14 +33,9 @@ public class FragmentTag extends JxBaseUITag {
     protected String lazyload; // 懒加载,需要手工条件触发加载
     protected String displayMode;// 子元素list-table的显示模式
 
-    private HttpServletRequest req;
-    private HttpServletResponse resp;
-
     @Override
     public Component getBean(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
         super.initPropertiesValue(false);
-        req = request;
-        resp = response;
         return new Fragment(stack, request, response);
     }
 
@@ -50,25 +45,25 @@ public class FragmentTag extends JxBaseUITag {
         Fragment frag = (Fragment) component;
         try {
             App myapp = JxSession.getApp();
-            if(myapp!=null){
+            if (myapp != null) {
                 JboIFace jbi = myapp.getJbo();
-                if(jbi!=null){
+                if (jbi != null) {
                     frag.setUrl(findString(ELUtil.parseJboElValue(jbi, url)));
-                }else{
+                } else {
                     frag.setUrl(url);
                 }
-            }else{
+            } else {
                 frag.setUrl(url);
             }
         } catch (JxException e) {
             LOG.error(e.getMessage());
         }
-        //frag.setUrl(url);
+        // frag.setUrl(url);
         frag.setApp(app);
         frag.setType(type);
         frag.setLazyload(lazyload);
         frag.setDisplayMode(displayMode);
-        JxLoadResource.loadTable(req);
+        JxLoadResource.loadTable(null);
     }
 
     public String getUrl() {

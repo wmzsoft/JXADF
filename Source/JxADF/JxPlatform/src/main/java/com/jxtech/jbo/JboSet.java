@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,6 +78,11 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         if (StrUtil.isNull(getJboname()) || StrUtil.isNull(uid)) {
             return null;
         }
+        String key = CacheUtil.genJboKey(getJboname(), uid);
+        currentJbo = CacheUtil.getJbo(key);
+        if (currentJbo != null) {
+            return currentJbo;
+        }
         currentJbo = getJboInstance();
         String uidName = getUidName();
         String where = uidName + " = ?";
@@ -87,14 +90,18 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         DataQueryInfo qbe = getQueryInfo();
         qbe.setWhereCause(where);
         qbe.setWhereParams(new Object[] { uid });
+        qbe.setCacheme(false);
+        qbe.setPageNum(1);
+        qbe.setPageSize(1);
         List<Map<String, Object>> list = dq.query(getEntityname(), qbe);
-        if (list != null && list.size() >= 1) {
+        if (list != null && !list.isEmpty()) {
             currentJbo.setData(list.get(0));
             if (isExecAfterLoad()) {
                 currentJbo.afterLoad();
             }
-            return currentJbo;
         }
+        currentJbo.setCachekey(key);
+        CacheUtil.putJboCache(key, currentJbo);
         return currentJbo;
     }
 
@@ -109,7 +116,6 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         if (StrUtil.isNull(getJboname()) || ids == null) {
             return null;
         }
-        currentJbo = getJboInstance();
         String uidName = getUidName();
         StringBuilder wc = new StringBuilder();
         wc.append(uidName).append(" in (");
@@ -117,22 +123,31 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             wc.append(" ?,");
         }
         StrUtil.deleteLastChar(wc).append(" )");
-        DataQuery dq = DBFactory.getDataQuery(this.getDbtype(), getDataSourceName());
+        currentJbo = getJboInstance();
         DataQueryInfo qbe = this.getQueryInfo();
         qbe.setWhereCause(wc.toString());
         qbe.setWhereParams(ids);
+        qbe.setPageNum(-1);
+        qbe.setPageSize(-1);
+        // 读取缓存
+        List<JboIFace> jbolist = CacheUtil.getJboSetList(CacheUtil.genJboSetKey(this, false));
+        if (jbolist != null) {
+            return jbolist;
+        }
+        DataQuery dq = DBFactory.getDataQuery(this.getDbtype(), getDataSourceName());
         List<Map<String, Object>> list = dq.queryAllPage(getJboname(), qbe);
-        // List<JboIFace> data = new ArrayList<JboIFace>();
-        if (list != null && list.size() > 0) {
-            getJbolist().clear();
+        if (list != null && !list.isEmpty()) {
+            jbolist = getJbolist();
+            jbolist.clear();
             for (Map<String, Object> map : list) {
                 currentJbo = getJboInstance();
                 currentJbo.setData(map);
                 if (isExecAfterLoad()) {
                     currentJbo.afterLoad();
                 }
-                getJbolist().add(currentJbo);
+                jbolist.add(currentJbo);
             }
+            CacheUtil.putJboSet(this);
         }
         return getJbolist();
     }
@@ -150,11 +165,14 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         if (StrUtil.isNull(getJboname()) || StrUtil.isNull(uid)) {
             return null;
         }
-
         if (StrUtil.isNull(jboKey)) {
             return queryJbo(uid);
         }
-
+        String key = StrUtil.contact(getJboname(), ".", jboKey, ".", uid);
+        currentJbo = CacheUtil.getJbo(key);
+        if (currentJbo != null) {
+            return currentJbo;
+        }
         currentJbo = getJboInstance();
         String where = jboKey + " = ?";
         DataQuery dq = DBFactory.getDataQuery(this.getDbtype(), this.getDataSourceName());
@@ -162,13 +180,14 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         qbe.setWhereCause(where);
         qbe.setWhereParams(new Object[] { uid });
         qbe.setPageSize(1);
+        qbe.setPageNum(1);
         List<Map<String, Object>> list = dq.query(getJboname(), qbe);
-        if (list != null && list.size() >= 1) {
+        if (list != null && !list.isEmpty()) {
             currentJbo.setData(list.get(0));
             if (isExecAfterLoad()) {
                 currentJbo.afterLoad();
             }
-            return currentJbo;
+            CacheUtil.putJboCache(key, currentJbo);// 保存缓存
         }
         return currentJbo;
     }
@@ -188,11 +207,14 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         if (StrUtil.isNull(getJboname()) || StrUtil.isNull(uid)) {
             return null;
         }
-
         if (StrUtil.isNull(jboKey)) {
             return queryJbo(uid);
         }
-
+        String key = CacheUtil.genJboKey(getJboname(), StrUtil.contact(where, jboKey, uid));
+        currentJbo = CacheUtil.getJbo(key);
+        if (currentJbo != null) {
+            return currentJbo;
+        }
         currentJbo = getJboInstance();
         StringBuilder sb = new StringBuilder();
         sb.append(jboKey);
@@ -205,14 +227,16 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         }
         qbe.setWhereCause(sb.toString());
         qbe.setWhereParams(new Object[] { uid });
+        qbe.setPageNum(1);
+        qbe.setPageSize(1);
         List<Map<String, Object>> list = dq.query(getJboname(), qbe);
-        if (list != null && list.size() >= 1) {
+        if (list != null && !list.isEmpty()) {
             currentJbo.setData(list.get(0));
             if (isExecAfterLoad()) {
                 currentJbo.afterLoad();
             }
-            return currentJbo;
         }
+        CacheUtil.putJboCache(key, currentJbo);// 保存缓存
         return currentJbo;
     }
 
@@ -226,6 +250,10 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
      */
     @Override
     public List<JboIFace> query(String shipname) throws JxException {
+        List<JboIFace> jbolist = super.query(shipname);// 读取缓存
+        if (jbolist != null) {
+            return jbolist;
+        }
         DataQueryInfo dqi = getQueryInfo();
         int pageNum = dqi.getPageNum();
         int pageSize = dqi.getPageSize();
@@ -246,7 +274,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             LOG.info("没有正确查询到结果。jboname=" + getJboname());
             return null;
         }
-        List<JboIFace> jbolist = getJbolist();
+        jbolist = getJbolist();
         jbolist.clear();
         // 转换类型
         int size = list.size();
@@ -260,6 +288,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             jbolist.add(currentJbo);
 
         }
+        CacheUtil.putJboSet(this);// 放入缓存中
         return jbolist;
     }
 
@@ -403,7 +432,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
                 bflag = save(conn);
             }
             // 移出缓存
-            String key = StrUtil.contact(DBFactory.CACHE_PREX, getJboname(), ".");
+            String key = StrUtil.contact(getJboname(), ".");
             CacheUtil.removeJboOfStartWith(key);
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);
@@ -503,7 +532,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             StringBuilder cause = new StringBuilder();
             aname = aname.toUpperCase().trim();
             String userid = JxSession.getUserId(getSession());
-            String ckey = StrUtil.contact(userid, ".Security.", aname, ".", getJboname(), ".", String.valueOf(elValue));
+            String ckey = StrUtil.contact("securityrestrict.", userid, ".", aname, ".", getJboname(), ".", String.valueOf(elValue));
             Object obj = CacheUtil.getPermission(ckey);
             if (obj instanceof String) {
                 return (String) obj;
@@ -515,7 +544,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             dqi.setWhereCause("app=?");
             dqi.setWhereParams(new Object[] { aname });
             List<JboIFace> app = apps.query();
-            if (app.size() > 0) {
+            if (!app.isEmpty()) {
                 cause.append(app.get(0).getString("RESTRICTIONS"));
             }
             // 获得是否需要限制条件

@@ -6,44 +6,50 @@
  <defaultCache
         maxElementsInMemory="100000"
         eternal="false"
-        timeToIdleSeconds="120"
-        timeToLiveSeconds="120"
+        timeToIdleSeconds="300"
+        timeToLiveSeconds="300"
         overflowToDisk="false"
         /> 
  <!-- 缓存Jbo对象 -->
  <cache name="jboCache"
-  		maxElementsInMemory="1"
+  		maxElementsInMemory="10000"
   		eternal="false"
-  		timeToIdleSeconds="10000"
-  		timeToLiveSeconds="10000"
-  		overflowToDisk="true"
+  		timeToIdleSeconds="300"
+  		timeToLiveSeconds="300"
+  		CopyOnRead="false"
+  		diskPersistent="false"  />
+
+ <!-- 缓存JboSet对象 -->
+ <cache name="jboSetCache"
+  		maxElementsInMemory="10000"
+  		eternal="false"
+  		timeToIdleSeconds="300"
+  		timeToLiveSeconds="300"
+  		CopyOnRead="false"
   		diskPersistent="false"  />
 
  <!-- 缓存基本的数据，如：maxapps,maxobject,maxattribute等 -->
  <cache name="baseCache"
   		maxElementsInMemory="10000"
   		eternal="false"
-  		timeToIdleSeconds="10000"
-  		timeToLiveSeconds="10000"
-  		overflowToDisk="true"
+  		timeToIdleSeconds="6000"
+  		timeToLiveSeconds="6000"
   		diskPersistent="false"  />
 
  <!-- 缓存基本的数据，如：domain 数据字典 等 -->
  <cache name="domainCache"
   		maxElementsInMemory="10000"
   		eternal="false"
-  		timeToIdleSeconds="10000"
-  		timeToLiveSeconds="10000"
-  		overflowToDisk="true"
+  		timeToIdleSeconds="1800"
+  		timeToLiveSeconds="1800"
   		diskPersistent="false"  />
 
  <!-- 缓存基本的数据，如：domain 数据字典 等 -->
  <cache name="permissionCache"
   		maxElementsInMemory="10000"
   		eternal="false"
-  		timeToIdleSeconds="120"
-  		timeToLiveSeconds="120"
-  		overflowToDisk="true"
+  		timeToIdleSeconds="300"
+  		timeToLiveSeconds="300"
   		diskPersistent="false"  />
 
 </ehcache>

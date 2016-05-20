@@ -257,7 +257,7 @@ public class Tablecol extends JxBaseUIBean {
                         }
                     }
                 } catch (Exception e) {
-                    LOG.error(e.getMessage());
+                    LOG.debug(e.getMessage());
                 }
                 if (jxattribute != null) {
                     lb = jxattribute.getTitle();
@@ -273,7 +273,7 @@ public class Tablecol extends JxBaseUIBean {
                             return ja.getTitle();
                         }
                     } catch (JxException e) {
-                        LOG.error(e.getMessage());
+                        LOG.debug(e.getMessage());
                     }
                 }
             }

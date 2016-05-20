@@ -24,6 +24,11 @@ public class JxAttributeDao {
     public static final String CACHE_PREX = "ATTRIBUTE.";
 
     public static Map<String, JxAttribute> getObject(String objectName) throws JxException {
+        return queryTable(objectName);
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Map<String, JxAttribute> queryTable(String objectName) throws JxException {
         if (StrUtil.isNull(objectName)) {
             return null;
         }
@@ -33,22 +38,9 @@ public class JxAttributeDao {
         if (obj instanceof Map) {
             return (Map<String, JxAttribute>) obj;
         }
-        Map<String, JxAttribute> list = queryTable(objectName);
-        if (list != null) {
-            CacheUtil.putBaseCache(cachekey, list);
-        } else {
-            LOG.info(" 没要查询到对应的对象：" + objectName);
-        }
-        return list;
-    }
-
-    private static Map<String, JxAttribute> queryTable(String objectName) throws JxException {
-        if (StrUtil.isNull(objectName)) {
-            return null;
-        }
         DataQuery dq = DBFactory.getDataQuery(null, null);
         String msql = "Select * From maxattribute where objectname = ?";
-        List<JxAttribute> list = dq.getResult(new BeanListHandler<JxAttribute>(JxAttribute.class), msql, new Object[] { objectName.toUpperCase() });
+        List<JxAttribute> list = dq.getResult(new BeanListHandler<JxAttribute>(JxAttribute.class), msql, new Object[] { objectName });
         if (list != null) {
             int size = list.size();
             Map<String, JxAttribute> map = new DataMap<String, JxAttribute>();
@@ -56,7 +48,10 @@ public class JxAttributeDao {
                 JxAttribute attr = list.get(i);
                 map.put(attr.getAttributeName(), attr);
             }
+            CacheUtil.putBaseCache(cachekey, map);// 缓存
             return map;
+        } else {
+            LOG.info("maxattribute not found " + objectName);
         }
         return null;
     }
@@ -66,17 +61,9 @@ public class JxAttributeDao {
             return null;
         }
         attributeName = attributeName.toUpperCase();
-        Map<String, JxAttribute> table = getObject(objectName);
+        Map<String, JxAttribute> table = queryTable(objectName);
         if (table != null) {
-            JxAttribute attr = table.get(attributeName);
-            if (attr != null) {
-                return attr;
-            } else {
-                Map<String, JxAttribute> map = queryTable(objectName);
-                if (map != null) {
-                    return map.get(attributeName);
-                }
-            }
+            return table.get(attributeName);
         }
         return null;
     }

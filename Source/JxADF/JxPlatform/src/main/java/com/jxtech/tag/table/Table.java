@@ -24,6 +24,8 @@ public class Table extends JxBaseUIBean {
     // private static final Logger LOG = LoggerFactory.getLogger(Table.class);
     protected String jboname;
     protected String selectmode;
+    protected String select;// 选择字段名
+    protected String groupby;// 分组字段
     protected String orderby;
     protected String inputmode;
     protected String datasrc;
@@ -120,6 +122,12 @@ public class Table extends JxBaseUIBean {
         addParameter("appName", appName);
         addParameter("appType", appType);
         addParameter("initOverlay", initOverlay);
+        if (select != null) {
+            addParameter("select", findString(select));
+        }
+        if (groupby != null) {
+            addParameter("groupby", findString(groupby));
+        }
         if (render != null) {
             addParameter("render", findString(render));
         }
@@ -484,5 +492,13 @@ public class Table extends JxBaseUIBean {
 
     public void setRowSelectable(String rowSelectable) {
         this.rowSelectable = rowSelectable;
+    }
+
+    public void setSelect(String select) {
+        this.select = select;
+    }
+
+    public void setGroupby(String groupby) {
+        this.groupby = groupby;
     }
 }

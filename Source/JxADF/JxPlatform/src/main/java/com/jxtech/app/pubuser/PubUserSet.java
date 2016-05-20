@@ -8,6 +8,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jxtech.db.DBFactory;
+import com.jxtech.db.DataQuery;
 import com.jxtech.i18n.JxLangResourcesUtil;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSet;
@@ -15,10 +17,11 @@ import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.JxSession;
 import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JxException;
+import com.jxtech.util.CacheUtil;
 import com.jxtech.util.StrUtil;
 
 /**
- *  健新科技优化实现
+ * 健新科技优化实现
  * 
  * @author wmzsoft@gmail.com
  * @date 2013.09
@@ -34,7 +37,8 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
     }
 
     /**
-     * @param userid 用户标识、登录帐号、邮箱、手机号
+     * @param userid
+     *            用户标识、登录帐号、邮箱、手机号
      * @return 返回加载的用户信息
      */
     @Override
@@ -43,14 +47,32 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
             LOG.warn("不知查询哪个用户，userid is null.");
             return null;
         }
+        String key = StrUtil.contact(this.getJboname(), ".", userid);
+        currentJbo = CacheUtil.getJbo(key);
+        if (currentJbo != null) {
+            return currentJbo;
+        }
         DataQueryInfo dq = getQueryInfo();
         dq.setWhereCause(" upper(user_id)=upper(?) or upper(login_id)=upper(?) or upper(email)=upper(?) or upper(mobile_number)=upper(?)");
         dq.setWhereParams(new Object[] { userid, userid, userid, userid });
-        return super.getJboOfIndex(0, true);
+        dq.setPageNum(1);
+        dq.setPageSize(1);
+        DataQuery qu = DBFactory.getDataQuery(this.getDbtype(), this.getDataSourceName());
+        List<Map<String, Object>> list = qu.query(this.getEntityname(), dq);
+        if (list != null && !list.isEmpty()) {
+            currentJbo = getJboInstance();
+            currentJbo.setData(list.get(0));
+            CacheUtil.putJboCache(key, currentJbo);
+            return currentJbo;
+        } else {
+            return null;
+        }
+
     }
 
     /**
-     * @param users 传入用户ＩＤ，多个之间用分号或逗号分隔。
+     * @param users
+     *            传入用户ＩＤ，多个之间用分号或逗号分隔。
      * @return 返回<user_id,name>
      */
     @Override
@@ -139,7 +161,8 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
     /**
      * 查询所有用户
      * 
-     * @param active 是否激活
+     * @param active
+     *            是否激活
      * @return
      */
     public List<String> getAllUserList(boolean active) throws JxException {
@@ -168,7 +191,8 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
     /**
      * 切换用户是否为某个角色成员
      * 
-     * @param params 1 表示添加到角色，0表示从角色移除
+     * @param params
+     *            1 表示添加到角色，0表示从角色移除
      * @return
      * @throws JxException
      */
@@ -220,5 +244,10 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
             return sb.toString();
         }
         return "active=1";
+    }
+
+    @Override
+    public boolean canCache() throws JxException {
+        return true;
     }
 }

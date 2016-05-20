@@ -18,4 +18,8 @@ public class UserMetadata extends Jbo {
         super(jboset);
     }
 
+    @Override
+    public boolean canCache() throws JxException {
+        return !isToBeAdd();
+    }
 }

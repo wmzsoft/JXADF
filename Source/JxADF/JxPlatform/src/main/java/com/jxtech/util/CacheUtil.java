@@ -2,7 +2,14 @@ package com.jxtech.util;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jxtech.jbo.JboIFace;
+import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.JxSession;
+import com.jxtech.jbo.util.DataQueryInfo;
+import com.jxtech.jbo.util.JxException;
 
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
@@ -17,18 +24,18 @@ import net.sf.ehcache.Element;
  */
 public class CacheUtil {
 
+    private static final Logger LOG = LoggerFactory.getLogger(CacheUtil.class);
+
+    // 缓存单个Jbo
     public static final String JBO_CACHE = "jboCache";
+    // 缓存JboSet
+    public static final String JBOSET_CACHE = "jboSetCache";
+
     public static final String BASE_CACHE = "baseCache";
     public static final String DOMAIN_CACHE = "domainCache";
     public static final String PERMISSION_CACHE = "permissionCache";
 
     public static void initCache() {
-        CacheManager manager = CacheManager.getInstance();
-        manager.removeAllCaches();
-        manager.addCache(JBO_CACHE);
-        manager.addCache(BASE_CACHE);
-        manager.addCache(DOMAIN_CACHE);
-        manager.addCache(PERMISSION_CACHE);
     }
 
     public static void shutdown() {
@@ -44,6 +51,9 @@ public class CacheUtil {
         }
         CacheManager manager = CacheManager.getInstance();
         Cache c = manager.getCache(cacheName);
+        if (c == null) {
+            return null;
+        }
         Element e = c.get(key);
         if (e != null) {
             return e.getObjectValue();
@@ -64,6 +74,9 @@ public class CacheUtil {
         }
         CacheManager manager = CacheManager.getInstance();
         Cache c = manager.getCache(cacheName);
+        if (c == null) {
+            return;
+        }
         List<?> list = c.getKeys();
         if (list == null) {
             return;
@@ -84,9 +97,139 @@ public class CacheUtil {
         }
     }
 
-    public static Object getJbo(String key) {
-        // return getObject(JBO_CACHE, key);
+    /**
+     * 单个Jbo的缓存Key生成器
+     * 
+     * @param jboname
+     * @param uid
+     * @return
+     */
+    public static String genJboKey(String jboname, String uid) {
+        if (StrUtil.isNull(jboname) || StrUtil.isNull(uid)) {
+            return null;
+        }
+        return StrUtil.contact(jboname.toUpperCase(), ".", uid);
+    }
+
+    /**
+     * Jbo缓存查询
+     * 
+     * @param key
+     * @return
+     */
+    public static JboIFace getJbo(String key) {
+        Object obj = getObject(JBO_CACHE, key);
+        if (obj instanceof JboIFace) {
+            return (JboIFace) obj;
+        }
         return null;
+    }
+
+    /**
+     * 将Jbo放入缓存
+     * 
+     * @param key
+     * @param value
+     */
+    public static void putJboCache(String key, JboIFace value) throws JxException {
+        if (StrUtil.isNull(key)) {
+            return;
+        }
+        CacheManager manager = CacheManager.getInstance();
+        Cache c = manager.getCache(JBO_CACHE);
+        if (c == null) {
+            return;
+        }
+        if (value == null || !value.canCache()) {
+            LOG.debug("remove cache:" + key);
+            c.remove(key);
+        } else {
+            Element element = new Element(key, value);
+            c.put(element);
+        }
+    }
+
+    /**
+     * 将Jbo移出缓存
+     * 
+     * @param key
+     */
+    public static void removeJbo(String key) {
+        if (StrUtil.isNull(key)) {
+            return;
+        }
+        CacheManager manager = CacheManager.getInstance();
+        Cache c = manager.getCache(JBO_CACHE);
+        if (c == null) {
+            return;
+        }
+        c.remove(key);
+    }
+
+    /**
+     * 生成对应的JboSet的Key
+     * 
+     * @param jboset
+     * @param cache
+     * @return
+     * @throws JxException
+     */
+    public static String genJboSetKey(JboSetIFace jboset, boolean cache) throws JxException {
+        if (jboset == null || !jboset.canCache()) {
+            return null;
+        }
+        DataQueryInfo dqi = jboset.getQueryInfo();
+        return StrUtil.contact(jboset.getJboname(), ".", String.valueOf(dqi.getQueryId(cache)));
+    }
+
+    /**
+     * 返回JboSet对象
+     * 
+     * @param key
+     * @return
+     * @throws JxException
+     */
+    public static JboSetIFace getJboSet(String key) throws JxException {
+        Object obj = getObject(JBOSET_CACHE, key);
+        if (obj instanceof JboSetIFace) {
+            return (JboSetIFace) obj;
+        }
+        return null;
+    }
+
+    /**
+     * 获得JboSet的结果集
+     * 
+     * @param key
+     * @return
+     * @throws JxException
+     */
+    public static List<JboIFace> getJboSetList(String key) throws JxException {
+        JboSetIFace js = getJboSet(key);
+        if (js != null) {
+            return js.getJbolist();
+        }
+        return null;
+    }
+
+    /**
+     * 存放JboSet
+     * 
+     * @param key
+     * @param jboset
+     */
+    public static void putJboSet(JboSetIFace jboset) throws JxException {
+        String key = genJboSetKey(jboset, false);// 生成Key
+        if (StrUtil.isNull(key)) {
+            return;
+        }
+        CacheManager manager = CacheManager.getInstance();
+        Cache c = manager.getCache(JBOSET_CACHE);
+        if (c == null) {
+            return;
+        }
+        Element element = new Element(key, jboset);
+        c.put(element);
     }
 
     public static Object getBase(String key) {
@@ -110,16 +253,15 @@ public class CacheUtil {
         }
         CacheManager manager = CacheManager.getInstance();
         Cache c = manager.getCache(cacheName);
+        if (c == null) {
+            return;
+        }
         if (value == null) {
             c.remove(key);
         } else {
             Element element = new Element(key, value);
             c.put(element);
         }
-    }
-
-    public static void putJboCache(Object key, Object value) {
-        // putCache(JBO_CACHE, key, value);
     }
 
     public static void putBaseCache(Object key, Object value) {
@@ -136,6 +278,7 @@ public class CacheUtil {
 
     public static void removeJboOfStartWith(String prekey) {
         removeObjectOfStartWith(JBO_CACHE, prekey);
+        removeObjectOfStartWith(JBOSET_CACHE, prekey);
     }
 
     public static void removeBaseOfStartWith(String prekey) {

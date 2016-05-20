@@ -47,6 +47,8 @@ public class TableTag extends JxBaseUITag {
     private static final long serialVersionUID = 1L;
     protected String jboname;
     protected String selectmode;
+    protected String select;// 选择字段名
+    protected String groupby;// 分组字段
     protected String orderby;
     protected String inputmode;// 输入模式，包括：readonly,query,edit等
     protected String datasrc;
@@ -288,7 +290,8 @@ public class TableTag extends JxBaseUITag {
         table.setIgnoreLayoutFixed(ignoreLayoutFixed);
         table.setIgnoreDataTable(ignoreDataTable);
         table.setRowSelectable(rowSelectable);
-
+        table.setSelect(select);
+        table.setGroupby(groupby);
         Tag tag = findAncestorWithClass(this, BodyTag.class);
         App myapp;
 
@@ -310,7 +313,7 @@ public class TableTag extends JxBaseUITag {
             } else if (myapp != null) {
                 if (!"MAINLIST".equalsIgnoreCase(myapp.getAppType())) {
                     jboset = myapp.findJboSet(null, null, loadType);
-                    if (!StrUtil.isNull(jboname) && !jboname.equalsIgnoreCase(jboset.getJboname())){
+                    if (!StrUtil.isNull(jboname) && jboset != null && !jboname.equalsIgnoreCase(jboset.getJboname())) {
                         jboset = JboUtil.getJboSet(jboname);
                     }
                 }
@@ -340,6 +343,8 @@ public class TableTag extends JxBaseUITag {
             } else {
                 jboset.setSql(sql);
                 DataQueryInfo dqi = jboset.getQueryInfo();
+                dqi.setSelectColumn(select);
+                dqi.setGroupby(groupby);
                 String wherecause = null;
                 if (null != apprestrictions) {
                     wherecause = ELUtil.getJboSetElValue(jboset, findString(apprestrictions));
@@ -881,6 +886,22 @@ public class TableTag extends JxBaseUITag {
 
     public void setExecuteQueryAfterLoad(String executeQueryAfterLoad) {
         this.executeQueryAfterLoad = executeQueryAfterLoad;
+    }
+
+    public String getSelect() {
+        return select;
+    }
+
+    public void setSelect(String select) {
+        this.select = select;
+    }
+
+    public String getGroupby() {
+        return groupby;
+    }
+
+    public void setGroupby(String groupby) {
+        this.groupby = groupby;
     }
 
 }

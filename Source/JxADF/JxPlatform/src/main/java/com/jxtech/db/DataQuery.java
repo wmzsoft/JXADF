@@ -228,4 +228,10 @@ public interface DataQuery {
      * @return
      */
     public String datetime2String(Object datetime);
+    /**
+     * 获取数据库日期字段的年份，用作查询条件
+     * @param str
+     * @return
+     */
+    public String date2Year(String str);
 }

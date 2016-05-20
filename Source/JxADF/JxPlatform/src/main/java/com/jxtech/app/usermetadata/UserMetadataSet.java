@@ -51,7 +51,8 @@ public class UserMetadataSet extends JboSet implements UserMetadataSetIFace {
      * 保存用户个性化信息
      * 
      * @param key
-     * @param value 当为空时，表示删除。
+     * @param value
+     *            当为空时，表示删除。
      * @return
      * @throws JxException
      */
@@ -89,7 +90,7 @@ public class UserMetadataSet extends JboSet implements UserMetadataSetIFace {
         boolean add = false;
         if (list == null) {
             add = true;
-        }else if (list.size() < 1) {
+        } else if (list.size() < 1) {
             add = true;
         }
         if (del) {
@@ -112,5 +113,10 @@ public class UserMetadataSet extends JboSet implements UserMetadataSetIFace {
             jbo.setString("Value", value);
             return commit();
         }
+    }
+
+    @Override
+    public boolean canCache() throws JxException {
+        return true;
     }
 }

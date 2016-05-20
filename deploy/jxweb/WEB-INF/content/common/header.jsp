@@ -10,7 +10,7 @@
     String basePath = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + path + "/";
     String skin = "default";
     response.setHeader("Server", MiscTool.getIp());
-    request.setAttribute("server", MiscTool..getIp());
+    request.setAttribute("server", MiscTool.getIp());
     request.setAttribute("osgi", "");
     response.resetBuffer();
 %>

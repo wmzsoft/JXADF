@@ -14,15 +14,12 @@ import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.jxtech.db.DBFactory;
 import com.jxtech.db.DataQuery;
 import com.jxtech.db.util.JxDataSourceUtil;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.base.DataMap;
 import com.jxtech.jbo.util.DataQueryInfo;
-import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
-import com.jxtech.util.CacheUtil;
 import com.jxtech.util.JsonUtil;
 import com.jxtech.util.StrUtil;
 
@@ -37,14 +34,7 @@ public abstract class DataQueryImpl implements DataQuery {
     private String dataSourceName;// 数据源名称
 
     public List<Map<String, Object>> query(Connection conn, String tablename, DataQueryInfo queryinfo) throws JxException {
-        String ck = StrUtil.contact(DBFactory.CACHE_PREX, tablename, ".", String.valueOf(queryinfo.getQueryId(false)));
-        Object obj = CacheUtil.getJbo(ck);
-        if (obj instanceof List) {
-            LOG.debug("使用缓存数据：" + ck);
-            return (List<Map<String, Object>>) obj;
-        } else {
-            return null;
-        }
+        return null;
     }
 
     public List<Map<String, Object>> query(String tablename, DataQueryInfo qbe) throws JxException {
@@ -110,29 +100,16 @@ public abstract class DataQueryImpl implements DataQuery {
         if (ist) {
             msql.append(") n");
         }
-        JboSetIFace js = JboUtil.getJboSet(tablename);
-        DataQueryInfo dqi = js.getQueryInfo();
-        dqi.setWhereCause(whereCause);
-        dqi.setWhereParams(params);
-        msql.append(" where ").append(dqi.getWhereAllCause());
-
-        String ps = StrUtil.toString(dqi.getWhereAllParams());
-        if (ps != null) {
-            ps = String.valueOf(ps.hashCode());
-        }
-        String ckey = StrUtil.contact(DBFactory.CACHE_PREX, ".sqlfun.", String.valueOf(msql.hashCode()), ".", ps);
-        Object val = CacheUtil.getJbo(ckey);// 读取缓存
-        if (val != null) {
-            return val;
+        if (!StrUtil.isNull(whereCause)) {
+            msql.append(" where ").append(whereCause);
         }
         QueryRunner qr = new QueryRunner(true);
         try {
-            Map<String, Object> rs = qr.query(conn, msql.toString(), new MapHandler(), dqi.getWhereAllParams());
+            Map<String, Object> rs = qr.query(conn, msql.toString(), new MapHandler(), params);
             Object obj = null;
             if (rs != null) {
                 obj = rs.get("m");
             }
-            CacheUtil.putJboCache(ckey, obj);// 保存缓存
             return obj;
         } catch (Exception e) {
             LOG.error(e.getMessage() + "\r\n" + msql + "\r\n" + StrUtil.objectToString(params));
@@ -144,9 +121,12 @@ public abstract class DataQueryImpl implements DataQuery {
     /**
      * 通过SQL脚本、参数得到结果集
      *
-     * @param conn   数据库连接
-     * @param msql   SQL脚本
-     * @param params 参数值
+     * @param conn
+     *            数据库连接
+     * @param msql
+     *            SQL脚本
+     * @param params
+     *            参数值
      * @return
      */
     public List<Map<String, Object>> getResultSet(Connection conn, String msql, Object[] params) throws JxException {
@@ -185,7 +165,8 @@ public abstract class DataQueryImpl implements DataQuery {
     /**
      * 统计记录数
      *
-     * @param conn       数据库连接
+     * @param conn
+     *            数据库连接
      * @param tablename
      * @param whereCause
      * @param params
@@ -234,7 +215,26 @@ public abstract class DataQueryImpl implements DataQuery {
     public int count(String tablename, DataQueryInfo qbe) throws JxException {
         Connection conn = JxDataSourceUtil.getConnection(dataSourceName);
         try {
-            return count(conn, tablename, qbe.getWhereAllCause(), qbe.getWhereAllParams());
+            String groupby = qbe.getGroupby();
+            if (StrUtil.isNull(groupby)) {
+                return count(conn, tablename, qbe.getWhereAllCause(), qbe.getWhereAllParams());
+            } else {
+                StringBuilder msql = new StringBuilder();
+                msql.append("Select ");
+                String select = qbe.getSelectColumn();
+                if (StrUtil.isNull(select)) {
+                    msql.append(" * ");
+                } else {
+                    msql.append(select);
+                }
+                msql.append(" from ").append(tablename);
+                String cause = qbe.getWhereAllCause();
+                if (!StrUtil.isNull(cause)) {
+                    msql.append(" where ").append(cause);
+                }
+                msql.append(" group by ").append(groupby);
+                return count(conn, msql.toString(), null, qbe.getWhereAllParams());
+            } 
         } finally {
             JxDataSourceUtil.close(conn);
         }
@@ -255,7 +255,7 @@ public abstract class DataQueryImpl implements DataQuery {
             return false;
         }
         String where = columnName + "=?";
-        int c = count(conn, tableName, where, new Object[]{columnValue});
+        int c = count(conn, tableName, where, new Object[] { columnValue });
         return (c > 0);
     }
 
@@ -267,7 +267,7 @@ public abstract class DataQueryImpl implements DataQuery {
         Connection conn = JxDataSourceUtil.getConnection(dataSourceName);
         int c = 0;
         try {
-            c = count(conn, tableName, where, new Object[]{columnValue});
+            c = count(conn, tableName, where, new Object[] { columnValue });
         } finally {
             JxDataSourceUtil.close(conn);
         }
@@ -396,7 +396,8 @@ public abstract class DataQueryImpl implements DataQuery {
     /**
      * 将SQL语句直接转换为JSON格式。
      *
-     * @param conn    数据库连接
+     * @param conn
+     *            数据库连接
      * @param msql
      * @param params
      * @param columns
@@ -420,7 +421,8 @@ public abstract class DataQueryImpl implements DataQuery {
     /**
      * 将SQL语句直接转换为JSON格式。
      *
-     * @param conn     数据库连接
+     * @param conn
+     *            数据库连接
      * @param msql
      * @param params
      * @param columns
@@ -478,6 +480,12 @@ public abstract class DataQueryImpl implements DataQuery {
 
     @Override
     public String datetime2String(Object datetime) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String date2Year(String str) {
         // TODO Auto-generated method stub
         return null;
     }

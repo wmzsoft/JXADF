@@ -16,4 +16,9 @@ public class PubDepartmentSet extends JboSet {
         return currentJbo;
     }
 
+    @Override
+    public boolean canCache() throws JxException {
+        return true;
+    }
+
 }

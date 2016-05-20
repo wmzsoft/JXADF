@@ -41,6 +41,7 @@ import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.tag.table.Table;
 import com.jxtech.tag.table.Tablecol;
+import com.jxtech.util.CacheUtil;
 import com.jxtech.util.StrUtil;
 
 /**
@@ -109,6 +110,16 @@ public abstract class BaseJboSet implements JboSetIFace {
     @Override
     public boolean canAdd() throws JxException {
         return true;
+    }
+
+    /**
+     * 是否可以缓存当前结果集，默认为false，可以重载、修改
+     * 
+     * @return
+     * @throws JxException
+     */
+    public boolean canCache() throws JxException {
+        return false;
     }
 
     @Override
@@ -229,6 +240,23 @@ public abstract class BaseJboSet implements JboSetIFace {
         return query(null);
     }
 
+    /**
+     * 查询结果集
+     * 
+     * @param shipname
+     *            联系名
+     * @return
+     * @throws JxException
+     */
+    @Override
+    public List<JboIFace> query(String shipname) throws JxException {
+        if (canCache()) {
+            String key = CacheUtil.genJboSetKey(this, true);
+            return CacheUtil.getJboSetList(key);
+        }
+        return null;
+    }
+
     @Override
     public List<JboIFace> queryAll() throws JxException {
         DataQueryInfo dqi = getQueryInfo();
@@ -300,7 +328,11 @@ public abstract class BaseJboSet implements JboSetIFace {
 
     @Override
     public void setJboname(String jboname) {
-        this.jboname = jboname;
+        if (jboname != null) {
+            this.jboname = jboname.toUpperCase();
+        } else {
+            this.jboname = null;
+        }
     }
 
     @Override

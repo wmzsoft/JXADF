@@ -1,20 +1,23 @@
 package com.jxtech.util;
 
-import com.jxtech.app.usermetadata.DefaultMetadata;
-import com.jxtech.app.usermetadata.MetaData;
-import com.jxtech.i18n.JxLangResourcesUtil;
-import com.jxtech.jbo.util.JxException;
-import org.apache.poi.util.IOUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+
+import org.apache.poi.util.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.jxtech.i18n.JxLangResourcesUtil;
+import com.jxtech.jbo.util.JxException;
 
 /**
  * 处理URL获得的数据
@@ -46,14 +49,6 @@ public class UrlUtil {
         if (StrUtil.isNull(url)) {
             return url;
         }
-        String ckey = null;
-        if (cache) {
-            ckey = StrUtil.contact(CACHE_PREX, String.valueOf(url.hashCode()), ".", urlCode);
-            Object obj = CacheUtil.getJbo(ckey);
-            if (obj != null) {
-                return obj;
-            }
-        }
         BufferedInputStream bis = null;
         Reader reader = null;
         StringBuilder sb = new StringBuilder();
@@ -71,9 +66,6 @@ public class UrlUtil {
             }
             while ((reader.read(buf)) != -1) {
                 sb.append(buf);
-            }
-            if (cache) {
-                CacheUtil.putJboCache(ckey, sb.toString());
             }
         } catch (Exception e) {
             LOG.error(e.getMessage(), e);

@@ -158,6 +158,11 @@ public class JxSession {
         return getApps().getApp();
     }
 
+    /**
+     * 获得当前应用 app
+     * @return
+     * @throws JxException
+     */
     public static App getApp() throws JxException {
         AppSet apps = getApps();
         return apps.getApp();
@@ -334,6 +339,21 @@ public class JxSession {
             return StrUtil.contact(local.getLanguage(), "-", local.getCountry());
         }
         return lang.replace("_", "-");
+    }
+
+    /**
+     * 获得用户的国际化语言
+     * 
+     * @return
+     */
+    public static Locale getUserLocale() {
+        String langcode = getUserLang();
+        int pos = langcode.indexOf('-');
+        if (pos > 0) {
+            return new Locale(langcode.substring(0, pos), langcode.substring(pos + 1));
+        } else {
+            return new Locale(langcode);
+        }
     }
 
     /**

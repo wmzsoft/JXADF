@@ -21,38 +21,43 @@ import com.jxtech.util.StrUtil;
 public class JxTableDao {
 
     private static final Logger LOG = LoggerFactory.getLogger(JxTableDao.class);
-    public static final String CACHE_PREX = "4TABLE.";
+    public static final String CACHE_PREX = "TABLE.";
 
+    /**
+     * 
+     * @param tableName
+     * @return
+     * @throws JxException
+     */
     public static JxTable getTable(String tableName) throws JxException {
         if (StrUtil.isNull(tableName)) {
             return null;
         }
-        tableName = tableName.toUpperCase();
-        // 检查是否以前读取过基本信息
-        String cachekey = StrUtil.contact(CACHE_PREX, tableName);
-        Object obj = CacheUtil.getBase(cachekey);
-        if (obj instanceof JxTable) {
-            return (JxTable) obj;
-        }
-
         List<JxTable> list = queryTable(tableName);
-        if (list != null && list.size() >= 1) {
-            JxTable table = list.get(0);
-            CacheUtil.putBaseCache(cachekey, table);
-            return table;
+        if (list != null && !list.isEmpty()) {
+            return list.get(0);
         } else {
             LOG.info("list is null :" + tableName);
         }
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public static List<JxTable> queryTable(String tableName) throws JxException {
         if (StrUtil.isNull(tableName)) {
             return null;
         }
+        // 检查是否以前读取过基本信息
+        String cachekey = StrUtil.contact(CACHE_PREX, tableName);
+        Object obj = CacheUtil.getBase(cachekey);
+        if (obj instanceof List) {
+            return (List<JxTable>) obj;
+        }
         String msql = "Select * From maxtable where tablename = ?";
         DataQuery dq = DBFactory.getDataQuery(null, null);
-        return dq.getResult(new BeanListHandler<JxTable>(JxTable.class), msql, new Object[] { tableName.toUpperCase() });
+        List<JxTable> list = dq.getResult(new BeanListHandler<JxTable>(JxTable.class), msql, new Object[] { tableName.toUpperCase() });
+        CacheUtil.putBaseCache(cachekey, list);
+        return list;
     }
 
 }

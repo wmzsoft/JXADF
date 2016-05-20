@@ -46,11 +46,17 @@ public class DataQueryInfo implements java.io.Serializable {
     // 应用程序限制条件，此条件一经设定，不能修改
     private String restrictions;
 
+    // Select中查询的字段
+    private String selectColumn;
+    // 分组语句
+    private String groupby;
+
     private String orgsiteClause;// 组织地点查询条件
     private String[] orgsiteParams;// 组织地点参数值。
 
     private JboSetIFace jboset;
     private boolean ignoreSecurityrestrict;// 是否忽略安全限制条件。
+    private boolean cacheme = true;// 是否缓存这个JboSet
 
     private static final Logger LOG = LoggerFactory.getLogger(DataQueryInfo.class);
 
@@ -69,22 +75,22 @@ public class DataQueryInfo implements java.io.Serializable {
         if (jboset != null) {
             String jn = jboset.getJboname();
             if (jn != null) {
-                id.append(jn).append(".");
+                id.append(jn).append('.');
             }
         }
         if (allCause != null) {
-            id.append(allCause).append(".");
+            id.append(allCause).append('.');
         }
         if (whereAllParams != null) {
             for (int i = 0; i < whereAllParams.length; i++) {
-                id.append(whereAllParams[i]).append(".");
+                id.append(whereAllParams[i]).append('.');
             }
         }
         if (orderby != null) {
             id.append(orderby);
         }
-        id.append(pageSize).append(".");
-        id.append(pageNum).append(".");
+        id.append(pageSize).append('.');
+        id.append(pageNum).append('.');
         // 一定要转换为字符串再取Hashcode，否则每次取的得值不一样。
         return id.toString().hashCode();
     }
@@ -133,11 +139,11 @@ public class DataQueryInfo implements java.io.Serializable {
                 Object value = entry.getValue();
                 // LOG.debug("key:" + key + " value:" + value);
                 if (value == null || (value instanceof String && StrUtil.isNull((String) value))) {
-                    if (key.indexOf("?") > 0) {
+                    if (key.indexOf('?') > 0) {
                         continue;
                     }
                 }
-                if (key.indexOf("?") >= 0) {
+                if (key.indexOf('?') >= 0) {
                     if (StrUtil.indexOfignoreCase(key, " like ") > 0) {
                         list.add("%" + value + "%");
                     } else if (StrUtil.indexOfignoreCase(key, " startwith ") > 0) {
@@ -301,13 +307,15 @@ public class DataQueryInfo implements java.io.Serializable {
 
     public void setOrderby(String orderby) throws JxException {
         // 对于relationship排序进行处理
-        if (!StrUtil.isNull(orderby) && orderby.indexOf(".") > 0) {
+        if (!StrUtil.isNull(orderby) && orderby.indexOf('.') > 0) {
             String[] orderbys = orderby.split(" ");
             String[] relationshipOrderbys = null;
-            if (orderbys[0].indexOf("(") != -1 && orderbys[0].indexOf(")") != -1) {
-                if (orderbys[0].substring(orderbys[0].indexOf("(") + 1, orderbys[0].indexOf(")")).indexOf(".") != -1) {
+            int i1 = orderbys[0].indexOf('(');
+            int i2 = orderbys[0].indexOf(')');
+            if (i1 != -1 && i2 != -1) {
+                if (orderbys[0].substring(i1 + 1, i2).indexOf('.') != -1) {
                     // 例如排序GET_ASSETSORTNUM(PS_PGC_ESISASSET_ASSET_ASSETID.ASSETNUM)
-                    relationshipOrderbys = orderbys[0].substring(orderbys[0].indexOf("(") + 1, orderbys[0].indexOf(")")).split("\\.");
+                    relationshipOrderbys = orderbys[0].substring(i1 + 1, i2).split("\\.");
                 } else {
                     // 例如排序PKG_MCPMS.PF_GETWBSSORT(MATERIAL_WBS)
                     this.orderby = orderby;
@@ -325,10 +333,10 @@ public class DataQueryInfo implements java.io.Serializable {
             if (null != ship) {
                 String where = ship.getWhereclause();
                 where = where.replace(":", jboname + ".");
-                if (orderbys[0].indexOf("(") != -1 && orderbys[0].indexOf(")") != -1) {
-                    relationshipOrderBy = orderbys[0].substring(0, orderbys[0].indexOf("(")) + "(" + relationshipOrderBy + ")";
+                if (i1 != -1 && i2 != -1) {
+                    relationshipOrderBy = StrUtil.contact(orderbys[0].substring(0, i1), "(", relationshipOrderBy, ")");
                 }
-                orderby = "(select " + relationshipOrderBy + " from " + ship.getChild() + " where (" + where + ") " + " ) " + sortMode;
+                orderby = StrUtil.contact("(select ", relationshipOrderBy, " from ", ship.getChild(), " where (", where, ")   ) ", sortMode);
             }
         }
 
@@ -480,6 +488,30 @@ public class DataQueryInfo implements java.io.Serializable {
 
     public void setIgnoreSecurityrestrict(boolean ignoreSecurityrestrict) {
         this.ignoreSecurityrestrict = ignoreSecurityrestrict;
+    }
+
+    public boolean isCacheme() {
+        return cacheme;
+    }
+
+    public void setCacheme(boolean cacheme) {
+        this.cacheme = cacheme;
+    }
+
+    public String getSelectColumn() {
+        return selectColumn;
+    }
+
+    public void setSelectColumn(String selectColumn) {
+        this.selectColumn = selectColumn;
+    }
+
+    public String getGroupby() {
+        return groupby;
+    }
+
+    public void setGroupby(String groupby) {
+        this.groupby = groupby;
     }
 
 }

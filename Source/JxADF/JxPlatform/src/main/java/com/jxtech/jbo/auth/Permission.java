@@ -189,12 +189,14 @@ public abstract class Permission implements PermissionIFace {
     /**
      * 当前登录用户是否有权限
      * 
-     * @param app 应用程序名
-     * @param url URL路径
+     * @param app
+     *            应用程序名
+     * @param url
+     *            URL路径
      * @return
      */
     public boolean isPermission(String app, String url) throws JxException {
-        if (JxSession.isSuperManager()){
+        if (JxSession.isSuperManager()) {
             return true;
         }
         String ckey = StrUtil.contact(JxSession.getUserId(), ".", app, ".", url);
@@ -256,15 +258,22 @@ public abstract class Permission implements PermissionIFace {
             return -1;
         }
         // 针对lookup页面就不做检查了吧
-        if (app.indexOf("/") > 0) {
+        if (app.indexOf('/') > 0) {
             return 1;
+        }
+        String userid = JxSession.getUserId();
+        String key = StrUtil.contact("count.", userid, ".", app, ".");
+        Object obj = CacheUtil.getPermission(key);
+        if (obj != null) {
+            return (int) obj;
         }
         DataQuery dq = DBFactory.getDataQuery(null, null);
         StringBuilder wc = new StringBuilder();
         wc.append(" OPERATION=1 and menu_id in (select maxmenuid from maxmenu where  upper(app)=upper(?))");
         wc.append(" and role_id in (select role_id from PUB_ROLE_USER where upper(user_id)=upper(?))");
-        int c = dq.count("PUB_ROLE_OPERATION", wc.toString(), new Object[] { app, JxSession.getUserId() });
-        LOG.debug("检查权限：app=" + app + ",共有:" + c + "\r\n select count(*) from  PUB_ROLE_OPERATION where " + wc.toString()+"\r\n"+JxSession.getUserId());
+        int c = dq.count("PUB_ROLE_OPERATION", wc.toString(), new Object[] { app, userid });
+        LOG.debug("检查权限：app=" + app + ",共有:" + c + "\r\n select count(*) from  PUB_ROLE_OPERATION where " + wc.toString() + "\r\n" + JxSession.getUserId());
+        CacheUtil.putPermissionCache(key, c);
         return c;
     }
 }

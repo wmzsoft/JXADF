@@ -54,6 +54,7 @@ public class MaxMenuSet extends JboSet implements MaxMenuSetIFace {
             return null;
         }
         StringBuilder sb = new StringBuilder();
+        sb.append("Maxmenu.");
         sb.append(JxSession.getUserId()).append(".");
         sb.append(appname).append(".");
         sb.append(appType).append(".");

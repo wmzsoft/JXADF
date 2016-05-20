@@ -179,7 +179,7 @@ public class PermissionCtpDao implements AuthenticateIFace {
             dq.setWhereCause(" upper(department_id)=upper(?) ");
             dq.setWhereParams(new Object[] { department });
             List<JboIFace> list = jboset.query();
-            if (list != null && list.size() == 1) {
+            if (list != null && !list.isEmpty()) {
                 return list.get(0);
             }
         }

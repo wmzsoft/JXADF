@@ -28,7 +28,7 @@ import com.jxtech.util.StrUtil;
  */
 public class MaxAppMenu {
     private static final Logger LOG = LoggerFactory.getLogger(MaxAppMenu.class);
-    public static final String CACHE_PREX = "MENU.";
+    public static final String CACHE_PREX = "MAXAPPS.";
     public static final int APP_VISIBLE_ENABLED = 1;
     public static final int APP_VISIBLE_DISABLE = 0;
     public static final int APP_VISIBLE_ALL = -1;

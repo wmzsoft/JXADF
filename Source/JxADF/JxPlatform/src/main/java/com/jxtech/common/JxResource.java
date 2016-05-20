@@ -249,7 +249,7 @@ public class JxResource {
             return new HashMap<String, String>();
         }
         Object obj = request.getAttribute(posKey);
-        if (obj != null && (obj instanceof Map)) {
+        if (obj instanceof Map) {
             return (Map<String, String>) obj;
         } else {
             return new HashMap<String, String>();

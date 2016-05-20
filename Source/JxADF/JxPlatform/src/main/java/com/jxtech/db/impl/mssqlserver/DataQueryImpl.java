@@ -13,10 +13,8 @@ import org.slf4j.LoggerFactory;
 
 import com.jxtech.app.jxlog.JxLog;
 import com.jxtech.app.jxlog.JxLogFactory;
-import com.jxtech.db.DBFactory;
 import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JxException;
-import com.jxtech.util.CacheUtil;
 import com.jxtech.util.DateUtil;
 import com.jxtech.util.StrUtil;
 
@@ -109,8 +107,6 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
                 jxlog.debug(msql + "\r\n" + StrUtil.objectToString(params), "QUERY");
             }
             vals = toDataMapList(list);
-            String ckey = StrUtil.contact(DBFactory.CACHE_PREX, tablename, ".", String.valueOf(queryinfo.getQueryId(true)));
-            CacheUtil.putJboCache(ckey, vals);
             return vals;
         } catch (SQLException e) {
             LOG.error(e.getMessage() + "\r\n" + tablename + "\r\n" + msql + "\r\n" + StrUtil.objectToString(params));
@@ -138,6 +134,11 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
     @Override
     public String datetime2String(Object datetime) {
         return DateUtil.sqlserverToDateTime(datetime);
+    }
+
+    @Override
+    public String date2Year(String str) {
+        return "DATEPART(yy,"+str+")" ;
     }
 
 }

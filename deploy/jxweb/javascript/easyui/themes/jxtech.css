@@ -18,6 +18,9 @@
 .tableform{
     
 }
+.icon-searchwbs{
+  background:url('icons/search.png') no-repeat center center;
+}
 
 .tableform tr th{
     text-align: right;

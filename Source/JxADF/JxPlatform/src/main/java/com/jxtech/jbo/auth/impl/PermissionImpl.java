@@ -150,7 +150,7 @@ public class PermissionImpl extends Permission {
             return true;
         }
         String userid = JxSession.getUserId();
-        String ckey = StrUtil.contact(userid, ".hasFunctions.", pageid, ".", methodName);
+        String ckey = StrUtil.contact("hasFunctions.",userid, ".", pageid, ".", methodName);
         Object obj = CacheUtil.getPermission(ckey);
         if (obj instanceof Boolean) {
             return ((Boolean) obj).booleanValue();

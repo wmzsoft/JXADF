@@ -3,6 +3,7 @@ package com.jxtech.jbo.virtual;
 import com.jxtech.jbo.BaseJbo;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSetIFace;
+import com.jxtech.jbo.base.DataMap;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.workflow.option.WftParam;
 import net.sf.mpxj.Task;
@@ -22,6 +23,7 @@ public  class VirtualJbo extends BaseJbo {
 
     public VirtualJbo(JboSetIFace jboset) throws JxException {
         super(jboset);
+        this.setData(new DataMap<String, Object>());
     }
 
     @Override

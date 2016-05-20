@@ -1,6 +1,5 @@
 package com.jxtech.jbo.util;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.struts2.osgi.DefaultBundleAccessor;
@@ -20,8 +19,8 @@ import com.jxtech.jbo.field.FieldIFace;
 import com.jxtech.tag.table.Table;
 import com.jxtech.util.ClassUtil;
 import com.jxtech.util.ELUtil;
-import com.jxtech.util.StrUtil;
 import com.jxtech.util.NumUtil;
+import com.jxtech.util.StrUtil;
 
 /**
  * 处理Jbo的工具类
@@ -306,7 +305,7 @@ public class JboUtil {
         JxAttribute jxAttr = jbo.getJxAttribute(attributeName);
         if (null != jxAttr && !StrUtil.isNull(jxAttr.getClassName())) {
             Object obj = ClassUtil.getInstance(jxAttr.getClassName());
-            if (obj != null && obj instanceof FieldIFace) {
+            if (obj instanceof FieldIFace) {
                 fieldIFace = (FieldIFace) obj;
                 fieldIFace.setJbo(jbo);
             }

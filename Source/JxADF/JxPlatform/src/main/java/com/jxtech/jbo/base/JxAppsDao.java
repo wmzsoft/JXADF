@@ -35,30 +35,28 @@ public class JxAppsDao {
             LOG.info("app name is null.");
             return null;
         }
-        // 检查是否以前读取过基本信息
-        String cachekey = StrUtil.contact(CACHE_PREX, appName);
-        Object obj = CacheUtil.getBase(cachekey);
-        if (obj instanceof JxApps) {
-            return (JxApps) obj;
-        }
-        JxApps app = query(appName);
-        if (app != null) {
-            CacheUtil.putBaseCache(cachekey, app);
-        } else {
-            LOG.info("app[" + appName + "] is null，请在Maxapps中进行配置，谢谢。");
-        }
-        return app;
+        return query(appName);
     }
 
     private static JxApps query(String appName) throws JxException {
         if (StrUtil.isNull(appName)) {
             return null;
         }
+        // 从缓存中，检查是否以前读取过基本信息
+        String cachekey = StrUtil.contact(CACHE_PREX, appName.toUpperCase());
+        Object obj = CacheUtil.getBase(cachekey);
+        if (obj instanceof JxApps) {
+            return (JxApps) obj;
+        }
         DataQuery dq = DBFactory.getDataQuery(null, null);
         String msql = "Select * From MAXAPPS where app = ?";
         List<JxApps> list = dq.getResult(new BeanListHandler<JxApps>(JxApps.class), msql, new Object[] { appName.toUpperCase() });
-        if (list != null && list.size() >= 1) {
-            return list.get(0);
+        if (list != null && !list.isEmpty()) {
+            JxApps app = list.get(0);
+            CacheUtil.putBaseCache(cachekey, app);
+            return app;
+        } else {
+            LOG.info("app[" + appName + "] is null，请在Maxapps中进行配置，谢谢。");
         }
         return null;
     }
@@ -67,11 +65,19 @@ public class JxAppsDao {
         if (StrUtil.isNull(tablename)) {
             return null;
         }
+        // 从缓存中，检查是否以前读取过基本信息
+        String cachekey = StrUtil.contact(CACHE_PREX, "t.", tablename.toUpperCase());
+        Object obj = CacheUtil.getBase(cachekey);
+        if (obj instanceof JxApps) {
+            return (JxApps) obj;
+        }
         DataQuery dq = DBFactory.getDataQuery(null, null);
         String msql = "Select * From MAXAPPS where maintbname = ?";
         List<JxApps> list = dq.getResult(new BeanListHandler<JxApps>(JxApps.class), msql, new Object[] { tablename.toUpperCase() });
-        if (list != null && list.size() >= 1) {
-            return list.get(0);
+        if (list != null && !list.isEmpty()) {
+            JxApps app = list.get(0);
+            CacheUtil.putBaseCache(cachekey, app);
+            return app;
         }
         return null;
 

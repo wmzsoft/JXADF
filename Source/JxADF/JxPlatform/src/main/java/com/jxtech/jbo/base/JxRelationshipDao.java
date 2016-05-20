@@ -21,9 +21,23 @@ import java.util.Map;
 public class JxRelationshipDao {
 
     private static final Logger LOG = LoggerFactory.getLogger(JxRelationshipDao.class);
-    public static final String CACHE_PREX = "8RELATION.SHIP.";
+    public static final String CACHE_PREX = "RELATIONSHIP.";
 
+    /**
+     * 查询 maxrelationship 中的数据
+     * 
+     * @param parent
+     * @return
+     * @throws JxException
+     */
+    @SuppressWarnings("unchecked")
     public static Map<String, JxRelationship> query(String parent) throws JxException {
+        // 查询缓存数据
+        String cachekey = StrUtil.contact(CACHE_PREX, parent);
+        Object objm = CacheUtil.getBase(cachekey);
+        if (objm instanceof Map) {
+            return (Map<String, JxRelationship>) objm;
+        }
         StringBuilder msql = new StringBuilder();
         msql.append("Select * from maxrelationship");
         Object[] params = null;
@@ -39,11 +53,10 @@ public class JxRelationshipDao {
             int size = rs.size();
             for (int i = 0; i < size; i++) {
                 JxRelationship ship = rs.get(i);
-                String key = StrUtil.contact(ship.getName() , "." ,ship.getParent());
+                String key = StrUtil.contact(ship.getName(), ".", ship.getParent());
                 ships.put(key, ship);
-                String cachekey = StrUtil.contact(CACHE_PREX, key);
-                CacheUtil.putBaseCache(cachekey, ship);
             }
+            CacheUtil.putBaseCache(cachekey, ships);// 保存缓存
             return ships;
         } else {
             LOG.info("没有查询到数据。" + parent);
@@ -51,14 +64,22 @@ public class JxRelationshipDao {
         return ships;
     }
 
+    /**
+     * 获得联系
+     * 
+     * @param parent
+     *            主对象
+     * @param name
+     *            联系名
+     * @return
+     * @throws JxException
+     */
     public static JxRelationship getJxRelationship(String parent, String name) throws JxException {
-        String key = StrUtil.contact(name , "." , parent);
-        String cachekey = StrUtil.contact(CACHE_PREX, key);
-        Object obj = CacheUtil.getBase(cachekey);
-        if (obj instanceof JxRelationship) {
-            return (JxRelationship) obj;
-        }
         Map<String, JxRelationship> ships = query(parent);
+        if (ships == null) {
+            return null;
+        }
+        String key = StrUtil.contact(name, ".", parent);
         key = StrUtil.convertUtf8CharToString(key);
         JxRelationship ship = ships.get(key);
         if (ship == null) {

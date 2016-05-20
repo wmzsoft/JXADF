@@ -365,7 +365,7 @@ public class WebClientBean {
     public String getStringOfFlag(String appNameType, String attributeName, long flag) throws JxException {
         LOG.debug(attributeName + "," + flag);
         if ((flag & JxConstant.READ_RELOAD) == JxConstant.READ_RELOAD) {
-            if (attributeName.indexOf(".") > 0) {
+            if (attributeName.indexOf('.') > 0) {
                 setValue(appNameType, attributeName, null);
             }
         }
@@ -953,7 +953,7 @@ public class WebClientBean {
      */
     public String getRelationshipAttrValue(String jboname, String relationshipDataAttr, String causeValue) throws JxException {
         String attrValue = "";
-        if (relationshipDataAttr.indexOf(".") > 0) {
+        if (relationshipDataAttr.indexOf('.') > 0) {
             String[] strs = relationshipDataAttr.split("\\.");
 
             String relationshipName = strs[0];

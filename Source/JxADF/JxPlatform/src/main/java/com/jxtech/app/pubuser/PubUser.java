@@ -32,7 +32,7 @@ public class PubUser extends Jbo {
             JxVars vars = JxVarsFactory.getInstance();
             setObject("ACTIVE", 1);
             setObject("USER_TYPE", 1);
-            setObject("PASSWORD",StrUtil.md5(vars.getValue("com.jxtech.pubuser.password")));
+            setObject("PASSWORD", StrUtil.md5(vars.getValue("com.jxtech.pubuser.password")));
         }
         return b;
     }
@@ -40,12 +40,12 @@ public class PubUser extends Jbo {
     @Override
     public boolean beforeSave() throws JxException {
         boolean b = super.beforeSave();
-        if(b && isToBeAdd()){
+        if (b && isToBeAdd()) {
             setObject("LOGIN_ID", getObject("USER_ID"));
         }
         return b;
     }
-    
+
     @Override
     public boolean canSave() throws JxException {
         boolean b = super.canSave();
@@ -102,6 +102,11 @@ public class PubUser extends Jbo {
     @Override
     public String[] getExportRelationship() throws JxException {
         return new String[] { "USERMETADATAUSERIDP" };
+    }
+
+    @Override
+    public boolean canCache() throws JxException {
+        return !isToBeAdd();
     }
 
 }

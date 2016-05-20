@@ -11,6 +11,9 @@ import java.util.*;
 import java.util.Map.Entry;
 
 import com.jxtech.util.*;
+import com.jxtech.workflow.option.WftParam;
+
+import net.sf.mpxj.Task;
 
 import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
@@ -76,6 +79,9 @@ public abstract class BaseJbo implements JboIFace {
 
     // 附件
     private Map<String, JboSetIFace> attachments = new HashMap<String, JboSetIFace>();
+
+    // 缓存的唯一KEY
+    private String cachekey;
 
     public BaseJbo(JboSetIFace jboset) throws JxException {
         this.jboSet = jboset;
@@ -579,7 +585,7 @@ public abstract class BaseJbo implements JboIFace {
         attributeName = attributeName.toUpperCase();
         if (data.containsKey(attributeName)) {
             return data.get(attributeName);
-        } else if (attributeName.indexOf(".") > 0) {
+        } else if (attributeName.indexOf('.') > 0) {
             return getObjectOfReleationship(attributeName, flag);
         } else if (StrUtil.isNumber(attributeName)) {
             // 如果传入的数字，则直接返回此数字。
@@ -762,12 +768,16 @@ public abstract class BaseJbo implements JboIFace {
         if (jset != null) {
             JboIFace jid = jset.getJbo();
             if (jid != null && !StrUtil.isNull(ans[idx])) {
-                Object value = jid.getObject(ans[idx]);
-                data.put(attributeName, value);
-                // 将属性信息放入进去。
+                Object value = jid.getObject(ans[idx]);                
                 Map<String, JxAttribute> attrs = getJxAttributes();
-                if (attrs != null) {
-                    attrs.put(attributeName, jset.getJxAttribute(ans[idx]));
+                // 得到联系名.
+                String rname = attributeName.substring(0, attributeName.length() - ans[idx].length());
+                // 将其它字段也放入
+                Map<String, Object> newd = jid.getData();
+                for (Map.Entry<String, Object> entry : newd.entrySet()) {
+                    String an = StrUtil.contact(rname, entry.getKey());
+                    data.put(an, entry.getValue());//放入值
+                    attrs.put(an, jset.getJxAttribute(entry.getKey()));// 将属性信息放入进去。
                 }
                 return value;
             }
@@ -1055,7 +1065,7 @@ public abstract class BaseJbo implements JboIFace {
         if (data == null) {
             throw new JxException(JxLangResourcesUtil.getString("jbo.not.data"));
         }
-        if (StrUtil.isObjectNull(value) && attributeName.indexOf(".") > 0) {
+        if (StrUtil.isObjectNull(value) && attributeName.indexOf('.') > 0) {
             data.remove(attributeName);
             return true;
         }
@@ -1065,11 +1075,13 @@ public abstract class BaseJbo implements JboIFace {
                 return true;
             }
         }
-        ((DataMap<String,Object>) data).setJbo(this);
+        ((DataMap<String, Object>) data).setJbo(this);
         data.put(attributeName, value);
         // 判断是否存在这个属性，如果不存在则是虚拟字段，不予处理。
         JxAttribute attribute = getJxAttribute(attributeName);
         if (null != attribute) {
+            CacheUtil.removeJbo(cachekey);
+            cachekey = null;// 移出之后，清除这个Key
             setModify(true);
             getValue(attributeName).setModify(true);
             if (value != null && value instanceof String) {
@@ -1228,7 +1240,7 @@ public abstract class BaseJbo implements JboIFace {
             List<Object> params = new ArrayList<Object>();
             boolean needQuery = true;
             if (!StrUtil.isNull(where)) {
-                int pos = where.indexOf(":");
+                int pos = where.indexOf(':');
                 int end = -1;
 
                 while (pos >= 0) {
@@ -1255,7 +1267,7 @@ public abstract class BaseJbo implements JboIFace {
                             params.add(data.get(pname));
                         }
                     }
-                    pos = clause.indexOf(":");
+                    pos = clause.indexOf(':');
                 }
                 DataQueryInfo qi = jbos.getQueryInfo();
 
@@ -1289,9 +1301,10 @@ public abstract class BaseJbo implements JboIFace {
                         if (cl.isToBeAdd()) {
                             nlist.add(cl);
                         } else if (cl.isToBeDel() || cl.isModify()) {
-                            for (JboIFace n : nlist) {
+                            for(Iterator<JboIFace> it = nlist.iterator();it.hasNext();){
+                                JboIFace n = it.next();
                                 if (cl.getUidValue().equals(n.getUidValue())) {
-                                    nlist.remove(n);
+                                    it.remove();
                                     break;
                                 }
                             }
@@ -1304,31 +1317,6 @@ public abstract class BaseJbo implements JboIFace {
             jbos.setParent(this);
             jbos.setAppname(getJboSet().getAppname());
             children.put(key, jbos);
-
-            // 既然获取了relationship 的jboset，顺便赋值给当前记录(1对1的情况下,非主从)
-            List<JboIFace> jlist = jbos.getJbolist();
-            if (jlist != null && jlist.size() == 1) {
-                JboIFace jbo = jlist.get(0);
-                Map<String, Object> dataMap = getData();
-                if (dataMap != null) {
-                    Set<String> dset = dataMap.keySet();
-                    if (dset != null) {
-                        Iterator<?> keyIterator = dset.iterator();
-                        while (keyIterator.hasNext()) {
-                            Object obj = keyIterator.next();
-                            if (obj != null) {
-                                String dataKey = obj.toString();
-                                if (dataKey.indexOf(".") > 0) {
-                                    String[] dataKeys = dataKey.split("\\.");
-                                    if (dataKeys[0].equalsIgnoreCase(name)) {
-                                        dataMap.put(dataKey, jbo.getObject(dataKeys[1]));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
             return jbos;
         }
         return null;
@@ -1827,6 +1815,26 @@ public abstract class BaseJbo implements JboIFace {
     }
 
     /**
+     * 是否可以缓存,默认情况下，只缓存不发生变化的数据
+     * 
+     * @return
+     * @throws JxException
+     */
+    public boolean canCache() throws JxException {
+        String[] status = new String[] { getString(WF_STATUS_COLUMN), getString("STATUS") };
+        for (int x = 0; x < status.length; x++) {
+            if (status[x] != null) {
+                for (int i = 0; i < JboIFace.STATUS_HISTORY.length; i++) {
+                    if (JboIFace.STATUS_HISTORY[i].equalsIgnoreCase(status[x])) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
      * 直接根据表名、条件查询某个值
      * 
      * @param jboname
@@ -1861,4 +1869,125 @@ public abstract class BaseJbo implements JboIFace {
     public void setToBeDuplicate(boolean toBeDuplicate) {
         this.toBeDuplicate = toBeDuplicate;
     }
+
+    @Override
+    public void addMpp(Task tasks, Map<String, String> paramMap, Map<String, String> initMap) throws JxException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public String getWorkflowId() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public String getWorkflowInstanceId() throws JxException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public boolean canRoute(Map<String, Object> params) throws JxException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean beforeRoute(Map<String, Object> params) throws JxException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean afterRoute(Map<String, Object> params) throws JxException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean route(Map<String, Object> params) throws JxException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public boolean routeWorkflow(Map<String, Object> params) throws JxException {
+        // TODO Auto-generated method stub
+        return false;
+    }
+
+    @Override
+    public Map<String, String> routeReassign(JboIFace curAct, JboIFace nextAct, Map<String, String> assign, int agree, String note, String tousers, String options) throws JxException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public int getAttachmentCount(String vFolder) throws JxException {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public List<WftParam> getWorkflowParam(String status, String nextStatus) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public void routeHoldon(JboIFace jbo) throws JxException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void reloadData() throws JxException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void prepareMaxmenu(List<JboIFace> menusToolbar, List<JboIFace> menulist) throws JxException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void removeSomeMaxMenu(List<JboIFace> menusToolbar, List<String> options) throws JxException {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public String getInternalStaus(String domainid) throws JxException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public String getCachekey() throws JxException {
+        return cachekey;
+    }
+
+    public void setCachekey(String cachekey) {
+        this.cachekey = cachekey;
+    }
+
+    @Override
+    protected Object clone() throws CloneNotSupportedException {
+        try {
+            JboIFace cjbo = (JboIFace) super.clone();
+            // clone数据
+            Map<String, Object> d = new DataMap<String, Object>();
+            d.putAll(this.getData());
+            cjbo.setData(d);
+            LOG.debug("Clone...............");
+            return cjbo;
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        }
+        return super.clone();
+    }
+
 }

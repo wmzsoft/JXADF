@@ -47,6 +47,8 @@ public interface JboIFace extends Serializable {
     // 工作流发送，启动成功
     public static final long ROUTE_START = 4;
 
+    public static final String[] STATUS_HISTORY = new String[] { "CLOSE", "CAN", "CANCEL" };
+
     public void add() throws JxException;
 
     public void addMpp(Task tasks, Map<String, String> paramMap, Map<String, String> initMap) throws JxException;
@@ -152,7 +154,9 @@ public interface JboIFace extends Serializable {
 
     /**
      * 返回字段值
-     * @param attributeName 字段名
+     * 
+     * @param attributeName
+     *            字段名
      * @return
      * @throws JxException
      */
@@ -417,6 +421,14 @@ public interface JboIFace extends Serializable {
     public boolean canRoute(Map<String, Object> params) throws JxException;
 
     /**
+     * 是否可以缓存,默认情况下，只缓存不发生变化的数据
+     * 
+     * @return
+     * @throws JxException
+     */
+    public boolean canCache() throws JxException;
+
+    /**
      * 发送工作流之前处理的工作。
      * 
      * @param params
@@ -665,5 +677,9 @@ public interface JboIFace extends Serializable {
      * @return
      */
     public Object invokeMethod(String name, Class<?> parameterTypes, Object[] params);
+
+    public String getCachekey() throws JxException;
+
+    public void setCachekey(String cachekey);
 
 }
