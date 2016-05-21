@@ -453,7 +453,7 @@ public class DateUtil {
         }
         try {
             if (!StrUtil.isNull(strDate)) {
-                if (strDate.lastIndexOf(".") > 0) {// 处理字符串后面带.0的时间
+                if (strDate.lastIndexOf('.') > 0) {// 处理字符串后面带.0的时间
                     StringBuilder sb = new StringBuilder(strDate);
                     sb.delete(sb.lastIndexOf("."), sb.length());
                     strDate = sb.toString();
@@ -481,8 +481,8 @@ public class DateUtil {
         SimpleDateFormat formatter = new SimpleDateFormat(pattern);
         try {
             if (!StrUtil.isNull(strDate)) {
-                if (strDate.lastIndexOf(".") > 0) {// 处理字符串后面带.0的时间
-                    StringBuffer sb = new StringBuffer(strDate);
+                if (strDate.lastIndexOf('.') > 0) {// 处理字符串后面带.0的时间
+                    StringBuilder sb = new StringBuilder(strDate);
                     sb.delete(sb.lastIndexOf("."), sb.length());
                     strDate = sb.toString();
                 }

@@ -116,7 +116,7 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
         Map<String, JxAttribute> jas = jbo.getJxAttributes();
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             String key = entry.getKey();// 属性名
-            if (key.indexOf(".") > 0) {
+            if (key.indexOf('.') > 0) {
                 continue;
             }
             JxAttribute attr = jas.get(key);
@@ -203,7 +203,7 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
     }
 
     @Override
-    public long insertBlob(Connection conn, String tbName, String uidName, String uidValue, String blobName, InputStream inputs, StringBuffer md5) throws JxException {
+    public long insertBlob(Connection conn, String tbName, String uidName, String uidValue, String blobName, InputStream inputs, StringBuilder md5) throws JxException {
         // TODO Auto-generated method stub
         return 0;
     }

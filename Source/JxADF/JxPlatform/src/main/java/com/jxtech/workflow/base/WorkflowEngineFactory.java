@@ -56,7 +56,7 @@ public class WorkflowEngineFactory {
                 wdqi.setWhereParams(new Object[] { appname });
                 wdqi.setOrderby("processrev desc");
                 List<JboIFace> wplist = wfps.query();
-                if (wplist != null && wplist.size() > 0) {
+                if (wplist != null && !wplist.isEmpty()) {
                     mwf = wplist.get(0);
                 }
                 if (mwf != null) {

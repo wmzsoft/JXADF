@@ -81,7 +81,7 @@ public class PubUserSet extends JboSet implements PubUserSetIFace {
             return null;
         }
         String[] us = users.split(",");
-        if (users.indexOf(";") > 0) {
+        if (users.indexOf(';') > 0) {
             us = users.split(";");
         }
         Map<String, String> map = new HashMap<String, String>();

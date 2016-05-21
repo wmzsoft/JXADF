@@ -282,19 +282,17 @@ public class JboUtil {
             dq.setWhereCause("app=?");
             dq.setWhereParams(new Object[] { appname.toUpperCase() });
             List<JboIFace> list = js.query();
-            if (list != null) {
-                if (list.size() > 0) {
-                    JboIFace jbo = null;
-                    jbo = list.get(0);
-                    if (jbo == null) {
-                        return expression;
-                    }
-                    JboIFace val = getJbo(jbo.getString("MAINTBNAME"), "", uid);
-                    if (val == null) {
-                        return expression;
-                    }
-                    return ELUtil.getJboElValue(val, expression);
+            if (list != null && !list.isEmpty()) {
+                JboIFace jbo = null;
+                jbo = list.get(0);
+                if (jbo == null) {
+                    return expression;
                 }
+                JboIFace val = getJbo(jbo.getString("MAINTBNAME"), "", uid);
+                if (val == null) {
+                    return expression;
+                }
+                return ELUtil.getJboElValue(val, expression);
             }
         }
         return expression;

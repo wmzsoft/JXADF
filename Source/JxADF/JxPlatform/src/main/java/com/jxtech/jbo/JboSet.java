@@ -322,7 +322,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             if (nsl != null && !nsl.isEmpty()) {
                 ns = true;
             }
-            if (ns || jbo.isModify() || jbo.isToBeAdd() || jbo.isToBeDel() || jbo.getChangedChildren().size() > 0) {
+            if (ns || jbo.isModify() || jbo.isToBeAdd() || jbo.isToBeDel() || !jbo.getChangedChildren().isEmpty()) {
                 flag = flag & jbo.save(conn);
             }
             if (!flag) {

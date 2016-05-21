@@ -103,20 +103,18 @@ public class MaxMenu extends Jbo {
             List<JboIFace> list = ro.query();
             // 登录用户的权限
             boolean ok = false;
-            if (list != null) {
-                if (list.size() > 0) {
-                    ok = true;
-                    JboIFace jbo = list.get(0);
-                    // 将3个权限全部处理下来
-                    // 1.处理角色操作权限
-                    Object oper = jbo.getObject("OPERATION");
-                    if (oper == null) {
-                        oper = 1;
-                    }
-                    setObject("permissionoperation", oper);
-                    setObject("permissionmanage", jbo.getLong("MANAGE"));
-                    setObject("permissiongrantmanage", jbo.getLong("GRANTMANAGE"));
+            if (list != null && !list.isEmpty()) {
+                ok = true;
+                JboIFace jbo = list.get(0);
+                // 将3个权限全部处理下来
+                // 1.处理角色操作权限
+                Object oper = jbo.getObject("OPERATION");
+                if (oper == null) {
+                    oper = 1;
                 }
+                setObject("permissionoperation", oper);
+                setObject("permissionmanage", jbo.getLong("MANAGE"));
+                setObject("permissiongrantmanage", jbo.getLong("GRANTMANAGE"));
             }
             if (!ok) {
                 // 设定默认值

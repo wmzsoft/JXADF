@@ -660,7 +660,7 @@ public class WebClientBean {
         if (app != null) {
             JboIFace jbo = app.getJbo();
             if (null != jbo) {
-                return jbo.isModify() || jbo.isToBeAdd() || jbo.getChangedChildren().size() > 0;
+                return jbo.isModify() || jbo.isToBeAdd() || !jbo.getChangedChildren().isEmpty();
             } else {
                 return false;
             }
@@ -766,7 +766,7 @@ public class WebClientBean {
      */
     public JboIFace getJboByCause(String jboname, String cause, String value) throws JxException {
         List<JboIFace> jboList = getJboListByCause(jboname, cause, value);
-        if (null != jboList && jboList.size() > 0) {
+        if (null != jboList && !jboList.isEmpty()) {
             return jboList.get(0);
         }
         return null;
@@ -912,16 +912,10 @@ public class WebClientBean {
             jboName = JxSession.getMainApp().getJbo().getJboName();
         }
         JboSetIFace attJboSet = JboUtil.getJboSet("TOP_ATTACHMENT_OBJECT_RELATION");
-        DataQueryInfo query = new DataQueryInfo();
+        DataQueryInfo query = attJboSet.getQueryInfo();
         query.setWhereCause(" OBJECT_NAME=? and OBJECT_ID=? ");
         query.setWhereParams(new Object[] { jboName, fromuid });
-        attJboSet.setQueryInfo(query);
-        List<JboIFace> jbolist = attJboSet.queryAll();
-        if (jbolist != null && jbolist.size() != 0) {
-            return jbolist.size();
-        } else {
-            return 0;
-        }
+        return attJboSet.count();
     }
 
     /**

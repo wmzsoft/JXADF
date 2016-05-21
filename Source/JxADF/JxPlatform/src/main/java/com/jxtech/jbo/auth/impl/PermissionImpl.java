@@ -56,7 +56,7 @@ public class PermissionImpl extends Permission {
             appurl = url.substring(pos + context.length() + 1);
             try {
                 if (Permission.isIgnoreLoginSecurity(null, appurl)) {
-                    CacheUtil.putPermissionCache(cachekey, new Boolean(true));
+                    CacheUtil.putPermissionCache(cachekey, Boolean.TRUE);
                     return true;
                 }
                 boolean flag;
@@ -67,7 +67,7 @@ public class PermissionImpl extends Permission {
                     // 已使用权限的插件应用程序检查
                     flag = checkPluginPermission(appurl);
                 }
-                CacheUtil.putPermissionCache(cachekey, new Boolean(flag));
+                CacheUtil.putPermissionCache(cachekey, Boolean.valueOf(flag));
                 return flag;
             } catch (Exception e) {
                 LOG.error(e.getMessage(), e);
@@ -75,7 +75,7 @@ public class PermissionImpl extends Permission {
             }
         } else {
             // 不是本系统的应用，默认有权限。
-            CacheUtil.putPermissionCache(cachekey, new Boolean(true));
+            CacheUtil.putPermissionCache(cachekey, Boolean.TRUE);
             return true;
         }
     }

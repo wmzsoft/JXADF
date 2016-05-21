@@ -1,10 +1,10 @@
 package com.jxtech.app.msg;
 
-import com.jxtech.util.StrUtil;
-
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Vector;
+
+import com.jxtech.util.StrUtil;
 
 /**
  * 消息体
@@ -27,9 +27,9 @@ public class MessageBody {
     private Date endTime;// 过期时间
     private Date createTime;// 创建时间
     private long messageType;// 消息类型
-    private List<String> files = new Vector<String>();// 附件文件集合
+    private List<String> files = new ArrayList<String>();// 附件文件集合
     // 图片集合 邮件中的标识<img src='cid:A+图片路径的Hashcode'>
-    private List<String> images = new Vector<String>();
+    private List<String> images = new ArrayList<String>();
     private boolean imageAutoDisplay = false;// 图片自动显示
 
     public String getSender() {

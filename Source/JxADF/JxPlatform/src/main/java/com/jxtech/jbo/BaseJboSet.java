@@ -662,30 +662,29 @@ public abstract class BaseJboSet implements JboSetIFace {
         // 添加自定义根节点
         if (isCustomRoot && size > 0) {
             sb.append("{");
-            if (columns[0].indexOf(":") > 0) {
-                sb.append(columns[0].split(":")[0].toLowerCase() + ":\"-1\",");
+            if (columns[0].indexOf(':') > 0) {
+                sb.append(columns[0].split(":")[0].toLowerCase()).append(":\"-1\",");
             } else {
-                sb.append(columns[0].toLowerCase() + ":\"-1\",");
+                sb.append(columns[0].toLowerCase()).append(":\"-1\",");
             }
 
-            if (columns[1].indexOf(":") > 0) {
-                sb.append(columns[1].split(":")[0].toLowerCase() + ":\"-1\",");
+            if (columns[1].indexOf(':') > 0) {
+                sb.append(columns[1].split(":")[0].toLowerCase()).append(":\"-1\",");
             } else {
-                sb.append(columns[1].toLowerCase() + ":\"\",");
+                sb.append(columns[1].toLowerCase()).append(":\"\",");
             }
 
-            if (columns[2].indexOf(":") > 0) {
-                sb.append(columns[2].split(":")[0].toLowerCase() + ":\"-1\",");
+            if (columns[2].indexOf(':') > 0) {
+                sb.append(columns[2].split(":")[0].toLowerCase()).append(":\"-1\",");
             } else {
                 if (isI18n) {
                     if (zTreeBundle.containsKey(root)) {
-                        sb.append(columns[2].toLowerCase() + ":\"" + zTreeBundle.getString(root) + "\"");
+                        sb.append(columns[2].toLowerCase()).append(":\"").append(zTreeBundle.getString(root)).append("\"");
                     } else {
-                        sb.append(columns[2].toLowerCase() + ":\"" + root + "\"");
+                        sb.append(columns[2].toLowerCase()).append(":\"").append(root).append("\"");
                     }
-
                 } else {
-                    sb.append(columns[2].toLowerCase() + ":\"" + root + "\"");
+                    sb.append(columns[2].toLowerCase()).append(":\"").append(root).append("\"");
                 }
 
             }
@@ -717,12 +716,12 @@ public abstract class BaseJboSet implements JboSetIFace {
                     } else {
                         val = dto.getString(name);
                     }
-                } else if (column.indexOf(":") > 0) {
+                } else if (column.indexOf(':') > 0) {
                     String[] cols = column.split(":");
                     column = cols[0];
-                    if (cols[1].indexOf(",") > 0) {
+                    if (cols[1].indexOf(',') > 0) {
                         String[] vals = cols[1].split(",");
-                        StringBuffer sbval = new StringBuffer();
+                        StringBuilder sbval = new StringBuilder();
                         int vlen = vals.length;
                         for (int v = 0; v < vlen; v++) {
                             sbval.append(dto.getString(vals[v]));
@@ -742,9 +741,9 @@ public abstract class BaseJboSet implements JboSetIFace {
                     val = "";
                 }
                 if (columns[i].equalsIgnoreCase(parentIdName) && "".equals(val)) {
-                    sb.append(column.toLowerCase() + ":\"-1\"");
+                    sb.append(column.toLowerCase()).append(":\"-1\"");
                 } else {
-                    sb.append(column.toLowerCase() + ":\"" + val + "\"");
+                    sb.append(column.toLowerCase()).append(":\"").append(val).append("\"");
                 }
 
                 if (i < columns.length - 1) {

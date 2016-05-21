@@ -234,4 +234,10 @@ public interface DataQuery {
      * @return
      */
     public String date2Year(String str);
+    /**
+     * 获取数据库日期字段的年月，用作查询条件格式为yyyy-mm
+     * @param str
+     * @return
+     */
+    public String date2YearMonth(String str);
 }

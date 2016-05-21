@@ -88,9 +88,7 @@ public class UserMetadataSet extends JboSet implements UserMetadataSetIFace {
         dqi.setWhereParams(new Object[] { userinfo.getUserid(), key });
         List<JboIFace> list = query();
         boolean add = false;
-        if (list == null) {
-            add = true;
-        } else if (list.size() < 1) {
+        if (list == null || list.isEmpty()) {
             add = true;
         }
         if (del) {

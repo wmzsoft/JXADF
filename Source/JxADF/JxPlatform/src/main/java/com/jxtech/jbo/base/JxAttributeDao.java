@@ -40,7 +40,15 @@ public class JxAttributeDao {
         }
         DataQuery dq = DBFactory.getDataQuery(null, null);
         String msql = "Select * From maxattribute where objectname = ?";
-        List<JxAttribute> list = dq.getResult(new BeanListHandler<JxAttribute>(JxAttribute.class), msql, new Object[] { objectName });
+        @SuppressWarnings("rawtypes")
+        Class c = null;
+        try {
+            c = Class.forName(DBFactory.getDefaultAttributeImpl());
+        } catch (ClassNotFoundException e) {
+            LOG.error(e.getMessage(), e);
+            return null;
+        }
+        List<JxAttribute> list = dq.getResult(new BeanListHandler<JxAttribute>(c), msql, new Object[] { objectName });
         if (list != null) {
             int size = list.size();
             Map<String, JxAttribute> map = new DataMap<String, JxAttribute>();

@@ -48,7 +48,7 @@ public interface DataEdit {
      */
     public int insert(Connection conn, JboIFace jbo) throws JxException;
 
-    public long insertBlob(Connection conn, String tbName, String uidName, String uidValue, String blobName, InputStream inputs, StringBuffer md5) throws JxException ;
+    public long insertBlob(Connection conn, String tbName, String uidName, String uidValue, String blobName, InputStream inputs, StringBuilder md5) throws JxException ;
     
     /**
      * 保存数据

@@ -1,44 +1,52 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	<!-- 输出日志到控制台 -->
-	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender"> 
-  	<encoder charset="UTF-8">
-    	<pattern>%d{HH:mm:ss.SSS} %-5level -> %msg%n%caller{2}%n</pattern>
-    </encoder>
-  </appender> 
+	<appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+		<encoder charset="UTF-8">
+			<pattern>%d{HH:mm:ss.SSS} %-5level -> %msg%n%caller{2}%n</pattern>
+		</encoder>
+	</appender>
 
-  <!-- 可让每天产生一个日志文件，最多 30 个，自动回滚 -->
-  <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>../logs/logback.%d{yyyy-MM-dd}.log</fileNamePattern>
-      <maxHistory>30</maxHistory>
-    </rollingPolicy>
-    <encoder  charset="UTF-8">
-    	<pattern>%date{yyyy-MMM-dd HH:mm:ss} [%thread] %-5level -> %msg%n%caller{2}%n</pattern>
-    </encoder>
-  </appender>
+	<!-- 可让每天产生一个日志文件，最多 30 个，自动回滚 -->
+	<appender name="rollingFile"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>../logs/logback.%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+		</rollingPolicy>
+		<encoder charset="UTF-8">
+			<pattern>%date{yyyy-MMM-dd HH:mm:ss} [%thread] %-5level ->
+				%msg%n%caller{2}%n</pattern>
+		</encoder>
+	</appender>
 
 	<!-- 在日志文件超过 5MB 时进行归档，并且归档文件后缀只要是 .zip 或 .gz 就会自动压缩日志归档 -->
-  <appender name="fixedRollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">		
-    <file>../logs/logback.log</file>
+	<appender name="fixedRollingFile"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>../logs/logback.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.FixedWindowRollingPolicy">
-    	<fileNamePattern>../logs/logback.%i.log.zip</fileNamePattern>
-      <minIndex>1</minIndex>
-      <maxIndex>10</maxIndex>
-    </rollingPolicy>
-    <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
-    	<maxFileSize>5MB</maxFileSize>
-    </triggeringPolicy>
-    <encoder  charset="UTF-8">
-    	<pattern>%date{yyyy-MMM-dd HH:mm:ss} [%thread] %-5level -> %msg%n%caller{2}%n</pattern>
-    </encoder>
-  </appender>
+			<fileNamePattern>../logs/logback.%i.log.zip</fileNamePattern>
+			<minIndex>1</minIndex>
+			<maxIndex>10</maxIndex>
+		</rollingPolicy>
+		<triggeringPolicy
+			class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+			<maxFileSize>5MB</maxFileSize>
+		</triggeringPolicy>
+		<encoder charset="UTF-8">
+			<pattern>%date{yyyy-MMM-dd HH:mm:ss} [%thread] %-5level ->
+				%msg%n%caller{2}%n</pattern>
+		</encoder>
+	</appender>
 
-  <root level="WARN">
-    <!-- <appender-ref ref="stdout" /> -->
-    <appender-ref ref="fixedRollingFile" />
-  </root>
+	<root level="WARN">
+		<appender-ref ref="stdout" />
+		<appender-ref ref="fixedRollingFile" />
+	</root>
 
-	<logger name="com.jxtech" level="WARN"/>
-	
+	<logger name="com.jxtech" level="DEBUG" />
+	<!-- <logger name="com.jxtech" level="DEBUG" />-->
+	<logger name="com.jxtech.jbo.util.DataQuery" level="INFO" />
+	<logger name="com.opensymphony" level="WARN" />
+	<logger name="org.apache" level="WARN" />
 </configuration>

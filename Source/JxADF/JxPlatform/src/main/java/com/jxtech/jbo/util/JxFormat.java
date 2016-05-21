@@ -3,6 +3,8 @@ package com.jxtech.jbo.util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.jxtech.util.StrUtil;
+
 import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
@@ -126,7 +128,7 @@ public class JxFormat {
             char tc = symb.getGroupingSeparator();
             String outStr = s;
             if (s.indexOf(tc) > -1) {
-                StringBuffer r = new StringBuffer(s.length());
+                StringBuilder r = new StringBuilder(s.length());
                 r.setLength(s.length());
                 int current = 0;
                 for (int i = 0; i < s.length(); i++) {
@@ -288,7 +290,7 @@ public class JxFormat {
         try {
             char DECIMALSEP = new DecimalFormatSymbols(l).getDecimalSeparator();
 
-            if (s.indexOf(":") == -1) {
+            if (s.indexOf(':') == -1) {
                 return stringToDouble(s, l);
             }
 
@@ -348,9 +350,9 @@ public class JxFormat {
 
         String retStr = null;
         if (mins < 10)
-            retStr = hours + ":" + "0" + mins;
+            retStr = StrUtil.contact(String.valueOf(hours), ":0", String.valueOf(mins));
         else {
-            retStr = hours + ":" + mins;
+            retStr = StrUtil.contact(String.valueOf(hours), ":" + String.valueOf(mins));
         }
         if (minus) {
             retStr = "-" + retStr;
@@ -367,9 +369,9 @@ public class JxFormat {
             throw new JxException("system", "invalidyorn");
         }
 
-        if (s.equalsIgnoreCase("true"))
+        if ("true".equalsIgnoreCase(s))
             return true;
-        if (s.equalsIgnoreCase("false")) {
+        if ("false".equalsIgnoreCase(s)) {
             return false;
         }
         if (s.equalsIgnoreCase(getStoreYesValue()))
@@ -434,7 +436,7 @@ public class JxFormat {
         try {
             String dateFormat = getSettingProp("setting.DISPLAYDATE", l.getLanguage());
 
-            if ((dateFormat == null) || (dateFormat.equals(""))) {
+            if ((dateFormat == null) || ("".equals(dateFormat))) {
                 dateFormat = ((SimpleDateFormat) DateFormat.getDateInstance(3, l)).toPattern();
             }
 
@@ -560,7 +562,7 @@ public class JxFormat {
 
         String dateFormat = getSettingProp("setting.DISPLAYDATE", l.getLanguage());
 
-        if ((dateFormat == null) || (dateFormat.equals(""))) {
+        if ((dateFormat == null) || ("".equals(dateFormat))) {
             dateFormat = ((SimpleDateFormat) DateFormat.getDateInstance(3, l)).toPattern();
         }
 
@@ -584,11 +586,11 @@ public class JxFormat {
             String dateFormat = getSettingProp("setting.DISPLAYDATE", l.getLanguage());
             String timeFormat = getSettingProp("setting.PARSETIME", l.getLanguage());
 
-            if ((dateFormat == null) || (dateFormat.equals(""))) {
+            if ((dateFormat == null) || ("".equals(dateFormat))) {
                 dateFormat = ((SimpleDateFormat) DateFormat.getDateInstance(3, l)).toPattern();
             }
 
-            if ((timeFormat == null) || (timeFormat.equals(""))) {
+            if ((timeFormat == null) || ("".equals(timeFormat))) {
                 timeFormat = ((SimpleDateFormat) DateFormat.getTimeInstance(2, l)).toPattern();
             }
 
@@ -629,20 +631,20 @@ public class JxFormat {
         String dateFormat = getSettingProp("setting.DISPLAYDATE", l.getLanguage());
         String timeFormat = getSettingProp("setting.PARSETIME", l.getLanguage());
 
-        if ((dateFormat == null) || (dateFormat.equals(""))) {
+        if ((dateFormat == null) || ("".equals(dateFormat))) {
             dateFormat = ((SimpleDateFormat) DateFormat.getDateInstance(3, l)).toPattern();
         }
 
         if (dateFormat.indexOf("yyyy") == -1) {
             int ind = dateFormat.indexOf("yy");
             if (ind > -1) {
-                StringBuffer strBuf = new StringBuffer(dateFormat);
+                StringBuilder strBuf = new StringBuilder(dateFormat);
                 strBuf.insert(ind, "yy");
                 dateFormat = strBuf.toString();
             }
         }
 
-        if ((timeFormat == null) || (timeFormat.equals(""))) {
+        if ((timeFormat == null) || ("".equals(timeFormat))) {
             timeFormat = ((SimpleDateFormat) DateFormat.getTimeInstance(2, l)).toPattern();
         }
 
@@ -664,11 +666,11 @@ public class JxFormat {
         String dateFormat = getSettingProp("setting.DISPLAYDATE", l.getLanguage());
         String timeFormat = getSettingProp("setting.DISPLAYTIME", l.getLanguage());
 
-        if ((dateFormat == null) || (dateFormat.equals(""))) {
+        if ((dateFormat == null) || ("".equals(dateFormat))) {
             dateFormat = ((SimpleDateFormat) DateFormat.getDateInstance(3, l)).toPattern();
         }
 
-        if ((timeFormat == null) || (timeFormat.equals(""))) {
+        if ((timeFormat == null) || ("".equals(timeFormat))) {
             timeFormat = ((SimpleDateFormat) DateFormat.getTimeInstance(3, l)).toPattern();
         }
 
@@ -720,7 +722,7 @@ public class JxFormat {
 
             String timeFormat = getSettingProp("setting.PARSETIME", l.getLanguage());
 
-            if ((timeFormat == null) || (timeFormat.equals(""))) {
+            if ((timeFormat == null) || ("".equals(timeFormat))) {
                 timeFormat = ((SimpleDateFormat) DateFormat.getTimeInstance(2, l)).toPattern();
             }
 
@@ -767,7 +769,7 @@ public class JxFormat {
     public static String timeToParseString(Date d, Locale l, TimeZone tz) {
         String timeFormat = getSettingProp("setting.PARSETIME", l.getLanguage());
 
-        if ((timeFormat == null) || (timeFormat.equals(""))) {
+        if ((timeFormat == null) || ("".equals(timeFormat))) {
             timeFormat = ((SimpleDateFormat) DateFormat.getTimeInstance(2, l)).toPattern();
         }
 
@@ -788,7 +790,7 @@ public class JxFormat {
     public static String timeToString(Date d, Locale l, TimeZone tz) {
         String timeFormat = getSettingProp("setting.DISPLAYTIME", l.getLanguage());
 
-        if ((timeFormat == null) || (timeFormat.equals(""))) {
+        if ((timeFormat == null) || ("".equals(timeFormat))) {
             timeFormat = ((SimpleDateFormat) DateFormat.getTimeInstance(3, l)).toPattern();
         }
 
@@ -835,7 +837,7 @@ public class JxFormat {
                 ampm = pm[i];
             }
         }
-        StringBuffer tmpStr = new StringBuffer(s);
+        StringBuilder tmpStr = new StringBuilder(s);
         if (ampm != null) {
             int index = s.indexOf(ampm);
             if ((index > -1) && (index + ampm.length() < s.length()) && (tmpStr.charAt(index + 1) != ' ')) {
@@ -993,7 +995,7 @@ public class JxFormat {
                     ampm = pm[i];
                 }
             }
-            StringBuffer tmpStr = new StringBuffer(s);
+            StringBuilder tmpStr = new StringBuilder(s);
             if (ampm != null) {
                 int index = s.indexOf(ampm);
                 if ((index > -1) && (tmpStr.charAt(index + 1) != ' ') && (index + ampm.length() < s.length())) {
@@ -1084,7 +1086,7 @@ public class JxFormat {
     public static String getDatePattern(Locale l) {
         String dateFormat = getSettingProp("setting.DISPLAYDATE", l.getLanguage());
 
-        if ((dateFormat == null) || (dateFormat.equals(""))) {
+        if ((dateFormat == null) || ("".equals(dateFormat))) {
             dateFormat = ((SimpleDateFormat) DateFormat.getDateInstance(3, l)).toPattern();
         }
 
@@ -1095,7 +1097,7 @@ public class JxFormat {
     public static String getTimePattern(Locale l) {
         String timeFormat = getSettingProp("setting.PARSETIME", l.getLanguage());
 
-        if ((timeFormat == null) || (timeFormat.equals(""))) {
+        if ((timeFormat == null) || ("".equals(timeFormat))) {
             timeFormat = ((SimpleDateFormat) DateFormat.getTimeInstance(2, l)).toPattern();
         }
 
@@ -1106,7 +1108,7 @@ public class JxFormat {
     public static String getDisplayTimePattern(Locale l) {
         String timeFormat = getSettingProp("setting.DISPLAYTIME", l.getLanguage());
 
-        if ((timeFormat == null) || (timeFormat.equals(""))) {
+        if ((timeFormat == null) || ("".equals(timeFormat))) {
             timeFormat = ((SimpleDateFormat) DateFormat.getTimeInstance(3, l)).toPattern();
         }
 
@@ -1118,11 +1120,11 @@ public class JxFormat {
         String timeFormat = getSettingProp("setting.PARSETIME", l.getLanguage());
         String dateFormat = getSettingProp("setting.DISPLAYDATE", l.getLanguage());
 
-        if ((dateFormat == null) || (dateFormat.equals(""))) {
+        if ((dateFormat == null) || ("".equals(dateFormat))) {
             dateFormat = ((SimpleDateFormat) DateFormat.getDateInstance(3, l)).toPattern();
         }
 
-        if ((timeFormat == null) || (timeFormat.equals(""))) {
+        if ((timeFormat == null) || ("".equals(timeFormat))) {
             timeFormat = ((SimpleDateFormat) DateFormat.getTimeInstance(2, l)).toPattern();
         }
 
@@ -1134,7 +1136,7 @@ public class JxFormat {
         boolean is24hr = false;
         String pattern = getTimePattern(l);
         if ((pattern != null) && (pattern.trim().length() > 0)) {
-            if (pattern.indexOf("H") > -1)
+            if (pattern.indexOf('H') > -1)
                 is24hr = true;
         }
         return is24hr;
@@ -1168,7 +1170,7 @@ public class JxFormat {
 
     public static String stringToCodepoints(String theString, boolean escapeSpace, boolean escapeUnicode) {
         int len = theString.length();
-        StringBuffer outBuffer = new StringBuffer(len * 2);
+        StringBuilder outBuffer = new StringBuilder(len * 2);
 
         for (int x = 0; x < len; x++) {
             char aChar = theString.charAt(x);
@@ -1224,7 +1226,7 @@ public class JxFormat {
     }
 
     private static synchronized String getSettingProp(String propName, String lang) {
-        if ((lang != null) && (!lang.equals(""))) {
+        if ((lang != null) && (!"".equals(lang))) {
             String langKey = propName + "_" + lang.toUpperCase();
             if (settingProps.containsKey(langKey)) {
                 return settingProps.get(langKey);
@@ -1258,10 +1260,10 @@ public class JxFormat {
     }
 
     private static String fixRussianInputString(String value, Locale l) {
-        if (l.getLanguage().equals("ru")) {
+        if ("ru".equals(l.getLanguage())) {
             value = value.trim();
             StringTokenizer tok = new StringTokenizer(value, " ");
-            StringBuffer buf = new StringBuffer();
+            StringBuilder buf = new StringBuilder();
             while (tok.hasMoreTokens()) {
                 buf.append(tok.nextToken());
             }

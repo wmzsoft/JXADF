@@ -48,7 +48,7 @@ public class PubRoleSet extends JboSet {
                     if (null != userRoleJboSet) {
                         List<JboIFace> userRoleList = userRoleJboSet.getJbolist();
                         if (!userRoleList.isEmpty()) {
-                            StringBuffer sb = new StringBuffer();
+                            StringBuilder sb = new StringBuilder();
 
                             sb.append("ROLE_ID NOT IN (");
                             int size = userRoleList.size();

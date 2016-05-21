@@ -54,7 +54,7 @@ public class Body extends JxBaseUIBean {
             addParameter("headContent", findString(headContent));
         }
         // msg 格式为 jxAppNameType=msgvalue
-        if (null != msg && msg.indexOf("=") >= 0) {
+        if (null != msg && msg.indexOf('=') >= 0) {
             String[] msgs = msg.split("=");
             if (msgs[0].equalsIgnoreCase(appName + "." + appType)) {
                 msg = msgs[1];

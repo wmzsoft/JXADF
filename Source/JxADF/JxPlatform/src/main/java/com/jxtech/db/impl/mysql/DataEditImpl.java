@@ -49,10 +49,10 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
                 String attributename = attr.getAttributeName();
                 int type = attr.getSqlType();
                 if (StrUtil.isObjectNull(values[i])) {
-                    sb.append(attributename + "[" + i + "," + attr.getMaxType() + "," + type + "]=null\r\n");
+                    sb.append(attributename).append("[").append(i).append(",").append(attr.getMaxType()).append(",").append(type).append("]=null\r\n");
                     ps.setNull(i + 1, type);
                 } else {
-                    sb.append(attributename + "[" + i + "," + attr.getMaxType() + "," + type + "]=" + values[i] + "\r\n");
+                    sb.append(attributename).append("[").append(i).append(",").append(attr.getMaxType()).append(",").append(type).append("]=").append(values[i]).append("\r\n");
                     if ((type == Types.DATE || type == Types.TIME || type == Types.TIMESTAMP)) {
                         java.sql.Timestamp d = DateUtil.toSqlTimestamp(values[i]);
                         ps.setObject(i + 1, d, type);
@@ -99,7 +99,7 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
         Map<String, JxAttribute> jas = jbo.getJxAttributes();
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             String key = entry.getKey();// 属性名
-            if (key.indexOf(".") > 0) {
+            if (key.indexOf('.') > 0) {
                 continue;
             }
             JxAttribute attr = jas.get(key);
@@ -150,7 +150,7 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
         List<JxAttribute> column = new ArrayList<JxAttribute>();// 字段
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             String key = entry.getKey();
-            if (key.indexOf(".") > 0) {
+            if (key.indexOf('.') > 0) {
                 continue;
             }
             JxAttribute attr = jas.get(key);
@@ -170,7 +170,7 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
         vsql = StrUtil.deleteLastChar(vsql);
         msql.append(vsql).append(")");
         int res = execute(conn, msql.toString(), column.toArray(), values.toArray());
-        //补充一下序列的值
+        // 补充一下序列的值
         if (res > 0) {
             long seq = getLast(conn);
             if (seq > 0) {
@@ -185,7 +185,7 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
     }
 
     @Override
-    public long insertBlob(Connection conn, String tbName, String uidName, String uidValue, String blobName, InputStream inputs, StringBuffer md5) throws JxException {
+    public long insertBlob(Connection conn, String tbName, String uidName, String uidValue, String blobName, InputStream inputs, StringBuilder md5) throws JxException {
         // TODO Auto-generated method stub
         return 0;
     }

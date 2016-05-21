@@ -87,7 +87,7 @@ public class AppSet {
 
     public App getApp() throws JxException {
         if (app == null && applist != null && list != null) {
-            if (applist.size() > 0 && list.size() > 0) {
+            if (!applist.isEmpty() && !list.isEmpty()) {
                 app = applist.get(list.get(0));
             }
         }
@@ -102,7 +102,7 @@ public class AppSet {
 
     public String getAppName() throws JxException {
         if (app == null && applist != null && list != null) {
-            if (applist.size() > 0 && list.size() > 0) {
+            if (!applist.isEmpty() && !list.isEmpty()) {
                 app = applist.get(list.get(0));
             }
         }

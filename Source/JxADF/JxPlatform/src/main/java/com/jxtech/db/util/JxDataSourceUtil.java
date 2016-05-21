@@ -33,29 +33,36 @@ import java.util.Map;
  */
 public class JxDataSourceUtil {
     private static final Logger LOG = LoggerFactory.getLogger(JxDataSourceUtil.class);
-    private static DataSource sysDataSource;// 系统数据源
-    private static String sysDatabaseType = null;// 系统数据库类型
+    private static DataSource sysDataSource;// 系统默认数据源
+    private static String sysDatabaseType;// 系统默认数据库类型
     public static final String SYSTEM_DATASOURCE_NAME = "JXADF_SYSTEM";
     public static final String ORACLE = "ORACLE";
     public static final String MYSQL = "MYSQL";
     public static final String MSSQLSERVER = "MSSQLSERVER";
     public static final String DB2 = "DB2";
     public static final String POSTGRESQL = "POSTGRESQL";
-    private static boolean dbconntected=true;//系统数据库连接是否OK
+    public static final String DBQUERYIMPL = "jx.db.query.class";
+    public static final String DBEDITIMPL = "jx.db.edit.class";
+    public static final String DBATTRIBTEIMPL = "jx.db.attribute.class";
+    public static final String DBCOLUMNIMPL = "jx.db.column.class";
+
+    private static boolean dbconntected = true;// 系统数据库连接是否OK
     // 数据源缓存
     private static Map<String, DataSource> dsCache = new HashMap<String, DataSource>();
 
     /**
      * 获得数据库连接
      * 
-     * @param sourceName 数据源名称，为空返回系统数据源
+     * @param sourceName
+     *            数据源名称，为空返回系统数据源
      * @return
      * @throws JxException
      */
     /**
      * 获得数据库连接
      * 
-     * @param sourceName 数据源名称，为空返回系统数据源
+     * @param sourceName
+     *            数据源名称，为空返回系统数据源
      * @return
      * @throws JxException
      */
@@ -67,7 +74,8 @@ public class JxDataSourceUtil {
      * 获得数据库连接
      * 
      * @param sourceName
-     * @param iscache 是否使用缓存
+     * @param iscache
+     *            是否使用缓存
      * @return
      * @throws JxException
      */
@@ -207,7 +215,7 @@ public class JxDataSourceUtil {
             return conn;
         } catch (SQLException e) {
             LOG.error("获得数据库链接出错：" + e.getMessage());
-            dbconntected=false;
+            dbconntected = false;
             DefaultMetadata.getInstance().toInsall();
         }
         return null;

@@ -33,7 +33,7 @@ public class MessageFactory {
         if (body == null) {
             return false;
         }
-        if (impls.size() < 1) {
+        if (impls.isEmpty()) {
             LOG.warn("你未安装消息插件。");
             LOG.info(body.toString());
             return false;

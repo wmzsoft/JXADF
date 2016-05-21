@@ -24,6 +24,9 @@ public class DBFactory {
     private static final Map<String, String> dbQueryImpl = new HashMap<String, String>();
     private static final Map<String, String> dbEditImpl = new HashMap<String, String>();
     private static final Map<String, String> dbColumnImpl = new HashMap<String, String>();
+    private static final Map<String, String> dbAttributeImpl = new HashMap<String, String>();
+    // 默认的属性实现类
+    private static String defaultAttributeImpl;
     // 实例
     private static final Map<String, DbColumn> dbColumnInstance = new HashMap<String, DbColumn>();
     public static final String CACHE_PREX = "db.jboset.";
@@ -31,17 +34,21 @@ public class DBFactory {
     private static final Logger LOG = LoggerFactory.getLogger(DBFactory.class);
 
     static {
-        dbQueryImpl.put(JxDataSourceUtil.ORACLE, "com.jxtech.db.impl.oracle.DataQueryImpl");
-        dbEditImpl.put(JxDataSourceUtil.ORACLE, "com.jxtech.db.impl.oracle.DataEditImpl");
-        dbColumnImpl.put(JxDataSourceUtil.ORACLE, "com.jxtech.db.impl.oracle.DbColumnImpl");
+        dbQueryImpl.put(JxDataSourceUtil.ORACLE, System.getProperty(JxDataSourceUtil.DBQUERYIMPL, "com.jxtech.db.impl.oracle.DataQueryImpl"));
+        dbEditImpl.put(JxDataSourceUtil.ORACLE, System.getProperty(JxDataSourceUtil.DBEDITIMPL, "com.jxtech.db.impl.oracle.DataEditImpl"));
+        dbColumnImpl.put(JxDataSourceUtil.ORACLE, System.getProperty(JxDataSourceUtil.DBCOLUMNIMPL, "com.jxtech.db.impl.oracle.DbColumnImpl"));
+        dbAttributeImpl.put(JxDataSourceUtil.ORACLE, System.getProperty(JxDataSourceUtil.DBATTRIBTEIMPL, "com.jxtech.jbo.base.impl.JxAttributeImpl"));
 
-        dbQueryImpl.put(JxDataSourceUtil.MYSQL, "com.jxtech.db.impl.mysql.DataQueryImpl");
-        dbEditImpl.put(JxDataSourceUtil.MYSQL, "com.jxtech.db.impl.mysql.DataEditImpl");
-        dbColumnImpl.put(JxDataSourceUtil.MYSQL, "com.jxtech.db.impl.mysql.DbColumnImpl");
+        dbQueryImpl.put(JxDataSourceUtil.MYSQL, System.getProperty(JxDataSourceUtil.DBQUERYIMPL, "com.jxtech.db.impl.mysql.DataQueryImpl"));
+        dbEditImpl.put(JxDataSourceUtil.MYSQL, System.getProperty(JxDataSourceUtil.DBEDITIMPL, "com.jxtech.db.impl.mysql.DataEditImpl"));
+        dbColumnImpl.put(JxDataSourceUtil.MYSQL, System.getProperty(JxDataSourceUtil.DBCOLUMNIMPL, "com.jxtech.db.impl.mysql.DbColumnImpl"));
+        dbAttributeImpl.put(JxDataSourceUtil.MYSQL, System.getProperty(JxDataSourceUtil.DBATTRIBTEIMPL, "com.jxtech.jbo.base.impl.mysql.JxAttributeImpl"));
 
-        dbQueryImpl.put(JxDataSourceUtil.MSSQLSERVER, "com.jxtech.db.impl.mssqlserver.DataQueryImpl");
-        dbEditImpl.put(JxDataSourceUtil.MSSQLSERVER, "com.jxtech.db.impl.mssqlserver.DataEditImpl");
-        dbColumnImpl.put(JxDataSourceUtil.MSSQLSERVER, "com.jxtech.db.impl.mssqlserver.DbColumnImpl");
+        dbQueryImpl.put(JxDataSourceUtil.MSSQLSERVER, System.getProperty(JxDataSourceUtil.DBQUERYIMPL, "com.jxtech.db.impl.mssqlserver.DataQueryImpl"));
+        dbEditImpl.put(JxDataSourceUtil.MSSQLSERVER, System.getProperty(JxDataSourceUtil.DBEDITIMPL, "com.jxtech.db.impl.mssqlserver.DataEditImpl"));
+        dbColumnImpl.put(JxDataSourceUtil.MSSQLSERVER, System.getProperty(JxDataSourceUtil.DBCOLUMNIMPL, "com.jxtech.db.impl.mssqlserver.DbColumnImpl"));
+        dbAttributeImpl.put(JxDataSourceUtil.MSSQLSERVER, System.getProperty(JxDataSourceUtil.DBATTRIBTEIMPL, "com.jxtech.jbo.base.impl.mssqlserver.JxAttributeImpl"));
+
     }
 
     public static void putDbQueryImplClass(String name, String classname) {
@@ -76,7 +83,7 @@ public class DBFactory {
     }
 
     public static DataQuery getDefaultDataQuery(String dataSourceName) {
-        String cn = System.getProperty("jx.db.query.class", "com.jxtech.db.impl.oracle.DataQueryImpl");
+        String cn = System.getProperty(JxDataSourceUtil.DBQUERYIMPL, "com.jxtech.db.impl.oracle.DataQueryImpl");
         Object obj = ClassUtil.getInstance(cn);
         if (obj instanceof DataQuery) {
             DataQuery dq = (DataQuery) obj;
@@ -136,7 +143,11 @@ public class DBFactory {
 
     public static DbColumn getDefaultDbColumn() {
         if (defaultDbColumn == null) {
-            String cl = System.getProperty("jx.db.column.class", null);
+            String cl = System.getProperty(JxDataSourceUtil.DBCOLUMNIMPL, null);
+            if (StrUtil.isNull(cl)) {
+                String dbtype = JxDataSourceUtil.getSysDatabaseType();// 获得默认的数据类型
+                cl = dbColumnImpl.get(dbtype);
+            }
             if (!StrUtil.isNull(cl)) {
                 Object obj = ClassUtil.getInstance(cl);
                 if (obj instanceof DbColumn) {
@@ -144,16 +155,8 @@ public class DBFactory {
                 }
             }
             if (defaultDbColumn == null) {
-                if (JxDataSourceUtil.isDbOfSystemOracle()) {
-                    defaultDbColumn = new com.jxtech.db.impl.oracle.DbColumnImpl();
-                } else if (JxDataSourceUtil.isDbOfSystemMsSqlServer()) {
-                    defaultDbColumn = new com.jxtech.db.impl.mssqlserver.DbColumnImpl();
-                } else if (JxDataSourceUtil.isDbOfSystemMySql()) {
-                    defaultDbColumn = new com.jxtech.db.impl.mysql.DbColumnImpl();
-                } else {
-                    defaultDbColumn = new com.jxtech.db.impl.DbColumnImpl();
-                    LOG.warn("请配置默认的数据字段信息类，jx.db.column.class");
-                }
+                defaultDbColumn = new com.jxtech.db.impl.oracle.DbColumnImpl();
+                LOG.warn("Please config " + JxDataSourceUtil.DBCOLUMNIMPL);
             }
         }
         return defaultDbColumn;
@@ -163,4 +166,24 @@ public class DBFactory {
         DBFactory.defaultDbColumn = defaultDbColumn;
     }
 
+    /**
+     * 返回默认的属性定义实现类
+     * @return
+     */
+    public static String getDefaultAttributeImpl() {
+        if (!StrUtil.isNull(defaultAttributeImpl)) {
+            return defaultAttributeImpl;
+        }
+        defaultAttributeImpl = System.getProperty(JxDataSourceUtil.DBATTRIBTEIMPL, null);
+        if (!StrUtil.isNull(defaultAttributeImpl)) {
+            return defaultAttributeImpl;
+        }
+        String dbtype = JxDataSourceUtil.getSysDatabaseType();// 获得默认的数据类型
+        defaultAttributeImpl = dbAttributeImpl.get(dbtype);
+        if (!StrUtil.isNull(defaultAttributeImpl)) {
+            return defaultAttributeImpl;
+        }
+        defaultAttributeImpl = dbAttributeImpl.get(JxDataSourceUtil.ORACLE);
+        return defaultAttributeImpl;
+    }
 }

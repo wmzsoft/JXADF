@@ -43,36 +43,33 @@ public class AutoKeySet extends JboSet implements AutoKeySetIFace {
 
         DataQueryInfo dqi = getQueryInfo();
         dqi.setWhereCause("autokeyname=? and orgid=? and siteid=?");
-        dqi.setWhereParams(new Object[]{keyname.toUpperCase(),orgid,siteid});
+        dqi.setWhereParams(new Object[] { keyname.toUpperCase(), orgid, siteid });
         List<JboIFace> list = query();
-        if (list==null || list.isEmpty()){
+        if (list == null || list.isEmpty()) {
             dqi.setWhereCause("autokeyname=? and orgid=? ");
-            dqi.setWhereParams(new Object[]{keyname.toUpperCase(),orgid});
+            dqi.setWhereParams(new Object[] { keyname.toUpperCase(), orgid });
             list = query();
-            if (list==null || list.isEmpty()){
+            if (list == null || list.isEmpty()) {
                 dqi.setWhereCause("autokeyname=?");
-                dqi.setWhereParams(new Object[]{keyname.toUpperCase()});
+                dqi.setWhereParams(new Object[] { keyname.toUpperCase() });
                 list = query();
-            }            
-        }
-        
-        if (list != null) {
-            if (list.size() > 0) {
-                JboIFace myjbo = list.get(0);
-                long seed = myjbo.getLong("SEED");
-                long newseed = seed + 1;
-                myjbo.setObject("SEED", newseed);
-                commit();
-                String prefix = myjbo.getString("PREFIX");
-                if (StrUtil.isNull(prefix)) {
-                    return String.valueOf(newseed);
-                } else {
-                    return prefix + String.valueOf(newseed);
-                }
-            } else {
-                throw new JxException("请在AutoKey表中配置正确的 AutoKey Name : " + keyname + ",siteid=" + siteid + ",orgid=" + orgid);
             }
         }
-        throw new JxException("没有得到正确的值,keyname=" + keyname + ",siteid=" + siteid + ",orgid=" + orgid);
+
+        if (list != null && !list.isEmpty()) {
+            JboIFace myjbo = list.get(0);
+            long seed = myjbo.getLong("SEED");
+            long newseed = seed + 1;
+            myjbo.setObject("SEED", newseed);
+            commit();
+            String prefix = myjbo.getString("PREFIX");
+            if (StrUtil.isNull(prefix)) {
+                return String.valueOf(newseed);
+            } else {
+                return prefix + String.valueOf(newseed);
+            }
+        } else {
+            throw new JxException("请在AutoKey表中配置正确的 AutoKey Name : " + keyname + ",siteid=" + siteid + ",orgid=" + orgid);
+        }
     }
 }

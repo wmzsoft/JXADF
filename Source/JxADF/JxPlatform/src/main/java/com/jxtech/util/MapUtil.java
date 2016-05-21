@@ -17,11 +17,11 @@ public class MapUtil {
         }
         @SuppressWarnings("rawtypes")
         Iterator iter = map.entrySet().iterator();
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         while (iter.hasNext()) {
             @SuppressWarnings("rawtypes")
             Map.Entry entry = (Map.Entry) iter.next();
-            sb.append("(" + entry.getKey() + "," + entry.getValue() + ")\r\n");
+            sb.append("(").append(entry.getKey()).append(",").append(entry.getValue()).append(")\r\n");
         }
         return sb.toString();
     }

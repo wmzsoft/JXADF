@@ -45,7 +45,7 @@ public class FileupDBServlet extends HttpServlet {
         String code = request.getParameter("code");
         String vfolder = request.getParameter("vfolder");
         ServletFileUpload fileUpload = new ServletFileUpload();
-        StringBuffer json = new StringBuffer();
+        StringBuilder json = new StringBuilder();
         json.append("{\"files\": [");
         try {
             fileUpload.setHeaderEncoding("UTF-8");

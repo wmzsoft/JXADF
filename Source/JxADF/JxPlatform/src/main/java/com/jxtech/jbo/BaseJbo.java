@@ -127,18 +127,17 @@ public abstract class BaseJbo implements JboIFace {
         }
         if (!readonly && !isToBeAdd()) {
             // 没有保存按钮的权限，则只读
-            boolean cs = true;
             try {
-                cs = getJboSet().canSave();
+                if (!getJboSet().canSave()) {
+                    readonly = true;
+                    return;
+                }
             } catch (Exception e) {
-            }
-            if (!cs) {
-                readonly = true;
-                return;
+                LOG.debug(e.getMessage());
             }
             // 不是只读，不是新增，则设置自动编号字段只读
             Map<String, JxAttribute> autokeys = getJboSet().getAutokeysAttributes();
-            if (autokeys != null) {
+            if (autokeys != null && !autokeys.isEmpty()) {
                 for (Map.Entry<String, JxAttribute> entry : autokeys.entrySet()) {
                     setReadonly(entry.getKey(), true);
                 }
@@ -766,20 +765,27 @@ public abstract class BaseJbo implements JboIFace {
             idx++;
         }
         if (jset != null) {
-            JboIFace jid = jset.getJbo();
-            if (jid != null && !StrUtil.isNull(ans[idx])) {
-                Object value = jid.getObject(ans[idx]);                
-                Map<String, JxAttribute> attrs = getJxAttributes();
-                // 得到联系名.
-                String rname = attributeName.substring(0, attributeName.length() - ans[idx].length());
-                // 将其它字段也放入
-                Map<String, Object> newd = jid.getData();
-                for (Map.Entry<String, Object> entry : newd.entrySet()) {
-                    String an = StrUtil.contact(rname, entry.getKey());
-                    data.put(an, entry.getValue());//放入值
-                    attrs.put(an, jset.getJxAttribute(entry.getKey()));// 将属性信息放入进去。
+            try {
+                JboIFace jid = jset.getJbo();
+                if (jid != null && !StrUtil.isNull(ans[idx])) {
+                    Object value = jid.getObject(ans[idx]);
+                    Map<String, JxAttribute> attrs = getJxAttributes();
+                    // 得到联系名.
+                    String rname = attributeName.substring(0, attributeName.length() - ans[idx].length());
+                    // 这里首先放正确的数据进去
+                    data.put(attributeName, value);
+                    attrs.put(attributeName,jset.getJxAttribute(ans[idx]));
+                    // 将其它字段也放入，这里可能会出错，原因未明
+                    Map<String, Object> newd = jid.getData();
+                    for (Map.Entry<String, Object> entry : newd.entrySet()) {
+                        String an = StrUtil.contact(rname, entry.getKey());
+                        data.put(an, entry.getValue());// 放入值
+                        attrs.put(an, jset.getJxAttribute(entry.getKey()));// 将属性信息放入进去。
+                    }
+                    return value;
                 }
-                return value;
+            } catch (Exception e) {
+                LOG.error(e.getMessage());
             }
         } else {
             LOG.debug("没有得到正确的值，属性：" + attributeName);
@@ -1301,7 +1307,7 @@ public abstract class BaseJbo implements JboIFace {
                         if (cl.isToBeAdd()) {
                             nlist.add(cl);
                         } else if (cl.isToBeDel() || cl.isModify()) {
-                            for(Iterator<JboIFace> it = nlist.iterator();it.hasNext();){
+                            for (Iterator<JboIFace> it = nlist.iterator(); it.hasNext();) {
                                 JboIFace n = it.next();
                                 if (cl.getUidValue().equals(n.getUidValue())) {
                                     it.remove();

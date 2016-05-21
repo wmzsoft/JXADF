@@ -191,7 +191,7 @@ public class SqlParserUtil {
                     lp = 0;
                     rp = 0;
                     name = name.substring(0, name.length() - 1).trim();
-                    int pos = name.lastIndexOf(" ");
+                    int pos = name.lastIndexOf(' ');
                     if (pos < name.lastIndexOf(')')) {
                         pos = name.lastIndexOf(')');
                     }

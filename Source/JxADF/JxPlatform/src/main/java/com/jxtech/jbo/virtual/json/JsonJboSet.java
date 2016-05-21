@@ -127,12 +127,10 @@ public class JsonJboSet extends VirtualJboSet implements JsonJboSetIFace {
             return false;
         } else {
             // 自动判断是否包含头
-            if (listMap != null) {
-                if (listMap.size() > 0) {
-                    Map<String, Object> dto = listMap.get(0);
-                    if (dto.get(pageSizeName) != null && dto.get(pageNumName) != null) {
-                        return true;
-                    }
+            if (listMap != null && !listMap.isEmpty()) {
+                Map<String, Object> dto = listMap.get(0);
+                if (dto.get(pageSizeName) != null && dto.get(pageNumName) != null) {
+                    return true;
                 }
             }
         }

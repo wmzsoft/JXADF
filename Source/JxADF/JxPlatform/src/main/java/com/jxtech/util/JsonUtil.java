@@ -43,14 +43,11 @@ public class JsonUtil {
      * @return
      */
     public static String getStringOfFirstValue(List<Map<String, Object>> list) {
-        if (list == null) {
-            return null;
-        }
-        if (list.size() < 1) {
+        if (list == null || list.isEmpty()) {
             return null;
         }
         Map<String, Object> map = list.get(0);
-        if (map != null && map.size() > 0) {
+        if (map != null && !map.isEmpty()) {
             Object value = map.values().iterator().next();
             if (value == null) {
                 return null;

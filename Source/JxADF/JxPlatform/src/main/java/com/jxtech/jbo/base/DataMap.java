@@ -40,7 +40,7 @@ public class DataMap<K, V> extends HashMap<K, V> {
         if (super.containsKey(k)) {
             return super.get(k);
         }
-        if (k.indexOf(".") > 0) {
+        if (k.indexOf('.') > 0) {
             // 处理联系问题
             if (jbo != null) {
                 try {

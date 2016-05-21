@@ -190,7 +190,7 @@ public class App {
             }
             if (!StrUtil.isNull(attributeName)) {
                 // 如果是relationship字段，将值设置到relationship的jbo中
-                if (attributeName.indexOf(".") > 0) {
+                if (attributeName.indexOf('.') > 0) {
                     String[] relationshipAttributes = attributeName.split("\\.");
                     String relationshipname = relationshipAttributes[0];
                     String rAttributeName = relationshipAttributes[1];

@@ -474,20 +474,21 @@ public abstract class DataQueryImpl implements DataQuery {
 
     @Override
     public String date2String(Object date) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public String datetime2String(Object datetime) {
-        // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public String date2Year(String str) {
-        // TODO Auto-generated method stub
         return null;
     }
+    
+    public String date2YearMonth(String str){
+        return null;
+    };
 
 }

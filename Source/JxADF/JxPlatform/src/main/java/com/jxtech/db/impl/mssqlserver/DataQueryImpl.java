@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.handlers.MapListHandler;
@@ -24,6 +25,8 @@ import com.jxtech.util.StrUtil;
  */
 public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
     private static final Logger LOG = LoggerFactory.getLogger(DataQueryImpl.class);
+    private static final String STAT_FUNCTION = "sum|count|";
+    private static final Pattern STAT_PATTERN = Pattern.compile(STAT_FUNCTION, Pattern.CASE_INSENSITIVE);
 
     @Override
     public List<Map<String, Object>> query(Connection conn, String tablename, DataQueryInfo queryinfo) throws JxException {
@@ -55,7 +58,13 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
             if (pageNum == 1) {
                 msql.append(" TOP ").append(end);
             }
-            msql.append(" * from ");
+            String select = queryinfo.getSelectColumn();
+            if (StrUtil.isNull(select)) {
+                msql.append(" * ");
+            } else {
+                msql.append(' ').append(select);
+            }
+            msql.append(" from ");
 
             boolean ist = false;
             if (tablename.trim().indexOf(' ') > 0) {
@@ -71,30 +80,87 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
                 msql.append(" where ");
                 msql.append(cause);
             }
-            if (!StrUtil.isNull(queryinfo.getOrderby())) {
+            String groupby = queryinfo.getGroupby();
+            if (!StrUtil.isNull(groupby)) {
+                msql.append(" group by ").append(groupby);
+            }
+            String orderby = queryinfo.getOrderby();
+            if (!StrUtil.isNull(orderby)) {
                 msql.append("  order by  ");
-                msql.append(queryinfo.getOrderby());
+                msql.append(orderby);
             }
         } else {
             // 查询第二页以后的内容
-            msql.append("Select t1.* from ");
-            msql.append(tablename).append(" t1 ,(select TOP ");
+            // 处理Select
+            msql.append("Select ");
+            String select = queryinfo.getSelectColumn();
+            if (StrUtil.isNull(select)) {
+                msql.append(" t1.* ");
+            } else {
+                String[] s = select.split(",");
+                for (int i = 0; i < s.length; i++) {
+                    if (!STAT_PATTERN.matcher(s[i]).find()) {
+                        msql.append("t1.");
+                    }
+                    msql.append(s[i].trim());
+                    if (i < s.length - 1) {
+                        msql.append(',');
+                    }
+                }
+            }
+            // 处理from table
+            msql.append(" from ");
+            int tidx = tablename.trim().indexOf(' ');
+            if (tidx > 0) {
+                msql.append("(").append(tablename).append(")");
+            } else {
+                msql.append(tablename);
+            }
+            msql.append(" t1 ,(select TOP ");
             msql.append(end).append(" row_number() OVER (ORDER BY ");
             String uidName = queryinfo.getJboset().getUidName();
-            if (StrUtil.isNull(queryinfo.getOrderby())) {
+            String orderby = queryinfo.getOrderby();
+            if (StrUtil.isNull(orderby)) {
                 msql.append(uidName);
             } else {
-                msql.append(queryinfo.getOrderby());
+                msql.append(orderby);
             }
-            msql.append(") n,").append(uidName);
-            msql.append(" from ").append(tablename);
+            msql.append(") n,");
+            if (StrUtil.isNull(select)) {
+                msql.append(uidName);
+            } else {
+                msql.append(select);
+            }
+            msql.append(" from ");
+            if (tidx > 0) {
+                msql.append("(").append(tablename).append(")");
+            } else {
+                msql.append(tablename);
+            }
             if (!StrUtil.isNull(cause)) {
-                msql.append(" where ");
-                msql.append(cause);
+                msql.append(" where ").append(cause);
             }
-            msql.append(" ) t2");
-            msql.append(" where t1.").append(uidName).append("=t2.").append(uidName);
-            msql.append(" AND t2.n > ").append(start).append(" ORDER BY t2.n ASC");
+            String groupby = queryinfo.getGroupby();
+            if (!StrUtil.isNull(groupby)) {
+                msql.append(groupby);
+            }
+            msql.append(" ) t2 where t2.n > ").append(start);
+            // 添加
+            if (!StrUtil.isNull(groupby)) {
+                String[] gb = groupby.split(",");
+                for (int i = 0; i < gb.length; i++) {
+                    String gbi = gb[i].trim();
+                    if (!StrUtil.isNull(gbi)) {
+                        msql.append(" And t1.").append(gbi).append("=t2.").append(gbi);
+                    }
+                }
+                msql.append(" group by ").append(groupby);
+            } else {
+                msql.append(" and t1.").append(uidName).append("=t2.").append(uidName);
+            }
+            if (!StrUtil.isNull(orderby)) {
+                msql.append(" order by ").append(orderby);
+            }
         }
         if (isIgnoreLog(tablename)) {
             LOG.debug("\r\n" + msql.toString() + "\r\n" + StrUtil.objectToString(params));
@@ -125,9 +191,9 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
         // TODO Auto-generated method stub
 
     }
-    
+
     @Override
-    public String date2String(Object date) {     
+    public String date2String(Object date) {
         return DateUtil.sqlserverToDate(date);
     }
 
@@ -138,7 +204,12 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
 
     @Override
     public String date2Year(String str) {
-        return "DATEPART(yy,"+str+")" ;
+        return "DATEPART(yy," + str + ")";
+    }
+
+    @Override
+    public String date2YearMonth(String str) {
+        return "convert(char(7)," + str + ",120)";
     }
 
 }

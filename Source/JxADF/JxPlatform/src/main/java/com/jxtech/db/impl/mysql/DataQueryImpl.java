@@ -21,6 +21,7 @@ import com.jxtech.jbo.util.DataQueryInfo;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.DateUtil;
 import com.jxtech.util.StrUtil;
+
 /**
  * 
  * @author wmzsoft@gmail.com
@@ -41,9 +42,14 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
             return null;
         }
         StringBuilder msql = new StringBuilder();
-        msql.append("Select * from ");
-
-
+        msql.append("Select ");
+        String select = queryinfo.getSelectColumn();
+        if (StrUtil.isNull(select)) {
+            msql.append(" * ");
+        } else {
+            msql.append(select);
+        }
+        msql.append(" from ");
         boolean ist = false;
         if (tablename.trim().indexOf(' ') > 0) {
             msql.append("(");
@@ -54,15 +60,19 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
             msql.append(") mysql_n");
         }
 
-
         String cause = queryinfo.getWhereAllCause();
         if (!StrUtil.isNull(cause)) {
             msql.append(" where ");
             msql.append(cause);
         }
-        if (!StrUtil.isNull(queryinfo.getOrderby())) {
+        String groupby = queryinfo.getGroupby();
+        if (!StrUtil.isNull(groupby)) {
+            msql.append(" group by ").append(groupby);
+        }
+        String orderby = queryinfo.getOrderby();
+        if (!StrUtil.isNull(orderby)) {
             msql.append("  order by  ");
-            msql.append(queryinfo.getOrderby());
+            msql.append(orderby);
         }
         Object[] params = queryinfo.getWhereAllParams();
         int pageNum = queryinfo.getPageNum();
@@ -76,15 +86,14 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
         }
         QueryRunner qr = new QueryRunner();
         try {
-            //解码特殊字段名
-            
+            // 解码特殊字段名
+
             List<Map<String, Object>> list = qr.query(conn, msql.toString(), new MapListHandler(), params);
             JxLog jxlog = JxLogFactory.getJxLog(queryinfo.getAppname(), tablename);
             if (jxlog != null) {
                 jxlog.debug(msql + "\r\n" + StrUtil.objectToString(params), "QUERY");
             }
-            vals = toDataMapList(list);
-            return vals;
+           return toDataMapList(list);
         } catch (SQLException e) {
             LOG.error(e.getMessage() + "\r\n" + tablename + "\r\n" + msql + "\r\n" + StrUtil.objectToString(params));
         }
@@ -147,9 +156,9 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
             JxDataSourceUtil.closeResultSet(rs);
         }
     }
-    
+
     @Override
-    public String date2String(Object date) {     
+    public String date2String(Object date) {
         return DateUtil.mysqlToDate(date);
     }
 
@@ -160,7 +169,12 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
 
     @Override
     public String date2Year(String str) {
-        return "DATE_FORMAT("+str+",'%Y')";
+        return "DATE_FORMAT(" + str + ",'%Y')";
+    }
+
+    @Override
+    public String date2YearMonth(String str) {
+        return "DATE_FORMAT(" + str + ",'%Y-%m')";
     }
 
 }

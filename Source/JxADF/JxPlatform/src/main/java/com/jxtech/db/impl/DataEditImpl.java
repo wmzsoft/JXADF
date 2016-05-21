@@ -60,7 +60,7 @@ public abstract class DataEditImpl implements DataEdit {
                 if (data.get(key) == null) {
                     data.put(key, attr.getDefaultValue());
                 }
-            } else if (attr.isRequired() && key.indexOf(".") == -1) {
+            } else if (attr.isRequired() && key.indexOf('.') == -1) {
                 if (null == data.get(key)) {
                     LOG.debug("表名.字段名（" + jboname + "." + key + "）为必填项。");
                     throw new JxException("必须填写:" + attr.getObjectName() + " : " + attr.getTitle() + " : " + attr.getAttributeName());

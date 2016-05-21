@@ -75,7 +75,7 @@ public class FileupServlet extends HttpServlet {
         }
         factory.setRepository(new File(tmp));// 设定临时目录
         ServletFileUpload fileUpload = new ServletFileUpload(factory);
-        StringBuffer json = new StringBuffer();
+        StringBuilder json = new StringBuilder();
         json.append("{\"files\": [");
         try {
             fileUpload.setHeaderEncoding("UTF-8");// 设置编码

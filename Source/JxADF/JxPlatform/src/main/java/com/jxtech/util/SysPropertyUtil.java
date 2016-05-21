@@ -83,7 +83,7 @@ public class SysPropertyUtil {
                 System.setProperty(key, value);
                 fos = new FileOutputStream(filename);
                 prop.setProperty(key, value);
-                prop.store(fos, "Copyright (c) jxtech.net");
+                prop.store(fos, "Copyright (c) jxtech.net,homepage: http://osgia.com");
             }
         } catch (Exception e) {
             LOG.error(e.getMessage() + "\r\n" + filename, e);

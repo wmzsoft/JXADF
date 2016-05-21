@@ -223,4 +223,9 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
         return "to_char(" + str + ",'yyyy')";
     }
 
+    @Override
+    public String date2YearMonth(String str) {
+        return "to_char(" + str + ",'yyyy-mm')";
+    }
+
 }

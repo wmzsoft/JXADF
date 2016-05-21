@@ -55,10 +55,10 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
                 JxAttribute attr = (JxAttribute) columns[i];
                 int type = attr.getSqlType();
                 if (StrUtil.isObjectNull(values[i])) {
-                    sb.append(attr.getAttributeName() + "[" + i + "," + attr.getMaxType() + "," + type + "]=null\r\n");
+                    sb.append(attr.getAttributeName()).append("[").append(i).append(",").append(attr.getMaxType()).append(",").append(type).append("]=null\r\n");
                     ps.setNull(i + 1, type);
                 } else {
-                    sb.append(attr.getAttributeName() + "[" + i + "," + attr.getMaxType() + "," + type + "]=" + values[i] + "\r\n");
+                    sb.append(attr.getAttributeName()).append("[").append(i).append(",").append(attr.getMaxType()).append(",").append(type).append("]=").append(values[i] + "\r\n");
                     if ((type == Types.DATE || type == Types.TIME || type == Types.TIMESTAMP)) {
                         java.sql.Timestamp d = DateUtil.toSqlTimestamp(values[i]);
                         ps.setObject(i + 1, d, type);
@@ -113,7 +113,7 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             String key = entry.getKey();
             JxAttribute attr = jas.get(key);
-            if (key.indexOf(".") > 0 || attr == null || !attr.isPersistent()) {
+            if (key.indexOf('.') > 0 || attr == null || !attr.isPersistent()) {
                 continue;
             }
             if (key.equalsIgnoreCase(keyName) && seqname != null && StrUtil.isNull(keyValue)) {
@@ -200,7 +200,7 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             String key = entry.getKey();// 属性名
             JxAttribute attr = jas.get(key);
-            if (key.indexOf(".") > 0 || attr == null || !attr.isPersistent()) {
+            if (key.indexOf('.') > 0 || attr == null || !attr.isPersistent()) {
                 continue;
             }
             JboValue value = jbo.getValue(key, false);
@@ -233,7 +233,7 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
         return res;
     }
 
-    public long insertBlob(Connection conn, String tbName, String uidName, String uidValue, String blobName, InputStream inputs, StringBuffer md5) throws JxException {
+    public long insertBlob(Connection conn, String tbName, String uidName, String uidValue, String blobName, InputStream inputs, StringBuilder md5) throws JxException {
         if (conn == null || StrUtil.isNull(tbName) || StrUtil.isNull(uidName) || StrUtil.isNull(uidValue)) {
             return -1;
         }
@@ -360,7 +360,8 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
      * 
      * @param conn
      * @param jbo
-     * @param clobs <字段名,字段值>
+     * @param clobs
+     *            <字段名,字段值>
      * @return
      * @throws JxException
      */

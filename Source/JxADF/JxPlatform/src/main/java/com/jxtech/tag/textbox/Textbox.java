@@ -51,7 +51,7 @@ public class Textbox extends JxBaseUIBean {
     protected String urlTarget;// 采用Link渲染的时候，链接的Target
     protected String labeltip;// label的提示文字
     protected String valuetip;// 值的提示文字
-    protected boolean isInput;//采用Input控件，还是Textarea控件
+    protected boolean isInput;// 采用Input控件，还是Textarea控件
 
     public Textbox(ValueStack stack, HttpServletRequest request, HttpServletResponse response) {
         super(stack, request, response);
@@ -81,13 +81,11 @@ public class Textbox extends JxBaseUIBean {
             addParameter("rowspan", findString(rowspan));
         }
         addParameter("dataValue", dataValue);
-        addParameter("cause", cause);
-        addParameter("cause2", cause2);
         addParameter("queryValue", queryValue);
         addParameter("queryValue2", queryValue2);
         addParameter("columnAttribute", columnAttribute);
         addParameter("format", format);
-        addParameter("isInput",isInput);
+        addParameter("isInput", isInput);
         if (maxtype != null) {
             addParameter("maxtype", maxtype);
         }
@@ -100,8 +98,12 @@ public class Textbox extends JxBaseUIBean {
         if (buttonType != null) {
             addParameter("buttonType", buttonType);
         }
-        if (cause != null)
+        if (cause != null) {
             addParameter("cause", findString(cause));
+        }
+        if (cause2 != null) {
+            addParameter("cause2", findString(cause2));
+        }
         if (lookup != null) {
             addParameter("lookup", findString(lookup));
         }

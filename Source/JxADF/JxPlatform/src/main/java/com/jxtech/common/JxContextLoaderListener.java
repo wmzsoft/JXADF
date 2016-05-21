@@ -59,7 +59,7 @@ public class JxContextLoaderListener implements ServletContextListener {
                 if (rp.endsWith("/")) {
                     rp = rp.substring(0, rp.length() - 1);
                 }
-                cp = rp.substring(rp.lastIndexOf("/"));
+                cp = rp.substring(rp.lastIndexOf('/'));
             }
             System.setProperty(SysPropertyUtil.WEB_CONTEXT, cp);
             loadOsgiProperty(event, event.getServletContext());

@@ -100,7 +100,7 @@ public class MaxMenuSet extends JboSet implements MaxMenuSetIFace {
      * @return
      */
     public String getPermissionSql() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         sb.append("MAXMENUID in (select menu_id from PUB_ROLE_OPERATION where  OPERATION=1 and role_id in (");
         sb.append("select role_id from PUB_ROLE_USER where upper(user_id)=upper('${jxuserinfo.userid}')))");
         return sb.toString();

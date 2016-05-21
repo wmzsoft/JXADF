@@ -78,7 +78,7 @@ public class CheckboxTag extends JxBaseUITag {
                         if (queryParam != null) {
                             String key;
                             if (cause != null) {
-                                if ("query".equalsIgnoreCase(inputmode) && dataattribute.indexOf(".") > 0) {
+                                if ("query".equalsIgnoreCase(inputmode) && dataattribute.indexOf('.') > 0) {
                                     DataQueryInfo dataQueryInfo = new DataQueryInfo();
                                     key = dataQueryInfo.getRelationShipCauseCondition(jboset.getJboname(), dataattribute, cause);
                                 } else {

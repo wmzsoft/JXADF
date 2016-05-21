@@ -43,7 +43,7 @@ public class FiledownServlet extends HttpServlet {
         } catch (JxException e1) {
             LOG.error(e1.getMessage(),e1);
         }
-        StringBuffer msg = new StringBuffer();
+        StringBuilder msg = new StringBuilder();
         if (acsi != null) {
             try {
                 JboIFace jbo = acsi.queryJbo("attachment_id", id);

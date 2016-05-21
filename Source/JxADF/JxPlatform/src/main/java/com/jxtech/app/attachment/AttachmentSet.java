@@ -40,7 +40,7 @@ public class AttachmentSet extends JboSet implements AttachmentSetIFace {
     public long addAttachment(String code, String ownerid, String filename, String filetype, InputStream inputs, JxUserInfo userinfo, String vfolder) throws JxException {
         Connection conn = JxDataSourceUtil.getConnection(this.getDataSourceName());
         try {
-            StringBuffer md5b = new StringBuffer();
+            StringBuilder md5b = new StringBuilder();
             // long filesize = FileUtil.getMd5OfFile(inputs, md5b);
             String attachmentid = String.valueOf(getJboInstance().getNewSequence());
             DataEdit de = DBFactory.getDataEdit(this.getDbtype(),this.getDataSourceName());
@@ -118,9 +118,9 @@ public class AttachmentSet extends JboSet implements AttachmentSetIFace {
         JboIFace attachment = null;
         try {
             // 根据文档模版id获取附件关系表
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             buffer.append(" STATE='2' and JOB_TYPE_CODE=?");
-            buffer.append("and DATA_FROM=? and ATTACHMENT_ID in( select t.ATTACHMENT_ID from TOP_ATTACHMENT_OBJECT_RELATION t");
+            buffer.append(" and DATA_FROM=? and ATTACHMENT_ID in( select t.ATTACHMENT_ID from TOP_ATTACHMENT_OBJECT_RELATION t");
             buffer.append(" where t.OBJECT_NAME=? and t.OBJECT_ID=? and t.STATE='1')");
             Object[] params = new Object[] { attachmentJbo, attachmentJbo, attachmentJbo, object_id };
             JboSetIFace jboJboSet = JboUtil.getJboSet("TOP_ATTACHMENT");
@@ -145,9 +145,9 @@ public class AttachmentSet extends JboSet implements AttachmentSetIFace {
     public List<JboIFace> findAttachments(String attachmentJbo, String object_id) throws JxException {
         try {
             // 根据文档模版id获取附件关系表
-            StringBuffer buffer = new StringBuffer();
+            StringBuilder buffer = new StringBuilder();
             buffer.append(" STATE='2' and JOB_TYPE_CODE=?");
-            buffer.append("and DATA_FROM=? and ATTACHMENT_ID in( select t.ATTACHMENT_ID from TOP_ATTACHMENT_OBJECT_RELATION t");
+            buffer.append(" and DATA_FROM=? and ATTACHMENT_ID in( select t.ATTACHMENT_ID from TOP_ATTACHMENT_OBJECT_RELATION t");
             buffer.append(" where t.OBJECT_NAME=? and t.OBJECT_ID=? and t.STATE='1')");
             Object[] params = new Object[] { attachmentJbo, attachmentJbo, attachmentJbo, object_id };
             JboSetIFace jboJboSet = JboUtil.getJboSet("TOP_ATTACHMENT");

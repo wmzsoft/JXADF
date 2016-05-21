@@ -29,10 +29,11 @@ public class MoneyUtil {
             String decimalStr;// 小数部分数字
 
             // 初始化：分离整数部分和小数部分
-            if (str.indexOf(".") > 0) {
-                integerStr = str.substring(0, str.indexOf("."));
-                decimalStr = str.substring(str.indexOf(".") + 1);
-            } else if (str.indexOf(".") == 0) {
+            int pos = str.indexOf('.');
+            if (pos > 0) {
+                integerStr = str.substring(0, pos);
+                decimalStr = str.substring(pos + 1);
+            } else if (pos == 0) {
                 integerStr = "";
                 decimalStr = str.substring(1);
             } else {
@@ -89,7 +90,7 @@ public class MoneyUtil {
      * 得到中文金额的整数部分。
      */
     private static String getChineseInteger(int[] integers, boolean isMust5) {
-        StringBuffer chineseInteger = new StringBuffer("");
+        StringBuilder chineseInteger = new StringBuilder("");
         int length = integers.length;
 
         for (int i = 0; i < length; i++) {
@@ -119,7 +120,7 @@ public class MoneyUtil {
      * 得到中文金额的小数部分。
      */
     private static String getChineseDecimal(int[] decimals) {
-        StringBuffer chineseDecimal = new StringBuffer("");
+        StringBuilder chineseDecimal = new StringBuilder("");
         for (int i = 0; i < decimals.length; i++) {
             // 舍去3位小数之后的
             if (i == 3)
