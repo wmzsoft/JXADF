@@ -774,7 +774,7 @@ public abstract class BaseJbo implements JboIFace {
                     String rname = attributeName.substring(0, attributeName.length() - ans[idx].length());
                     // 这里首先放正确的数据进去
                     data.put(attributeName, value);
-                    attrs.put(attributeName,jset.getJxAttribute(ans[idx]));
+                    attrs.put(attributeName, jset.getJxAttribute(ans[idx]));
                     // 将其它字段也放入，这里可能会出错，原因未明
                     Map<String, Object> newd = jid.getData();
                     for (Map.Entry<String, Object> entry : newd.entrySet()) {
@@ -1197,7 +1197,12 @@ public abstract class BaseJbo implements JboIFace {
      * @throws JxException
      */
     private String getRelationKey(String relationname) throws JxException {
-        return StrUtil.contact(getJboName(), ".", relationname, ".", getUidValue()).toUpperCase();
+        String uid = this.getUidValue();
+        if (StrUtil.isNull(uid)) {
+            uid = String.valueOf(this.hashCode());
+            LOG.info("not found uid,gen " + uid);
+        }
+        return StrUtil.contact(getJboName(), ".", relationname, ".", uid).toUpperCase();
     }
 
     /**
@@ -1231,7 +1236,7 @@ public abstract class BaseJbo implements JboIFace {
         if (ship != null) {
             JboSetIFace jbos;// 子记录
 
-            String cacheKey = StrUtil.contact(JxRelationshipDao.CACHE_PREX, name, ".", getUidValue());
+            String cacheKey = key;
             Object cacheJbos = CacheUtil.getBase(cacheKey);
             if (((flag & JxConstant.READ_CACHE) == JxConstant.READ_CACHE) && !isToBeAdd() && cacheJbos instanceof JboSetIFace) {
                 jbos = (JboSetIFace) cacheJbos;

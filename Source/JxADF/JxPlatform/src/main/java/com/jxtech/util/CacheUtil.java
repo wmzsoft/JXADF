@@ -220,6 +220,16 @@ public class CacheUtil {
      */
     public static void putJboSet(JboSetIFace jboset) throws JxException {
         String key = genJboSetKey(jboset, false);// 生成Key
+        putJboSet(key, jboset);
+    }
+
+    /**
+     * 存放JboSet
+     * @param key
+     * @param jboset
+     * @throws JxException
+     */
+    public static void putJboSet(String key, JboSetIFace jboset) throws JxException {
         if (StrUtil.isNull(key)) {
             return;
         }

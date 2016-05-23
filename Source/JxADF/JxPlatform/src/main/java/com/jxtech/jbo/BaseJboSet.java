@@ -779,7 +779,7 @@ public abstract class BaseJboSet implements JboSetIFace {
             dqInfo.setQuickSearchCause("");
             return;
         }
-        String sv = searchValue.toLowerCase().trim();
+        String sv = searchValue.toLowerCase().trim().replaceAll("'", "");
         StringBuilder sb = new StringBuilder();
         Map<String, JxAttribute> attrs = this.getJxAttributes();
         for (Map.Entry<String, JxAttribute> entry : attrs.entrySet()) {

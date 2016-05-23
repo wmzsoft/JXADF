@@ -11,11 +11,11 @@ public class JxAttributeImpl extends com.jxtech.jbo.base.impl.JxAttributeImpl {
     public String getNumOrDateTimeCause() {
         String maxType = this.getMaxType();
         if ("DATE".equals(maxType)) {
-            return "CAST(? as date)";
+            return "CAST(? as datetime )";
         } else if ("DATETIME".equals(maxType)) {
             return "CAST(? as datetime)";
         } else if ("TIME".equals(maxType)) {
-            return "CAST(? as time)";
+            return "CAST(? as datetime)";
         } else if (isNumeric()) {
             return "?";
         }
