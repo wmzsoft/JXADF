@@ -5,9 +5,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLStreamHandler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * 定义自己的协议
  * 
@@ -16,7 +13,6 @@ import org.slf4j.LoggerFactory;
  * 
  */
 public class Handler extends URLStreamHandler {
-    private static final Logger LOG = LoggerFactory.getLogger(Handler.class);
 
     @Override
     protected URLConnection openConnection(URL u) throws IOException {
@@ -33,7 +29,8 @@ public class Handler extends URLStreamHandler {
                 sb.append(System.getProperty(prop, prop));
                 sb.append(fs.substring(idx));
             } else {
-                LOG.debug("路径可能存在问题：" + u.toString());
+                // 这里最好不要使用LOG管理，因为可能需要打包放到java.ext.dir目录中
+                System.out.println("路径可能存在问题：" + u.toString() + "\r\n" + fs);
                 sb.append(fs);
             }
             // LOG.debug(sb.toString());

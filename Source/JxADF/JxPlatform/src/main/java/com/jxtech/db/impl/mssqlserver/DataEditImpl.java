@@ -43,7 +43,6 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
         }
         PreparedStatement ps = null;
         ResultSet rs = null;
-        StringBuilder sb = new StringBuilder();// 用来做调试的。
         int i = 0;
         try {
             int size = values.length;
@@ -56,10 +55,8 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
                 JxAttribute attr = (JxAttribute) columns[i];
                 int type = attr.getSqlType();
                 if (StrUtil.isObjectNull(values[i])) {
-                    sb.append(attr.getAttributeName() + "[" + i + "," + attr.getMaxType() + "," + type + "]=null\r\n");
                     ps.setNull(i + 1, type);
                 } else {
-                    sb.append(attr.getAttributeName() + "[" + i + "," + attr.getMaxType() + "," + type + "]=" + values[i] + "\r\n");
                     if ((type == Types.DATE || type == Types.TIME || type == Types.TIMESTAMP)) {
                         java.sql.Timestamp d = DateUtil.toSqlTimestamp(values[i]);
                         ps.setObject(i + 1, d, type);
@@ -79,7 +76,7 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
             }
             return u;
         } catch (Exception e) {
-            LOG.error(msql + "\r\ni=" + i + ",length=" + values.length + "\r\n" + sb.toString());
+            LOG.error(msql + "\r\ni=" + i + ",length=" + values.length + "\r\n" + columnValue2String(columns, values));
             throw new JxException(e.getMessage());
         } finally {
             JxDataSourceUtil.closeResultSet(rs);

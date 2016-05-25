@@ -12,6 +12,60 @@
         <param-value>/WEB-INF/conf/osgi.config.properties</param-value>
     </context-param>
 
+<!-- ====================SSO==================== -->
+<!-- 用于单点登录 -->
+<filter>
+   <filter-name>CasSingleSignOutFilter</filter-name>
+   <filter-class>com.jxtech.sso.JxSingleSignOutFilter</filter-class>
+</filter>
+<filter>
+  <filter-name>CasAuthenticationFilter</filter-name>
+  <filter-class>com.jxtech.sso.JxAuthenticationFilter</filter-class>
+  <init-param>
+    <param-name>casServerLoginUrl</param-name>
+    <param-value>http://svn.jxtech.net:8080/cas/login</param-value>
+  </init-param>
+  <init-param>
+    <param-name>serverName</param-name>
+    <param-value>http://osgi.jxtech.net</param-value>
+  </init-param>
+</filter>
+<filter>
+  <filter-name>CAS Validation Filter</filter-name>
+  <filter-class>org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter</filter-class>
+  <init-param>
+    <param-name>casServerUrlPrefix</param-name>
+    <param-value>http://svn.jxtech.net:8080/cas</param-value>
+  </init-param>
+  <init-param>
+    <param-name>serverName</param-name>
+    <param-value>http://osgi.jxtech.net</param-value>
+  </init-param>
+</filter>
+<filter>
+   <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+   <filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
+</filter>
+<filter-mapping>
+   <filter-name>CasSingleSignOutFilter</filter-name>
+   <url-pattern>*.action</url-pattern>
+</filter-mapping>
+<filter-mapping>
+    <filter-name>CasAuthenticationFilter</filter-name>
+    <url-pattern>*.action</url-pattern>
+</filter-mapping>
+<filter-mapping>
+    <filter-name>CAS Validation Filter</filter-name>
+    <url-pattern>*.action</url-pattern>
+</filter-mapping>
+<filter-mapping>
+    <filter-name>CAS HttpServletRequest Wrapper Filter</filter-name>
+    <url-pattern>*.action</url-pattern>
+</filter-mapping>
+<listener>
+    <listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+</listener>
+
     <listener>
         <listener-class>com.jxtech.common.JxContextLoaderListener</listener-class>
     </listener>
@@ -68,7 +122,7 @@
         <servlet-class>org.directwebremoting.spring.DwrSpringServlet</servlet-class>
         <init-param>
             <param-name>debug</param-name>
-            <param-value>true</param-value>
+            <param-value>false</param-value>
         </init-param>
         <init-param>
             <param-name>allowGetForSafariButMakeForgeryEasier</param-name>
@@ -110,38 +164,6 @@
         <url-pattern>/filedown</url-pattern>
     </servlet-mapping>
 
-    <servlet>
-        <servlet-name>exportFile</servlet-name>
-        <servlet-class>com.jxtech.servlet.ExportServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MppUpload</servlet-name>
-        <servlet-class>com.jxtech.app.attachment.MppupDBServlet</servlet-class>
-    </servlet><servlet>
-    <servlet-name>ImpFile</servlet-name>
-        <servlet-class>com.jxtech.app.attachment.ImportFileServlet</servlet-class>
-    </servlet>
-    <servlet>
-        <servlet-name>MppDownload</servlet-name>
-        <servlet-class>com.jxtech.app.attachment.MppdownDBServlet</servlet-class>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>exportFile</servlet-name>
-        <url-pattern>/export</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>ImpFile</servlet-name>
-        <url-pattern>/impfile/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MppUpload</servlet-name>
-        <url-pattern>/mppup/*</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>MppDownload</servlet-name>
-        <url-pattern>/mppdown/*</url-pattern>
-    </servlet-mapping>
     
     <mime-mapping>
         <extension>doc</extension>
@@ -154,6 +176,10 @@
     <mime-mapping>
         <extension>xls</extension>
         <mime-type>application/vnd.ms-excel</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>mpp</extension>
+        <mime-type>application/vnd.ms-project</mime-type>
     </mime-mapping>
     <mime-mapping>
         <extension>xml</extension>
@@ -171,9 +197,6 @@
     <welcome-file-list>
         <welcome-file>index.jsp</welcome-file>
     </welcome-file-list>
-    <icon>
-        <small-icon>/skin/default/images/app_small.png</small-icon>
-        <large-icon>/skin/default/images/app_large.png</large-icon>
-    </icon>
-    <description>健新科技OSGI云</description>    
+
+    <description>健新科技</description>    
 </web-app>

@@ -41,7 +41,7 @@ public class SysPropertyUtil {
             System.getProperties().load(is);
             LOG.debug("Load " + filename);
         } catch (Exception ex) {
-            LOG.error("Load " + filename + " properties failed.\r\n" + ex.getMessage());
+            LOG.warn("Load " + filename + " properties failed.\r\n" + ex.getMessage());
         } finally {
             IOUtils.closeQuietly(is);
         }

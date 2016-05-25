@@ -59,7 +59,7 @@ public class MaxAppMenu {
      */
     @SuppressWarnings("unchecked")
     public List<Map<String, Object>> getMaxAppMenu(int visible, String where, boolean permission, boolean workflow) throws SQLException {
-        String cachekey = StrUtil.contact(CACHE_PREX, JxSession.getUserId(), ".", JxSession.getUserLang(), String.valueOf(visible), where, String.valueOf(permission), String.valueOf(workflow));
+        String cachekey = StrUtil.contact(JxSession.getUserId(), ".MAXAPPS.", JxSession.getUserLang(), String.valueOf(visible), where, String.valueOf(permission), String.valueOf(workflow));
         Object objv = CacheUtil.getPermission(cachekey);
         if (objv instanceof List) {
             return (List<Map<String, Object>>) objv;

@@ -103,9 +103,9 @@ public class JxSession {
         CacheUtil.cleanUserCache();// 清空用户缓存
         HttpSession session = getSession();
         if (session != null) {
-            JxSessionID.removeCurrentUser();
-            session.setAttribute(USER_INFO, null);
-            session.setAttribute(APPS, null);
+            JxSessionID.removeCurrentUser();//移出非密码登录的模式
+            //session.setAttribute(USER_INFO, null);
+            //session.setAttribute(APPS, null);
             session.invalidate();
         } else {
             LOG.warn("Session获取出错。");

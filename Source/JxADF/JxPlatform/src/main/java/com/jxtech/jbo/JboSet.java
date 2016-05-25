@@ -532,7 +532,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             StringBuilder cause = new StringBuilder();
             aname = aname.toUpperCase().trim();
             String userid = JxSession.getUserId(getSession());
-            String ckey = StrUtil.contact("securityrestrict.", userid, ".", aname, ".", getJboname(), ".", String.valueOf(elValue));
+            String ckey = StrUtil.contact(userid, ".securityrestrict.", aname, ".", getJboname(), ".", String.valueOf(elValue));
             Object obj = CacheUtil.getPermission(ckey);
             if (obj instanceof String) {
                 return (String) obj;

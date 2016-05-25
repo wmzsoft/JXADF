@@ -842,5 +842,28 @@ public interface JboSetIFace extends Serializable {
      * @param session
      */
     public void setSession(HttpSession session);
+    
+    /**
+     * 通过反射，调用Jbo的方法，无参数
+     * 
+     * @param name
+     *            方法名
+     * @return
+     */
+    public Object invokeGetMethod(String name);
+
+    /**
+     * 通过反射调用Jbo的方法，有参数
+     * 
+     * @param name
+     *            方法名
+     * @param parameterTypes
+     *            参数类型
+     * @param params
+     *            参数值
+     * @return
+     */
+    public Object invokeMethod(String name, Class<?>[] parameterTypes, Object[] params);
+
 
 }

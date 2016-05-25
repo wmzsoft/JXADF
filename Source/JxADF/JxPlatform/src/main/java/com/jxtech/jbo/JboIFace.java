@@ -676,7 +676,7 @@ public interface JboIFace extends Serializable {
      *            参数值
      * @return
      */
-    public Object invokeMethod(String name, Class<?> parameterTypes, Object[] params);
+    public Object invokeMethod(String name, Class<?>[] parameterTypes, Object[] params);
 
     public String getCachekey() throws JxException;
 

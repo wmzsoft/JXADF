@@ -70,6 +70,33 @@ public abstract class DataEditImpl implements DataEdit {
         return true;
     }
 
+    public String columnValue2String(Object[] columns, Object[] values) {
+        if (columns == null || values == null) {
+            return null;
+        }
+        int c = columns.length;
+        int v = values.length;
+        int min = c;
+        if (min > v) {
+            min = v;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < min; i++) {
+            try {
+                JxAttribute attr = (JxAttribute) columns[i];
+                sb.append(attr.getAttributeName()).append("[").append(i).append(",").append(attr.getMaxType()).append(",").append(attr.getSqlType()).append("]=");
+                if (StrUtil.isObjectNull(values[i])) {
+                    sb.append("null\r\n");
+                } else {
+                    sb.append(values[i]).append("\r\n");
+                }
+            } catch (Exception e) {
+                LOG.info(e.getMessage());
+            }
+        }
+        return sb.toString();
+    }
+
     /**
      * true if the first result is a ResultSet object; false if the first result is an update count or there is no result
      */

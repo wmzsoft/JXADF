@@ -43,7 +43,7 @@ public class PermissionImpl extends Permission {
             // 超级管理员,默认有最大的权限,不用做任何判断
             return true;
         }
-        String cachekey = StrUtil.contact(CACHE_PREX, JxSession.getUserId(), ".", url);
+        String cachekey = StrUtil.contact(JxSession.getUserId(), ".url.", url);
         Object obj = CacheUtil.getPermission(cachekey);
         if (obj instanceof Boolean) {
             return ((Boolean) obj).booleanValue();
@@ -150,7 +150,7 @@ public class PermissionImpl extends Permission {
             return true;
         }
         String userid = JxSession.getUserId();
-        String ckey = StrUtil.contact("hasFunctions.",userid, ".", pageid, ".", methodName);
+        String ckey = StrUtil.contact(userid, ".hasFunctions.", pageid, ".", methodName);
         Object obj = CacheUtil.getPermission(ckey);
         if (obj instanceof Boolean) {
             return ((Boolean) obj).booleanValue();

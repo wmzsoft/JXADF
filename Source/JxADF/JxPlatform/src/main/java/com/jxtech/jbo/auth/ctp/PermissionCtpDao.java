@@ -205,8 +205,6 @@ public class PermissionCtpDao implements AuthenticateIFace {
             return null;
         }
         JxUserInfo user = new JxUserInfo();
-        // 放入Session中。
-        JxSession.putSession(JxSession.USER_INFO, user);
         // 设定值
         user.setDisplayname(jbo.getString("displayname"));
         user.setLoginid(jbo.getString("login_id"));
@@ -229,6 +227,8 @@ public class PermissionCtpDao implements AuthenticateIFace {
                 user.setLangcode(map.get(JxUserInfo.LANG_CODE));
             }
         }
+        // 放入Session中。
+        JxSession.putSession(JxSession.USER_INFO, user);
         return user;
     }
 

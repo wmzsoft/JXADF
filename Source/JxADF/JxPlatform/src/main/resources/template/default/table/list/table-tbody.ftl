@@ -99,11 +99,10 @@ $author:wmzsoft@gmail.com
                             <td  <#t>
                                 <#if (col.parameters.width??) >
                                     <#if col.parameters.lookup??>
-
+										<#t>
                                     <#else>
                                         <#lt> width="${col.parameters.width}" <#rt>
                                     </#if>
-
                                 </#if>
                                 <#if (col.parameters.height??) >
                                     <#lt> height="${col.parameters.height}" <#rt>
@@ -119,8 +118,8 @@ $author:wmzsoft@gmail.com
                                 <#else>
                                     <#if ((jbo.isNumeric(col.dataattribute)!false)==true) >
                                         <#lt> align="${col.parameters.align!'right'}" <#rt>
-                                    <#else>
-                                    <#-- <#lt> align="${col.parameters.align!'left'}" <#rt> -->
+                                    <#elseif (col.parameters.isBoolean!false)>
+                                    	<#lt> align="${col.parameters.align!'center'}" <#rt> 
                                     </#if>
                                 </#if>
                                 <#if (col.parameters.lookup??)>

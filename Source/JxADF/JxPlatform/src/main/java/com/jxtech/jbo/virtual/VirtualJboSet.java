@@ -74,6 +74,10 @@ public class VirtualJboSet extends BaseJboSet {
 
     @Override
     public int count() throws JxException {
+        List<JboIFace> list = this.getJbolist();
+        if (list != null) {
+            return list.size();
+        }
         return 0;
     }
 
@@ -145,7 +149,6 @@ public class VirtualJboSet extends BaseJboSet {
         return false;
     }
 
-
     @Override
     public boolean delete(Connection conn, String whereCause, Object[] params) throws JxException {
         // TODO Auto-generated method stub
@@ -173,13 +176,12 @@ public class VirtualJboSet extends BaseJboSet {
     @Override
     public void setWorkflowEngine(String workflowEngine) {
         // TODO Auto-generated method stub
-        
+
     }
 
     @Override
     public int getCount(boolean flag) {
         return super.getCount(false);
     }
-
 
 }

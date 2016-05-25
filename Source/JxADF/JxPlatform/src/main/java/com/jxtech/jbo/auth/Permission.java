@@ -262,7 +262,7 @@ public abstract class Permission implements PermissionIFace {
             return 1;
         }
         String userid = JxSession.getUserId();
-        String key = StrUtil.contact("count.", userid, ".", app, ".");
+        String key = StrUtil.contact(userid, ".count.", app, ".");
         Object obj = CacheUtil.getPermission(key);
         if (obj != null) {
             return (int) obj;

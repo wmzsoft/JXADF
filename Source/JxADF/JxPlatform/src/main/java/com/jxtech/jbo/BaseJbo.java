@@ -648,10 +648,10 @@ public abstract class BaseJbo implements JboIFace {
      *            参数值
      * @return
      */
-    public Object invokeMethod(String name, Class<?> parameterTypes, Object[] params) {
+    public Object invokeMethod(String name, Class<?>[] parameterTypes, Object[] params) {
         try {
             Method m;
-            if (parameterTypes != null) {
+            if (parameterTypes != null && parameterTypes.length > 0) {
                 m = getClass().getMethod(name, parameterTypes);
                 return m.invoke(this, params);
             } else {
@@ -785,7 +785,7 @@ public abstract class BaseJbo implements JboIFace {
                     return value;
                 }
             } catch (Exception e) {
-                LOG.error(e.getMessage());
+                LOG.error(e.getMessage(), e);
             }
         } else {
             LOG.debug("没有得到正确的值，属性：" + attributeName);
@@ -1235,16 +1235,7 @@ public abstract class BaseJbo implements JboIFace {
         JxRelationship ship = JxRelationshipDao.getJxRelationship(jboName, name);
         if (ship != null) {
             JboSetIFace jbos;// 子记录
-
-            String cacheKey = key;
-            Object cacheJbos = CacheUtil.getBase(cacheKey);
-            if (((flag & JxConstant.READ_CACHE) == JxConstant.READ_CACHE) && !isToBeAdd() && cacheJbos instanceof JboSetIFace) {
-                jbos = (JboSetIFace) cacheJbos;
-            } else {
-                jbos = JboUtil.getJboSet(ship.getChild());
-                CacheUtil.putBaseCache(cacheKey, jbos);
-            }
-
+            jbos = JboUtil.getJboSet(ship.getChild());
             String where = ship.getWhereclause();
             String clause = where;
             String pname;

@@ -855,10 +855,10 @@ public abstract class BaseJboSet implements JboSetIFace {
         return null;
     }
 
-    public Object invokeMethod(String name, Class<?> parameterTypes, Object[] params) {
+    public Object invokeMethod(String name, Class<?>[] parameterTypes, Object[] params) {
         try {
             Method m;
-            if (parameterTypes != null) {
+            if (parameterTypes != null && parameterTypes.length > 0) {
                 m = getClass().getMethod(name, parameterTypes);
                 return m.invoke(this, params);
             } else {
@@ -869,6 +869,7 @@ public abstract class BaseJboSet implements JboSetIFace {
             LOG.debug(e.getMessage());
         } catch (NoSuchMethodException e) {
             // 不需处理
+            LOG.debug(e.getMessage());
         } catch (Exception e) {
             LOG.debug(e.getMessage());
         }
@@ -1134,4 +1135,5 @@ public abstract class BaseJboSet implements JboSetIFace {
     public void setSession(HttpSession session) {
         this.session = session;
     }
+
 }
