@@ -85,7 +85,7 @@ public class JxContextLoaderListener implements ServletContextListener {
                         start = realpath.lastIndexOf(File.separatorChar, len - 2);
                         end = len - 1;
                     }
-                    cp = realpath.substring(start, end);
+                    cp = realpath.substring(start, end).replace('\\', '/');
                 } else {
                     cp = "/jxweb";
                 }
