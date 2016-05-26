@@ -1,6 +1,6 @@
 ﻿![JXADF](doc/images/logo.png)
 
-OSGi联盟(OSGi Alliance)官网：http://osgia.com
+官网：http://osgia.com
 
 <a href="http://osgia.com" target="osgi">插件化（OSGi）开源快速开发平台JXADF功能特点</a>：
 
