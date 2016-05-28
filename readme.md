@@ -1,7 +1,5 @@
 ﻿![JXADF](doc/images/logo.png)
 
-官网：http://osgia.com
-
 <a href="http://osgia.com" target="osgi">插件化（OSGi）开源快速开发平台JXADF功能特点</a>：
 
 1、基于OSGi、J2EE
