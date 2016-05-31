@@ -28,6 +28,8 @@ public class JxContextLoaderListener implements ServletContextListener {
     private static final String JAVA_PROTOCOL = "java.protocol.handler.pkgs";
     private static final String JX_PROTOCOL = "jx.java.protocol.handler.pkgs";
     private static final String EXT_DIRS = "java.ext.dirs";
+    public static final String PACKAGES_EXT = "org.osgi.framework.system.packages.extra";
+    public static final String PACKAGES_EXT_JX = "org.osgi.framework.system.packages.jxextra";
 
     @Override
     public void contextInitialized(ServletContextEvent event) {
@@ -91,10 +93,10 @@ public class JxContextLoaderListener implements ServletContextListener {
                 }
             }
             System.setProperty(SysPropertyUtil.WEB_CONTEXT, cp);
-            // 加载OSGi配置信息
-            loadOsgiProperty(event, event.getServletContext());
             // 加载其它配置信息
             SysPropertyUtil.loadSystemProperty();
+            // 加载OSGi配置信息
+            loadOsgiProperty(event, event.getServletContext());
             // 初始化缓存
             CacheUtil.initCache();
         } catch (Exception e) {
@@ -122,6 +124,20 @@ public class JxContextLoaderListener implements ServletContextListener {
         try {
             is = servletContext.getResourceAsStream(configPropsFileValue);
             System.getProperties().load(is);
+            // 加载额外的配置信息
+            String jxexts = System.getProperty(PACKAGES_EXT_JX);
+            if (!StrUtil.isNull(jxexts)) {
+                String[] exts = jxexts.split(",");
+                StringBuilder osb = new StringBuilder(System.getProperty(PACKAGES_EXT));
+                for (int i = 0; i < exts.length; i++) {
+                    String e = exts[i].trim();
+                    if (e.length() > 1 && osb.indexOf(e) < 0) {
+                        osb.append(',').append(e);
+                    }
+                }
+                LOG.debug(osb.toString());
+                System.setProperty(PACKAGES_EXT, osb.toString());
+            }
         } catch (Exception ex) {
             LOG.error("Load osgi properties failed.\r\n" + ex.getMessage(), ex);
         } finally {

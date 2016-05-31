@@ -227,5 +227,15 @@ public class DataQueryImpl extends com.jxtech.db.impl.DataQueryImpl {
     public String date2YearMonth(String str) {
         return "to_char(" + str + ",'yyyy-mm')";
     }
+    
+    @Override
+    public String date2Month(String str) {
+        return "to_char(" + str + ",'mm')";
+    }
+    
+    @Override
+    public String column2substr(String str,int start,int length){
+        return "substr("+ str+","+ start+","+  length+")";
+    }
 
 }

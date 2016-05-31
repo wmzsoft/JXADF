@@ -49,4 +49,5 @@
 	<logger name="com.jxtech.jbo.util.DataQuery" level="INFO" />
 	<logger name="com.opensymphony" level="WARN" />
 	<logger name="org.apache" level="WARN" />
+	<logger name="org.apache.felix.main" level="DEBUG" />
 </configuration>

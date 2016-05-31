@@ -490,5 +490,15 @@ public abstract class DataQueryImpl implements DataQuery {
     public String date2YearMonth(String str){
         return null;
     };
+    
+    @Override
+    public String date2Month(String str) {
+        return null;
+    }
+    
+    @Override
+    public String column2substr(String str,int start,int length){
+        return null;
+    }
 
 }

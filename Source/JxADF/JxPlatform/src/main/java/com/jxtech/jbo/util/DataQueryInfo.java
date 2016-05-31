@@ -89,6 +89,7 @@ public class DataQueryInfo implements java.io.Serializable {
         if (orderby != null) {
             id.append(orderby);
         }
+        id.append(selectColumn).append(groupby);
         id.append(pageSize).append('.');
         id.append(pageNum).append('.');
         // 一定要转换为字符串再取Hashcode，否则每次取的得值不一样。

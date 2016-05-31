@@ -251,7 +251,7 @@ public abstract class BaseJboSet implements JboSetIFace {
     @Override
     public List<JboIFace> query(String shipname) throws JxException {
         if (canCache()) {
-            String key = CacheUtil.genJboSetKey(this, true);
+            String key = CacheUtil.genJboSetKey(this, false);
             return CacheUtil.getJboSetList(key);
         }
         return null;

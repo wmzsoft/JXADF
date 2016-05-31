@@ -1200,7 +1200,7 @@ public abstract class BaseJbo implements JboIFace {
         String uid = this.getUidValue();
         if (StrUtil.isNull(uid)) {
             uid = String.valueOf(this.hashCode());
-            LOG.info("not found uid,gen " + uid);
+            LOG.info(relationname + " not found uid,gen " + uid);
         }
         return StrUtil.contact(getJboName(), ".", relationname, ".", uid).toUpperCase();
     }

@@ -240,4 +240,18 @@ public interface DataQuery {
      * @return
      */
     public String date2YearMonth(String str);
+    /**
+     * 获取数据库日期字段的月份，用作查询条件格式为mm
+     * @param str
+     * @return
+     */
+    public String date2Month(String str);
+    /**
+     * 将数据库字段按照指定的要求进行截取，用作查询条件
+     * @param str
+     * @param start
+     * @param length
+     * @return
+     */
+    public String column2substr(String str,int start,int length);
 }

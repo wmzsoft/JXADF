@@ -132,6 +132,12 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         // 读取缓存
         List<JboIFace> jbolist = CacheUtil.getJboSetList(CacheUtil.genJboSetKey(this, false));
         if (jbolist != null) {
+            setJbolist(jbolist);
+            if (jbolist.isEmpty()) {
+                currentJbo = null;
+            } else {
+                currentJbo = jbolist.get(0);
+            }
             return jbolist;
         }
         DataQuery dq = DBFactory.getDataQuery(this.getDbtype(), getDataSourceName());
@@ -252,6 +258,10 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     public List<JboIFace> query(String shipname) throws JxException {
         List<JboIFace> jbolist = super.query(shipname);// 读取缓存
         if (jbolist != null) {
+            setJbolist(jbolist);
+            if (!jbolist.isEmpty()){
+                this.currentJbo = jbolist.get(0);
+            }
             return jbolist;
         }
         DataQueryInfo dqi = getQueryInfo();
