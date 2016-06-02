@@ -1386,7 +1386,7 @@ public abstract class BaseJbo implements JboIFace {
                 flag = jxAttribute.getFlag();
             }
             JboValue value = new JboValue(attributeName, null, flag);
-            if (data != null) {
+            if (data != null && data.containsKey(attributeName)) {
                 value.setValue(data.get(attributeName));
             }
             values.put(attributeName, value);

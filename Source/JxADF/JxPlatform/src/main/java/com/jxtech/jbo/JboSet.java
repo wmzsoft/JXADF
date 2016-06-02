@@ -456,6 +456,10 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             if (bflag) {
                 LOG.debug("数据保存成功。");
                 JxDataSourceUtil.commit(conn);
+                if (canCache()){
+                    //清除缓存
+                    CacheUtil.removeJboOfStartWith(StrUtil.contact(getJboname(),"."));
+                }
                 setFlag();
             } else {
                 LOG.info("数据保存失败。");
