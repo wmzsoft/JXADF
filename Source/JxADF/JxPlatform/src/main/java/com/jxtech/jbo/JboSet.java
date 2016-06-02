@@ -259,7 +259,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         List<JboIFace> jbolist = super.query(shipname);// 读取缓存
         if (jbolist != null) {
             setJbolist(jbolist);
-            if (!jbolist.isEmpty()){
+            if (!jbolist.isEmpty()) {
                 this.currentJbo = jbolist.get(0);
             }
             return jbolist;
@@ -558,7 +558,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
                 cause.append(app.get(0).getString("RESTRICTIONS"));
             }
             // 获得是否需要限制条件
-            DataQuery dq = DBFactory.getDataQuery(this.getDbtype(), this.getDataSourceName());
+            DataQuery dq = DBFactory.getDataQuery(null, null);
             int c = dq.count("pub_role", "role_type=1 and role_id in (select role_id from pub_role_user where user_id=?)", new Object[] { userid });
             if (c <= 0) {
                 // 获得角色限制条件

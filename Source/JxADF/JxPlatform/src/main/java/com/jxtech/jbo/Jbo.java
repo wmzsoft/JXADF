@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 /**
  * 每条记录的所有信息
@@ -90,13 +91,20 @@ public class Jbo extends BaseJbo implements JboIFace {
     /**
      * 可以按自己的业务逻辑重新指定用户
      * 
-     * @param curAct 当前节点
-     * @param nextAct 下一节点
-     * @param assign 当前工作流引擎计算出来的用户信息。<用户ID、用户名>
-     * @param agree 参见：JxConstant.WORKFLOW_ROUTE_XXX
-     * @param note 工作流备注
-     * @param tousers 指定用户,从页面中指定的用户,以逗号分隔
-     * @param options 选项，暂时无使用
+     * @param curAct
+     *            当前节点
+     * @param nextAct
+     *            下一节点
+     * @param assign
+     *            当前工作流引擎计算出来的用户信息。<用户ID、用户名>
+     * @param agree
+     *            参见：JxConstant.WORKFLOW_ROUTE_XXX
+     * @param note
+     *            工作流备注
+     * @param tousers
+     *            指定用户,从页面中指定的用户,以逗号分隔
+     * @param options
+     *            选项，暂时无使用
      * @return 重新指定的用户，<用户ID、用户名>
      * @throws JxException
      */
@@ -172,7 +180,8 @@ public class Jbo extends BaseJbo implements JboIFace {
     /**
      * 将与之相关联的等待工作流改为待办
      * 
-     * @param jbo 需要将等待变为正常的对象
+     * @param jbo
+     *            需要将等待变为正常的对象
      */
     @Override
     public void routeHoldon(JboIFace jbo) throws JxException {
@@ -225,11 +234,13 @@ public class Jbo extends BaseJbo implements JboIFace {
                     setObject(prama, mppValue);
                 }
             }
-            if (null != initMap) {// 页面转递过来初始化数据
-                for (Map.Entry<String, String> entry : initMap.entrySet()){
+            if (null != initMap && !initMap.isEmpty()) {// 页面转递过来初始化数据
+                Iterator<Entry<String, String>> iter = initMap.entrySet().iterator();
+                while (iter.hasNext()) {
+                    Map.Entry<String, String> entry = iter.next();
                     String key = entry.getKey();
-                    if (key !=null){
-                        setObject(key,entry.getValue());
+                    if (key != null) {
+                        setObject(key, entry.getValue());
                     }
                 }
             }

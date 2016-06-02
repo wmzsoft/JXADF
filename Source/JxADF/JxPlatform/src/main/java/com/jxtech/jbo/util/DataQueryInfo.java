@@ -2,8 +2,10 @@ package com.jxtech.jbo.util;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,7 +134,9 @@ public class DataQueryInfo implements java.io.Serializable {
         }
 
         if (params != null) {
-            for (Map.Entry<String, Object> entry : params.entrySet()) {
+            Iterator<Entry<String, Object>> iter = params.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, Object> entry = iter.next();
                 String key = entry.getKey();
                 if (StrUtil.isNull(key)) {
                     continue;

@@ -10,6 +10,7 @@ var bIsWM = sUserAgent.match(/windows mobile/i) == "windows mobile";
 var bIsIE = sUserAgent.match(/msie/i) == "msie";
 var bIsChrome = sUserAgent.match(/chrome/i) == "chrome";
 var bIsFireFox = sUserAgent.match(/firefox/i) == "firefox";
+var bIsSafari = sUserAgent.match(/version\/([\d.]+).*safari/)!=null;
 
 function debug(obj) {
     if (window.console && window.console.log) {
@@ -1099,6 +1100,8 @@ function inputOnChange(me, e) {
         if (e.keyCode == 13 || $input.is(".hasDatepicker")) {
             inputQueryOnBlur(me, e);
         }
+    }else if (bIsSafari && $input.attr("type")=='checkbox'){
+        tableInputOnBlur(me, e);
     }
 }
 
@@ -1147,6 +1150,9 @@ function checkOnChange(me, e) {
             $(me).val(nv);
         } else {
             $(me).val(cv);
+        }
+        if (bIsSafari){
+            inputOnBlur(me,e);
         }
     }
 }

@@ -135,15 +135,12 @@ public class CacheUtil {
         if (StrUtil.isNull(key)) {
             return;
         }
-        CacheManager manager = CacheManager.getInstance();
-        Cache c = manager.getCache(JBO_CACHE);
-        if (c == null) {
-            return;
-        }
-        if (value == null || !value.canCache()) {
-            LOG.debug("remove cache:" + key);
-            c.remove(key);
-        } else {
+        if (value != null && value.canCache()) {
+            CacheManager manager = CacheManager.getInstance();
+            Cache c = manager.getCache(JBO_CACHE);
+            if (c == null) {
+                return;
+            }
             Element element = new Element(key, value);
             c.put(element);
         }
@@ -225,6 +222,7 @@ public class CacheUtil {
 
     /**
      * 存放JboSet
+     * 
      * @param key
      * @param jboset
      * @throws JxException

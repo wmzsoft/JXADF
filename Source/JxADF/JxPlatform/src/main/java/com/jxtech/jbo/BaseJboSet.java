@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -287,8 +288,10 @@ public abstract class BaseJboSet implements JboSetIFace {
                 jbo.setJboValueModifyAll(false);
 
                 Map<String, JboSetIFace> children = jbo.getChildren();
-                if (children != null) {
-                    for (Map.Entry<String, JboSetIFace> entry : children.entrySet()) {
+                if (children != null && !children.isEmpty()) {
+                    Iterator<Entry<String, JboSetIFace>> iter = children.entrySet().iterator();
+                    while (iter.hasNext()) {
+                        Map.Entry<String, JboSetIFace> entry =  iter.next();
                         JboSetIFace childSet = entry.getValue();
                         childSet.setFlag();
                     }
@@ -782,7 +785,9 @@ public abstract class BaseJboSet implements JboSetIFace {
         String sv = searchValue.toLowerCase().trim().replaceAll("'", "");
         StringBuilder sb = new StringBuilder();
         Map<String, JxAttribute> attrs = this.getJxAttributes();
-        for (Map.Entry<String, JxAttribute> entry : attrs.entrySet()) {
+        Iterator<Entry<String, JxAttribute>> iter = attrs.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String, JxAttribute> entry = iter.next();
             String key = entry.getKey();
             if (key.indexOf('.') < 0) {
                 JxAttribute colu = entry.getValue();

@@ -138,7 +138,9 @@ public abstract class BaseJbo implements JboIFace {
             // 不是只读，不是新增，则设置自动编号字段只读
             Map<String, JxAttribute> autokeys = getJboSet().getAutokeysAttributes();
             if (autokeys != null && !autokeys.isEmpty()) {
-                for (Map.Entry<String, JxAttribute> entry : autokeys.entrySet()) {
+                Iterator<Entry<String, JxAttribute>> iter = autokeys.entrySet().iterator();
+                while (iter.hasNext()) {
+                    Map.Entry<String, JxAttribute> entry = iter.next();
                     setReadonly(entry.getKey(), true);
                 }
             }
@@ -211,7 +213,9 @@ public abstract class BaseJbo implements JboIFace {
             orgid = ui.getOrgid();
             siteid = ui.getSiteid();
         }
-        for (Map.Entry<String, JxAttribute> entity : attrs.entrySet()) {
+        Iterator<Entry<String, JxAttribute>> iter = attrs.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String, JxAttribute> entity = iter.next();
             JxAttribute attr = entity.getValue();
             if (attr != null) {
                 String dv = attr.getDefaultValue();
@@ -299,7 +303,9 @@ public abstract class BaseJbo implements JboIFace {
              * setModify(false); setToBeAdd(false); setToBeDel(false); setJboValueModifyAll(false);
              */
             if (children != null) {
-                for (Map.Entry<String, JboSetIFace> entry : children.entrySet()) {
+                Iterator<Entry<String, JboSetIFace>> iter = children.entrySet().iterator();
+                while (iter.hasNext()) {
+                    Map.Entry<String, JboSetIFace> entry = iter.next();
                     flag = flag & entry.getValue().save(conn);
                     if (flag == false) {
                         return flag;
@@ -325,8 +331,10 @@ public abstract class BaseJbo implements JboIFace {
 
     public boolean setJboValueModifyAll(boolean modify) throws JxException {
         getValues();
-        for (Map.Entry<String, JboValue> v : values.entrySet()) {
-            v.getValue().setModify(modify);
+        Iterator<Entry<String, JboValue>> iter = values.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String, JboValue> entry = iter.next();
+            entry.getValue().setModify(modify);
         }
         return true;
     }
@@ -491,9 +499,11 @@ public abstract class BaseJbo implements JboIFace {
         Map<String, Object> iData = jbi.getData();
         String[] ignores = getIgnoreAttributesOfDuplicate();
         // 将对象的值全部复制过来
-        for (Map.Entry<String, Object> entry : data.entrySet()) {
+        Iterator<Entry<String, Object>> iter = data.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String, Object> entry = iter.next();
             String key = entry.getKey();
-            if (!iData.containsKey(entry.getKey()) && !isIgnoreAttributeOfDuplicate(key, ignores)) {
+            if (!iData.containsKey(key) && !isIgnoreAttributeOfDuplicate(key, ignores)) {
                 jbi.setObject(key, entry.getValue());
             }
         }
@@ -777,7 +787,9 @@ public abstract class BaseJbo implements JboIFace {
                     attrs.put(attributeName, jset.getJxAttribute(ans[idx]));
                     // 将其它字段也放入，这里可能会出错，原因未明
                     Map<String, Object> newd = jid.getData();
-                    for (Map.Entry<String, Object> entry : newd.entrySet()) {
+                    Iterator<Entry<String, Object>> iter = newd.entrySet().iterator();
+                    while (iter.hasNext()) {
+                        Map.Entry<String, Object> entry = iter.next();
                         String an = StrUtil.contact(rname, entry.getKey());
                         data.put(an, entry.getValue());// 放入值
                         attrs.put(an, jset.getJxAttribute(entry.getKey()));// 将属性信息放入进去。
@@ -1121,7 +1133,7 @@ public abstract class BaseJbo implements JboIFace {
                     Iterator<Entry<String, JboSetIFace>> it = children.entrySet().iterator();
                     while (it != null && it.hasNext()) {
                         Map.Entry<String, JboSetIFace> child = it.next();
-                        jsf = findRelationship(((JboSetIFace) child.getValue()).getJbo(), relationship, queryAll, executeQuery);
+                        jsf = findRelationship(child.getValue().getJbo(), relationship, queryAll, executeQuery);
                         if (null != jsf) {
                             break;
                         }
@@ -1373,7 +1385,10 @@ public abstract class BaseJbo implements JboIFace {
             if (null != jxAttribute) {
                 flag = jxAttribute.getFlag();
             }
-            JboValue value = new JboValue(attributeName, getObject(attributeName), flag);
+            JboValue value = new JboValue(attributeName, null, flag);
+            if (data != null) {
+                value.setValue(data.get(attributeName));
+            }
             values.put(attributeName, value);
             return value;
         }
@@ -1448,8 +1463,10 @@ public abstract class BaseJbo implements JboIFace {
     public void setReadonlyBesides(String[] attributeNames, boolean flag) throws JxException {
         Map<String, JxAttribute> attrs = getJboSet().getJxAttributes();
         if (attrs != null) {
-            for (Entry<String, JxAttribute> entry : attrs.entrySet()) {
-                this.setReadonly(entry.getKey(), flag);
+            Iterator<Entry<String, JxAttribute>> iter = attrs.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, JxAttribute> entry = iter.next();
+                setReadonly(entry.getKey(), flag);
             }
         }
         setReadonly(attributeNames, !flag);
@@ -1575,7 +1592,9 @@ public abstract class BaseJbo implements JboIFace {
             return null;
         }
         Map<String, Object> datas = new HashMap<String, Object>();
-        for (Map.Entry<String, Object> entry : data.entrySet()) {
+        Iterator<Entry<String, Object>> iter = data.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String, Object> entry = iter.next();
             Object v = entry.getValue();
             if (v != null) {
                 if (v instanceof Clob) {
@@ -1599,7 +1618,9 @@ public abstract class BaseJbo implements JboIFace {
         }
         StringBuilder buf = new StringBuilder();
         buf.append("{");
-        for (Map.Entry<String, Object> entry : data.entrySet()) {
+        Iterator<Entry<String, Object>> iter = data.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String, Object> entry = iter.next();
             buf.append("\"");
             buf.append(entry.getKey());
             buf.append("\":\"");
