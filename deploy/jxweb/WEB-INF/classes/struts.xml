@@ -3,51 +3,52 @@
         "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
         "../xsd/struts-2.3.dtd">
 <struts>
-	<constant name="struts.objectFactory" value="osgi" />
-	<!-- <constant name="struts.objectFactory.delegate" value="struts" /> -->
-	<constant name="struts.objectFactory.delegate" value="springOsgi" />
-	<constant name="struts.i18n.encoding" value="UTF-8" />
-	<constant name="struts.ui.theme" value="default" />
-	<include file="struts-default.xml" />
-	<include file="struts-plugin.xml" />
-	<constant name="struts.devMode" value="false" />
-	<constant name="struts.multipart.maxSize" value="100000000" />
-	<constant name="struts.action.excludePattern" value="/fileup/*,/filedown*"/>
-	<!-- <constant name="struts.convention.action.packages" value="com.jxtech.action" 
-		/> -->
-	<package name="myaction" extends="struts-default" namespace="">
-		
-		<default-action-ref name="error"></default-action-ref>
-		<action name="error">
-			<result>/system/notfoundfile.jsp</result>
-		</action>
-		
-		<action name="app" class="com.jxtech.action.AppAction">
-			<result name="success" type="dispatcher">/WEB-INF/content/${forwordUrl}
-			</result>
-		</action>
-		<action name="lookup" class="com.jxtech.action.LookupAction">
-			<result name="success" type="dispatcher">/WEB-INF/content/${forwordUrl}
-			</result>
-		</action>
-		<action name="json" class="com.jxtech.action.JsonAction">
-			<result name="success" type="dispatcher">/WEB-INF/content/common/json.jsp
-			</result>
-		</action>
-		<action name="tree" class="com.jxtech.action.TreeAction"
-			method="toJson" />
-		<action name="workflowImage" class="com.jxtech.action.WorkflowImageAction"
-			method="showWorkflowImage" />
-		<action name="workflowSteps" class="com.jxtech.action.WorkflowStepsAction"
-			method="showWorkflowSteps" />
-		<action name="ckedituploadimg" class="com.jxtech.action.CKEditorUploadImgAction">
-			<result name="success" type="dispatcher">/WEB-INF/content/common/ckedit.jsp
-			</result>
-		</action>
-	</package>
+    <constant name="struts.objectFactory" value="osgi"/>
+    <!-- <constant name="struts.objectFactory.delegate" value="struts" /> -->
+    <constant name="struts.objectFactory.delegate" value="springOsgi"/>
+    <constant name="struts.i18n.encoding" value="UTF-8"/>
+    <constant name="struts.ui.theme" value="default"/>
+    <include file="struts-default.xml"/>
+    <include file="struts-plugin.xml"/>
+    <constant name="struts.devMode" value="false"/>
+    <constant name="struts.multipart.maxSize" value="100000000"/>
+    <constant name="struts.action.excludePattern" value="/dwr/download/.*,/fileup/*,/filedown*"/>
+    <!-- 缓存Freemarker模板 -->
+    <constant name="struts.freemarker.templatesCache" value="true" />
+    <!-- 
+    <constant name="struts.convention.action.packages" value="com.jxtech.action"/> 
+    -->
+    <package name="myaction" extends="struts-default" namespace="">
+        <!--
+        <default-action-ref name="error"></default-action-ref>
+        <action name="error">
+            <result>/system/notfoundfile.jsp</result>
+        </action>
+        -->
+        <action name="app" class="com.jxtech.action.AppAction">
+            <result name="success" type="dispatcher">/WEB-INF/content/${forwordUrl}
+            </result>
+        </action>
+        <action name="lookup" class="com.jxtech.action.LookupAction">
+            <result name="success" type="dispatcher">/WEB-INF/content/${forwordUrl}
+            </result>
+        </action>
+        <action name="json" class="com.jxtech.action.JsonAction">
+            <result name="success" type="dispatcher">/WEB-INF/content/common/json.jsp
+            </result>
+        </action>
+        <action name="tree" class="com.jxtech.action.TreeAction"
+                method="toJson"/>
+
+        <action name="ckedituploadimg" class="com.jxtech.action.CKEditorUploadImgAction">
+            <result name="success" type="dispatcher">/WEB-INF/content/common/ckedit.jsp
+            </result>
+        </action>
+
+    </package>
     <package name="jsonaction" extends="json-default" namespace="">
         <action name="intergrationServices" class="com.jxtech.integration.services.IntergrationAction">
             <result type="json"/>
         </action>
-    </package>	
+    </package>
 </struts>    

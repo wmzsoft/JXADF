@@ -3,7 +3,7 @@
     String tuid = request.getParameter("tuid");
     String flag = request.getParameter("flag");
 %>
-<jxui:head title="用户管理">
+<jxui:head title="{app.pubdepartment.page.title}">
     <script type='text/javascript' src='<%=path%>/javascript/jquery.md5/jquery.md5.js'></script>
 
     <script type="text/javascript">

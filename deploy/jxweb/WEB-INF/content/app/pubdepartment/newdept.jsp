@@ -3,7 +3,7 @@
     String tuid = request.getParameter("tuid");
     String flag = request.getParameter("flag");
 %>
-<jxui:head title="部门管理">
+<jxui:head title="{app.pubdepartment.page.title}">
     <script type="text/javascript">
         $(function () {
             if ("add" == "<%=request.getParameter("flag")%>") {
@@ -100,40 +100,42 @@
                 <jxui:sectioncol>
                     <jxui:section type="edit">
                         <jxui:sectionrow>
-                            <jxui:textbox dataattribute="NAME" required="true"/>
-														<jxui:select label="{app.pubdepartment.LEADER}"
-														        dataattribute="leader"
-														        jboname="pub_user"
-														        displayname="displayname" displayvalue="user_id"
-                                    ajax="app.action?app=pubdepartment&type=user-list"
-														         />     
+                            <jxui:textbox dataattribute="DEPARTMENT_ID" required="true" label="{app.pubdepartment.DEPARTMENT_ID}"/>
+                            <jxui:textbox dataattribute="NAME" required="true" label="{app.pubdepartment.NAME}"/>
                         </jxui:sectionrow>
-
                         <jxui:sectionrow>
-                            <jxui:multipartTextbox dataattribute="SUPER_DEPARTMENT_ID"
-                                                   id="deptId"
-                                                   descdataattribute="PUB_DEPARTMENTSUPER_DEPARTMENT_ID.NAME"/>
+							<jxui:select label="{app.pubdepartment.SUPER_DEPARTMENT_ID}"
+							        dataattribute="SUPER_DEPARTMENT_ID"
+							        jboname="pub_department"
+							        displayname="name" displayvalue="department_id"
+                                    wherecause="state=1"/>
+                            <jxui:textbox dataattribute="FULL_NAME"/>
+                        </jxui:sectionrow>
+                        <jxui:sectionrow>
                             <jxui:checkbox dataattribute="STATE" label="{app.pubdepartment.STATE}"/>
+							<jxui:select label="{app.pubdepartment.LEADER}"
+							        dataattribute="leader"
+							        jboname="pub_user"
+							        displayname="displayname" displayvalue="user_id"
+                                    ajax="app.action?app=pubdepartment&type=user-list"/>     
                         </jxui:sectionrow>
                         <jxui:sectionrow>
-                            <jxui:textbox dataattribute="DEPARTMENT_CODE" required="false"/>
-                            <jxui:textbox dataattribute="DESCRIPTION"/>
+							<jxui:select label="{app.pubdepartment.PUB_USER.ORGID}"
+							        dataattribute="orgid"
+							        jboname="organization"
+							        wherecause="active=1"
+							        displayname="description"
+							         />     
+							<jxui:select label="{app.pubdepartment.PUB_USER.SITEID}"
+							        dataattribute="siteid"
+							        jboname="site"
+							        wherecause="active=1"
+							        displayname="description"
+							        />     
+                         </jxui:sectionrow>
+                        <jxui:sectionrow>
+                            <jxui:textbox dataattribute="DESCRIPTION" label="{app.pubdepartment.DESCRIPTION}" colspan="3"/>
                         </jxui:sectionrow>
-                                    <jxui:sectionrow>
-																			<jxui:select label="{app.pubdepartment.PUB_USER.ORGID}"
-																			        dataattribute="orgid"
-																			        jboname="organization"
-																			        wherecause="active=1"
-																			        displayname="description"
-																			         />     
-																			<jxui:select label="{app.pubdepartment.PUB_USER.SITEID}"
-																			        dataattribute="siteid"
-																			        jboname="site"
-																			        wherecause="active=1"
-																			        displayname="description"
-																			        />     
-                                    </jxui:sectionrow>
-
                     </jxui:section>
                 </jxui:sectioncol>
             </jxui:sectionrow>
