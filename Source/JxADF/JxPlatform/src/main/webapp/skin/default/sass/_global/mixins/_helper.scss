@@ -1,7 +1,0 @@
-@mixin text-size-adjust($value) {
-    -webkit-text-size-adjust: $value;
-    -moz-text-size-adjust: $value;
-    -ms-text-size-adjust: $value;
-    -o-text-size-adjust: $value;
-    text-size-adjust: $value;
-}
