@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<database>
+	<driver>oracle.jdbc.driver.OracleDriver</driver>
+	<url>jdbc:oracle:thin:@192.168.1.21:1521:maximo</url>
+	<user>maxcsg</user>
+	<password>maxcsg</password>
+</database>

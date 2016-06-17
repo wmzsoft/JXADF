@@ -1,0 +1,881 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd">
+
+	<bean id="help" class="com.jxtech.base.Help">
+		<property name="help">
+			<value>[impfile=fileName]导入的word文件名(完整文件路径名),必填
+[expfile=fileName]保存的文件名
+[log=fileName]输出的文件名
+[siteid=JX]默认地点
+[orgid=JXKJ]默认组织架构
+[storagepartition=MAXIMO_DATA]默认存储
+[storagepartitionIndex=MAXIMO_INDEX]默认索引存储
+[help=Y]获得帮助信息
+[framework=M/J]默认为M代表Maximo平台，J代表健新基建平台				
+			</value>
+		</property>
+		<property name="params">
+			<map>
+				<entry key="SITE.SITEID">  
+					<value>psdi.app.site.FldSiteID</value>  
+				</entry>
+				<entry key="ORGANIZATION.ORGID">  
+					<value>psdi.app.site.FldOrganizationID</value>  
+				</entry>
+				<entry key="PERSON.PERSONID">  
+					<value>psdi.app.person.FldPersonID</value>  
+				</entry>
+				<entry key="MAXLANGCODE.LANGUAGE">
+					<value>psdi.app.system.FldLangCode</value>
+				</entry>
+				<entry key="SYNONYM">  
+					<value>同义词</value>  
+				</entry>
+				<entry key="NUMERIC">  
+					<value>数字</value>  
+				</entry>
+				<entry key="ALN">  
+					<value>字母数字</value>  
+				</entry>
+				<entry key="IgnoreList">  
+					<props>
+						<prop key="CHANGEBY">更改人</prop>
+						<prop key="CHANGEDATE">更改时间</prop>
+						<prop key="HISTORYFLAG">历史标记</prop>
+						<prop key="ORGID">组织</prop>
+						<prop key="HASLD">HASLD</prop>
+						<prop key="LANGCODE">语言</prop>
+					</props>  
+				</entry>
+				<entry key="applink">
+					<props>
+						<prop key="PERSON.PERSONID"> applink="person" lookup="person" menutype="normal" </prop>
+						<prop key="SITE.SITEID">lookup="site"</prop>
+						<prop key="LOCATION.LOCATIONS">lookup="storeroom"</prop>
+					</props>
+				</entry>
+				<entry key="readonly">
+					<props>
+						<prop key="SITEID">SITEID</prop>
+						<prop key="ORGID">ORGID</prop>
+						<prop key="STATUS">STATUS</prop>
+						<prop key="STATUSDATE">STATUSDATE</prop>
+						<prop key="CHANGEBY">CHANGEBY</prop>
+						<prop key="CHANGEDATE">CHANGEDATE</prop>
+					</props>
+				</entry>   
+			</map>
+		</property>
+	</bean>
+	<bean id="header" class="com.jxtech.base.BaseSql">
+		<property name="beforeSql">
+			<list>
+				<value>"--sqlContext.xml 版本 2013.07.23"</value>
+				<value>"--set NLS_LANG=AMERICAN_AMERICA.ZHS16GBK"</value>
+				<value>"--set NLS_LANG=AMERICAN_AMERICA.AL32UTF8"</value>
+				<value>"set feedback off"</value>
+				<value>"set define on"</value>
+				<value>"set echo off"</value>
+				<value>"set newpage none"</value>
+				<value>"set linesize 500"</value>
+				<value>"set verify off"</value>
+				<value>"set pagesize 0"</value>
+				<value>"set term off"</value>
+				<value>"set trims on"</value>			
+				<value>"set heading  off"</value>	
+				<value>"set timing off"</value>	
+				<value>"column dat1 new_value filename;"</value>
+				<value>
+					def logname = "unApp"
+					if (Word.usecase!=null){
+						logname=Word.usecase.appname.value
+					}
+					return "select '"+logname+"'||to_char(sysdate,'yyyymmddhh24miss') dat1 from dual;"
+				</value>
+				<value>"spool &amp;&amp;filename..sql"</value>	
+			</list>
+		</property>
+		<property name="insertSql">
+			<value>
+				def result = "\r\n--备份数据\r\n"
+				Word.domains.each{
+					result +="select 'insert into  maxdomain (DOMAINID,DESCRIPTION,DOMAINTYPE,MAXTYPE,LENGTH,SCALE,MAXDOMAINID,INTERNAL) Values ('''||DOMAINID||''','''||DESCRIPTION||''','''||DOMAINTYPE||''','''||MAXTYPE||''','||NVL(LENGTH,0)||','||NVL(SCALE,0)||',MAXDOMAINSEQ.nextval,'||INTERNAL||');' as maxdomain from maxdomain where domainid='"+it.key+"';\r\n"
+				}
+				Word.synonymdomains.each{
+					result +="select 'insert into  SYNONYMDOMAIN (DOMAINID,DESCRIPTION,MAXVALUE,VALUE,DEFAULTS,ORGID,SITEID,SYNONYMDOMAINID,VALUEID) Values ('''||DOMAINID||''','''||DESCRIPTION||''','''||MAXVALUE||''','''||VALUE||''','||DEFAULTS||','''||ORGID||''','''||SITEID||''',SYNONYMDOMAINSEQ.nextval,'''||VALUEID||''');' as SYNONYMDOMAIN from SYNONYMDOMAIN where domainid='"+it.domainid+"';\r\n"
+				}
+				Word.alndomains.each{
+					if (it.domaintype=="字母数字"){
+						result +="select 'insert into  ALNDOMAIN (DOMAINID,DESCRIPTION,VALUE,ORGID,SITEID,ALNDOMAINID,VALUEID) Values ('''||DOMAINID||''','''||DESCRIPTION||''','''||VALUE||''','''||ORGID||''','''||SITEID||''',ALNDOMAINSEQ.nextval,'''||VALUEID||''');' as ALNDOMAIN from ALNDOMAIN where domainid='"+it.domainid+"';\r\n"
+					}else if (it.domaintype=="数字"){
+						result +="select 'insert into NUMERICDOMAIN (DOMAINID, VALUE, DESCRIPTION, SITEID, ORGID, VALUEID,NUMERICDOMAINID) values ('''||DOMAINID||''','||VALUE||','''||DESCRIPTION||''','''||SITEID||''','''||ORGID||''','''||VALUEID||''',NUMERICDOMAINSEQ.Nextval);' as NUMERICDOMAIN from NUMERICDOMAIN where domainid='"+it.domainid+"';\r\n"
+					}else{
+						result +="--错误："+it.domainid+","+it.domaintype+"\r\n"
+					}
+				}
+				return result
+			</value>
+		</property>
+		<property name="afterSql">
+			<list>
+				<value>"spool off"</value>
+				<value>"set define OFF;"</value>
+				<value>
+					def logname = "unApp"
+					if (Word.usecase!=null){
+						logname=Word.usecase.appname.value
+					}
+					"spool install_"+logname+".log"
+				</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="footer" class="com.jxtech.base.BaseSql">
+		<property name="beforeSql">
+			<list>
+				<value>"-------------------------"</value>
+			</list>
+		</property>
+	</bean>
+	<bean id="maxmodules" class="com.jxtech.base.BaseSql">
+		<property name="beforeSql">
+			<list>
+				<value>"\r\n\r\n--生成模块信息:"+Word.module.description+"："+Word.module.module</value>
+			</list>
+		</property>
+		<property name="delSql">
+			<value>
+				if(Word.framework == "J"){
+					"delete from maxapps where APPTYPE='MODULE' AND APP='"+Word.module.module+"';"
+				} else {
+					"delete from maxmodules where MODULE='"+Word.module.module+"';"
+				}
+			</value>
+		</property>
+		<property name="insertSql">
+			<value>
+			if(Word.framework == "J"){
+			if(Word.module != null){
+				"insert into maxapps (maxappsid, app, description, apptype) values (maxappsidseq.nextval,'" + Word.module.module + "', '" + Word.module.description + "' , 'MODULE');";
+			}
+			} else {
+			"insert into maxmodules (MODULE, DESCRIPTION, MAXMODULESID, ROWSTAMP) values ('"+Word.module.module+"', '"+Word.module.description+"', maxmodulesseq.nextval, maxseq.nextval);"
+			}
+			</value>
+		</property>
+	</bean>
+
+	<bean id="maxapps" class="com.jxtech.base.BaseSql">
+		<property name="beforeSql">
+			<list>
+				<value>"\r\n\r\n--生成应用程序:"+Word.usecase.appname.key+"："+Word.usecase.appname.value</value>
+			</list>
+		</property>
+		<property name="delSql">
+			<value>"delete from maxapps where app='"+Word.usecase.appname.value+"';"</value>
+		</property>
+		<property name="insertSql">
+			<value>
+			if(Word.framework == "J"){
+			if(Word.module != null){
+				"insert into maxapps (maxappsid, app, description, apptype, parent, MAINTBNAME, APPURL)VALUES(maxappsidseq.nextval, '" + Word.usecase.appname.value + "' ,'" + Word.usecase.appname.key +"', 'APP', '" + Word.module.module + "', '" + Word.usecase.maintable + "', '" + Word.usecase.appname.value + "/index.action" + "');"; 
+			}
+			} else {
+			"insert into  maxapps (APP,DESCRIPTION,APPTYPE,RESTRICTIONS,ORDERBY,ORIGINALAPP,CUSTAPPTYPE,MAINTBNAME,MAXAPPSID) Values ('"+Word.usecase.appname.value+"','"+Word.usecase.appname.key+"','RUN',null,null,'CUSTAPP',null,'"+Word.usecase.maintable+"',MAXAPPSSEQ.nextval);"
+			}
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="maxmenu" class="com.jxtech.base.BaseSql">
+		<property name="beforeSql">
+			<list>
+				<value>"\r\n\r\n--生成应用程序菜单:"+Word.usecase.appname.key+"："+Word.usecase.appname.value</value>
+			</list>
+		</property>
+		<property name="delSql">
+			<value>
+				def result = ""
+				if(Word.framework == "J"){
+					result += "delete from maxmenu where app = '" + Word.usecase.appname.value + "';"
+					result += "\r\n"
+				} else {
+					result += "delete from maxmenu where (menutype='MODULE'  and elementtype='APP' and keyvalue='"+Word.usecase.appname.value+"') or (MODULEAPP='"+Word.usecase.appname.value+"' and elementtype not in ('APP','MODULE'));\r\n"
+					result += "delete from sigoption  where app='"+Word.usecase.appname.value+"';\r\n"
+					result += "\r\n"
+				}
+				return result
+				</value>
+		</property>
+		<property name="insertSql">
+			<value>def result = ""
+			if(Word.framework == "J"){
+				
+			} else {
+				result = "insert into  maxmenu (MENUTYPE,MODULEAPP,POSITION,SUBPOSITION,ELEMENTTYPE,KEYVALUE,HEADERDESCRIPTION,URL,VISIBLE,IMAGE,ACCESSKEY,TABDISPLAY,MAXMENUID) Values ('MODULE','"+Word.usecase.module.value+"',"+Word.usecase.apppos+",0,'APP','"+Word.usecase.appname.value+"',null,null,1,null,null,null,MAXMENUSEQ.nextval);\r\n" 
+				Word.usecase.appmenus.each{
+					result += "insert into  maxmenu (MENUTYPE,MODULEAPP,POSITION,SUBPOSITION,ELEMENTTYPE,KEYVALUE,HEADERDESCRIPTION,URL,VISIBLE,IMAGE,ACCESSKEY,TABDISPLAY,MAXMENUID) Values ('"+it.mt+"','"+Word.usecase.appname.value+"',"+it.pos+","+it.sp+",'"+it.et+"','"+it.kv+"','"+it.headerDesc+"',null,1,'"+it.img+"','"+it.key+"','"+it.tdzh+"',MAXMENUSEQ.nextval);\r\n"
+				}			
+				result +="insert into  sigoption (APP,OPTIONNAME,DESCRIPTION,ESIGENABLED,VISIBLE,ALSOGRANTS,ALSOREVOKES,PREREQUISITE,LANGCODE,HASLD,SIGOPTIONID) Values ('"+Word.usecase.appname.value+"','READ','读取"+Word.usecase.appname.key+"',0,1,'CLEAR,BOOKMARK,NEXT,PREVIOUS','ALL',null,'ZH',0,SIGOPTIONSEQ.nextval);\r\n"
+				result +="insert into  sigoption (APP,OPTIONNAME,DESCRIPTION,ESIGENABLED,VISIBLE,ALSOGRANTS,ALSOREVOKES,PREREQUISITE,LANGCODE,HASLD,SIGOPTIONID) Values ('"+Word.usecase.appname.value+"','PUBLICREPT','启用创建报告（特别）公共访问',0,1,null,null,'CREATEREPT','ZH',0,SIGOPTIONSEQ.nextval);\r\n"
+				result +="insert into  sigoption (APP,OPTIONNAME,DESCRIPTION,ESIGENABLED,VISIBLE,ALSOGRANTS,ALSOREVOKES,PREREQUISITE,LANGCODE,HASLD,SIGOPTIONID) Values ('"+Word.usecase.appname.value+"','FIELDDEFS','设置字段缺省值',0,0,null,null,'SAVE','ZH',0,SIGOPTIONSEQ.nextval);\r\n"
+				Word.usecase.appmenus.each{
+					def skv = it.kv.substring(0,2)
+					if ('AM' != skv &amp;&amp; skv != 'SM')
+						result +="insert into  sigoption (APP,OPTIONNAME,DESCRIPTION,ESIGENABLED,VISIBLE,ALSOGRANTS,ALSOREVOKES,PREREQUISITE,LANGCODE,HASLD,SIGOPTIONID) Values ('"+Word.usecase.appname.value+"','"+it.kv+"','"+it.hdd+"',0,"+it.visible+",'"+it.alsogrants+"','"+it.alsorevokes+"','"+it.prerequisite+"','ZH',0,SIGOPTIONSEQ.nextval);\r\n"
+				}
+			}
+			
+			return result
+			</value>			
+		</property>
+		<property name="defaultValue">
+			<list>
+				<value>SM10,高级搜索,10,0,ALL,SEARCHMENU,atb_search.gif,null</value>
+				<value>SEARCHMORE,更多搜索字段,10,10,ALL,SEARCHMENU,null,null</value>
+				<value>SEARCHWHER,Where子句,10,20,ALL,SEARCHMENU,null,null</value>
+				<value>SEARCHTIPS,查看搜索提示,10,30,ALL,SEARCHMENU,null,null</value>
+				<value>SM20,保存查询,20,0,ALL,SEARCHMENU,atb_save.gif,null</value>
+				<value>SEARCHSQRY,保存当前查询,20,10,ALL,SEARCHMENU,null,null</value>
+				<value>SEARCHVMQR,查看/管理查询,20,20,ALL,SEARCHMENU,null,null</value>
+				<value>SEARCHBOOK,书签,30,0,ALL,SEARCHMENU,atb_bookmark.gif,null</value>
+				<value>CREATEREPT,创建报表,9001,0,ALL,OPTION,nav_icon_createQueryBasedReport.gif,null</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="tables" class="com.jxtech.base.BaseSql">
+		<property name="beforeSql">
+			<list>
+				<value>"\r\n\r\n--创建表信息"</value>
+				<value>
+					def result = ""
+					Word.tables.each{
+						result += "Drop Table "+it.tableName+" cascade constraints;\r\n"						
+						result += "Create Table "+it.tableName +"( \r\n"
+						def c = it.columns.size
+						def i = 0						
+						it.columns.each{
+							result += it.columnName +"\t\t\t "+it.columntype.sqltype+",\r\n"
+						}
+						result +="ROWSTAMP	VARCHAR2(40) \r\n);\r\n\r\n"
+						result +="--Drop trigger "+it.tableName+"_T;\r\n"	
+						result +="CREATE OR REPLACE TRIGGER "+it.tableName+"_T BEFORE INSERT OR UPDATE ON " +it.tableName+" FOR EACH ROW \r\n"
+						result +="  DECLARE NEXTVAL INTEGER;\r\n" 
+						result +="  BEGIN \r\n"
+						result +="      SELECT MAXSEQ.NEXTVAL INTO NEXTVAL FROM DUAL; \r\n"
+						result +="      :NEW.ROWSTAMP := NEXTVAL; \r\n"
+						result +="  END;\r\n/\r\n"
+						result +="\r\n"			
+					}
+					return result;
+				</value>
+				<value>"\r\n\r\n--生成系统表信息\r\n"</value>
+			</list>
+		</property>
+		<property name="delSql">
+			<value>
+				def result = "\r\n--删除信息\r\n"
+				Word.tables.each{
+					result += "--:"+it.tableName+"\r\n"
+					result += "delete from autokey          where autokeyname in (select autokeyname from maxattribute where autokeyname is not null and objectname='"+it.tableName+"');\r\n"
+					result += "delete from maxtable         where TABLENAME='"+it.tableName+"';\r\n"
+					result += "delete from maxtablecfg      where TABLENAME='"+it.tableName+"';\r\n"
+					result += "delete from maxobject        where OBJECTNAME='"+it.tableName+"';\r\n"
+					result += "delete from maxobjectcfg     where OBJECTNAME='"+it.tableName+"';\r\n"
+					result += "delete from maxattribute     where OBJECTNAME='"+it.tableName+"';\r\n"
+					result += "delete from maxattributecfg  where OBJECTNAME='"+it.tableName+"';\r\n"
+					result += "delete from maxsequence      where TBNAME='"+it.tableName+"';\r\n"
+					result += "delete from maxsyskeys       where ixname in (select name from maxsysindexes where tbname='"+it.tableName+"');\r\n"
+					result += "delete from maxsysindexes    where tbname='"+it.tableName+"';\r\n"
+					result += "delete from maxlookupmap     where TARGET='"+it.tableName+"' or SOURCE='"+it.tableName+"';\r\n"
+					result += "delete from maxtabledomain   where objectname='"+it.tableName+"';\r\n"
+					result += "delete from longdescription  where ldownertable='"+it.tableName+"';\r\n"
+					result += "delete from maxrelationship  where parent='"+it.tableName+"';\r\n"
+					result += "delete from doclinks         where ownertable='"+it.tableName+"';\r\n"
+					result += "delete from MAXVIEW          where viewname='"+it.tableName+"';\r\n"
+					result += "delete from MAXVIEWCFG       where viewname='"+it.tableName+"';\r\n"
+					result += "delete from MAXVIEWCOLUMN    where viewname='"+it.tableName+"';\r\n"
+					result += "delete from MAXVIEWCOLUMNCFG where viewname='"+it.tableName+"';\r\n"
+					result += "\r\n"				
+				}
+				return result
+			</value>
+		</property>
+		<property name="insertSql">
+			<value>def result = ""
+			Word.tables.each{
+				result += "\r\n--TableName:" + it.tableName +"\r\n"
+				result += "insert into  maxtable     (TABLENAME,ADDROWSTAMP,EAUDITTBNAME,ISAUDITTABLE,STORAGEPARTITION,TEXTSEARCHENABLED,LANGTABLENAME,LANGCOLUMNNAME,UNIQUECOLUMNNAME,ISLANGTABLE,RESTOREDATA,MAXTABLEID,ALTIXNAME,TRIGROOT,CONTENTATTRIBUTE) Values ('"+it.tableName+"',1,null,0,'"+Word.storagepartition+"',0,null,'LANGCODE','"+it.uniqueColumn+"',0,0,MAXTABLESEQ.nextval,null,'"+it.tableName+"',null);\r\n"
+				result += "insert into  maxtablecfg  (TABLENAME,ADDROWSTAMP,EAUDITTBNAME,ISAUDITTABLE,STORAGEPARTITION,TEXTSEARCHENABLED,LANGTABLENAME,LANGCOLUMNNAME,UNIQUECOLUMNNAME,ISLANGTABLE,RESTOREDATA,MAXTABLEID,ALTIXNAME,TRIGROOT,CONTENTATTRIBUTE) Values ('"+it.tableName+"',1,null,0,'"+Word.storagepartition+"',0,null,'LANGCODE','"+it.uniqueColumn+"',0,0,MAXTABLECFGSEQ.nextval,null,'"+it.tableName+"',null);\r\n"
+				result += "insert into  maxobject    (OBJECTNAME,CLASSNAME,DESCRIPTION,EAUDITENABLED,EAUDITFILTER,ENTITYNAME,ESIGFILTER,EXTENDSOBJECT,IMPORTED,ISVIEW,PERSISTENT,SERVICENAME,SITEORGTYPE,USERDEFINED,MAINOBJECT,INTERNAL,MAXOBJECTID,TEXTDIRECTION) Values ('"+it.tableName+"','psdi.mbo.custapp.CustomMboSet','"+it.description+"',0,null,'"+it.tableName+"',null,null,0,0,1,'CUSTAPP','"+it.siteorgtype+"',1,1,0,MAXOBJECTSEQ.nextval,null);\r\n"
+				result += "insert into  maxobjectcfg (OBJECTNAME,CLASSNAME,DESCRIPTION,EAUDITENABLED,EAUDITFILTER,ENTITYNAME,ESIGFILTER,EXTENDSOBJECT,IMPORTED,ISVIEW,PERSISTENT,SERVICENAME,SITEORGTYPE,USERDEFINED,CHANGED,MAINOBJECT,INTERNAL,MAXOBJECTID,TEXTDIRECTION) Values ('"+it.tableName+"','psdi.mbo.custapp.CustomMboSet','"+it.description+"',0,null,'"+it.tableName+"',null,null,0,0,1,'CUSTAPP','"+it.siteorgtype+"',1,'N',1,0,MAXOBJECTCFGSEQ.nextval,null);\r\n"
+				def tbit = it
+				def num = 0 
+				it.columns.each{
+					num ++
+					result +="insert into  maxattribute    (OBJECTNAME,ATTRIBUTENAME,ALIAS,AUTOKEYNAME,ATTRIBUTENO,CANAUTONUM,CLASSNAME,COLUMNNAME,DEFAULTVALUE,DOMAINID,EAUDITENABLED,ENTITYNAME,ESIGENABLED,ISLDOWNER,ISPOSITIVE,LENGTH,MAXTYPE,MUSTBE,REQUIRED,PERSISTENT,PRIMARYKEYCOLSEQ,REMARKS,SAMEASATTRIBUTE,SAMEASOBJECT,SCALE,TITLE,USERDEFINED,SEARCHTYPE,MLSUPPORTED,MLINUSE,HANDLECOLUMNNAME,MAXATTRIBUTEID,LOCALIZABLE,RESTRICTED,TEXTDIRECTION,COMPLEXEXPRESSION) Values ('"+tbit.tableName+"','"+it.columnName+"','"+it.columnName+"','"+it.autokeyname+"',"+num+","+it.canautonum+",'"+it.classname+"','"+it.columnName+"','"+it.defaultValue+"','"+it.domainid+"',0,'"+tbit.tableName+"',0,"+it.isldowner+",0,"+it.columntype.length+",'"+it.columntype.maxtype+"',"+it.columntype.mustbe+","+it.columntype.required+",1,"+it.primarykeycolseq+",'"+it.memo+"','"+it.sameAsAttribute+"','"+it.sameAsObject+"',"+it.columntype.scale+",'"+it.title+"',1,'"+it.columntype.searchtype+"',0,0,null,MAXATTRIBUTESEQ.nextval,0,0,null,null);\r\n";
+					result +="insert into  maxattributecfg (OBJECTNAME,ATTRIBUTENAME,ALIAS,AUTOKEYNAME,ATTRIBUTENO,CANAUTONUM,CLASSNAME,COLUMNNAME,DEFAULTVALUE,DOMAINID,EAUDITENABLED,ENTITYNAME,ESIGENABLED,ISLDOWNER,ISPOSITIVE,LENGTH,MAXTYPE,MUSTBE,REQUIRED,PERSISTENT,PRIMARYKEYCOLSEQ,REMARKS,SAMEASATTRIBUTE,SAMEASOBJECT,SCALE,TITLE,USERDEFINED,CHANGED,SEARCHTYPE,MLSUPPORTED,MLINUSE,HANDLECOLUMNNAME,MAXATTRIBUTEID,RESTRICTED,LOCALIZABLE,TEXTDIRECTION,COMPLEXEXPRESSION) Values ('"+tbit.tableName+"','"+it.columnName+"','"+it.columnName+"','"+it.autokeyname+"',"+num+","+it.canautonum+",'"+it.classname+"','"+it.columnName+"','"+it.defaultValue+"','"+it.domainid+"',0,'"+tbit.tableName+"',0,"+it.isldowner+",0,"+it.columntype.length+",'"+it.columntype.maxtype+"',"+it.columntype.mustbe+","+it.columntype.required+",1,"+it.primarykeycolseq+",'"+it.memo+"','"+it.sameAsAttribute+"','"+it.sameAsObject+"',"+it.columntype.scale+",'"+it.title+"',1,'N','"+it.columntype.searchtype+"',0,0,null,MAXATTRIBUTECFGSEQ.nextval,0,0,null,null);\r\n"
+				}
+				//处理索引
+				result +="--maxsysindexes,maxsyskeys\r\n"
+				num = 0;
+				it.indexs.each{
+					num++
+					result +="insert into  maxsysindexes (NAME,TBNAME,UNIQUERULE,CHANGED,CLUSTERRULE,STORAGEPARTITION,REQUIRED,TEXTSEARCH,MAXSYSINDEXESID) Values ('"+tbit.tableName+"_NDX"+num+"','"+tbit.tableName+"','U','N',0,'"+Word.storagepartitionIndex+"',1,0,MAXSYSINDEXESSEQ.nextval);\r\n"
+					def indexs ="Drop Index "+tbit.tableName+"_NDX"+num+";\r\n"
+					
+					indexs +="Create "
+					if (it.type=="MAINCOLUMN" || it.type=="UNIQUE_INDEX"){
+						indexs +=" UNIQUE "
+					}
+					indexs +=" Index "+tbit.tableName+"_NDX"+num+" ON "+tbit.tableName+"("
+					def ix = 0
+					def ics = it.cols.size()
+					it.cols.each{
+						ix ++
+						result +="insert into  maxsyskeys (IXNAME,COLNAME,COLSEQ,ORDERING,CHANGED,MAXSYSKEYSID) Values ('"+tbit.tableName+"_NDX"+num+"','"+it.columnName+"',"+ix+",'A','N',MAXSYSKEYSSEQ.nextval);\r\n"
+						indexs +=it.columnName
+						if (ix &lt; ics){
+							indexs +=","
+						}
+					}
+					result +=indexs+");\r\n\r\n"
+				}
+				result +="--maxrelationship\r\n"
+				it.columns.each{
+					def rs = " and siteid = :siteid"
+					if (it.sameAsAttribute =="SITEID" || it.sameAsAttribute =="ORGID" || Word.framework=="J"){
+						rs = ""
+					}
+					if (it.sameAsAttribute !="" &amp;&amp; it.sameAsObject !=null){
+						result +="insert into  maxrelationship (NAME, PARENT, CHILD, WHERECLAUSE, REMARKS, MAXRELATIONSHIPID,  CARDINALITY, DBJOINREQUIRED)values ('"+tbit.tableName+it.columnName+"', '"+tbit.tableName+"', '"+it.sameAsObject+"', '"+it.sameAsAttribute+" = :"+it.columnName+rs+" ', 'WordToSql工具自动生成。', MAXRELATIONSHIPSEQ.Nextval, '未定义', 0);\r\n"
+						result +="insert into  maxrelationship (NAME, PARENT, CHILD, WHERECLAUSE, REMARKS, MAXRELATIONSHIPID,  CARDINALITY, DBJOINREQUIRED)values ('"+tbit.tableName+it.columnName+"P', '"+it.sameAsObject+"', '"+tbit.tableName+"', '"+it.columnName+" = :"+it.sameAsAttribute+rs+" ', 'WordToSql工具自动生成P。', MAXRELATIONSHIPSEQ.Nextval, '未定义', 0);\r\n"
+					}
+					if (it.domainid!=""){
+						if (it.domaintype =="SYNONYM"){
+							result +="insert into  maxrelationship (NAME, PARENT, CHILD, WHERECLAUSE, REMARKS, MAXRELATIONSHIPID,  CARDINALITY, DBJOINREQUIRED)values ('"+it.columnName+"DESC', '"+tbit.tableName+"', 'SYNONYMDOMAIN', 'domainid=''"+it.domainid+"'' and value=:"+it.columnName+"', 'WordToSql工具自动生成。', MAXRELATIONSHIPSEQ.Nextval, '未定义', 0);\r\n"
+						}else if (it.domaintype=="ALN"){
+							result +="insert into  maxrelationship (NAME, PARENT, CHILD, WHERECLAUSE, REMARKS, MAXRELATIONSHIPID,  CARDINALITY, DBJOINREQUIRED)values ('"+it.columnName+"DESC', '"+tbit.tableName+"', 'ALNDOMAIN', 'domainid=''"+it.domainid+"'' and value=:"+it.columnName+"', 'WordToSql工具自动生成。', MAXRELATIONSHIPSEQ.Nextval, '未定义', 0);\r\n"
+						}else{
+							result +="--错误："+it.domainid+","+it.domaintype+"\r\n"
+						}
+					}
+				}
+				if (Word.maintable !=null){
+					if (Word.maintable.tableName==tbit.tableName){
+						result +="insert into  maxrelationship (NAME, PARENT, CHILD, WHERECLAUSE, REMARKS, MAXRELATIONSHIPID,  CARDINALITY, DBJOINREQUIRED)values ('DOCLINKS', '"+tbit.tableName+"', 'DOCLINKS', 'ownertable=''"+tbit.tableName+"'' and ownerid=:"+tbit.uniqueColumn+"', 'WordToSql工具自动生成。', MAXRELATIONSHIPSEQ.Nextval, '未定义', 0);\r\n"				
+						if (Word.usecase.workflow){
+							result +="insert into  maxrelationship (NAME, PARENT, CHILD, WHERECLAUSE, REMARKS, MAXRELATIONSHIPID,  CARDINALITY, DBJOINREQUIRED)values ('WFTOOLBAR', '"+tbit.tableName+"', 'WFTOOLBAR', '', 'WordToSql工具自动生成。', MAXRELATIONSHIPSEQ.Nextval, '未定义', 0);\r\n"				
+							result +="insert into  maxrelationship (NAME, PARENT, CHILD, WHERECLAUSE, REMARKS, MAXRELATIONSHIPID,  CARDINALITY, DBJOINREQUIRED)values ('WORKFLOWMAP', '"+tbit.tableName+"', 'WORKFLOWMAP', '', 'WordToSql工具自动生成。', MAXRELATIONSHIPSEQ.Nextval, '未定义', 0);\r\n"				
+							result +="insert into  maxrelationship (NAME, PARENT, CHILD, WHERECLAUSE, REMARKS, MAXRELATIONSHIPID,  CARDINALITY, DBJOINREQUIRED)values ('WFTRANSACTION', '"+tbit.tableName+"', 'WFTRANSACTION', 'ownertable=''"+tbit.tableName+"'' and ownerid=:"+tbit.uniqueColumn+"', 'WordToSql工具自动生成。', MAXRELATIONSHIPSEQ.Nextval, '未定义', 0);\r\n"				
+							result +="insert into  maxrelationship (NAME, PARENT, CHILD, WHERECLAUSE, REMARKS, MAXRELATIONSHIPID,  CARDINALITY, DBJOINREQUIRED)values ('WFASSIGNMENT', '"+tbit.tableName+"', 'WFASSIGNMENT', 'ownertable=''"+tbit.tableName+"'' and wfassignment.ownerid=:"+tbit.uniqueColumn+" and assignstatus in (select value from synonymdomain where domainid=''WFASGNSTATUS'' and maxvalue=''ACTIVE'')', 'WordToSql工具自动生成。', MAXRELATIONSHIPSEQ.Nextval, '未定义', 0);\r\n"														
+						}
+					}
+				}
+				result +="--maxsequence\r\n"
+				it.sequences.each{
+					result +="insert into  maxsequence (RANGE,NAME,MAXVALUE,TBNAME,SEQUENCENAME,MAXRESERVED,MAXSEQUENCEID) Values (null,'"+it+"',null,'"+tbit.tableName+"','"+it+"SEQ',1,MAXSEQUENCESEQ.nextval);\r\n"
+					result +="Drop Sequence "+it+"SEQ;\r\n"
+					result +="Create Sequence "+it+"SEQ minvalue 1 maxvalue 999999999999999 start with 1 increment by 1 cache  20;\r\n"
+					result +="--Drop Index "+tbit.tableName+"_NDX;\r\n"
+					result +="--Create  unique  Index "+tbit.tableName+"_NDX On "+tbit.tableName+" ("+it+");\r\n"
+				}
+				result +="--autokey\r\n"
+				it.columns.each{
+					if (it.autokeyname !=null &amp;&amp; it.autokeyname !=""){						
+						result +="insert into  autokey (PREFIX,SEED,ORGID,SITEID,AUTOKEYNAME,SETID,LANGCODE,AUTOKEYID) Values (null,1000,'"+Word.orgid+"','','"+it.autokeyname+"',null,'ZH',AUTOKEYSEQ.nextval);\r\n"
+					}
+				}
+			}
+			
+			return result;
+			</value>
+		</property>
+		<property name="defaultValue">
+			<list>
+				<value>HASLD,YORN,有详细描述,默认值：0，布尔标志，指示是否存在该记录的任何详细描述。</value>
+				<value>LANGCODE,UPPER(4),语言代码,语言代码</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="domain" class="com.jxtech.base.BaseSql">
+		<property name="delSql">
+			<value>
+				def result = "\r\n--删除值列表--\r\n"
+				Word.alndomains.each{
+					result +=   "delete from maxdomain     where domainid='"+it.domainid+"';\r\n"
+					if ("数字" == it.domaintype ){
+						result += "delete from NUMERICDOMAIN where domainid='"+it.domainid+"';\r\n"
+					}else{
+						result += "delete from ALNDOMAIN     where domainid='"+it.domainid+"';\r\n"
+					}					
+				}
+				Word.synonymdomains.each{
+					result += "delete from maxdomain     where domainid='"+it.domainid+"';\r\n"
+					result += "delete from SYNONYMDOMAIN where domainid='"+it.domainid+"';\r\n"
+				}
+				return result
+			</value>
+		</property>
+		<property name="insertSql">
+			<value>
+				def result ="\r\n"
+				Word.alndomains.each{
+					result += "--值列表:"+it.domainid+","+it.description+"\r\n"
+					result += "insert into  maxdomain (DOMAINID,DESCRIPTION,DOMAINTYPE,MAXTYPE,LENGTH,SCALE,MAXDOMAINID,INTERNAL) Values ('"+it.domainid+"','"+it.description+"','"+it.domaintype+"','"+it.columnType.maxtype+"',"+it.columnType.length+","+it.columnType.scale+",MAXDOMAINSEQ.nextval,0);\r\n"
+					def mit = it
+					it.values.each{
+						if ("数字" == mit.domaintype ){
+							result +="insert into NUMERICDOMAIN (DOMAINID, VALUE, DESCRIPTION, SITEID, ORGID, VALUEID,NUMERICDOMAINID) values ('"+mit.domainid+"',"+it.key+",'"+it.value+"','','','"+mit.domainid+"|"+it.key+"',NUMERICDOMAINSEQ.Nextval);"
+						}else{
+							result += "insert into  ALNDOMAIN (DOMAINID,VALUE,DESCRIPTION,SITEID,ORGID,ALNDOMAINID,VALUEID) Values ('"+mit.domainid+"','"+it.key+"','"+it.value+"',null,null,ALNDOMAINSEQ.nextval,'"+mit.domainid+"|"+it.key+"');\r\n"
+						}
+					}
+				}
+				Word.synonymdomains.each{
+					result += "--值列表:"+it.domainid+","+it.description+"\r\n"
+					result += "insert into  maxdomain (DOMAINID,DESCRIPTION,DOMAINTYPE,MAXTYPE,LENGTH,SCALE,MAXDOMAINID,INTERNAL) Values ('"+it.domainid+"','"+it.description+"','"+it.domaintype+"','"+it.columnType.maxtype+"',"+it.columnType.length+","+it.columnType.scale+",MAXDOMAINSEQ.nextval,0);\r\n"
+					def sit = it
+					it.columns.each{
+						result +="insert into  SYNONYMDOMAIN (DOMAINID,MAXVALUE,VALUE,DESCRIPTION,DEFAULTS,SITEID,ORGID,SYNONYMDOMAINID,VALUEID) Values ('"+sit.domainid+"','"+it.maxvalue+"','"+it.value+"','"+it.description+"',"+it.defaults+",null,null,SYNONYMDOMAINSEQ.nextval,'"+sit.domainid+"|"+it.value+"');\r\n"
+					}
+				}
+				return result
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="virtual" class="com.jxtech.base.BaseSql">
+		<property name="delSql">
+			<value>
+				def result = "\r\n--删除虚拟表--\r\n"
+				Word.usecase.cstatustable.each{
+					result +="\r\n--:"+it+"\r\n"
+					result +="Delete from maxobject       where OBJECTNAME='"+it+"';\r\n"
+					result +="Delete from maxobjectcfg    where OBJECTNAME='"+it+"';\r\n"
+					result +="Delete from maxattribute    where OBJECTNAME='"+it+"';\r\n"
+					result +="Delete from maxattributecfg where OBJECTNAME='"+it+"';\r\n"
+				}
+				return result;
+			</value>
+		</property>
+		<property name="insertSql">
+			<value>
+				def result = "\r\n---配置虚拟表\r\n"
+				Word.usecase.cstatustable.each{
+					result += "----"+it+"\r\n"
+					result += "insert into  maxobject    (OBJECTNAME,CLASSNAME,DESCRIPTION,EAUDITENABLED,EAUDITFILTER,ENTITYNAME,ESIGFILTER,EXTENDSOBJECT,IMPORTED,ISVIEW,PERSISTENT,SERVICENAME,SITEORGTYPE,USERDEFINED,MAINOBJECT,INTERNAL,MAXOBJECTID) Values ('"+it+"',null,'状态虚拟表',0,null,null,null,null,0,0,0,'CUSTAPP','系统',1,0,0,MAXOBJECTSEQ.nextval);\r\n"
+					result += "insert into  maxobjectcfg (OBJECTNAME,CLASSNAME,DESCRIPTION,EAUDITENABLED,EAUDITFILTER,ENTITYNAME,ESIGFILTER,EXTENDSOBJECT,IMPORTED,ISVIEW,PERSISTENT,SERVICENAME,SITEORGTYPE,USERDEFINED,CHANGED,MAINOBJECT,INTERNAL,MAXOBJECTID) Values ('"+it+"',null,'状态虚拟表',0,null,null,null,null,0,0,0,'CUSTAPP','系统',1,'N',0,0,MAXOBJECTCFGSEQ.nextval);\r\n"
+					result += "insert into  maxattribute (OBJECTNAME,ATTRIBUTENAME,ALIAS,AUTOKEYNAME,ATTRIBUTENO,CANAUTONUM,CLASSNAME,COLUMNNAME,DEFAULTVALUE,DOMAINID,EAUDITENABLED,ENTITYNAME,ESIGENABLED,ISLDOWNER,ISPOSITIVE,LENGTH,MAXTYPE,MUSTBE,REQUIRED,PERSISTENT,PRIMARYKEYCOLSEQ,REMARKS,SAMEASATTRIBUTE,SAMEASOBJECT,SCALE,TITLE,USERDEFINED,SEARCHTYPE,MLSUPPORTED,MLINUSE,HANDLECOLUMNNAME,MAXATTRIBUTEID,RESTRICTED,LOCALIZABLE,TEXTDIRECTION,COMPLEXEXPRESSION) Values ('"+it+"','STATUS','STATUS',null,3,0,'psdi.app.common.FldChangeStatus',null,null,null,0,null,0,0,0,20,'UPPER',0,1,0,null,'新状态','STATUS','Leave',0,'新状态',1,'NONE',0,0,null,MAXATTRIBUTESEQ.nextval,0,0,null,null);\r\n"
+					result += "insert into  maxattribute (OBJECTNAME,ATTRIBUTENAME,ALIAS,AUTOKEYNAME,ATTRIBUTENO,CANAUTONUM,CLASSNAME,COLUMNNAME,DEFAULTVALUE,DOMAINID,EAUDITENABLED,ENTITYNAME,ESIGENABLED,ISLDOWNER,ISPOSITIVE,LENGTH,MAXTYPE,MUSTBE,REQUIRED,PERSISTENT,PRIMARYKEYCOLSEQ,REMARKS,SAMEASATTRIBUTE,SAMEASOBJECT,SCALE,TITLE,USERDEFINED,SEARCHTYPE,MLSUPPORTED,MLINUSE,HANDLECOLUMNNAME,MAXATTRIBUTEID,RESTRICTED,LOCALIZABLE,TEXTDIRECTION,COMPLEXEXPRESSION) Values ('"+it+"','MEMO','MEMO',null,1,0,null,null,null,null,0,null,0,0,0,50,'ALN',0,0,0,null,'关于状态更改的注意事项','MEMO','WFTRANSACTION',0,'备忘录',1,'NONE',0,0,null,MAXATTRIBUTESEQ.nextval,0,0,null,null);\r\n"
+					result += "insert into  maxattribute (OBJECTNAME,ATTRIBUTENAME,ALIAS,AUTOKEYNAME,ATTRIBUTENO,CANAUTONUM,CLASSNAME,COLUMNNAME,DEFAULTVALUE,DOMAINID,EAUDITENABLED,ENTITYNAME,ESIGENABLED,ISLDOWNER,ISPOSITIVE,LENGTH,MAXTYPE,MUSTBE,REQUIRED,PERSISTENT,PRIMARYKEYCOLSEQ,REMARKS,SAMEASATTRIBUTE,SAMEASOBJECT,SCALE,TITLE,USERDEFINED,SEARCHTYPE,MLSUPPORTED,MLINUSE,HANDLECOLUMNNAME,MAXATTRIBUTEID,RESTRICTED,LOCALIZABLE,TEXTDIRECTION,COMPLEXEXPRESSION) Values ('"+it+"','STATDATE','STATDATE',null,2,0,'psdi.app.common.FldStatusChangeDate',null,null,null,0,null,0,0,0,10,'DATETIME',0,1,0,null,'状态的更改日期','STATUSDATE','Leave',0,'状态日期',1,'NONE',0,0,null,MAXATTRIBUTESEQ.nextval,0,0,null,null);\r\n"
+					result += "insert into  maxattributecfg (OBJECTNAME,ATTRIBUTENAME,ALIAS,AUTOKEYNAME,ATTRIBUTENO,CANAUTONUM,CLASSNAME,COLUMNNAME,DEFAULTVALUE,DOMAINID,EAUDITENABLED,ENTITYNAME,ESIGENABLED,ISLDOWNER,ISPOSITIVE,LENGTH,MAXTYPE,MUSTBE,REQUIRED,PERSISTENT,PRIMARYKEYCOLSEQ,REMARKS,SAMEASATTRIBUTE,SAMEASOBJECT,SCALE,TITLE,USERDEFINED,CHANGED,SEARCHTYPE,MLSUPPORTED,MLINUSE,HANDLECOLUMNNAME,MAXATTRIBUTEID,RESTRICTED,LOCALIZABLE,TEXTDIRECTION,COMPLEXEXPRESSION) Values ('"+it+"','STATUS','STATUS',null,3,0,'psdi.app.common.FldChangeStatus',null,null,null,0,null,0,0,0,20,'UPPER',0,1,0,null,'新状态','STATUS','Leave',0,'新状态',1,'N','NONE',0,0,null,MAXATTRIBUTECFGSEQ.nextval,0,0,null,null);\r\n"
+					result += "insert into  maxattributecfg (OBJECTNAME,ATTRIBUTENAME,ALIAS,AUTOKEYNAME,ATTRIBUTENO,CANAUTONUM,CLASSNAME,COLUMNNAME,DEFAULTVALUE,DOMAINID,EAUDITENABLED,ENTITYNAME,ESIGENABLED,ISLDOWNER,ISPOSITIVE,LENGTH,MAXTYPE,MUSTBE,REQUIRED,PERSISTENT,PRIMARYKEYCOLSEQ,REMARKS,SAMEASATTRIBUTE,SAMEASOBJECT,SCALE,TITLE,USERDEFINED,CHANGED,SEARCHTYPE,MLSUPPORTED,MLINUSE,HANDLECOLUMNNAME,MAXATTRIBUTEID,RESTRICTED,LOCALIZABLE,TEXTDIRECTION,COMPLEXEXPRESSION) Values ('"+it+"','MEMO','MEMO',null,1,0,null,null,null,null,0,null,0,0,0,50,'ALN',0,0,0,null,'关于状态更改的注意事项','MEMO','WFTRANSACTION',0,'备忘录',1,'N','NONE',0,0,null,MAXATTRIBUTECFGSEQ.nextval,0,0,null,null);\r\n"
+					result += "insert into  maxattributecfg (OBJECTNAME,ATTRIBUTENAME,ALIAS,AUTOKEYNAME,ATTRIBUTENO,CANAUTONUM,CLASSNAME,COLUMNNAME,DEFAULTVALUE,DOMAINID,EAUDITENABLED,ENTITYNAME,ESIGENABLED,ISLDOWNER,ISPOSITIVE,LENGTH,MAXTYPE,MUSTBE,REQUIRED,PERSISTENT,PRIMARYKEYCOLSEQ,REMARKS,SAMEASATTRIBUTE,SAMEASOBJECT,SCALE,TITLE,USERDEFINED,CHANGED,SEARCHTYPE,MLSUPPORTED,MLINUSE,HANDLECOLUMNNAME,MAXATTRIBUTEID,RESTRICTED,LOCALIZABLE,TEXTDIRECTION,COMPLEXEXPRESSION) Values ('"+it+"','STATDATE','STATDATE',null,2,0,'psdi.app.common.FldStatusChangeDate',null,null,null,0,null,0,0,0,10,'DATETIME',0,1,0,null,'状态的更改日期','STATUSDATE','Leave',0,'状态日期',1,'N','NONE',0,0,null,MAXATTRIBUTECFGSEQ.nextval,0,0,null,null);\r\n"
+					result += "insert into  maxrelationship (NAME, PARENT, CHILD, WHERECLAUSE, REMARKS, MAXRELATIONSHIPID,  CARDINALITY, DBJOINREQUIRED)values ('"+it+"', '"+Word.maintable.tableName+"','"+it+"', '', 'WordToSql工具自动生成。状态更改。', MAXRELATIONSHIPSEQ.Nextval, '未定义', 0);\r\n"
+				}
+				return result
+			</value>
+		</property>
+	</bean>
+	
+	<bean id="auth" class="com.jxtech.base.BaseSql">
+		<property name="delSql">
+			<value>
+				"--Delete from applicationauth where app='"+Word.usecase.appname.value+"';"
+			</value>
+		</property>
+		<property name="insertSql">
+			<value>
+				def result = "\r\n--给管理员授权\r\n"
+				result +="insert into applicationauth(GROUPNAME, APP, OPTIONNAME, APPLICATIONAUTHID, CONDITIONNUM, ROWSTAMP) \r\n"
+        result +="    select 'MAXADMIN',app,optionname,applicationauthseq.nextval,null,maxseq.nextval  \r\n"
+				result +="    from (\r\n"
+        result +="          select app,optionname from sigoption where optionname!='FIELDDEFS' and optionname!='NOPORTLET' and app='"+Word.usecase.appname.value+"'\r\n"
+        result +="          minus\r\n"
+        result +="          select app,optionname from applicationauth where groupname='MAXADMIN' and app='"+Word.usecase.appname.value+"'\r\n"
+        result +="         );\r\n"
+			</value>
+		</property>
+	</bean>
+
+	<bean id="maximoui" class="com.jxtech.base.BaseSql">
+		<property name="delSql">
+			<value>
+				"Delete from maxpresentation where app='"+Word.usecase.appname.value+"';\r\n"
+			</value>
+		</property>
+		<property name="insertSql">
+			<value>
+				def app = Word.usecase.appname.value
+				def mboname = Word.usecase.maintable
+				def labels = ["results":"列表","results_showlist":Word.usecase.appname.key,"results_bookmark":"添加到书签"]
+				
+				def ui = "insert into  maxpresentation (APP,PRESENTATION,MAXPRESENTATIONID) Values ('"+Word.usecase.appname.value+"','&lt;?xml version=\"1.0\" encoding=\"UTF-8\"?&gt;\r\n"
+				ui += "&lt;presentation id=\""+app+"\" resultstableid=\"results_showlist\" version=\"7.1.0.0\" mboname=\""+mboname+"\" originalapp=\"CUSTAPP\" &gt;\r\n"
+				ui += "&lt;page id=\"mainrec\" &gt;\r\n"
+				ui += "&lt;include id=\"pageHeader\" /&gt;\r\n"
+				ui += "&lt;clientarea id=\"clientarea\" &gt;\r\n"
+				ui += "',maxpresentationseq.nextval);\r\n"
+				
+				ui +="\r\n--处理列表--\r\n"
+				ui += "\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+				ui += "&lt;tabgroup id=\"maintabs\" style=\"form\" &gt;\r\n"
+				ui += "&lt;tab default=\"true\" id=\"results\" label=\"List\" type=\"list\">\r\n"
+				ui += "&lt;menubar event=\"search\" id=\"actiontoolbar\" sourcemethod=\"getAppSearchOptions\"/&gt;\r\n"
+				ui += "&lt;table datasrc=\"results_showlist\" id=\"results_showlist\" inputmode=\"readonly\" label=\""+Word.usecase.maintable+"s\" mboname=\""+mboname+"\" selectmode=\"multiple\"&gt;\r\n"
+				ui += "&lt;tablebody displayrowsperpage=\"20\" filterable=\"true\" filterexpanded=\"true\" id=\"results_showlist_tablebody\"&gt;\r\n"
+				ui += "' where app='"+app+"'; \r\n"
+
+				if (Word.maintable.autokeyColumn != null){
+					ui += "\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+					ui += "&lt;tablecol dataattribute=\""+Word.maintable.autokeyColumn+"\" filterable=\"false\" hidden=\"false\" id=\"rlt_num\" mxevent=\"toggleselectrow\" mxevent_desc=\"选择行 {0}\" sortable=\"false\" type=\"event\"/&gt;\r\n"
+					ui += "&lt;tablecol dataattribute=\""+Word.maintable.autokeyColumn+"\" id=\"rlt_goto\" mxevent=\"selectrecord\" mxevent_desc=\"转到 %1\" type=\"link\"/&gt;\r\n"
+					ui += "' where app='"+app+"'; \r\n"
+				}
+				
+				def idx = 0
+				ui += "\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+				Word.maintable.columns.each{
+					if (!Word.help.params.IgnoreList.containsKey(it.columnName) &amp;&amp; it.columnName != Word.maintable.uniqueColumn){
+						idx ++
+						ui += "&lt;tablecol dataattribute=\""+it.columnName+"\" id=\"rlt_"+idx+"\""
+						def al = Word.help.params.applink.get(it.sameAsObject+"."+it.sameAsAttribute)
+						if (al !=null &amp;&amp; "null" != al){
+							ui += " "+al
+						}else if (it.columntype.maxtype=="DATE" || it.columntype.maxtype=="DATETIME"){
+							ui += " lookup=\"datelookup\""
+						}else if (it.domainid !=null &amp;&amp; it.domainid !="" &amp;&amp; it.domainid !="null"){
+							ui += " lookup=\"valuelist\""
+						}
+						ui += " /&gt;\r\n"
+						if (idx % 10 ==0){
+							ui +="' where app='"+app+"'; \r\n"
+							ui +="update maxpresentation set presentation=presentation || '\r\n"
+						}
+						labels.put("rlt_"+idx,it.title)
+					}
+				}
+				ui += "&lt;tablecol filterable=\"false\" hidden=\"false\" id=\"results_bookmark\" mxevent=\"BOOKMARK\" mxevent_desc=\"Add to Bookmarks\" mxevent_icon=\"btn_addtobookmarks.gif\" sortable=\"false\" type=\"event\"/&gt;\r\n"
+				ui += "&lt;/tablebody&gt;&lt;/table&gt;&lt;/tab&gt;' where app='"+app+"'; \r\n"
+				
+				ui += "\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+				ui += "&lt;tab id=\"main\" label=\""+Word.usecase.appname.key+"\" type=\"insert\"&gt;\r\n"
+				ui += "&lt;section id=\"ms_i\" &gt;\r\n"
+				ui += "' where app='"+app+"'; \r\n"
+				
+				ui +="\r\n--主界面字段信息--\r\n"
+				ui += "\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+				Word.maintable.columns.each{
+					if (!Word.help.params.IgnoreList.containsKey(it.columnName) &amp;&amp; it.columnName != Word.maintable.uniqueColumn){
+						idx ++
+						ui += "&lt;textbox id=\"mtt_"+idx+"\"  dataattribute=\""+it.columnName+"\"  "
+						if (Word.help.params.readonly.containsKey(it.columnName)){
+							ui +=" inputmode=\"readonly\" "
+						}else{
+							def al = Word.help.params.applink.get(it.sameAsObject+"."+it.sameAsAttribute)
+							if (al !=null &amp;&amp; "null" != al){
+								ui += " "+al
+							}else if (it.columntype.maxtype=="DATE" || it.columntype.maxtype=="DATETIME"){
+								ui += " lookup=\"datelookup\""
+							}else if (it.domainid !=null &amp;&amp; it.domainid !="" &amp;&amp; it.domainid !="null"){
+								ui += " lookup=\"valuelist\""
+							}
+						}
+						ui += " /&gt;\r\n"
+						if (idx % 10 ==0){
+							ui +="' where app='"+app+"'; \r\n"
+							ui +="update maxpresentation set presentation=presentation || '\r\n"
+						}
+						labels.put("mtt_"+idx,it.title)
+					}
+				}
+				ui += "&lt;attachments id=\"doclinks\"/&gt;"
+				ui += "&lt;/section&gt;&lt;/tab&gt;' where app='"+app+"'; \r\n"
+				
+				//工作流应用
+				if (Word.usecase.workflow){
+					//工作流任务分配
+					ui += "\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+					ui +="&lt;tab id=\"wflist\" label=\"工作流\" type=\"main\"&gt;\r\n"
+					ui +="&lt;section id=\"wflists1\"&gt;\r\n"
+					ui +="&lt;sectionrow id=\"wflists2\"&gt;\r\n"
+					ui +="&lt;section id=\"wflists4\"&gt;\r\n"
+					ui +="&lt;table id=\"wflists5\" inputmode=\"readonly\" label=\"工作流任务分配\" orderby=\"assigncode\" relationship=\"WFASSIGNMENT\"&gt;\r\n"
+					ui +="&lt;tablebody filterable=\"true\" filterexpanded=\"false\" id=\"wflists6\"&gt;\r\n"
+					ui +="&lt;tablecol dataattribute=\"assigncode\" id=\"wflists7\"/&gt;\r\n"
+					ui +="&lt;tablecol dataattribute=\"ASSIGNEE.displayname\" id=\"wflists8\"/&gt;\r\n"
+					ui +="&lt;tablecol dataattribute=\"description\" id=\"wflists9\"/&gt;\r\n"
+					ui +="&lt;/tablebody&gt;\r\n"
+					ui +="&lt;/table&gt;\r\n"
+					ui +="&lt;/section&gt;\r\n"
+					ui +="&lt;/sectionrow&gt;' where app='"+app+"'; \r\n"
+					
+					//工作流历史
+					ui += "\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+					ui += "&lt;sectionrow id=\"wflists10\"&gt;\r\n"
+					ui += "&lt;section id=\"wflists11\"&gt;\r\n"
+					ui += "&lt;table id=\"wflistTb\" label=\"历史记录\" orderby=\"changedate\" inputmode=\"readonly\" relationship=\""+Word.maintable.tableName+"STATUS\"&gt;\r\n"
+					ui += "&lt;tablebody displayrowsperpage=\"10\" filterable=\"true\" id=\"wflistTb1\"&gt;\r\n"
+					ui += "&lt;tablecol dataattribute=\"STATUSDESC.DESCRIPTION\" id=\"wflistTb2\"/&gt;\r\n"
+					ui += "&lt;tablecol dataattribute=\""+Word.maintable.tableName+"CHANGEBY.displayname\" id=\"wflistTb3\" label=\"更改人\"/&gt;\r\n"
+					ui += "&lt;tablecol dataattribute=\"CHANGEDATE\" id=\"wflistTb4\" label=\"更改日期\"/&gt;\r\n"
+					ui += "&lt;tablecol dataattribute=\"memo\" id=\"wflistTb5\"/&gt;\r\n"
+					ui += "&lt;/tablebody&gt;\r\n"
+					ui += "&lt;/table&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;/sectionrow&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;/tab&gt;' where app='"+app+"'; \r\n"
+				}
+				
+				
+				//完成关闭标记 
+				ui += "\r\nupdate maxpresentation set presentation=presentation || '&lt;/tabgroup&gt;\r\n&lt;/clientarea&gt;\r\n&lt;include id=\"pageFooter\"/&gt;\r\n&lt;/page&gt;' where app='"+app+"'; \r\n"
+
+				ui +="\r\n--更多搜索框--\r\n"
+				ui += "\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+				ui += "&lt;dialog beanclass=\"psdi.webclient.system.beans.QbeBean\" id=\"searchmore\" inputmode=\"query\" label=\"更多搜索字段\"&gt;\r\n"
+				ui += "&lt;section id=\"qbe_grid2\"&gt;\r\n"
+				ui += "&lt;sectionrow id=\"qbe_grid2_1\"&gt;\r\n"
+				ui += "&lt;sectioncol id=\"qbe_grid2_1_1_col1\"&gt;\r\n"
+				ui += "&lt;section id=\"qbe_grid2_1_1_grid3\"&gt;\r\n"
+				def fromto = "" //日期
+				def numto = ""  //数字
+				Word.maintable.columns.each{
+					if (!Word.help.params.IgnoreList.containsKey(it.columnName) &amp;&amp; it.columnName != Word.maintable.uniqueColumn){
+						idx ++
+						
+						if ("DATE,DATETIME,TIME,DURATION,".indexOf(it.columntype.maxtype)>=0){
+							fromto +="\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+							fromto +="&lt;sectionrow id=\"qbe_date_1_"+idx+"\"&gt;\r\n"
+							fromto +="&lt;sectioncol id=\"qbe_date_2_"+idx+"\"&gt;\r\n"
+							fromto +="&lt;section id=\"qbe_date_3_"+idx+"\"&gt;\r\n"
+							fromto +="&lt;statictext align=\"right\" id=\"qbe_date_4_"+idx+"\" label=\""+it.title+"\"/&gt;\r\n"
+							fromto +="&lt;/section&gt;\r\n"
+							fromto +="&lt;/sectioncol&gt;\r\n"
+							fromto +="&lt;sectioncol id=\"qbe_date_5_"+idx+"\"&gt;\r\n"
+							fromto +="&lt;section id=\"qbe_date_6_"+idx+"\"&gt;\r\n"
+							fromto +="&lt;textbox dataattribute=\""+it.columnName+"\" hidelabel=\"true\" id=\"qbe_7_"+idx+"\" inputmode=\"query\" label=\"\" lookup=\"datelookup\" prepend=\"&amp;gt;=\"/&gt;\r\n"
+							fromto +="&lt;/section&gt;\r\n"
+							fromto +="&lt;/sectioncol&gt;\r\n"
+							fromto +="&lt;sectioncol id=\"qbe_date_8_"+idx+"\"&gt;\r\n"
+							fromto +="&lt;section id=\"qbe_date_9_"+idx+"\"&gt;\r\n"
+							fromto +="&lt;textbox dataattribute=\""+it.columnName+"\" hidelabel=\"true\" id=\"qbe_a1_"+idx+"\" inputmode=\"query\" label=\"\" lookup=\"datelookup\" prepend=\"&amp;lt;=\"/&gt;\r\n"
+							fromto +="&lt;/section&gt;\r\n"
+							fromto +="&lt;/sectioncol&gt;\r\n"
+							fromto +="&lt;/sectionrow&gt;\r\n"
+							fromto +="' where app='"+app+"'; \r\n"						
+						}else if ("AMOUNT,FLOAT,INTEGER,SMALLINT,DECIMAL,NUMBER".indexOf(it.columntype.maxtype)>=0){
+							numto +="\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+							numto +="&lt;sectionrow id=\"qbe_num_1_"+idx+"\"&gt;\r\n"
+							numto +="&lt;sectioncol id=\"qbe_num_2_"+idx+"\"&gt;\r\n"
+							numto +="&lt;section id=\"qbe_num_3_"+idx+"\"&gt;\r\n"
+							numto +="&lt;statictext align=\"right\" id=\"qbe_num_4_"+idx+"\" label=\""+it.title+"\"/&gt;\r\n"
+							numto +="&lt;/section&gt;\r\n"
+							numto +="&lt;/sectioncol&gt;\r\n"
+							numto +="&lt;sectioncol id=\"qbe_num_5_"+idx+"\"&gt;\r\n"
+							numto +="&lt;section id=\"qbe_num_6_"+idx+"\"&gt;\r\n"
+							numto +="&lt;textbox dataattribute=\""+it.columnName+"\" hidelabel=\"true\" id=\"qbe_num7_"+idx+"\" inputmode=\"query\" label=\"\"  prepend=\"&amp;gt;=\"/&gt;\r\n"
+							numto +="&lt;/section&gt;\r\n"
+							numto +="&lt;/sectioncol&gt;\r\n"
+							numto +="&lt;sectioncol id=\"qbe_num_8_"+idx+"\"&gt;\r\n"
+							numto +="&lt;section id=\"qbe_num_9_"+idx+"\"&gt;\r\n"
+							numto +="&lt;textbox dataattribute=\""+it.columnName+"\" hidelabel=\"true\" id=\"qbe_numa1_"+idx+"\" inputmode=\"query\" label=\"\" prepend=\"&amp;lt;=\"/&gt;\r\n"
+							numto +="&lt;/section&gt;\r\n"
+							numto +="&lt;/sectioncol&gt;\r\n"
+							numto +="&lt;/sectionrow&gt;\r\n"
+							numto +="' where app='"+app+"'; \r\n"						
+						}else{
+							ui += "&lt;textbox id=\"mtt_"+idx+"\"  dataattribute=\""+it.columnName+"\"  inputmode=\"query\" "
+							def al = Word.help.params.applink.get(it.sameAsObject+"."+it.sameAsAttribute)
+							if (al !=null &amp;&amp; "null" != al){
+								ui += " "+al
+							}else if (it.domainid !=null &amp;&amp; it.domainid !="" &amp;&amp; it.domainid !="null"){
+								ui += " lookup=\"valuelist\""
+							}
+							ui += " /&gt;\r\n"
+							if (idx % 10 ==0){
+								ui +="' where app='"+app+"'; \r\n"
+								ui +="update maxpresentation set presentation=presentation || '\r\n"
+							}
+						}												
+					}
+				}
+				ui += "&lt;/section&gt;\r\n"
+				ui += "&lt;/sectioncol&gt;\r\n"
+				ui += "&lt;/sectionrow&gt;\r\n"
+				ui += "&lt;/section&gt;\r\n"
+				ui +="' where app='"+app+"'; \r\n"
+				if (fromto !=null &amp;&amp; fromto !=""){					
+					ui +="update maxpresentation set presentation=presentation || '\r\n"
+					ui += "&lt;section id=\"qbe_d1\" label=\"日期\"&gt;\r\n"
+					ui += "&lt;sectionrow id=\"qbe_d21\"&gt;\r\n"
+					ui += "&lt;sectioncol id=\"qbe_d3\"&gt;\r\n"
+					ui += "&lt;section id=\"qbe_d41\"&gt;\r\n"
+					ui += "&lt;sectionrow id=\"qbe_d5\"&gt;\r\n"
+					ui += "&lt;sectioncol id=\"qbe_d6\"&gt;\r\n"
+					ui += "&lt;section id=\"qbe_d7\"&gt;\r\n"
+					ui += "&lt;statictext align=\"center\" id=\"qbe_d8\" label=\"\"/&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;/sectioncol&gt;\r\n"
+					ui += "&lt;sectioncol id=\"qbe_d9\"&gt;\r\n"
+					ui += "&lt;section id=\"qbe_d10\"&gt;\r\n"
+					ui += "&lt;statictext align=\"center\" id=\"qbe_d11\" label=\"自\"/&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;/sectioncol&gt;\r\n"
+					ui += "&lt;sectioncol id=\"qbe_d12\"&gt;\r\n"
+					ui += "&lt;section id=\"qbe_d13\"&gt;\r\n"
+					ui += "&lt;statictext align=\"center\" id=\"qbe_d14\" label=\"至\"/&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;/sectioncol&gt;\r\n"
+					ui += "&lt;/sectionrow&gt;\r\n"
+					ui +="' where app='"+app+"'; \r\n"
+					ui += fromto
+					ui +="update maxpresentation set presentation=presentation || '\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;/sectioncol&gt;\r\n"
+					ui += "&lt;/sectionrow&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui +="' where app='"+app+"'; \r\n"
+				}
+				if (numto !=null &amp;&amp; numto !=""){					
+					ui +="update maxpresentation set presentation=presentation || '\r\n"
+					ui += "&lt;section id=\"qbe_n1\" label=\"数字\"&gt;\r\n"
+					ui += "&lt;sectionrow id=\"qbe_n21\"&gt;\r\n"
+					ui += "&lt;sectioncol id=\"qbe_n3\"&gt;\r\n"
+					ui += "&lt;section id=\"qbe_n41\"&gt;\r\n"
+					ui += "&lt;sectionrow id=\"qbe_n5\"&gt;\r\n"
+					ui += "&lt;sectioncol id=\"qbe_n6\"&gt;\r\n"
+					ui += "&lt;section id=\"qbe_n7\"&gt;\r\n"
+					ui += "&lt;statictext align=\"center\" id=\"qbe_n8\" label=\"\"/&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;/sectioncol&gt;\r\n"
+					ui += "&lt;sectioncol id=\"qbe_n9\"&gt;\r\n"
+					ui += "&lt;section id=\"qbe_n10\"&gt;\r\n"
+					ui += "&lt;statictext align=\"center\" id=\"qbe_n11\" label=\"自\"/&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;/sectioncol&gt;\r\n"
+					ui += "&lt;sectioncol id=\"qbe_n12\"&gt;\r\n"
+					ui += "&lt;section id=\"qbe_d13\"&gt;\r\n"
+					ui += "&lt;statictext align=\"center\" id=\"qbe_n14\" label=\"至\"/&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;/sectioncol&gt;\r\n"
+					ui += "&lt;/sectionrow&gt;\r\n"
+					ui +="' where app='"+app+"'; \r\n"
+					ui += numto
+					ui +="update maxpresentation set presentation=presentation || '\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;/sectioncol&gt;\r\n"
+					ui += "&lt;/sectionrow&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui +="' where app='"+app+"'; \r\n"
+				}
+				ui +="update maxpresentation set presentation=presentation || '\r\n"
+				ui += "&lt;buttongroup id=\"qbe_grid5_1_1_grid6\"&gt;\r\n"
+				ui += "&lt;pushbutton default=\"true\" id=\"qbe_grid5_1_1_grid6_1\" label=\"查找\" mxevent=\"dialogok\"/&gt;\r\n"
+				ui += "&lt;pushbutton id=\"qbe_grid5_1_1_grid6_2\" label=\"清除\" mxevent=\"qbeclear\"/&gt;\r\n"
+				ui += "&lt;pushbutton id=\"qbe_grid5_1_1_grid6_3\" label=\"取消\" mxevent=\"qbecancel\"/&gt;\r\n"
+				ui += "&lt;/buttongroup&gt;\r\n"
+				ui += "&lt;/dialog&gt;\r\n"
+				ui += "' where app='"+app+"'; \r\n"
+
+				
+				//工作流应用
+				if (Word.usecase.workflow){
+					ui += "\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+					ui += "&lt;dialog id=\"viewhist\" label=\"查看历史\"&gt;\r\n"
+					ui += "&lt;table id=\"viewhist_table\" label=\"状态历史记录\" inputmode=\"readonly\" orderby=\"changedate desc\" relationship=\""+app+"STATUS\"&gt;\r\n"
+					ui += "&lt;tablebody displayrowsperpage=\"20\" filterable=\"true\" id=\"viewhist_tablebody\"&gt;\r\n"
+					ui += "&lt;tablecol dataattribute=\"status\" id=\"viewhist_tb_1\"/&gt;\r\n"
+					ui += "&lt;tablecol dataattribute=\"changedate\" id=\"viewhist_tb_2\"/&gt;\r\n"
+					ui += "&lt;tablecol dataattribute=\"changeby\" id=\"viewhist_tb_3\"/&gt;\r\n"
+					ui += "&lt;tablecol dataattribute=\"memo\" id=\"viewhist_tb_4\"/&gt;\r\n"
+					ui += "&lt;/tablebody&gt;\r\n"
+					ui += "&lt;/table&gt;\r\n"
+					ui += "&lt;buttongroup id=\"viewhist_2\"&gt;\r\n"
+					ui += "&lt;pushbutton default=\"true\" id=\"viewhist_2_1\" label=\"确定\" mxevent=\"dialogcancel\"/&gt;\r\n"
+					ui += "&lt;/buttongroup&gt;\r\n"
+					ui += "&lt;/dialog&gt;\r\n"
+					ui += "' where app='"+app+"'; \r\n"
+					
+					ui += "\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+					ui += "&lt;dialog beanclass=\"psdi.webclient.beans.common.ChangeStatusBean\" id=\"status\" label=\"更改状态\" relationship=\""+Word.usecase.cstatustable[0]+"\" savemode=\"ONLOADUNLOAD\"&gt;\r\n"
+					ui += "&lt;section border=\"true\" datasrc=\"MAINRECORD\" id=\"changestatus_1\"&gt;\r\n"
+					ui += "&lt;multiparttextbox dataattribute=\""+Word.maintable.autokeyColumn+"\" descdataattribute=\"description\" descinputmode=\"readonly\" id=\"changestatus_2\" inputmode=\"readonly\"/&gt;\r\n"
+					ui += "&lt;multiparttextbox dataattribute=\"status\" descdataattribute=\"statusdesc.description\" descinputmode=\"readonly\" id=\"changestatus_3\"/&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;section id=\"changestatus_grid1_1_1_grid4\"&gt;\r\n"
+					ui += "&lt;textbox dataattribute=\"memo\" id=\"changestatus_4\" sigoption=\"MEMOABOVESTATUS\"/&gt;\r\n"
+					ui += "&lt;combobox dataattribute=\"status\" id=\"changestatus_1\" smartfilloff=\"true\"/&gt;\r\n"
+					ui += "&lt;textbox dataattribute=\"statdate\" id=\"changestatus_grid1_1_1_grid4_2\" lookup=\"datelookup\"/&gt;\r\n"
+					ui += "&lt;textbox dataattribute=\"memo\" id=\"changestatus_grid1_1_1_grid4_3\" sigoption=\"MEMOBELOWSTATUS\"/&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;buttongroup id=\"changestatus_2x\"&gt;\r\n"
+					ui += "&lt;pushbutton default=\"true\" id=\"changestatus_2_1\" label=\"确定\" mxevent=\"dialogok\"/&gt;\r\n"
+					ui += "&lt;pushbutton id=\"changestatus_2_2\" label=\"取消\" mxevent=\"dialogcancel\"/&gt;\r\n"
+					ui += "&lt;/buttongroup&gt;\r\n"
+					ui += "&lt;/dialog&gt;\r\n"
+					ui += "' where app='"+app+"'; \r\n"
+
+					ui += "\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+					ui += "&lt;dialog beanclass=\"psdi.webclient.beans.common.ChangeStatusBean\" id=\"list_status\" label=\"更改状态\" relationship=\""+Word.usecase.cstatustable[0]+"\" savemode=\"ONUNLOAD\"&gt;\r\n"
+					ui += "&lt;section id=\"list_changestatus_grid1\"&gt;\r\n"
+					ui += "&lt;sectionrow id=\"list_changestatus_grid1_1\"&gt;\r\n"
+					ui += "&lt;sectioncol id=\"list_changestatus_grid1_1_1\"&gt;\r\n"
+					ui += "&lt;section id=\"list_changestatus_grid1_1_1_grid4\"&gt;\r\n"
+					ui += "&lt;textbox dataattribute=\"Memo\" id=\"list_changestatus_grid1_1_1_grid4_4\" sigoption=\"MEMOABOVESTATUS\"/&gt;\r\n"
+					ui += "&lt;combobox dataattribute=\"status\" id=\"list_changestatus_grid1_1_1_grid4_1\" smartfilloff=\"true\"/&gt;\r\n"
+					ui += "&lt;textbox dataattribute=\"statdate\" id=\"list_changestatus_grid1_1_1_grid4_2\" lookup=\"datelookup\"/&gt;\r\n"
+					ui += "&lt;textbox dataattribute=\"Memo\" id=\"list_changestatus_grid1_1_1_grid4_3\" sigoption=\"MEMOBELOWSTATUS\"/&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;/sectioncol&gt;\r\n"
+					ui += "&lt;/sectionrow&gt;\r\n"
+					ui += "&lt;/section&gt;\r\n"
+					ui += "&lt;buttongroup id=\"list_changestatus_2\"&gt;\r\n"
+					ui += "&lt;pushbutton default=\"true\" id=\"list_changestatus_2_1\" label=\"确定\" mxevent=\"dolongop\"/&gt;\r\n"
+					ui += "&lt;pushbutton id=\"list_changestatus_2_2\" label=\"取消\" mxevent=\"dialogcancel\"/&gt;\r\n"
+					ui += "&lt;/buttongroup&gt;\r\n"
+					ui += "&lt;/dialog&gt;\r\n"
+					ui += "' where app='"+app+"'; \r\n"
+								
+				}
+				
+				//书签对话框 
+				ui += "\r\nupdate maxpresentation set presentation=presentation || '\r\n"
+				ui += "&lt;dialog beanclass=\"psdi.webclient.system.beans.ViewBookmarksBean\" id=\"searchbook\" label=\"我的书签\" mboname=\""+mboname+"\"&gt;\r\n"
+				ui += "&lt;table id=\"bookmarks_table\" inputmode=\"readonly\" label=\""+mboname+"s\" selectmode=\"single\"&gt;\r\n"
+				ui += "&lt;tablebody displayrowsperpage=\"20\" filterable=\"true\" id=\"bt_tablebody\"&gt;\r\n"
+				ui += "&lt;tablecol dataattribute=\""+Word.maintable.autokeyColumn+"\" id=\"bt_1\" mxevent=\"selectrecord\" type=\"link\"/&gt;\r\n"
+				ui += "&lt;tablecol dataattribute=\"description\" id=\"bt_2\"/&gt;\r\n"
+				ui += "&lt;tablecol filterable=\"false\" hidden=\"false\" id=\"bookmarks_delete\" mxevent=\"instantdelete\" mxevent_desc=\"Delete\" mxevent_icon=\"btn_delete.gif\" sortable=\"false\" type=\"event\"/&gt;\r\n"
+				ui += "&lt;/tablebody&gt;\r\n"
+				ui += "&lt;/table&gt;\r\n"
+				ui += "&lt;buttongroup id=\"bookmarks_2\"&gt;\r\n"
+				ui += "&lt;pushbutton default=\"true\" id=\"bookmarks_2_1\" label=\"确定\" mxevent=\"dialogok\"/&gt;\r\n"
+				ui += "&lt;/buttongroup&gt;\r\n"
+				ui += "&lt;/dialog&gt;\r\n"
+				ui += "' where app='"+app+"'; \r\n"
+
+
+				ui += "\r\nupdate maxpresentation set presentation=presentation || '&lt;/presentation&gt;' where app='"+app+"'; \r\n"
+				def result ="delete from maxlabels where app='"+app+"';\r\n"
+				labels.each{
+						result +="insert into  maxlabels (APP,ID,PROPERTY,VALUE,MAXLABELSID) Values ('"+app+"','"+it.key+"','label','"+it.value+"',MAXLABELSSEQ.nextval);\r\n"
+				}
+				return ui+"\r\n"+result
+			</value>
+		</property>
+		<property name="afterSql">
+			<list>
+				<value>
+					""
+				</value>
+			</list>
+		</property>
+	</bean>
+</beans>

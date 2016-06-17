@@ -1,0 +1,2840 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tables>
+　 <table name="maxtable">
+　 　 <field>
+　 　 　 <name>TABLENAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ADDROWSTAMP</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>EAUDITTBNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ISAUDITTABLE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>STORAGEPARTITION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>120</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>TEXTSEARCHENABLED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>LANGTABLENAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>LANGCOLUMNNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>UNIQUECOLUMNNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ISLANGTABLE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>RESTOREDATA</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXTABLEID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+         <field>
+　 　 　 <name>ALTIXNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>30</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+        <field>
+　 　 　 <name>TRIGROOT</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>29</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+        <field>
+　 　 　 <name>CONTENTATTRIBUTE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>30</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="maxtablecfg">
+　 　 <field>
+　 　 　 <name>TABLENAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ADDROWSTAMP</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>EAUDITTBNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ISAUDITTABLE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>STORAGEPARTITION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>120</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>TEXTSEARCHENABLED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>LANGTABLENAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>LANGCOLUMNNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>UNIQUECOLUMNNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ISLANGTABLE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>RESTOREDATA</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXTABLEID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+         <field>
+　 　 　 <name>ALTIXNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>30</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+        <field>
+　 　 　 <name>TRIGROOT</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>29</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+        <field>
+　 　 　 <name>CONTENTATTRIBUTE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>30</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="maxobject">
+　 　 <field>
+　 　 　 <name>OBJECTNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CLASSNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>320</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DESCRIPTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>400</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>EAUDITENABLED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>EAUDITFILTER</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>1016</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ENTITYNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ESIGFILTER</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>1016</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>EXTENDSOBJECT</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>IMPORTED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ISVIEW</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>PERSISTENT</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SERVICENAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SITEORGTYPE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>USERDEFINED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAINOBJECT</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>INTERNAL</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXOBJECTID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+         <field>
+　 　 　 <name>TEXTDIRECTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>20</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="maxobjectcfg">
+　 　 <field>
+　 　 　 <name>OBJECTNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CLASSNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>320</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DESCRIPTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>400</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>EAUDITENABLED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>EAUDITFILTER</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>1016</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ENTITYNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ESIGFILTER</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>1016</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>EXTENDSOBJECT</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>IMPORTED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ISVIEW</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>PERSISTENT</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SERVICENAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SITEORGTYPE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>USERDEFINED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CHANGED</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAINOBJECT</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>INTERNAL</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXOBJECTID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+         <field>
+　 　 　 <name>TEXTDIRECTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>20</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="maxattribute">
+　 　 <field>
+　 　 　 <name>OBJECTNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ATTRIBUTENAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ALIAS</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>AUTOKEYNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>160</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ATTRIBUTENO</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CANAUTONUM</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CLASSNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>320</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>COLUMNNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DEFAULTVALUE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DOMAINID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>EAUDITENABLED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ENTITYNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ESIGENABLED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ISLDOWNER</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ISPOSITIVE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>LENGTH</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXTYPE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MUSTBE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>REQUIRED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>PERSISTENT</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>PRIMARYKEYCOLSEQ</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>REMARKS</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4000</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SAMEASATTRIBUTE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SAMEASOBJECT</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SCALE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>TITLE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>320</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>USERDEFINED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SEARCHTYPE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>80</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MLSUPPORTED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MLINUSE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>HANDLECOLUMNNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXATTRIBUTEID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>　  
+　     <field>
+　 　 　 <name>LOCALIZABLE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+        <field>
+　 　 　 <name>RESTRICTED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　     <field>
+　 　 　 <name>TEXTDIRECTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>20</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　     <field>
+　 　 　 <name>COMPLEXEXPRESSION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>20</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>　    
+　 </table>
+　 <table name="maxattributecfg">
+　 　 <field>
+　 　 　 <name>OBJECTNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ATTRIBUTENAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ALIAS</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>AUTOKEYNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>160</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ATTRIBUTENO</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CANAUTONUM</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CLASSNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>320</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>COLUMNNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DEFAULTVALUE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DOMAINID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>EAUDITENABLED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ENTITYNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ESIGENABLED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ISLDOWNER</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ISPOSITIVE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>LENGTH</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXTYPE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MUSTBE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>REQUIRED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>PERSISTENT</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>PRIMARYKEYCOLSEQ</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>REMARKS</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4000</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SAMEASATTRIBUTE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SAMEASOBJECT</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SCALE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>TITLE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>320</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>USERDEFINED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CHANGED</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SEARCHTYPE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>80</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MLSUPPORTED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MLINUSE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>HANDLECOLUMNNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXATTRIBUTEID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+        <field>
+　 　 　 <name>RESTRICTED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　     <field>
+　 　 　 <name>LOCALIZABLE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　     <field>
+　 　 　 <name>TEXTDIRECTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>20</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　     <field>
+　 　 　 <name>COMPLEXEXPRESSION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>20</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="maxsysindexes">
+　 　 <field>
+　 　 　 <name>NAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>TBNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>UNIQUERULE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CHANGED</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CLUSTERRULE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>STORAGEPARTITION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>120</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>REQUIRED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>TEXTSEARCH</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXSYSINDEXESID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="maxsyskeys">
+　 　 <field>
+　 　 　 <name>IXNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>COLNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>COLSEQ</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ORDERING</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CHANGED</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXSYSKEYSID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="maxsequence">
+　 　 <field>
+　 　 　 <name>RANGE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision>15</precision>
+　 　 　 <scale>0</scale>
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>NAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXVALUE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision>15</precision>
+　 　 　 <scale>0</scale>
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>TBNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SEQUENCENAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>84</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXRESERVED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision>15</precision>
+　 　 　 <scale>0</scale>
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+       <field>
+　 　 　 <name>MAXSEQUENCEID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision>15</precision>
+　 　 　 <scale>0</scale>
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="autokey">
+　 　 <field>
+　 　 　 <name>PREFIX</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SEED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ORGID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SITEID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>AUTOKEYNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>160</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SETID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>LANGCODE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>16</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>AUTOKEYID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="MaxRelationShip">
+　 　 <field>
+　 　 　 <name>NAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>PARENT</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CHILD</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>WHERECLAUSE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4000</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>REMARKS</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4000</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXRELATIONSHIPID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+        <field>
+　 　 　 <name>CARDINALITY</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>20</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+        <field>
+　 　 　 <name>DBJOINREQUIRED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="maxdomain">
+　 　 <field>
+　 　 　 <name>DOMAINID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DESCRIPTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>400</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DOMAINTYPE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>80</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXTYPE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>LENGTH</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SCALE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXDOMAINID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+        <field>
+　 　 　 <name>INTERNAL</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="ALNDOMAIN">
+　 　 <field>
+　 　 　 <name>DOMAINID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>VALUE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>1016</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DESCRIPTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>400</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SITEID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ORGID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ALNDOMAINID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+        <field>
+　 　 　 <name>VALUEID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>256</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="SYNONYMDOMAIN">
+　 　 <field>
+　 　 　 <name>DOMAINID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXVALUE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>100</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>VALUE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>160</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DESCRIPTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>1024</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DEFAULTS</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SITEID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ORGID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SYNONYMDOMAINID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+        <field>
+　 　 　 <name>VALUEID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>256</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="CROSSOVERDOMAIN">
+　 　 <field>
+　 　 　 <name>DOMAINID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SOURCEFIELD</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>120</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DESTFIELD</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>120</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>COPYIFNULL</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SITEID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ORGID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CROSSOVERDOMAINID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+		 <field>
+　 　 　 <name>COPYEVENIFSRCNULL</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+		<field>
+　 　 　 <name>COPYONLYIFDESTNULL</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　     <field>
+　 　 　 <name>DESTCONDITION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>12</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+		<field>
+　 　 　 <name>SOURCECONDITION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>12</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+		<field>
+　 　 　 <name>SEQUENCE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="NUMERICDOMAIN">
+　 　 <field>
+　 　 　 <name>DOMAINID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>VALUE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision>10</precision>
+　 　 　 <scale>2</scale>
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DESCRIPTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>400</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SITEID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ORGID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>NUMERICDOMAINID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+        <field>
+　 　 　 <name>VALUEID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>256</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="MAXTABLEDOMAIN">
+　 　 <field>
+　 　 　 <name>DOMAINID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>VALIDTNWHERECLAUSE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4000</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>LISTWHERECLAUSE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4000</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ERRORRESOURCBUNDLE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ERRORACCESSKEY</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>OBJECTNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SITEID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ORGID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>32</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXTABLEDOMAINID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+  <table name="maxapps">
+　 　 <field>
+　 　 　 <name>APP</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>40</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DESCRIPTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>400</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>APPTYPE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>20</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>RESTRICTIONS</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>1016</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ORDERBY</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>1016</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ORIGINALAPP</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>40</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>CUSTAPPTYPE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAINTBNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>72</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXAPPSID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="maxmenu">
+　 　 <field>
+　 　 　 <name>MENUTYPE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>40</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MODULEAPP</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>40</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>POSITION</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SUBPOSITION</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ELEMENTTYPE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>64</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>KEYVALUE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>40</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>HEADERDESCRIPTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>URL</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>1000</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>VISIBLE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>IMAGE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>200</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ACCESSKEY</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>120</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>TABDISPLAY</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>40</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXMENUID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="sigoption">
+　 　 <field>
+　 　 　 <name>APP</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>40</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>OPTIONNAME</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>100</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DESCRIPTION</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>400</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ESIGENABLED</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>VISIBLE</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ALSOGRANTS</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>1016</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ALSOREVOKES</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>1016</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>PREREQUISITE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>1016</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>LANGCODE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>16</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>HASLD</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>SIGOPTIONID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="Maxmessages">
+　 　 <field>
+　 　 　 <name>MSGKEY</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>40</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MSGGROUP</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>25</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>VALUE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>500</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>TITLE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>100</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>DISPLAYMETHOD</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>10</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>OPTIONS</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>BUTTONTEXT</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>100</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>Y</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXMESSAGESID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="maxlabels">
+　 　 <field>
+　 　 　 <name>APP</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>10</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>ID</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>128</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>PROPERTY</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>24</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>VALUE</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>4000</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXLABELSID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+　 <table name="maxpresentation">
+　 　 <field>
+　 　 　 <name>APP</name>
+　 　 　 <type>VARCHAR2</type>
+　 　 　 <length>10</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>PRESENTATION</name>
+　 　 　 <type>CLOB</type>
+　 　 　 <length>4000</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 　 <field>
+　 　 　 <name>MAXPRESENTATIONID</name>
+　 　 　 <type>NUMBER</type>
+　 　 　 <length>22</length>
+　 　 　 <precision />
+　 　 　 <scale />
+　 　 　 <nullAble>N</nullAble>
+　 　 　 <default />
+　 　 　 <comments />
+　 　 </field>
+　 </table>
+</tables>
+
