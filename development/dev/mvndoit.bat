@@ -121,7 +121,7 @@ goto M2START
   set GEN_OPTIONS=-DarchetypeGroupId=com.jxtech -DarchetypeVersion=2.0.0 -DarchetypeArtifactId=jxplugin-archetype -DinteractiveMode=true
   set GEN_OPTIONS=%GEN_OPTIONS% -DgroupId=com.jxtech -Dversion=1.0.0 -DarchetypeCatalog=local 
   set GEN_OPTIONS=%GEN_OPTIONS% -Dpackage=%PACKNAME% -DartifactId=%AID% -Djboname=%jbo% -DparentArtifactId=%PARENT_PID% 
-  set GEN_OPTIONS=%GEN_OPTIONS% -Dauthor=%username% -Ddate=%date%
+  set GEN_OPTIONS=%GEN_OPTIONS% -Dauthor=%username% -Ddate="%date%"
 call mvn archetype:generate %GEN_OPTIONS%
 @pause
 cd %MY_HOME%
