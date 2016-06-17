@@ -1,0 +1,1 @@
+.\JxPlatform\src\main\webapp\skin\default\node_modules\

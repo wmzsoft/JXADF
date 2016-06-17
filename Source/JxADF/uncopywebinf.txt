@@ -1,0 +1,2 @@
+.\JxPlatform\src\main\webapp\skin\default\node_modules\
+.\JxPlatform\src\main\webapp\WEB-INF\
