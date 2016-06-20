@@ -1,7 +1,14 @@
 package com.jxtech.jbo.auth.ctp;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.jxtech.app.pubuser.PubUserSetIFace;
-import com.jxtech.app.usermetadata.UserMetadataSetIFace;
 import com.jxtech.i18n.JxLangResourcesUtil;
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSetIFace;
@@ -14,12 +21,6 @@ import com.jxtech.jbo.util.JboUtil;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.ELUtil;
 import com.jxtech.util.StrUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 定义权限相关的处理
@@ -219,16 +220,22 @@ public class PermissionCtpDao implements AuthenticateIFace {
         user.setPermission(getPermission(jbo.getString("user_id")));
         // 加载用户个性化数据
         JboSetIFace umsi = JboUtil.getJboSet("USERMETADATA");
-        if (umsi instanceof UserMetadataSetIFace) {
-            ((UserMetadataSetIFace) umsi).loadUserMetadata();
-            // 加载默认语言
+        DataQueryInfo dqi = umsi.getQueryInfo();
+        dqi.setWhereCause("upper(userid)=upper(?)");
+        dqi.setWhereParams(new Object[] { user.getUserid() });
+        List<JboIFace> list = umsi.queryAll();
+        if (list != null && !list.isEmpty()) {
             Map<String, String> map = user.getMetadata();
-            if (map != null) {
+            Iterator<JboIFace> iter = list.iterator();
+            while (iter.hasNext()) {
+                JboIFace md = iter.next();
+                map.put(md.getString("KEY"), md.getString("VALUE"));
+            }
+            // 加载默认语言
+            if (map.containsKey(JxUserInfo.LANG_CODE)) {
                 user.setLangcode(map.get(JxUserInfo.LANG_CODE));
             }
         }
-        // 放入Session中。
-        JxSession.putSession(JxSession.USER_INFO, user);
         return user;
     }
 

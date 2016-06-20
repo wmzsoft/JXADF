@@ -44,10 +44,25 @@ public class UrlUtilTest {
         Assert.assertEquals(true, matcher.find());
     }
     
-    @Test
+    //@Test
     public void testLoginMe(){
         String url = "http://127.0.0.1/jxweb/jxemail/index.action?username=admin&password=123456";
         String sid = ""+UrlUtil.getUrlContent(url, false);
         LOG.debug(sid);
+    }
+    
+    @Test
+    public void testGetBaseUrl(){
+        String url = "http://127.0.0.1/jxweb/jxemail/index.action?username=admin&password=123456";
+        String base = UrlUtil.getBaseUrl(url);
+        Assert.assertEquals(base, "http://127.0.0.1/jxweb");
+    }
+    
+    //@Test
+    public void testGetUserID(){
+        String cookie = "JSESSIONID=B6721D755C3B0F4CF4E56A4B8360E632";
+        String url = "http://127.0.0.1/jxweb/login/userid.jsp";
+        String id = UrlUtil.getUrlContent2(url, cookie,100);
+        LOG.debug(id);
     }
 }

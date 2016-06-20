@@ -2,6 +2,7 @@ package com.jxtech.app.jxlogin;
 
 import java.util.Map;
 
+import com.jxtech.jbo.base.JxUserInfo;
 import com.jxtech.jbo.util.JxException;
 
 /**
@@ -44,6 +45,6 @@ public interface JxLogin {
      * 
      * @param userinfo
      */
-    public boolean afterLogin(String userid, String password, boolean relogin, Map<String, Object> params);
+    public boolean afterLogin(JxUserInfo user, Map<String, Object> params);
 
 }

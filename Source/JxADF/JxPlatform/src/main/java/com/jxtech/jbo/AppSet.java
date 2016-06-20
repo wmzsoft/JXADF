@@ -16,7 +16,8 @@ import java.util.Map;
  * @date 2013.08
  * 
  */
-public class AppSet {
+public class AppSet implements java.io.Serializable {
+    private static final long serialVersionUID = -6225977888143482400L;
     private static final Logger LOG = LoggerFactory.getLogger(AppSet.class);
     public static final String APP_TYPE_LIST = "LIST";// 列表应用程序
     public static final String APP_TYPE_MAIN = "MAIN";// 主表应用程序

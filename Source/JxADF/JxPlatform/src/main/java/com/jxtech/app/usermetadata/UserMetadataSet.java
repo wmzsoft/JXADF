@@ -22,30 +22,6 @@ public class UserMetadataSet extends JboSet implements UserMetadataSetIFace {
 
     private static final long serialVersionUID = 2162419661714931088L;
 
-    /**
-     * 加载用户的个性化配置
-     * 
-     * @throws JxException
-     */
-    public void loadUserMetadata() throws JxException {
-        JxUserInfo userinfo = JxSession.getJxUserInfo();
-        if (userinfo == null) {
-            return;
-        }
-        DataQueryInfo dqi = getQueryInfo();
-        dqi.setWhereCause("upper(userid)=upper(?)");
-        dqi.setWhereParams(new Object[] { userinfo.getUserid() });
-        List<JboIFace> list = queryAll();
-        if (list != null) {
-            int size = list.size();
-            Map<String, String> map = new HashMap<String, String>();
-            for (int i = 0; i < size; i++) {
-                JboIFace dto = list.get(i);
-                map.put(dto.getString("KEY"), dto.getString("VALUE"));
-            }
-            userinfo.setMetadata(map);
-        }
-    }
 
     /**
      * 保存用户个性化信息

@@ -2,7 +2,10 @@ package com.jxtech.app.jxlogin;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import com.jxtech.app.usermetadata.UserMetadataSetIFace;
+import com.jxtech.distributed.Configuration;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.AuthenticateFactory;
 import com.jxtech.jbo.auth.AuthenticateIFace;
@@ -38,7 +41,15 @@ public class JxLoginImpl implements JxLogin {
     }
 
     @Override
-    public boolean afterLogin(String userid, String password, boolean relogin, Map<String, Object> params) {
+    public boolean afterLogin(JxUserInfo user, Map<String, Object> params) {
+        // 放入Session中。
+        JxSession.putSession(JxSession.USER_INFO, user);
+        // 获得Session的有效时间
+        HttpSession session = JxSession.getSession();
+        if (session != null) {
+            int timeout = session.getMaxInactiveInterval();
+            Configuration.getInstance().setSessionTimeOut(timeout * 1000);//转换为耗秒
+        }
         return true;
     }
 
@@ -76,7 +87,7 @@ public class JxLoginImpl implements JxLogin {
             }
         }
         // 加载登录之后的操作
-        return afterLogin(userid, password, relogin, params);
+        return afterLogin(userinfo, params);
     }
 
 }

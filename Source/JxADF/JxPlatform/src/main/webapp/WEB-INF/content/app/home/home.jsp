@@ -64,8 +64,10 @@
         var panelLayout;
         var langCode = "<%=langCode%>";
 
-        function loadApp(url) {
+        function loadApp(title,url) {
             $("#centerIframe").attr("src", url);
+            // 设置title
+            $("#appName").text(title);
             window.dataTableCollection = {};
         }
 
@@ -104,20 +106,7 @@
             }
             return value;
         }
-        function onMenuClick(e) {
-            var target = $(e.target);
-            loadApp(contextPath + "/" + target.attr("appUrl"));
-            //设置title
-            $("#appName").text(target.text());
-            if (typeof(onAppMenuClick)=='function'){
-                if (myurl.indexOf("http://")!=0){
-                    myurl="http://"+document.domain+myurl;
-                }
-                onAppMenuClick(e,target.attr("app"),myurl);
-            }else{
-                WebClientBean.saveMaxAppVisitData(target.attr("app"));
-            }
-        }
+
         $(function () {
             //加载布局
             loadLanguage('<%=jsLangCode%>');
@@ -167,7 +156,7 @@
                     });
                 }
             });
-            loadApp("<%=path%><%=MetaData.getHomePageApp()%>");
+            loadApp("Home","<%=path%><%=MetaData.getHomePageApp()%>");
             //样式修复
             $("#header").css({
                 right: 0,

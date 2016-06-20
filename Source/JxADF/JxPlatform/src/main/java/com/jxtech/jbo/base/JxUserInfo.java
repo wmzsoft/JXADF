@@ -1,6 +1,7 @@
 package com.jxtech.jbo.base;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -20,7 +21,7 @@ public class JxUserInfo implements Serializable {
 
     private static final long serialVersionUID = -5878682879440234549L;
     public static final String LANG_CODE = "LANGCODE";
-
+    public static final String DISTRIBUTED_SESSION_ID = "JXDSESSIONID";
     // 共有信息
     private String loginid;// 用户信息,康拓普中为user_id
     private String personid;// maximo员工标识,康拓普中为employee_id
@@ -35,7 +36,7 @@ public class JxUserInfo implements Serializable {
     private String siteid;// 地点标识
     private String langcode;
 
-    private Map<String, String> metadata;// 用户元数据。
+    private Map<String, String> metadata = new HashMap<String, String>();// 用户元数据。
     private String loginIp;// 登录的IP地址
     private String loginMachine;// 登录的机器名
 

@@ -11,17 +11,11 @@ import com.jxtech.jbo.util.JxException;
  */
 public interface UserMetadataSetIFace extends JboSetIFace {
     /**
-     * 加载用户的个性化配置
-     * 
-     * @throws JxException
-     */
-    public void loadUserMetadata() throws JxException;
-
-    /**
      * 保存用户个性化信息
      * 
      * @param key
-     * @param value 当为空时，表示删除。
+     * @param value
+     *            当为空时，表示删除。
      * @return
      * @throws JxException
      */

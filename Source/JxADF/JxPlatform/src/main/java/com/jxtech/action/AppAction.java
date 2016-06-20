@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
  * @date 2013.08
  */
 public class AppAction extends JxActionSupport {
+    private static final long serialVersionUID = 1440993367883911449L;
     private static final Logger LOG = LoggerFactory.getLogger(AppAction.class);
-    private static final long serialVersionUID = 1L;
     private String app;
     private String type;// app的类型，一般取值为list,空
     private String fromid;// 从哪个ID弹出的选择框

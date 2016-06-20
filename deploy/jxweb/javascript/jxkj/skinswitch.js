@@ -1,1 +1,98 @@
-function skinsSwitch(a,b){if($("#skins").html()==""){return}$("#header").css("z-index","99");$("#skins").toggle()}function skinTo(a){if(a==null||""==a){return}WebClientBean.saveUserMetadata("HOMEPAGE",a,{callback:function(b){$("#skins").hide();window.location.href=contextPath+a}})}function setCurrentSkin(){var a=(location.pathname.match(/skin[^/]+/)||["skinClassics"])[0];a=a.replace(/[A-Z]/,function(b){return"-"+b.toLowerCase()});$("."+a).addClass("active")}$(document).ready(function(){$(".skin-header ul li").click(function(){$(this).addClass("on").siblings().removeClass("on");var b=this.getAttribute("skin");switchStylestyle(window.top,b);createCookie("style",b,365)});var a=readCookie("style");if(a){switchStylestyle(window.top,a)}if(!$("#skinswitch").is(":hidden")){$("#skinAction").on("mouseenter",function(){skinsSwitch()}).on("mouseleave",function(){$("#skins").hide()})}setCurrentSkin()});function switchStylestyle(a,c){console.info(a);$("link[title]",a.document).each(function(e){var h=$(this).attr("href");var g=/skin\/.+?\//;var f=h.match(g);console.info(f);$(this).attr("href",h.replace(f,"skin/"+c+"/"))});var d=a.frames;for(var b=0;b<d.length;b++){switchStylestyle(d[b],c)}}function createCookie(c,d,e){if(e){var b=new Date();b.setTime(b.getTime()+(e*24*60*60*1000));var a="; expires="+b.toGMTString()}else{var a=""}document.cookie=c+"="+d+a+"; path=/"}function readCookie(b){var e=b+"=";var a=document.cookie.split(";");for(var d=0;d<a.length;d++){var f=a[d];while(f.charAt(0)==" "){f=f.substring(1,f.length)}if(f.indexOf(e)==0){return f.substring(e.length,f.length)}}return null}function eraseCookie(a){createCookie(a,"",-1)};
+/**
+ * 弹出切换皮肤的页面。
+ * @param me
+ * @param e
+ */
+function skinsSwitch(me,e){
+	if($("#skins").html()==""){
+		return;
+	}
+	$("#header").css("z-index","99");
+	$("#skins").toggle();
+}
+
+
+function skinTo(url){
+	if (url==null || ""==url){
+		return;
+	}
+	WebClientBean.saveUserMetadata('HOMEPAGE',url,{
+	        callback: function (data) {
+                $("#skins").hide();
+	            window.location.href=contextPath+url;
+	        }
+	});
+}
+
+function setCurrentSkin() {
+    var skinName = (location.pathname.match(/skin[^/]+/) || ["skinClassics"])[0];
+    skinName = skinName.replace(/[A-Z]/,function(match){return "-"+match.toLowerCase()});
+    $("."+skinName).addClass("active");
+}
+
+
+$(document).ready(function() {
+    $('.skin-header ul li').click(function () {
+        $(this).addClass('on').siblings().removeClass('on');
+        var styleName = this.getAttribute("skin");
+        switchStylestyle(window.top, styleName);
+        createCookie('style', styleName, 365);
+    });
+	var c = readCookie('style');
+	if (c) switchStylestyle(window.top, c);
+
+	if(!$("#skinswitch").is(":hidden")){
+		$("#skinAction").on("mouseenter",function(){
+			skinsSwitch();
+		}).on("mouseleave",function(){
+			$("#skins").hide();
+		})
+	}
+    setCurrentSkin();
+});
+
+function switchStylestyle(winObj, styleName)
+{
+    console.info(winObj);
+    $('link[title]', winObj.document).each(function(i)
+    {
+        var str = $(this).attr("href");
+        var reg = /skin\/.+?\//;
+        var skin_url = str.match(reg);
+        console.info(skin_url);
+        $(this).attr("href", str.replace(skin_url, "skin/" + styleName + "/"));
+    });
+    var frames = winObj.frames;
+    for (var i = 0; i < frames.length; i++) {
+        switchStylestyle(frames[i], styleName);//递归换肤
+
+    };
+}
+
+function createCookie(name,value,days)
+{
+	if (days)
+	{
+		var date = new Date();
+		date.setTime(date.getTime()+(days*24*60*60*1000));
+		var expires = "; expires="+date.toGMTString();
+	}
+	else var expires = "";
+	document.cookie = name+"="+value+expires+"; path=/";
+}
+function readCookie(name)
+{
+	var nameEQ = name + "=";
+	var ca = document.cookie.split(';');
+	for(var i=0;i < ca.length;i++)
+	{
+		var c = ca[i];
+		while (c.charAt(0)==' ') c = c.substring(1,c.length);
+		if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+	}
+	return null;
+}
+function eraseCookie(name)
+{
+	createCookie(name,"",-1);
+}

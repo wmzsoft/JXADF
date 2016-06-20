@@ -1,8 +1,14 @@
 package com.jxtech.jbo.auth;
 
+import java.util.Iterator;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
+import com.jxtech.common.CookieHelper;
+import com.jxtech.distributed.Configuration;
+import com.jxtech.distributed.Distributed;
+import com.jxtech.distributed.DistributedFactory;
 import com.jxtech.jbo.App;
 import com.jxtech.jbo.AppSet;
 import com.jxtech.jbo.base.JxApps;
@@ -11,6 +17,7 @@ import com.jxtech.jbo.base.JxUserInfo;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.util.CacheUtil;
 import com.jxtech.util.StrUtil;
+import com.jxtech.util.UrlUtil;
 import com.opensymphony.xwork2.ActionContext;
 import org.apache.struts2.ServletActionContext;
 import org.directwebremoting.WebContext;
@@ -18,7 +25,9 @@ import org.directwebremoting.WebContextFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
@@ -103,9 +112,19 @@ public class JxSession {
         CacheUtil.cleanUserCache();// 清空用户缓存
         HttpSession session = getSession();
         if (session != null) {
-            JxSessionID.removeCurrentUser();//移出非密码登录的模式
-            //session.setAttribute(USER_INFO, null);
-            //session.setAttribute(APPS, null);
+            JxSessionID.removeCurrentUser();// 移出非密码登录的模式
+            // 移出分布式信息
+            HttpServletRequest request = getRequest();
+            List<Cookie> list = CookieHelper.findCookies(JxUserInfo.DISTRIBUTED_SESSION_ID, request);
+            if (list != null && !list.isEmpty()) {
+                Distributed distributed = DistributedFactory.getDistributed();
+                Iterator<Cookie> iter = list.iterator();
+                while (iter.hasNext()) {
+                    distributed.delJxUserInfo(iter.next().getValue(), false);// 执行删除Session的操作
+                }
+            }
+            // session.setAttribute(USER_INFO, null);
+            // session.setAttribute(APPS, null);
             session.invalidate();
         } else {
             LOG.warn("Session获取出错。");
@@ -125,11 +144,19 @@ public class JxSession {
     }
 
     public static HttpServletRequest getRequest() {
-        ActionContext actx = ActionContext.getContext();
-        if (actx != null) {
+        try {
             return ServletActionContext.getRequest();
+        } catch (Exception e) {
+            return null;
         }
-        return null;
+    }
+
+    public static HttpServletResponse getResponse() {
+        try {
+            return ServletActionContext.getResponse();
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public static void putApp(String appName, String appType) throws JxException {
@@ -160,6 +187,7 @@ public class JxSession {
 
     /**
      * 获得当前应用 app
+     * 
      * @return
      * @throws JxException
      */
@@ -314,7 +342,15 @@ public class JxSession {
             boolean b = putSession(USER_INFO, userinfo);
             if (!b && session != null) {
                 session.setAttribute(USER_INFO, userinfo);
-                return true;
+                b = true;
+            }
+            if (b) {
+                if (session == null) {
+                    session = getSession();
+                }
+                if (session != null) {
+                    Configuration.getInstance().setSessionTimeOut(session.getMaxInactiveInterval() * 1000);
+                }
             }
             return b;
         } else {
@@ -364,13 +400,17 @@ public class JxSession {
      * @return
      */
     public static JxUserInfo loadAnonymity(String langCode, boolean force) {
+        boolean modify = false;
         JxUserInfo userinfo = getJxUserInfo();
         if (userinfo == null) {
             userinfo = new JxUserInfo();
-            putSession(USER_INFO, userinfo);
+            modify = true;
         }
-        if (!StrUtil.isNull(langCode) || force) {
+        if (!userinfo.getLangcode().equals(langCode)) {
             userinfo.setLangcode(langCode);
+        }
+        if (modify) {
+            putSession(USER_INFO, userinfo);
         }
         return userinfo;
     }
@@ -426,5 +466,48 @@ public class JxSession {
             }
         }
         return getUserId();
+    }
+
+    /**
+     * 返回URL页面的登录用户
+     * 
+     * @param url
+     * @return
+     */
+    public static String getRemoteUser(String url, String sessionid) {
+        if (StrUtil.isNull(url) || StrUtil.isNull(sessionid) || sessionid.length() < 5) {
+            return null;
+        }
+        String baseurl = UrlUtil.getBaseUrl(url);
+        if (StrUtil.isNull(baseurl)) {
+            return null;
+        }
+        String uurl = StrUtil.contact(baseurl, "/login/userid.jsp");
+        String cookie = StrUtil.contact("JSESSIONID=", sessionid);
+        return UrlUtil.getUrlContent2(uurl, cookie, 2000);// 2秒中
+    }
+
+    /**
+     * 通过request返回http://domain:port/contextpath
+     * 
+     * @param request
+     * @return
+     */
+    public static String getRequestBaseURL(HttpServletRequest request) {
+        if (request == null) {
+            request = getRequest();
+        }
+        if (request == null) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(request.getScheme()).append("://");
+        sb.append(request.getServerName());
+        int port = request.getServerPort();
+        if (port != 80) {
+            sb.append(":").append(port);
+        }
+        sb.append("/").append(request.getContextPath());
+        return sb.toString();
     }
 }

@@ -291,3 +291,27 @@
     return JxMenu;
 })();
 
+
+function onMenuClick(e) {
+    var target = $(e.target);
+    var url = target.attr("appUrl");
+    if(!url) return false;
+    var myurl ;
+    if (url.indexOf("http://")>=0){
+        myurl = url;
+    }else{
+        myurl = contextPath + "/" + url;
+    }
+    var titles=target.text() || target.attr("title");
+    loadApp(titles,myurl);
+    if (typeof(onAppMenuClick)=='function'){
+        if (myurl.indexOf("http://")!=0){
+            myurl="http://"+document.domain+myurl;
+        }
+        onAppMenuClick(e,target.attr("app"),myurl);
+    }else{
+        WebClientBean.saveMaxAppVisitData(target.attr("app"));
+    }
+    closeWest();
+}
+

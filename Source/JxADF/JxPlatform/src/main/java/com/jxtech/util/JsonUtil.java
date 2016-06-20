@@ -140,9 +140,10 @@ public class JsonUtil {
         }
         ObjectMapper mapper = new ObjectMapper();
         try {
-            return mapper.readValue(json.trim(), new TypeReference<List<Map<String, Object>>>() {});
+            return mapper.readValue(json.trim(), new TypeReference<List<Map<String, Object>>>() {
+            });
         } catch (Exception e) {
-            LOG.error(e.getMessage() + "\r\n" + json, e);
+            LOG.error("\r\n" + json + "\r\n" + e.getMessage());
         }
         return null;
     }
@@ -222,18 +223,18 @@ public class JsonUtil {
     static {
         config.setCycleDetectionStrategy(CycleDetectionStrategy.LENIENT);// 忽略循环，避免死循环
         config.registerJsonValueProcessor(Date.class, new JsonValueProcessor() {// 处理Date日期转换
-                    @Override
-                    public Object processObjectValue(String arg0, Object arg1, JsonConfig arg2) {
-                        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        Date d = (Date) arg1;
-                        return sdf.format(d);
-                    }
+            @Override
+            public Object processObjectValue(String arg0, Object arg1, JsonConfig arg2) {
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Date d = (Date) arg1;
+                return sdf.format(d);
+            }
 
-                    @Override
-                    public Object processArrayValue(Object arg0, JsonConfig arg1) {
-                        return null;
-                    }
-                });
+            @Override
+            public Object processArrayValue(Object arg0, JsonConfig arg1) {
+                return null;
+            }
+        });
     }
 
     /**

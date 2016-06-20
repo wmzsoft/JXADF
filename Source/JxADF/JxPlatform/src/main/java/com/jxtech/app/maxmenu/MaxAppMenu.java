@@ -9,12 +9,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jxtech.common.JxResource;
 import com.jxtech.db.util.JxDataSourceUtil;
+import com.jxtech.distributed.Distributed;
+import com.jxtech.distributed.DistributedFactory;
 import com.jxtech.i18n.LanguageFactory;
 import com.jxtech.i18n.LanguageIface;
 import com.jxtech.jbo.auth.JxSession;
@@ -105,33 +108,21 @@ public class MaxAppMenu {
                 rs = ps.executeQuery();
                 // ResourceBundle zTreeBundle = JxLangResourcesUtil.getResourceBundle("res.tree.menu");
                 LanguageIface language = LanguageFactory.getLanguage(null);
-                Map<String, String> loadapps = getLoadApps();
+                // 加载本地App
+                Map<String, String> localApps = this.getLoadLocalApps();
+                // 加载分布式插件
+                Distributed dist = DistributedFactory.getDistributed();
+                Map<String, List<Map<String, Object>>> distApp = dist.getApps();
                 while (rs.next()) {
                     String url = rs.getString("appUrl");
-                    if (!StrUtil.isNull(url)) {
-                        if (!url.startsWith("app.action") && !url.startsWith("http://")) {
-                            // 检查插件是否安装，如果没有安装，则不需要加载菜单
-                            String appname = rs.getString("app");
-                            boolean isInstall = false;// 是否安装了插件，默认没有安装
-                            if (loadapps.containsKey(appname)) {
-                                isInstall = true;
-                            } else {
-                                url = "/" + url.substring(0, url.lastIndexOf('/') + 1);
-                                for (Map.Entry<String, String> entry : loadapps.entrySet()) {
-                                    if (entry.getValue().startsWith(url)) {
-                                        isInstall = true;
-                                        break;
-                                    }
-                                }
-                            }
-                            if (!isInstall) {
-                                continue;// 没有安装，就不显示到界面了。
-                            }
-                        }
+                    String appname = rs.getString("app").toUpperCase();
+                    String rurl = this.getRealUrl(url, appname, localApps, distApp);
+                    if (!StrUtil.isNull(url) && StrUtil.isNull(rurl)) {
+                        continue;
                     }
                     Map<String, Object> menuMap = new HashMap<String, Object>();
                     menuMap.put("maxAppsId", rs.getInt("maxAppsId"));
-                    menuMap.put("app", rs.getString("app"));
+                    menuMap.put("app", appname);
                     String tname = null;
                     if (language != null) {
                         tname = language.getI18n("MAXAPPS.APP." + rs.getString("app"));
@@ -143,7 +134,7 @@ public class MaxAppMenu {
                     }
                     menuMap.put("appType", rs.getString("appType"));
                     menuMap.put("parent", rs.getString("parent"));
-                    menuMap.put("appUrl", rs.getString("appUrl"));
+                    menuMap.put("appUrl", rurl);
                     menuMap.put("mainTbName", rs.getString("mainTbName"));
                     menuMap.put("orderId", rs.getString("orderId"));
                     result.add(menuMap);
@@ -214,14 +205,63 @@ public class MaxAppMenu {
     }
 
     /**
-     * 获得已加载的插件列表
+     * 检查URL所在的App是否存在，如果在分布式环境中，则直接加载分布式地址。
      * 
-     * @return <app,url>
+     * @param url
+     * @param app
+     * @param localApps
+     * @param distributeApps
+     * @return
      */
-    public Map<String, String> getLoadApps() {
+    private String getRealUrl(String url, String app, Map<String, String> localApps, Map<String, List<Map<String, Object>>> distributeApps) {
+        if (StrUtil.isNull(url)) {
+            return null;
+        }
+        if (url.startsWith("app.action") || url.startsWith("http://")) {
+            return url;
+        }
+        // 以下是插件需要处理的
+        if (StrUtil.isNull(app)) {
+            return url;
+        }
+        // 检查本地插件
+        if (localApps != null) {
+            if (localApps.containsKey(app)) {
+                return url;
+            }
+            String surl = "/" + url.substring(0, url.lastIndexOf('/') + 1);
+            Iterator<Entry<String, String>> iter = localApps.entrySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry<String, String> entry = iter.next();
+                if (entry.getValue().startsWith(surl)) {
+                    return url;
+                }
+            }
+        }
+        // 分布式列表中查找对应的App
+        if (distributeApps != null) {
+            List<Map<String, Object>> list = distributeApps.get(app);
+            if (list != null && !list.isEmpty()) {
+                Map<String, Object> dto = list.get(0);
+                String surl = String.valueOf(dto.get("URL"));
+                String home = String.valueOf(dto.get("HOME"));
+                return StrUtil.contact(home,surl);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获得本地加载的APP
+     * 
+     * @return <appname,appurl>
+     */
+    public Map<String, String> getLoadLocalApps() {
         Map<String, String> apps = new HashMap<String, String>();
         Map<String, Map<String, Object>> bundles = JxResource.getMyBundles();
-        for (Map.Entry<String, Map<String, Object>> bnd : bundles.entrySet()) {
+        Iterator<Entry<String, Map<String, Object>>> iter = bundles.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry<String, Map<String, Object>> bnd = iter.next();
             Map<String, Object> val = bnd.getValue();
             if (val != null) {
                 Object jurl = val.get("Jx-AppURL");
@@ -244,4 +284,5 @@ public class MaxAppMenu {
         }
         return apps;
     }
+
 }

@@ -28,7 +28,8 @@ import java.util.Map;
  * @author wmzsoft@gmail.com
  * @date 2013.08
  */
-public class App {
+public class App implements java.io.Serializable {
+    private static final long serialVersionUID = -2583203348168340745L;
     private Logger LOG = LoggerFactory.getLogger(App.class);
     private String appName;// 当前应用程序E文名
     private String appType;// 应用程序类型
@@ -225,9 +226,12 @@ public class App {
      * 
      * @param jboname
      * @param relationship
-     * @param uid 子表的唯一关键字
-     * @param attributeName 字段名
-     * @param value 字段值
+     * @param uid
+     *            子表的唯一关键字
+     * @param attributeName
+     *            字段名
+     * @param value
+     *            字段值
      * @return
      * @throws JxException
      */
@@ -273,7 +277,8 @@ public class App {
      * 
      * @param parent
      * @param relationship
-     * @param flag 参见：JxConstant.READ_XXX
+     * @param flag
+     *            参见：JxConstant.READ_XXX
      * @return
      * @throws JxException
      */
@@ -352,7 +357,8 @@ public class App {
     /**
      * 加载导入文件
      * 
-     * @param importFileResult LinkedList 有序
+     * @param importFileResult
+     *            LinkedList 有序
      * @return
      */
     public String loadImportFile(List<Map<Object, String>> importFileResult, String relationship, JxUserInfo unserInfo) throws JxException {
@@ -391,7 +397,7 @@ public class App {
     }
 
     public String getAppNameType() {
-        return StrUtil.contact(appName , "." , appType);
+        return StrUtil.contact(appName, ".", appType);
     }
 
     public JboIFace getJbo() throws JxException {

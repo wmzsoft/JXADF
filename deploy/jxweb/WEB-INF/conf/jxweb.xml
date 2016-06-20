@@ -1,5 +1,9 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <Context docBase="D:\deploy\jxweb" path="/jxweb" reloadable="true">
+<Resources
+    cachingAllowed="true"
+    cacheMaxSize="100000"
+/>
 <Resource name="jdbc/CTDataSource" auth="Container"
               type="javax.sql.DataSource" driverClassName="oracle.jdbc.OracleDriver"
               url="jdbc:oracle:thin:@192.168.7.3:1521:ORCL"

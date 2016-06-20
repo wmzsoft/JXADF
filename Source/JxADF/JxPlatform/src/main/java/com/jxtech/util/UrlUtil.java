@@ -3,10 +3,12 @@ package com.jxtech.util;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
@@ -162,4 +164,72 @@ public class UrlUtil {
         return FileUtil.formatPath(saveFile);
     }
 
+    /**
+     * 传入 http://domain.com/abc/index.action返回http://domain.com/abc
+     * 
+     * @param url
+     * @return
+     */
+    public static String getBaseUrl(String url) {
+        if (StrUtil.isNull(url)) {
+            return null;
+        }
+        if (!url.startsWith("http")) {
+            return null;
+        }
+        int pos = url.indexOf('/', url.indexOf(':') + 3);
+        if (pos > 0) {
+            int idx = url.indexOf('/', pos + 1);
+            if (idx > 0) {
+                return url.substring(0, idx);
+            } else {
+                return url.substring(0, pos);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 添加Cookie的内容读取结果
+     * @param url
+     * @param cookie
+     * @return
+     */
+    public static String getUrlContent2(String url, String cookie,int timeout) {
+        if (url == null) {
+            return null;
+        }
+        URL u;
+        HttpURLConnection hrc=null;
+        InputStream is=null;
+        Reader reader = null;
+        StringBuilder sb = new StringBuilder();
+        try {
+            u = new URL(url);
+            hrc = (HttpURLConnection) u.openConnection();
+            hrc.setConnectTimeout(timeout);
+            if (cookie != null) {
+                hrc.setRequestProperty("Cookie", cookie);
+            }
+            is = hrc.getInputStream();
+            reader = new InputStreamReader(is, "UTF-8");
+            char[] buf = new char[1];
+            reader.read(buf);
+            if (buf[0] == 65279) {
+                LOG.debug("UTF-8 BOM : " + url);
+            } else {
+                sb.append(buf);
+            }
+            while ((reader.read(buf)) != -1) {
+                sb.append(buf);
+            }
+            return sb.toString().trim();
+        } catch (IOException e) {
+            LOG.error(e.getMessage());
+        }finally{
+            IOUtils.closeQuietly(reader);
+            IOUtils.closeQuietly(is);
+        }
+        return null;
+    }
 }

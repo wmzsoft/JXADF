@@ -7,6 +7,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * 整个全局内存变量
+ * 
  * @author wmzsoft@gmail.com
  * @date 2014.11
  */
@@ -150,8 +152,10 @@ public class JxResource {
     /**
      * 在特定的应用程序中插入一段JS、CSS、HTML代码。 可以支持多个插件往这里插入JS代码。
      * 
-     * @param app ：应用程序名.应用程序类型
-     * @param key : 关键字，一般为插件的名字
+     * @param app
+     *            ：应用程序名.应用程序类型
+     * @param key
+     *            : 关键字，一般为插件的名字
      * @param value
      */
     public static void putSpecialAppBody(String appNameType, String key, String value) {

@@ -757,4 +757,9 @@ public class StrUtil {
         }
         return sb.toString();
     }
+
+    public static String getUUID() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
+    }
 }

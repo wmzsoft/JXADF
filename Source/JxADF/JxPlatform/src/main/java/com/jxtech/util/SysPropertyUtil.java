@@ -1,11 +1,15 @@
 package com.jxtech.util;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.util.Properties;
+
 import org.apache.poi.util.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.*;
-import java.util.Properties;
 
 /**
  * 处理本系统中要保存在Porperties中的内容
@@ -26,7 +30,7 @@ public class SysPropertyUtil {
     public static void loadSystemProperty() {
         loadSystemProperty(getSystemPropertiesFileName());
         loadSystemProperty(getBaseFileName());
-        //LOG.debug(System.getProperties().toString());
+        // LOG.debug(System.getProperties().toString());
     }
 
     /**
@@ -60,6 +64,7 @@ public class SysPropertyUtil {
 
     /**
      * 保存信息到base.properties文件中
+     * 
      * @param key
      * @param value
      */
@@ -67,7 +72,7 @@ public class SysPropertyUtil {
         String filename = getBaseFileName();
         storeSystemProperties(filename, key, value);
     }
-    
+
     public static void storeSystemProperties(String filename, String key, String value) {
         Properties prop = new Properties();
         FileOutputStream fos = null;
@@ -79,7 +84,7 @@ public class SysPropertyUtil {
             } catch (FileNotFoundException e) {
                 LOG.error(e.getMessage());
             }
-            if (value!=null){
+            if (value != null) {
                 System.setProperty(key, value);
                 fos = new FileOutputStream(filename);
                 prop.setProperty(key, value);
@@ -130,7 +135,7 @@ public class SysPropertyUtil {
      * @return
      */
     public static String getHomepage() {
-        return System.getProperty(HOMEPAGE, "http://osgi.jxtech.net/jxweb");
+        return System.getProperty(HOMEPAGE, "http://osgia.com/jxweb");
     }
 
     public static int getPropertyOfInt(String key, int def) {
@@ -156,6 +161,5 @@ public class SysPropertyUtil {
         }
         return def;
     }
-    
 
 }

@@ -4,6 +4,8 @@ import com.jxtech.i18n.JxLangResourcesUtil;
 import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 import org.apache.struts2.components.ClosingUIBean;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -16,7 +18,7 @@ import java.util.ResourceBundle;
  */
 
 public class JxBaseUIBean extends ClosingUIBean {
-    // private static final Logger LOG = LoggerFactory.getLogger(JxBaseUIBean.class);
+    private static final Logger LOG = LoggerFactory.getLogger(JxBaseUIBean.class);
     protected String readonly;
     protected String visible;
     private String request_query_string;
@@ -106,38 +108,43 @@ public class JxBaseUIBean extends ClosingUIBean {
     /**
      * 标签属性国际化
      * 
-     * @param attr 一种是从app目录下对应的模块取值，一种是去tag下面的值
+     * @param attr
+     *            一种是从app目录下对应的模块取值，一种是去tag下面的值
      */
     public String getI18NValue(String attr) {
         String value = attr;
         if (null != attr) {
-            int start = attr.indexOf('{');
-            int end = attr.indexOf('}');
-            if (start == 0 && end > 0) {
-                String attrI18NKey = attr.substring(1, end);
-                if (attrI18NKey.indexOf("app.") == 0) {
-                    String[] keys = attrI18NKey.split("\\.");
-                    int keysLen = keys.length;
-                    if (keysLen >= 3) {
-                        String resPackage = keys[1];
-                        StringBuilder resKey = new StringBuilder();
-                        for (int i = 2; i < keysLen; i++) {
-                            resKey.append(keys[i]);
-                            if (i < keysLen - 1) {
-                                resKey.append('.');
+            try {
+                int start = attr.indexOf('{');
+                int end = attr.indexOf('}');
+                if (start == 0 && end > 0) {
+                    String attrI18NKey = attr.substring(1, end);
+                    if (attrI18NKey.indexOf("app.") == 0) {
+                        String[] keys = attrI18NKey.split("\\.");
+                        int keysLen = keys.length;
+                        if (keysLen >= 3) {
+                            String resPackage = keys[1];
+                            StringBuilder resKey = new StringBuilder();
+                            for (int i = 2; i < keysLen; i++) {
+                                resKey.append(keys[i]);
+                                if (i < keysLen - 1) {
+                                    resKey.append('.');
+                                }
+                            }
+
+                            ResourceBundle appBundle = JxLangResourcesUtil.getResourceBundle("res.app." + resPackage);
+                            if (appBundle != null) {
+                                value = appBundle.getString(resKey.toString());
                             }
                         }
 
-                        ResourceBundle appBundle = JxLangResourcesUtil.getResourceBundle("res.app." + resPackage);
-                        if (appBundle != null) {
-                            value = appBundle.getString(resKey.toString());
-                        }
+                    } else {
+                        value = tagBundle.getString(attrI18NKey);
                     }
 
-                } else {
-                    value = tagBundle.getString(attrI18NKey);
                 }
-
+            } catch (Exception e) {
+                LOG.debug(e.getMessage());
             }
         }
         return value;

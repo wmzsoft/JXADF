@@ -1,11 +1,10 @@
 ﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-
 	<parent>
 		<groupId>com.jxtech</groupId>
-		<artifactId>JxFramework</artifactId>
-		<version>1.0.0</version>
+		<artifactId>JXADF</artifactId>
+		<version>${jxadf.version}</version>
 	</parent>
 
 	<artifactId>JxPlatform</artifactId>
@@ -35,6 +34,49 @@
 				</configuration>
 			</plugin>
 
+            <!-- 压缩JS、CSS -->
+            <plugin>  
+                <groupId>net.alchim31.maven</groupId>  
+                <artifactId>yuicompressor-maven-plugin</artifactId>  
+                <version>1.5.0</version>  
+                <executions>  
+                    <execution>
+                        <phase>package</phase>
+                        <goals>  
+                            <goal>compress</goal>  
+                        </goals>  
+                    </execution>  
+                </executions>  
+                <configuration>  
+                    <!-- 压缩文件编码 -->  
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                    <jswarn>false</jswarn>
+                    <force>true</force>
+                    <preProcessAggregates>false</preProcessAggregates>
+                    <includes>
+                        <include>**/jxkj/**</include>
+                        <include>**/dhtmlxGantt**/**</include>
+                        <include>**/formValidationEngine/**</include>
+                        <include>**/jquery.md5/**</include>
+                        <include>**/jquery-cookie/**</include>
+                        <include>**/jQuery-sDashboard/**</include>
+                        <include>**/photo-album/**</include>
+                        <include>**/qrcode/**</include>
+                    </includes>
+                    <!-- 排除已压缩的文件，例如jquery-1.8.2.min.js -->  
+                    <excludes>  
+                        <exclude>**/**.min.*</exclude>
+                    </excludes>  
+                    <!-- 不使用后缀 -->  
+                    <nosuffix>true</nosuffix>  
+                    <!-- 把文件压缩成一行 -->  
+                    <linebreakpos>-1</linebreakpos>  
+                    <!-- 指定需要压缩文件的目录，这是我的目录（修改为你自己的目录吧..) -->  
+                    <sourceDirectory>${basedir}/src/main/webapp/javascript/</sourceDirectory>
+                    <outputDirectory>${project.deploy.dir}/jxweb/javascript/</outputDirectory>
+                </configuration>  
+            </plugin>  
+            
 			<!-- 打包为war -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -135,6 +177,60 @@
 				</executions>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-install-plugin
+										</artifactId>
+										<versionRange>
+											[2.4,)
+										</versionRange>
+										<goals>
+											<goal>install-file</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>
+											org.apache.maven.plugins
+										</groupId>
+										<artifactId>
+											maven-war-plugin
+										</artifactId>
+										<versionRange>
+											[2.5,)
+										</versionRange>
+										<goals>
+											<goal>exploded</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<dependencies>
@@ -142,11 +238,6 @@
 			<groupId>org.jasig.cas.client</groupId>
 			<artifactId>cas-client-core</artifactId>
 			<version>3.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>net.sf.ehcache</groupId>
-			<artifactId>ehcache</artifactId>
-			<version>2.10.0</version>
 		</dependency>
 	</dependencies>
 

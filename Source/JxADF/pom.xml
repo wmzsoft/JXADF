@@ -1,16 +1,17 @@
 ﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+    
 	<groupId>com.jxtech</groupId>
-	<artifactId>JxFramework</artifactId>
+	<artifactId>JXADF</artifactId>
 	<packaging>pom</packaging>
-	<version>1.0.0</version>
+	<version>${jxadf.version}</version>
 	<name>健新科技快速开发平台JXADF</name>
 	<url>http://osgia.com</url>
 
 	<organization>
 		<name>JIANXIN TECHNOLOGY</name>
-		<url>http://www.jxtech.net</url>
+		<url>http://osgia.com</url>
 	</organization>
 
 	<modules>
@@ -18,11 +19,16 @@
 	</modules>
 
 	<properties>
+        <jxadf.version>2.0.0</jxadf.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<spring.version>3.0.5.RELEASE</spring.version>
 		<struts2.version>2.3.16.3</struts2.version>
         <project.jdk.version>1.7</project.jdk.version>
+        <project.homepage>http://osgia.com</project.homepage>
+        <project.markert>http://osgia.com/jxweb/pluginstore/index.action</project.markert>
+        <project.plugin.doc>http://osgi.jxtech.net/jxweb/JxOsgiClound/index_display.action?</project.plugin.doc>
+        <project.plugin.updateLocation>http://osgia.com</project.plugin.updateLocation>
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
 		<timestamp>${maven.build.timestamp}</timestamp>
 		<project.svn.url>http://svn.jxtech.net/svn/JxPlatform/开发库/源代码/framework</project.svn.url>
@@ -581,7 +587,16 @@
 			<version>3.1.0</version>
 			<scope>provided</scope>
 		</dependency>
-	
+		<dependency>
+			<groupId>org.apache.zookeeper</groupId>
+			<artifactId>zookeeper</artifactId>
+			<version>3.4.8</version>
+		</dependency>
+		<dependency>
+            <groupId>com.caucho</groupId>
+            <artifactId>hessian</artifactId>
+            <version>4.0.38</version>
+		</dependency>
 	</dependencies>
 
 </project>
