@@ -1,7 +1,11 @@
 ﻿<%@ page language="java" pageEncoding="UTF-8" %>
+<%@ page import="com.jxtech.jbo.auth.JxSession" %>
+<%@ page import="com.jxtech.jbo.base.JxUserInfo" %>
+<%@ page import="java.net.URLEncoder" %>
 <%@ page import="com.jxtech.app.usermetadata.MetaData" %>
 <%@ page import="com.jxtech.distributed.Distributed,com.jxtech.distributed.DistributedFactory" %>
 <%@ taglib prefix="s" uri="/WEB-INF/tlds/struts-tags.tld"%>
+
 <%
 	String path = request.getContextPath();
 	StringBuilder sb = new StringBuilder();
@@ -21,6 +25,16 @@
 	String url404 = sb.toString();
 	String myurl = dist.getDistributedUrl(url404);
 	if (!url404.equals(myurl)){
+        JxUserInfo usr=(JxUserInfo)session.getAttribute(JxSession.USER_INFO);
+        if(usr!=null){
+            if ( myurl.indexOf('?')<0 ){
+                myurl = myurl + "?";
+            }else{
+                myurl = myurl + "&";
+            }
+            myurl = myurl + "jsessionid="+request.getRequestedSessionId();
+            myurl = myurl + "&referer="+url404;
+        }
 	    response.sendRedirect(myurl);
 	}else{
 	    String skinName = MetaData.getSkin();
