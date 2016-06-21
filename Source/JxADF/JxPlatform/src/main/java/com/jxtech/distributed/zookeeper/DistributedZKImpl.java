@@ -28,6 +28,7 @@ import com.jxtech.distributed.DistributedImpl;
 import com.jxtech.distributed.DistributedSession;
 import com.jxtech.distributed.zookeeper.common.ZooKeeperUtil;
 import com.jxtech.distributed.zookeeper.pool.ZookeeperPoolManager;
+import com.jxtech.distributed.zookeeper.thread.CleanInvalidBundle;
 import com.jxtech.distributed.zookeeper.thread.DeleteSession;
 import com.jxtech.distributed.zookeeper.thread.RegisterBundle;
 import com.jxtech.distributed.zookeeper.thread.UnRegisterBundle;
@@ -300,37 +301,6 @@ public class DistributedZKImpl extends DistributedImpl {
         return url;
     }
 
-    @Override
-    public boolean init() throws JxException {
-        // 初始化连接池
-        ZookeeperPoolManager pool = ZookeeperPoolManager.getInstance();
-        Configuration config = Configuration.getInstance();
-        ZooKeeper zk = pool.borrowObject();
-        if (zk == null) {
-            LOG.info("init failed failed.");
-            return false;
-        }
-        try {
-            // 创建为bundle的根节点
-            String bundleb = config.getBaseBundle();
-            byte[] b = "http://osgia.com".getBytes();
-            if (zk.exists(bundleb, false) == null) {
-                zk.create(bundleb, b, Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-            }
-            // 创建为session的根节点
-            String bundles = config.getBaseSession();
-            if (zk.exists(bundles, false) == null) {
-                zk.create(bundles, b, Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
-            }
-            executor = Executors.newFixedThreadPool(config.getSessionPoolSize());
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-        } finally {
-            pool.returnObject(zk);
-        }
-        return true;
-    }
-
     /**
      * 将信息保存在分布式服务器中
      * 
@@ -570,6 +540,42 @@ public class DistributedZKImpl extends DistributedImpl {
         } finally {
             pool.returnObject(zk);
         }
+    }
+
+    @Override
+    public boolean init() throws JxException {
+        // 初始化连接池
+        ZookeeperPoolManager pool = ZookeeperPoolManager.getInstance();
+        Configuration config = Configuration.getInstance();
+        ZooKeeper zk = pool.borrowObject();
+        if (zk == null) {
+            if (config.isDeploy()) {
+                LOG.info("init failed failed.");
+            }
+            return false;
+        }
+        try {
+            // 创建为bundle的根节点
+            String bundleb = config.getBaseBundle();
+            byte[] b = "http://osgia.com".getBytes();
+            if (zk.exists(bundleb, false) == null) {
+                zk.create(bundleb, b, Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            }
+            // 创建为session的根节点
+            String bundles = config.getBaseSession();
+            if (zk.exists(bundles, false) == null) {
+                zk.create(bundles, b, Ids.OPEN_ACL_UNSAFE, CreateMode.PERSISTENT);
+            }
+            executor = Executors.newFixedThreadPool(config.getSessionPoolSize());
+            // 删除无效的数据
+            Future<Boolean> future = executor.submit(new CleanInvalidBundle());
+            future.get();// 等待执行完毕。
+        } catch (Exception e) {
+            LOG.error(e.getMessage(), e);
+        } finally {
+            pool.returnObject(zk);
+        }
+        return true;
     }
 
     @Override
