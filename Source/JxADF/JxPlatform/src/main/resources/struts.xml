@@ -19,6 +19,10 @@
     <constant name="struts.convention.action.packages" value="com.jxtech.action"/> 
     -->
     <package name="myaction" extends="struts-default" namespace="">
+    	<default-action-ref name="index" />
+        <action name="index" >
+            <result name="success" >/index.jsp</result>
+        </action>
         <!--
         <default-action-ref name="error"></default-action-ref>
         <action name="error">
@@ -37,14 +41,11 @@
             <result name="success" type="dispatcher">/WEB-INF/content/common/json.jsp
             </result>
         </action>
-        <action name="tree" class="com.jxtech.action.TreeAction"
-                method="toJson"/>
-
+        <action name="tree" class="com.jxtech.action.TreeAction" method="toJson"/>
         <action name="ckedituploadimg" class="com.jxtech.action.CKEditorUploadImgAction">
             <result name="success" type="dispatcher">/WEB-INF/content/common/ckedit.jsp
             </result>
         </action>
-
     </package>
     <package name="jsonaction" extends="json-default" namespace="">
         <action name="intergrationServices" class="com.jxtech.integration.services.IntergrationAction">

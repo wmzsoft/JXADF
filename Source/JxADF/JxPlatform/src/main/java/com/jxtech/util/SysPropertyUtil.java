@@ -100,7 +100,11 @@ public class SysPropertyUtil {
 
     private static String getBaseFileName() {
         StringBuilder sb = new StringBuilder();
-        sb.append(System.getProperty(WEB_REALPATH));
+        String realpath = System.getProperty(WEB_REALPATH);
+        sb.append(realpath);
+        if (realpath != null && !realpath.endsWith(File.separator)) {
+            sb.append(File.separator);
+        }
         sb.append("WEB-INF");
         sb.append(File.separator);
         sb.append("conf");
@@ -111,7 +115,11 @@ public class SysPropertyUtil {
 
     private static String getSystemPropertiesFileName() {
         StringBuilder sb = new StringBuilder();
-        sb.append(System.getProperty(WEB_REALPATH));
+        String realpath = System.getProperty(WEB_REALPATH);
+        sb.append(realpath);
+        if (realpath != null && !realpath.endsWith(File.separator)) {
+            sb.append(File.separator);
+        }
         sb.append("WEB-INF");
         sb.append(File.separator);
         sb.append("conf");
