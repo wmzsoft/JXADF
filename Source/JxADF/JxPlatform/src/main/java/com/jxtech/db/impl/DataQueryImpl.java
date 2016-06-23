@@ -2,14 +2,16 @@ package com.jxtech.db.impl;
 
 import java.io.OutputStream;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.dbutils.DbUtils;
 import org.apache.commons.dbutils.QueryRunner;
 import org.apache.commons.dbutils.ResultSetHandler;
-import org.apache.commons.dbutils.handlers.MapHandler;
 import org.apache.commons.dbutils.handlers.MapListHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +44,7 @@ public abstract class DataQueryImpl implements DataQuery {
         try {
             return query(conn, tablename, qbe);
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
     }
 
@@ -68,7 +70,7 @@ public abstract class DataQueryImpl implements DataQuery {
         try {
             return this.queryAllPage(conn, tablename, queryInfo);
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
     }
 
@@ -104,18 +106,23 @@ public abstract class DataQueryImpl implements DataQuery {
             msql.append(" where ").append(whereCause);
         }
         QueryRunner qr = new QueryRunner(true);
+        PreparedStatement pstat = null;
+        ResultSet rs = null;
         try {
-            Map<String, Object> rs = qr.query(conn, msql.toString(), new MapHandler(), params);
-            Object obj = null;
-            if (rs != null) {
-                obj = rs.get("m");
+            pstat = conn.prepareStatement(msql.toString());
+            qr.fillStatement(pstat, params);
+            rs = pstat.executeQuery();
+            if (rs.next()) {
+                return rs.getObject("m");
             }
-            return obj;
-        } catch (Exception e) {
-            LOG.error(e.getMessage() + "\r\n" + msql + "\r\n" + StrUtil.objectToString(params));
+        } catch (SQLException e) {
+            LOG.error(e.getMessage() + "\r\n" + msql.toString() + StrUtil.objectToString(params));
             throw new JxException(e.getMessage());
+        } finally {
+            DbUtils.closeQuietly(rs);
+            DbUtils.closeQuietly(pstat);
         }
-
+        return null;
     }
 
     /**
@@ -158,7 +165,7 @@ public abstract class DataQueryImpl implements DataQuery {
         try {
             return this.getResultSet(conn, msql, params);
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
     }
 
@@ -190,7 +197,7 @@ public abstract class DataQueryImpl implements DataQuery {
         try {
             return count(conn, tablename, whereCause, params);
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
     }
 
@@ -234,9 +241,9 @@ public abstract class DataQueryImpl implements DataQuery {
                 }
                 msql.append(" group by ").append(groupby);
                 return count(conn, msql.toString(), null, qbe.getWhereAllParams());
-            } 
+            }
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
     }
 
@@ -269,7 +276,7 @@ public abstract class DataQueryImpl implements DataQuery {
         try {
             c = count(conn, tableName, where, new Object[] { columnValue });
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
         return (c > 0);
     }
@@ -294,7 +301,7 @@ public abstract class DataQueryImpl implements DataQuery {
         try {
             return max(conn, tablename, columnName, whereCause, params);
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
     }
 
@@ -318,7 +325,7 @@ public abstract class DataQueryImpl implements DataQuery {
         try {
             return min(conn, tablename, columnName, whereCause, params);
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
     }
 
@@ -351,7 +358,7 @@ public abstract class DataQueryImpl implements DataQuery {
         try {
             return sum(conn, tablename, columnName, whereCause, params);
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
     }
 
@@ -361,7 +368,6 @@ public abstract class DataQueryImpl implements DataQuery {
             return qr.query(conn, msql, rsh, params);
         } catch (SQLException e) {
             LOG.error(e.getMessage() + "\r\n" + msql + "," + StrUtil.objectToString(params));
-            LOG.error(e.getMessage());
         }
         return null;
     }
@@ -374,7 +380,7 @@ public abstract class DataQueryImpl implements DataQuery {
         try {
             return this.getResult(conn, rsh, msql, params);
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
     }
 
@@ -413,7 +419,7 @@ public abstract class DataQueryImpl implements DataQuery {
         try {
             return toJson(conn, msql, params, columns, jboname);
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
 
     }
@@ -459,7 +465,7 @@ public abstract class DataQueryImpl implements DataQuery {
         try {
             return getSequence(conn, sequenceName, isNext);
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
     }
 
@@ -468,7 +474,7 @@ public abstract class DataQueryImpl implements DataQuery {
         try {
             getBlob(conn, tableName, blobColumnName, uidName, uidValue, os);
         } finally {
-            JxDataSourceUtil.close(conn);
+            DbUtils.closeQuietly(conn);
         }
     }
 
@@ -486,18 +492,18 @@ public abstract class DataQueryImpl implements DataQuery {
     public String date2Year(String str) {
         return null;
     }
-    
-    public String date2YearMonth(String str){
+
+    public String date2YearMonth(String str) {
         return null;
     };
-    
+
     @Override
     public String date2Month(String str) {
         return null;
     }
-    
+
     @Override
-    public String column2substr(String str,int start,int length){
+    public String column2substr(String str, int start, int length) {
         return null;
     }
 

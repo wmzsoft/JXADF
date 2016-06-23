@@ -2,9 +2,6 @@ package com.jxtech.util;
 
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.jxtech.jbo.JboIFace;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.auth.JxSession;
@@ -24,7 +21,7 @@ import net.sf.ehcache.Element;
  */
 public class CacheUtil {
 
-    private static final Logger LOG = LoggerFactory.getLogger(CacheUtil.class);
+    //private static final Logger LOG = LoggerFactory.getLogger(CacheUtil.class);
 
     // 缓存单个Jbo
     public static final String JBO_CACHE = "jboCache";

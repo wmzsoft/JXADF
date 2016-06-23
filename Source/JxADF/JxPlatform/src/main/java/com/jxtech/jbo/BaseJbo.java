@@ -757,6 +757,15 @@ public abstract class BaseJbo implements JboIFace {
         if (attributeName == null) {
             return null;
         }
+        String uid = getString("rowstamp");
+        if (StrUtil.isNull(uid)) {
+            uid = getUidValue();
+        }
+        String ckey = StrUtil.contact(getJboName(), ".", attributeName, ".", uid);
+        Object obj = CacheUtil.getDomain(ckey);
+        if (obj != null) {
+            return obj;
+        }
         String[] ans = attributeName.split("\\.");
         if (ans.length < 2) {
             return null;
@@ -779,6 +788,7 @@ public abstract class BaseJbo implements JboIFace {
                 JboIFace jid = jset.getJbo();
                 if (jid != null && !StrUtil.isNull(ans[idx])) {
                     Object value = jid.getObject(ans[idx]);
+                    CacheUtil.putDomainCache(ckey, value);
                     Map<String, JxAttribute> attrs = getJxAttributes();
                     // 得到联系名.
                     String rname = attributeName.substring(0, attributeName.length() - ans[idx].length());
