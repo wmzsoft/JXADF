@@ -6,7 +6,6 @@ import com.jxtech.util.StrUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
  * Maximo 应用程序主页面
  *
@@ -41,18 +40,16 @@ public class AppAction extends JxActionSupport {
             if ("init".equalsIgnoreCase(flag)) {
                 // 初始化，将原来保存的内容删除。
                 JxSession.removeApp(app, type);
-            } else if ("add".equalsIgnoreCase(flag)) {
-                // 新增
-            } else if ("view".equalsIgnoreCase(flag)) {
             }
-
+            StringBuilder sb = new StringBuilder();
+            sb.append("/app/").append(app).append("/");
             if (type == null) {
-                forwordUrl = "/app/" + app + "/" + app + ".jsp";
+                sb.append(app);
             } else {
-                forwordUrl = "/app/" + app + "/" + type + ".jsp";
+                sb.append(type);
             }
-
-            forwordUrl = forwordUrl.toLowerCase();
+            sb.append(".jsp");
+            forwordUrl = sb.toString().toLowerCase();
             LOG.debug(forwordUrl);
         }
         return super.execute();

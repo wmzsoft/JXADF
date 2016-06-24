@@ -288,7 +288,6 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         jbolist.clear();
         // 转换类型
         int size = list.size();
-        setCount(size);
         for (int i = 0; i < size; i++) {
             currentJbo = getJboInstance();
             currentJbo.setData(list.get(i));
@@ -456,9 +455,9 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
             if (bflag) {
                 LOG.debug("数据保存成功。");
                 JxDataSourceUtil.commit(conn);
-                if (canCache()){
-                    //清除缓存
-                    CacheUtil.removeJboOfStartWith(StrUtil.contact(getJboname(),"."));
+                if (canCache()) {
+                    // 清除缓存
+                    CacheUtil.removeJboOfStartWith(StrUtil.contact(getJboname(), "."));
                 }
                 setFlag();
             } else {
@@ -618,6 +617,29 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
 
     @Override
     public int count() throws JxException {
+        List<JboIFace> list = getJbolist();
+        if (list != null) {
+            DataQueryInfo dqi = getQueryInfo();
+            int pagesize = dqi.getPageSize();
+            int pagenum = dqi.getPageNum();
+            int size = list.size();
+            // 计算记录总数
+            if (pagesize > size && size > 0) {
+                int count = 0;
+                if (pagenum > 1) {
+                    count = (pagenum - 1) * pagesize + size;
+                } else {
+                    count = size;
+                }
+                setCount(count);
+                return count;
+            } else if (size == 0 && pagenum < 2) {
+                //就是0条记录了
+                setCount(0);
+                return 0;
+            }
+        }
+        // 满页的数据，需要重新计算
         DataQuery dq = DBFactory.getDataQuery(this.getDbtype(), this.getDataSourceName());
         int count = dq.count(this);
         setCount(count);

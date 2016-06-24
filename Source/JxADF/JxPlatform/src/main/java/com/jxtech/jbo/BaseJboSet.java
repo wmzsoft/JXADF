@@ -291,7 +291,7 @@ public abstract class BaseJboSet implements JboSetIFace {
                 if (children != null && !children.isEmpty()) {
                     Iterator<Entry<String, JboSetIFace>> iter = children.entrySet().iterator();
                     while (iter.hasNext()) {
-                        Map.Entry<String, JboSetIFace> entry =  iter.next();
+                        Map.Entry<String, JboSetIFace> entry = iter.next();
                         JboSetIFace childSet = entry.getValue();
                         childSet.setFlag();
                     }
@@ -577,7 +577,7 @@ public abstract class BaseJboSet implements JboSetIFace {
             sb.append("\",\"pagenum\":\"");
             sb.append(dqi.getPageNum());
             sb.append("\",\"count\":\"");
-            sb.append(count);
+            sb.append(getCount());
             sb.append("\",\"jboname\":\"");
             sb.append(jboname);
             sb.append("\"}");
