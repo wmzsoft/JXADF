@@ -96,9 +96,9 @@ public class VirtualJboSet extends BaseJboSet {
     }
 
     @Override
-    public boolean route() throws JxException {
+    public int route() throws JxException {
         // TODO Auto-generated method stub
-        return false;
+        return 0;
     }
 
     @Override
@@ -182,6 +182,18 @@ public class VirtualJboSet extends BaseJboSet {
     @Override
     public int getCount(boolean flag) {
         return super.getCount(false);
+    }
+
+    @Override
+    public int route(String action) throws JxException {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    @Override
+    public int route(String[] ids, String action, String memo) throws JxException {
+        // TODO Auto-generated method stub
+        return 0;
     }
 
 }

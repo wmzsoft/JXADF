@@ -17,20 +17,18 @@ $author:wmzsoft@gmail.com
     <#if (cssClass??)>
         <#assign cssClass=cssClass?replace('dataattribute=',tdidpre)>
     </#if>
-    <#assign attribute=jbo.getJxAttribute(col.dataattribute!'')>
-    <#assign maxtype=attribute.maxType!'un'>
-
-    <#if (maxtype=='YORN')>
+    <#assign maxtype=col.parameters.maxtype!'un'>
+    <#if (col.parameters.isBoolean!false)>
         <input type="checkbox" id="${dateid}" <#rt>
         <#if (jbo.getString(col.dataattribute)??)>
-            <#if ((jbo.getString(col.dataattribute)!'0')=='1')>
+            <#if (jbo.getBoolean(col.dataattribute))>
                 <#lt> checked="checked" <#rt>
             </#if>
         </#if>
         <#if (col.parameters.readonly??)&&(col.parameters.readonly == "true")>
         	 <#lt> disabled="disabled" <#rt>
         <#else>
-        	<#lt> dataattribute="${attribute.attributeName!''}" <#rt>
+        	<#lt> dataattribute="${col.dataattribute!''}" <#rt>
         	<#lt> onBlur="tableInputOnBlur(this,event)" onChange="inputOnChange(this)" <#rt>
         </#if>
         <#lt> class="tdcheck validate[${cssClass!}]"<#rt>
@@ -42,9 +40,9 @@ $author:wmzsoft@gmail.com
     	<#include "format-value-number.ftl">
         <#lt><input type="text" id="${dateid}" name="${dateid}" <#rt>
         <#lt> value='${colDataValue!''}'<#rt>
-        <#lt> dataattribute="${attribute.attributeName!''}" <#rt>
+        <#lt> dataattribute="${col.dataattribute!''}" <#rt>
         <#lt> onBlur="tableInputOnBlur(this,event)" onChange="inputOnChange(this)" <#rt>
-        <#if (jbo.isRequired("${attribute.attributeName!''}")!false)>
+        <#if (jbo.isRequired("${col.dataattribute!''}")!false)>
             <#lt> required="required" <#rt>
             <#assign cssClass = "required," + cssClass>
         </#if>
@@ -69,9 +67,9 @@ $author:wmzsoft@gmail.com
             <#assign cssClass = "custom[time]," + cssClass>
         </#if>
 
-        <#if ((jbo.isNumeric(col.dataattribute)!false)==true) >
+        <#if (col.parameters.isNumeric) >
             <#lt>class="tdinputnum validate[${cssClass}]" <#rt>
-        <#elseif ((attribute.isDateType()!false)==true)>
+        <#elseif (col.parameters.isDateType!false)>
             <#lt>class="tdinputdate validate[${cssClass}]" <#rt>
         <#else>
             <#lt>class="tdinput validate[${cssClass}]" <#rt>

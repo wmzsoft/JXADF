@@ -35,6 +35,7 @@ public class TablecolTag extends JxBaseUITag {
     protected String mxevent_disabled;// 事件中的按钮是否可以点击
     protected String mxevent_render;
     protected String dataattribute;// 字段名
+    protected String datatype;//字段类型
     protected String dataDisplay;// 数据显示，一般用于根据不同的值，显示不同的图标
     protected String lookup;
     protected String lookupWidth;
@@ -129,6 +130,7 @@ public class TablecolTag extends JxBaseUITag {
         col.setDataDisplay(dataDisplay);
         col.setVisible(visible);
         col.setDescdataattribute(descdataattribute);
+        col.setDatatype(datatype);
         Tag tag = findAncestorWithClass(this, TableTag.class);
         if (tag != null && dataattribute != null) {
             TableTag ttag = (TableTag) tag;
@@ -511,6 +513,14 @@ public class TablecolTag extends JxBaseUITag {
 
     public void setMxevent_disabled(String mxevent_disabled) {
         this.mxevent_disabled = mxevent_disabled;
+    }
+
+    public String getDatatype() {
+        return datatype;
+    }
+
+    public void setDatatype(String datatype) {
+        this.datatype = datatype;
     }
 
 }

@@ -196,8 +196,11 @@ public class DataEditImpl extends com.jxtech.db.impl.DataEditImpl {
         Map<String, JxAttribute> jas = jbo.getJxAttributes();
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             String key = entry.getKey();// 属性名
+            if (key.indexOf('.') > 0 ){
+                continue;
+            }
             JxAttribute attr = jas.get(key);
-            if (key.indexOf('.') > 0 || attr == null || !attr.isPersistent()) {
+            if (attr == null || !attr.isPersistent()) {
                 continue;
             }
             JboValue value = jbo.getValue(key, false);

@@ -678,8 +678,4 @@ public interface JboIFace extends Serializable {
      */
     public Object invokeMethod(String name, Class<?>[] parameterTypes, Object[] params);
 
-    public String getCachekey() throws JxException;
-
-    public void setCachekey(String cachekey);
-
 }

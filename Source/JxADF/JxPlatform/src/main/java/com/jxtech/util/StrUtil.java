@@ -762,4 +762,36 @@ public class StrUtil {
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
     }
+
+    /**
+     * 是否是手机号
+     * 
+     * @param telNum
+     * @return
+     */
+    public static boolean isMobileNum(String telNum) {
+        if (StrUtil.isNull(telNum)) {
+            return false;
+        }
+        String regex = "^((13[0-9])|(15[0-9])|(18[0-9]))\\d{8}$";
+        Pattern p = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+        Matcher m = p.matcher(telNum);
+        return m.matches();
+    }
+
+    /**
+     * 是否为Email
+     * 
+     * @param email
+     * @return
+     */
+    public static boolean isEmail(String email) {
+        if (StrUtil.isNull(email)) {
+            return false;
+        }
+        String regex = "^([a-z0-9A-Z]+[-|\\.]?)+[a-z0-9A-Z]@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-zA-Z]{2,}$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(email);
+        return m.matches();
+    }
 }

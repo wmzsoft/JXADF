@@ -3,6 +3,8 @@ package com.jxtech.jbo;
 import java.io.OutputStream;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -78,13 +80,18 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
         if (StrUtil.isNull(getJboname()) || StrUtil.isNull(uid)) {
             return null;
         }
-        String key = CacheUtil.genJboKey(getJboname(), uid);
-        currentJbo = CacheUtil.getJbo(key);
-        if (currentJbo != null) {
-            return currentJbo;
+        List<JboIFace> clist = getJbolist();
+        String uidName = getUidName();
+        if (clist != null && !clist.isEmpty()) {
+            Iterator<JboIFace> iter = clist.iterator();
+            while (iter.hasNext()) {
+                currentJbo = iter.next();
+                if (uid.equals(currentJbo.getString(uidName))) {
+                    return currentJbo;
+                }
+            }
         }
         currentJbo = getJboInstance();
-        String uidName = getUidName();
         String where = uidName + " = ?";
         DataQuery dq = DBFactory.getDataQuery(this.getDbtype(), getDataSourceName());
         DataQueryInfo qbe = getQueryInfo();
@@ -100,8 +107,6 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
                 currentJbo.afterLoad();
             }
         }
-        currentJbo.setCachekey(key);
-        CacheUtil.putJboCache(key, currentJbo);
         return currentJbo;
     }
 
@@ -342,6 +347,48 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     }
 
     /**
+     * 批量发送工作流
+     * 
+     * @param ids
+     *            唯一ID列表
+     * @param action
+     *            发送之后的选择操作，可以是文字描述，也可以直接是 true/false
+     * @return
+     * @throws JxException
+     */
+    public int route(String[] ids, String action, String memo) throws JxException {
+        if (ids == null) {
+            return 0;
+        }
+        if (StrUtil.isNull(action)) {
+            return 0;
+        }
+        int result = 0;
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("DEFAULTACTION", action);
+        params.put("NOTE", memo);
+        for (int i = 0; i < ids.length; i++) {
+            JboIFace ji = queryJbo(ids[i]);
+            if (ji == null) {
+                continue;
+            }
+            try {
+                if (ji.route(params)) {
+                    result++;
+                    ji.getJboSet().commit();
+                } else {
+                    ji.getJboSet().rollback();
+                }
+            } catch (Exception e) {
+                ji.getJboSet().rollback();
+                LOG.error(e.getMessage());
+            }
+        }
+
+        return result;
+    }
+
+    /**
      * 删除多个数据，直接执行删除。
      * 
      * @param ids
@@ -522,6 +569,16 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
      */
     protected void initWorkflowInfo() throws JxException {
         String appName = getAppname();
+        if (StrUtil.isNull(appName)) {
+            String jn = getJboname();
+            if (!StrUtil.isNull(jn)) {
+                JboIFace jb = JboUtil.findJbo("maxapps", "maintbname=?", new Object[] { jn.toUpperCase() });
+                if (jb != null) {
+                    appName = jb.getString("APP");
+                    this.setAppname(appName);
+                }
+            }
+        }
         String[] wf = WorkflowEngineFactory.getWorkflow(appName);
         workflowId = wf[0];
         workflowEngine = wf[1];
@@ -634,7 +691,7 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
                 setCount(count);
                 return count;
             } else if (size == 0 && pagenum < 2) {
-                //就是0条记录了
+                // 就是0条记录了
                 setCount(0);
                 return 0;
             }
@@ -656,14 +713,47 @@ public class JboSet extends BaseJboSet implements JboSetIFace {
     }
 
     /**
-     * 发送工作流
+     * 将当前查询的结果集全部发送工作流
      * 
      * @return
      * @throws JxException
      */
     @Override
-    public boolean route() throws JxException {
-        return false;
+    public int route() throws JxException {
+        return route("true");
+    }
+
+    /**
+     * 批量发送工作流，将当前结果集直接发送
+     * 
+     * @param action
+     * @return
+     * @throws JxException
+     */
+    public int route(String action) throws JxException {
+        List<JboIFace> list = this.getJbolist();
+        if (list == null || list.isEmpty()) {
+            return 0;
+        }
+        Map<String, Object> params = new HashMap<String, Object>();
+        params.put("DEFAULTACTION", action);
+        int result = 0;
+        Iterator<JboIFace> iter = list.iterator();
+        while (iter.hasNext()) {
+            JboIFace ji = iter.next();
+            try {
+                if (ji.route(params)) {
+                    result++;
+                    ji.getJboSet().commit();
+                } else {
+                    ji.getJboSet().rollback();
+                }
+            } catch (Exception e) {
+                LOG.error(e.getMessage());
+                ji.getJboSet().rollback();
+            }
+        }
+        return result;
     }
 
     /**

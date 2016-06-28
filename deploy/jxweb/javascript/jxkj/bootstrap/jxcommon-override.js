@@ -1,1 +1,1 @@
-function bindTableEvent(a){}function selectTableTr(a,b){};
+function bindTableEvent(a){}function selectTableTr(a,b){}function loadNavigation(b){if(top.location==self.location){var a='<nav class="navbar navbar-default navbar-fixed-bottom"><div align="center">      <a id="nav_home" style="font-size: 25px" href="'+b+'">           <span class="glyphicon glyphicon-home"></span>      </a></div></nav>';$("body").append(a)}};

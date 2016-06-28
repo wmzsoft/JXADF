@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jxtech.db.util.JxDataSourceUtil;
+import com.jxtech.jbo.base.JxAttribute;
 import com.jxtech.util.ClassUtil;
 import com.jxtech.util.StrUtil;
 
@@ -168,6 +169,7 @@ public class DBFactory {
 
     /**
      * 返回默认的属性定义实现类
+     * 
      * @return
      */
     public static String getDefaultAttributeImpl() {
@@ -185,5 +187,27 @@ public class DBFactory {
         }
         defaultAttributeImpl = dbAttributeImpl.get(JxDataSourceUtil.ORACLE);
         return defaultAttributeImpl;
+    }
+
+    /**
+     * 获得JxAttribute实例
+     * 
+     * @return
+     */
+    public static JxAttribute getDefalutAttributeInstance() {
+        String cn = getDefaultAttributeImpl();
+        try {
+            Class<?> c = Class.forName(cn);
+            Object obj = c.newInstance();
+            if (obj instanceof JxAttribute) {
+                return (JxAttribute) obj;
+            }
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
+            Object val = ClassUtil.getInstance(cn);
+            if (val instanceof JxAttribute) {
+                return (JxAttribute) val;
+            }
+        }
+        return null;
     }
 }

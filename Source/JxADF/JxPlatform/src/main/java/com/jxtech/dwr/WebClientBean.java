@@ -547,7 +547,7 @@ public class WebClientBean {
      * @param jboname
      *            对应MAXOBJECT
      * @param uid
-     *            单条记录发送的UID
+     *            单条记录发送的UID，多条用逗号分隔
      * @param action
      *            操作比如SUBMIT,APPROVE,REJECT,自定义的action等
      * @param note
@@ -560,17 +560,35 @@ public class WebClientBean {
      * @throws JxException
      */
     public String routeCommon(String appname, String jboname, String uid, String action, String note, String toUsers, String options) {
-
+        if (StrUtil.isNull(uid)) {
+            return JxLangResourcesUtil.getString("dwr.WebClientBean.routeCommon.route.failed");
+        }
         String result = "";
-        Map<String, Object> params = new HashMap<String, Object>();
-        params.put("ACTION", action);
-        params.put("NOTE", note);
-        params.put("TOUSERS", toUsers);
-        params.put("OPTIONS", options);
         JboIFace jbi = null;
         try {
+            if (!StrUtil.isNull(jboname) && uid.indexOf(',') > 0) {
+                JboSetIFace jbos = JboUtil.getJboSet(jboname);
+                String[] us = uid.split(",|;");
+                int b = jbos.route(us, action, ";" + note);
+                if (b == us.length) {
+                    return JxLangResourcesUtil.getString("dwr.WebClientBean.routeCommon.route.success");
+                } else {
+                    return JxLangResourcesUtil.getString("dwr.WebClientBean.routeCommon.route.failed");
+                }
+            }
+            Map<String, Object> params = new HashMap<String, Object>();
+            params.put("ACTION", action);
+            params.put("NOTE", note);
+            params.put("TOUSERS", toUsers);
+            params.put("OPTIONS", options);
             App app = JxSession.getApp(appname);
-            JboSetIFace jboSet = app.getJboset();
+            JboSetIFace jboSet = null;
+            if (app != null) {
+                jboSet = app.getJboset();
+            }
+            if (jboSet == null && !StrUtil.isNull(jboname)) {
+                jboSet = JboUtil.getJboSet(jboname);
+            }
             jbi = jboSet.queryJbo(uid);
             if (null != jbi) {
                 boolean routeResult = jbi.route(params);
@@ -606,7 +624,7 @@ public class WebClientBean {
     }
 
     /**
-     * 康拓普 - 发送工作流
+     * 发送工作流
      * 
      * @param appname
      *            应用程序名

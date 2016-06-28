@@ -274,6 +274,11 @@
             <rtexprvalue>true</rtexprvalue>
         </attribute>
         <attribute>
+            <name>datatype</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
             <name>secondAttributes</name>
             <required>false</required>
             <rtexprvalue>true</rtexprvalue>

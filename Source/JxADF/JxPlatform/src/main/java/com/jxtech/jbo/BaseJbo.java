@@ -73,15 +73,10 @@ public abstract class BaseJbo implements JboIFace {
     private long saveFlag = 0xFFFFFF;
     // 工作流发送结果状态
     private long routeStatus = 0;
-
     // 发生改变的子表
     private Set<String> changedChildren = new HashSet<String>();
-
     // 附件
     private Map<String, JboSetIFace> attachments = new HashMap<String, JboSetIFace>();
-
-    // 缓存的唯一KEY
-    private String cachekey;
 
     public BaseJbo(JboSetIFace jboset) throws JxException {
         this.jboSet = jboset;
@@ -761,10 +756,13 @@ public abstract class BaseJbo implements JboIFace {
         if (StrUtil.isNull(uid)) {
             uid = getUidValue();
         }
-        String ckey = StrUtil.contact(getJboName(), ".", attributeName, ".", uid);
-        Object obj = CacheUtil.getDomain(ckey);
-        if (obj != null) {
-            return obj;
+        String ckey = null;
+        if (!StrUtil.isNull(uid)) {
+            ckey = StrUtil.contact(getJboName(), ".", attributeName, ".", uid);
+            Object obj = CacheUtil.getDomain(ckey);
+            if (obj != null) {
+                return obj;
+            }
         }
         String[] ans = attributeName.split("\\.");
         if (ans.length < 2) {
@@ -1105,14 +1103,15 @@ public abstract class BaseJbo implements JboIFace {
         }
         ((DataMap<String, Object>) data).setJbo(this);
         data.put(attributeName, value);
+        setModify(true);
         // 判断是否存在这个属性，如果不存在则是虚拟字段，不予处理。
         JxAttribute attribute = getJxAttribute(attributeName);
         if (null != attribute) {
-            CacheUtil.removeJbo(cachekey);
-            cachekey = null;// 移出之后，清除这个Key
-            setModify(true);
-            getValue(attributeName).setModify(true);
-            if (value != null && value instanceof String) {
+            JboValue jv = getValue(attributeName);
+            if (jv != null) {
+                jv.setModify(true);
+            }
+            if (value instanceof String) {
                 if (attribute.isUpper()) {
                     data.put(attributeName, ((String) value).toUpperCase());
                 } else if (attribute.isLower()) {
@@ -1997,14 +1996,6 @@ public abstract class BaseJbo implements JboIFace {
     public String getInternalStaus(String domainid) throws JxException {
         // TODO Auto-generated method stub
         return null;
-    }
-
-    public String getCachekey() throws JxException {
-        return cachekey;
-    }
-
-    public void setCachekey(String cachekey) {
-        this.cachekey = cachekey;
     }
 
     @Override

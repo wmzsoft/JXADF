@@ -2,7 +2,7 @@
 <span class="treeclose" treeStatus="close" onclick="openTreeTable(this,event)"
       title="${parameters.tagbundle['table-thead.expend.title']!}" parent="root"></span><#t>
 </#if>
-<#if (col.dataattribute??) && ( (parameters.inputmode!'')=='EDIT') && (!jbo.readonly) && (!jbo.isReadonly(col.dataattribute!'')) && ((col.dataattribute!'')?index_of('.')<0) && ((col.dataattribute!'') != (jbo.getUidName()!'')) && (jbo.getJxAttribute(col.dataattribute)??)>
+<#if (col.dataattribute??) && ( (parameters.inputmode!'')=='EDIT') && (!jbo.readonly) && (!jbo.isReadonly(col.dataattribute!'')) && ((col.dataattribute!'')?index_of('.')<0) && ((col.dataattribute!'') != (jbo.getUidName()!''))>
     <#assign inputValue = colDataValue>
     <#if col.descdataattribute??>
         <#assign inputDescValue=colDescDataValue>

@@ -7,6 +7,8 @@ $author:wmzsoft@gmail.com
 --><#t/>
 ${parameters.headContent!"<!-- html head marcro -->"}<#t/>
 ${parameters.bodyContent!"<!-- html body marcro -->"}<#t/>
+<script type='text/javascript'><#t>
+$(function () {loadNavigation('${base!"/jxweb"}')});</script><#t>
 </body>
 </html>
 <!-- body.ftl end -->

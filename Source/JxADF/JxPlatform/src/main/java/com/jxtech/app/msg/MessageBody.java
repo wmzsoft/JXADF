@@ -2,6 +2,7 @@ package com.jxtech.app.msg;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import com.jxtech.util.StrUtil;
@@ -13,10 +14,13 @@ import com.jxtech.util.StrUtil;
  * @date 2014.12
  * 
  */
-public class MessageBody {
+public class MessageBody implements java.io.Serializable {
+    private static final long serialVersionUID = -6053424969121831045L;
     public static final long EMAIL = 1; // 邮件
     public static final long SMS = 2; // 短信
     public static final long NOTE = 4;// 公告
+    public static final long WEBCHAT = 8;// 微信
+    public static final long ALL = 0xFFFF;
     private String sender;// 发送者
     private String reciver;// 接收者，如果是邮件的话，直接为邮件地址
     private String cc;// 抄送者
@@ -114,16 +118,16 @@ public class MessageBody {
 
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("sender=" + sender);
-        sb.append("\r\nreciver=" + reciver);
-        sb.append("\r\ncc=" + cc);
-        sb.append("\r\nbcc=" + bcc);
-        sb.append("\r\nSubject=" + subject);
-        sb.append("\r\ncontent=" + content);
-        sb.append("\r\nsendTime=" + sendTime);
-        sb.append("\r\nendTime=" + endTime);
-        sb.append("\r\ncreateTime=" + createTime);
-        sb.append("\r\nmessageType=" + messageType);
+        sb.append("sender=").append(sender);
+        sb.append("\r\nreciver=").append(reciver);
+        sb.append("\r\ncc=").append(cc);
+        sb.append("\r\nbcc=").append(bcc);
+        sb.append("\r\nSubject=").append(subject);
+        sb.append("\r\ncontent=").append(content);
+        sb.append("\r\nsendTime=").append(sendTime);
+        sb.append("\r\nendTime=").append(endTime);
+        sb.append("\r\ncreateTime=").append(createTime);
+        sb.append("\r\nmessageType=").append(messageType);
         return sb.toString();
     }
 
@@ -187,5 +191,41 @@ public class MessageBody {
 
     public void setImageAutoDisplay(boolean imageAutoDisplay) {
         this.imageAutoDisplay = imageAutoDisplay;
+    }
+
+    public MessageBody cloneMe() {
+        MessageBody body = new MessageBody();
+        body.setSender(sender);
+        body.setReciver(reciver);
+        body.setCc(cc);
+        body.setBcc(bcc);
+        body.setSubject(subject);
+        body.setContent(content);
+        body.setMessageType(messageType);
+        body.setImageAutoDisplay(imageAutoDisplay);
+        if (sendTime != null) {
+            body.setSendTime(new Date(sendTime.getTime()));
+        }
+        if (endTime != null) {
+            body.setEndTime(new Date(endTime.getTime()));
+        }
+        if (createTime != null) {
+            body.setCreateTime(new Date(createTime.getTime()));
+        }
+        body.setFiles(cloneList(files));
+        body.setImages(cloneList(images));
+        return body;
+    }
+
+    private List<String> cloneList(List<String> list) {
+        if (list == null) {
+            return null;
+        }
+        Iterator<String> iter = list.iterator();
+        List<String> nlist = new ArrayList<String>();
+        while (iter.hasNext()) {
+            nlist.add(iter.next());
+        }
+        return nlist;
     }
 }

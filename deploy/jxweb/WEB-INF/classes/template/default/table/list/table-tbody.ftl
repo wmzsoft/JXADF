@@ -116,7 +116,7 @@ $author:wmzsoft@gmail.com
                                 <#if (col.parameters.align??) >
                                     <#lt> align="${col.parameters.align}" <#rt>
                                 <#else>
-                                    <#if ((jbo.isNumeric(col.dataattribute)!false)==true) >
+                                    <#if (col.parameters.isNumeric!false) >
                                         <#lt> align="${col.parameters.align!'right'}" <#rt>
                                     <#elseif (col.parameters.isBoolean!false)>
                                     	<#lt> align="${col.parameters.align!'center'}" <#rt> 

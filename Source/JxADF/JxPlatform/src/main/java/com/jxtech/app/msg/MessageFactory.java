@@ -41,7 +41,7 @@ public class MessageFactory {
         boolean rst = true;
         for (Map.Entry<String, String> entry : impls.entrySet()) {
             Object obj = ClassUtil.getInstance(entry.getValue());
-            if (obj != null && obj instanceof Message) {
+            if (obj instanceof Message) {
                 rst = rst & ((Message) obj).sendMessage(body);
             }
         }

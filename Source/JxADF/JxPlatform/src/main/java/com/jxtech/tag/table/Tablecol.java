@@ -1,11 +1,13 @@
 package com.jxtech.tag.table;
 
+import com.jxtech.db.DBFactory;
 import com.jxtech.jbo.JboSetIFace;
 import com.jxtech.jbo.base.JxAttribute;
 import com.jxtech.jbo.base.KeyValue;
 import com.jxtech.jbo.util.JxException;
 import com.jxtech.tag.comm.JxBaseUIBean;
 import com.jxtech.tag.select.Select;
+import com.jxtech.util.NumUtil;
 import com.jxtech.util.StrUtil;
 import com.opensymphony.xwork2.util.ValueStack;
 import org.apache.struts2.views.annotations.StrutsTag;
@@ -35,7 +37,8 @@ public class Tablecol extends JxBaseUIBean {
     protected String mxevent_icon;
     protected String mxevent_disabled;// 事件中的按钮是否可以点击
     protected String mxevent_render;
-    protected String dataattribute;
+    protected String dataattribute;// 数据属性
+    protected String datatype;// 数据类型
     protected String dataDisplay;// 数据显示，一般用于根据不同的值，显示不同的图标
 
     protected String lookup;
@@ -119,6 +122,9 @@ public class Tablecol extends JxBaseUIBean {
         if (null != dataattribute) {
             addParameter("dataattribute", findString(dataattribute).toUpperCase());
         }
+        if (null != datatype) {
+            addParameter("datatype", findString(datatype).toUpperCase());
+        }
         if (null != lookup) {
             addParameter("lookup", findString(lookup).toUpperCase());
         }
@@ -185,10 +191,43 @@ public class Tablecol extends JxBaseUIBean {
         if (null != dataname) {
             addParameter("dataname", findString(dataname));
         }
-        addParameter("jxattribute", jxattribute);
-        if (jxattribute != null) {
-            addParameter("isBoolean", jxattribute.isBoolean());
+        // 判断是否为boolean类型
+        boolean isBoolean = false;
+        if (!StrUtil.isNull(datatype)) {
+            isBoolean = "YORN".equalsIgnoreCase(datatype);
+        } else if (jxattribute != null) {
+            isBoolean = jxattribute.isBoolean();
         }
+        addParameter("isBoolean", isBoolean);
+        // 判断是否为数字
+        boolean isNumeric = false;
+        if (!StrUtil.isNull(datatype)) {
+            String num = ",SMALLINT,FLOAT,DURATION,DECIMAL,AMOUNT,NUMBER,";
+            String s = datatype.toUpperCase().trim();
+            isNumeric = (num.indexOf(s) >= 0);
+        } else if (jxattribute != null) {
+            isNumeric = jxattribute.isNumeric();
+        }
+        addParameter("isNumeric", isNumeric);
+
+        String maxtype = "";
+        if (jxattribute == null) {
+            jxattribute = DBFactory.getDefalutAttributeInstance();
+            if (!StrUtil.isNull(datatype)) {
+                maxtype = datatype.toUpperCase().trim();
+            } else {
+                maxtype = "ALN";
+            }
+            jxattribute.setMaxType(maxtype);
+            jxattribute.setAttributeName(dataattribute.toUpperCase());
+            jxattribute.setTitle(title);
+            jxattribute.setLength((int) NumUtil.parseLong(maxlength, 20));
+        } else {
+            maxtype = jxattribute.getMaxType().toUpperCase();
+        }
+        addParameter("jxattribute", jxattribute);
+        addParameter("maxtype", maxtype);
+        addParameter("isDateType", jxattribute.isDateType());
         addParameter("urlType", urlType);
         if (urlParamName != null) {
             addParameter("urlParamName", findString(urlParamName));
@@ -505,6 +544,10 @@ public class Tablecol extends JxBaseUIBean {
 
     public String getDataDisplay() {
         return dataDisplay;
+    }
+
+    public void setDatatype(String datatype) {
+        this.datatype = datatype;
     }
 
 }

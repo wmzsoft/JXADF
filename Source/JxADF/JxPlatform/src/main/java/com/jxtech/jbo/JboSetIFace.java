@@ -491,12 +491,35 @@ public interface JboSetIFace extends Serializable {
     public void setWorkflowEngine(String workflowEngine);
 
     /**
-     * 发送工作流
+     * 将当前查询的结果集全部发送工作流
      * 
      * @return
      * @throws JxException
      */
-    public boolean route() throws JxException;
+    public int route() throws JxException;
+
+    /**
+     * 批量发送工作流，将当前结果集直接发送
+     * 
+     * @param action
+     * @return
+     * @throws JxException
+     */
+    public int route(String action) throws JxException;
+
+    /**
+     * 批量发送工作流
+     * 
+     * @param ids
+     *            唯一ID列表
+     * @param action
+     *            发送之后的选择操作，可以是文字描述，也可以直接是 true/false
+     * @param memo
+     *            审批信息
+     * @return
+     * @throws JxException
+     */
+    public int route(String[] ids, String action, String memo) throws JxException;
 
     /**
      * 获得当前记录集的父亲记录
@@ -842,7 +865,7 @@ public interface JboSetIFace extends Serializable {
      * @param session
      */
     public void setSession(HttpSession session);
-    
+
     /**
      * 通过反射，调用Jbo的方法，无参数
      * 
@@ -864,6 +887,5 @@ public interface JboSetIFace extends Serializable {
      * @return
      */
     public Object invokeMethod(String name, Class<?>[] parameterTypes, Object[] params);
-
 
 }
