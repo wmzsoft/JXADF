@@ -99,7 +99,7 @@ $author:wmzsoft@gmail.com
             <#lt> disabled <#rt>
         </#if>
     </#if>
-    <#if (parameters.required!false) >
+    <#if (params.required!false) >
         <#lt> required="required" class="validate[required]" <#rt/>
     </#if>
     <#lt> <#include "/${params.templateDir}/simple/scripting-events.ftl" /><#rt/>

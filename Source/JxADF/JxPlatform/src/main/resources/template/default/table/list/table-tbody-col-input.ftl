@@ -34,7 +34,13 @@ $author:wmzsoft@gmail.com
         <#lt> class="tdcheck validate[${cssClass!}]"<#rt>
             /><#t>
     <#elseif (col.parameters.readonly??)&&(col.parameters.readonly == "true")>
-        <#lt> ${jbo.getString(col.dataattribute)!''}<#rt>
+    	<#if col.parameters.format??>
+    		<#assign colDataValue=jbo.getString(col.dataattribute)!''>
+    		<#include "format-value-number.ftl">
+    		<#lt> ${colDataValue!''}<#rt>
+    	<#else>
+    		<#lt> ${jbo.getString(col.dataattribute)!''}<#rt>
+    	</#if>
     <#else>
     	<#assign colDataValue=jbo.getHtmlInputValue(col.dataattribute)!''>
     	<#include "format-value-number.ftl">
@@ -52,18 +58,21 @@ $author:wmzsoft@gmail.com
                 <#lt> style="display:none" <#rt>
             </#if>
         </#if>
-        <#if (col.parameters.width??)>
+        <#if (col.parameters.width?? && (maxtype?upper_case)!='DATE' && (maxtype?upper_case)!='DATETIME' && (maxtype?upper_case)!='TIME')>
         	<#lt> style="width:${col.parameters.width}px" <#rt>
         </#if>
     <#--行编辑中的日期只能选择-->
         <#if (maxtype?upper_case)=='DATE'>
             <#lt> readonly="true" datatype="date" <#rt>
+            <#lt> style="width:80px" <#rt>
             <#assign cssClass = "custom[date]," + cssClass>
         <#elseif (maxtype?upper_case)=='DATETIME'>
             <#lt> readonly="true" datatype="date" <#rt>
+            <#lt> style="width:140px" <#rt>
 			<#assign cssClass = "custom[dateTime]," + cssClass>
 		<#elseif (maxtype?upper_case)=='TIME'>
 			<#lt> readonly="true" datatype="date" <#rt>
+			<#lt> style="width:80px" <#rt>
             <#assign cssClass = "custom[time]," + cssClass>
         </#if>
 

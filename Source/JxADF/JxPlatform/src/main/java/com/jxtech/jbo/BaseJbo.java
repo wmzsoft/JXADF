@@ -1110,8 +1110,13 @@ public abstract class BaseJbo implements JboIFace {
             JboValue jv = getValue(attributeName);
             if (jv != null) {
                 jv.setModify(true);
-            }
-            if (value instanceof String) {
+                if (value != null && attribute.isNumeric()) {
+                    int scale = attribute.getScale();
+                    int length = attribute.getLength();
+                    Object val = NumUtil.parseCurrencyToNumber(value.toString(),scale,length);
+                    data.put(attributeName, val);
+                }
+            }  else if (value instanceof String) {
                 if (attribute.isUpper()) {
                     data.put(attributeName, ((String) value).toUpperCase());
                 } else if (attribute.isLower()) {

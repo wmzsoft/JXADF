@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 
 /**
  * @author wmzsoft@gmail.com
@@ -154,6 +155,41 @@ public class NumUtil {
     }
 
     /**
+     * 金钱格式字符串转换为数字
+     * 
+     * @param value
+     * @param scale
+     * @param length
+     * @return
+     * @throws ParseException
+     */
+    public static Object parseCurrencyToNumber(String value, int scale, int length) {
+        if (value == null) {
+            return null;
+        }
+        StringBuilder sb = new StringBuilder();
+        int vlen = value.length();
+        for (int i = 0; i < vlen; i++) {
+            char c = value.charAt(i);
+            if ((c >= '0' && c <= '9') || c == '-' || c == 'E' || c == '.') {
+                sb.append(c);
+            }
+        }
+        try {
+            double d = round(Double.parseDouble(sb.toString()), scale);
+            if (scale == 0) {
+                return (long) d;
+            } else if (value.trim().endsWith("%") || value.trim().endsWith("％")){
+                return d/100;
+            }else{
+                return d;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
      * 取几位小数
      * 
      * @param x
@@ -164,7 +200,11 @@ public class NumUtil {
      */
     public static double round(double x, int pos) {
         BigDecimal bg = new BigDecimal(x);
-        return bg.setScale(pos, BigDecimal.ROUND_HALF_UP).doubleValue();
+        if (pos == 0) {
+            return bg.setScale(pos, BigDecimal.ROUND_HALF_UP).longValue();
+        } else {
+            return bg.setScale(pos, BigDecimal.ROUND_HALF_UP).doubleValue();
+        }
     }
 
     /**
