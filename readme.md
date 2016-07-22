@@ -2,6 +2,8 @@
 
 <a href="http://osgia.com" target="osgi">插件化（OSGi）开源快速开发平台JXADF功能特点</a>：
 
+开源（:100:）、免费（:free:） 
+
 1、基于OSGi、J2EE
 
 2、插件集市 http://osgia.com/jxweb/pluginstore/index.action 中有丰富的插件。
@@ -23,11 +25,11 @@
 ![http://osgi.hep](doc/images/osgi.help.png)
 
 ------------------------------------
-官网：http://osgia.com
+官网:house_with_garden:：http://osgia.com
 
-QQ群1：429895245（已满）QQ群2：371832126
+QQ群1：429895245（:u6e80:）QQ群2：371832126（:mens:）
 
-如果喜欢,请加颗星,
+如果喜欢,请加颗星:star:,
 
 如果有建议,请加QQ告诉我们，
 
@@ -64,11 +66,8 @@ QQ群1：429895245（已满）QQ群2：371832126
 =======
 ![手机自适应访问截图](doc/images/jxadf-mobile.demo.gif)
 
-编译好的执行程序下载
-========
-http://osgia.com
+编译好的执行程序见deploy目录
 
-微信号: wmzsoft
-https://gratipay.com/~wmzsoft
+
 
 
