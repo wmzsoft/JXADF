@@ -4,23 +4,23 @@
 
 开源（:100:）、免费（:free:） 
 
-1、基于OSGi、J2EE
+:one:、基于OSGi、J2EE
 
-2、插件集市 http://osgia.com/jxweb/pluginstore/index.action 中有丰富的插件。
+:two:、插件集市 http://osgia.com/jxweb/pluginstore/index.action 中有丰富的插件。
 
-3、前端代码（界面、CSS、JS、图片等）、后端代码（JAVA业务逻辑、SQL脚本【只需要提供一种数据库脚本，在安装时会根据数据库类型自动转换】）全部打包在一个Bundle（JAR）中，分发、测试、积累、部署都十分方便。
+:three:、前端代码（界面、CSS、JS、图片等）、后端代码（JAVA业务逻辑、SQL脚本【只需要提供一种数据库脚本，在安装时会根据数据库类型自动转换】）全部打包在一个Bundle（JAR）中，分发、测试、积累、部署都十分方便。
 
-4、支持热部署、多数据库(Oracle\MySQL\MS SQLServer)、换肤、国际化等。
+:four:、支持热部署、分布式、多数据库(Oracle\MySQL\MS SQLServer)、换肤、国际化等。
 
-5、支持多种工流引擎，包括：健新科技自己研发的工作流引擎、Activiti、Oracle BPM，可根据需要集成自己的工作流引擎。
+:five:、支持多种工流引擎，包括：健新科技自己研发的工作流引擎、Activiti、Oracle BPM，可根据需要集成自己的工作流引擎。
 
-6、桌面端、移动端自适应，采用模板技术，开发一次，解析为桌面、手机、平板前端界面。
+:six:、桌面端、移动端自适应，采用模板技术，开发一次，解析为桌面、手机、平板前端界面。
 
-7、学习成本低、效率高。
+:seven:、学习成本低、效率高。
 
-8、有丰富的文档，参见：http://wiki.osgi.help/display/JXADF/Home
+:eight:、有丰富的文档，参见：http://wiki.osgi.help/display/JXADF/Home
 
-9、演示地址：http://demo.osgi.help 用户名：admin 密码：123456
+:nine:、演示地址：http://demo.osgi.help 用户名：admin 密码：123456
 
 ![http://osgi.hep](doc/images/osgi.help.png)
 
