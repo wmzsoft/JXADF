@@ -2,6 +2,8 @@
 
 <a href="http://osgia.com" target="osgi">插件化（OSGi）开源快速开发平台JXADF功能特点</a>：
 
+<a href="http://wiki.osgi.help/pages/viewpage.action?pageId=22054578">入门手册</a>
+
 开源（:100:）、免费（:free:） 
 
 :one:、基于OSGi、J2EE
